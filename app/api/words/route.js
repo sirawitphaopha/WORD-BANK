@@ -42,6 +42,9 @@ export async function POST(req) {
         original_text: w.original_text || null,
         meaning: (w.meaning || '').trim() || null,
         category_id: w.category_id || 'c8',
+        kind: w.kind || null,
+        subpath: w.subpath || null,
+        subcategory: w.subpath ? String(w.subpath).split(' / ').pop() : null,
         novel: novel || null,
         reviewed: true,
       }));
