@@ -276,6 +276,42 @@ export default class WordBankApp extends React.Component {
     const dupIds = new Set(dups.map((r) => r.id));
     this.askConfirm({ title: 'ลบคำซ้ำ', msg: 'ลบคำที่มีในคลังแล้ว ' + dups.length + ' คำ ออกจากรายการตรวจทาน', okLabel: 'ลบคำซ้ำ', danger: true, onOk: () => { this.setState((s) => ({ review: s.review.filter((r) => !dupIds.has(r.id)) }), this.persistReview); this.flash('ลบคำซ้ำออก ' + dups.length + ' คำ'); } });
   };
+  // ส่งออกผลตรวจทานเป็นไฟล์ .txt (ไว้เทียบผลระหว่าง AI แต่ละเจ้า/รุ่น)
+  exportReview = () => {
+    const S = this.state;
+    if (!S.review.length) { this.flash('ยังไม่มีคำให้ส่งออก'); return; }
+    const catName = {}; S.categories.forEach((c) => { catName[c.id] = c.n; });
+    const t = new Date(Date.now() + 7 * 3600 * 1000);
+    const p2 = (n) => String(n).padStart(2, '0');
+    const date = t.getUTCDate() + '/' + (t.getUTCMonth() + 1) + '/' + (t.getUTCFullYear() + 543) + ' ' + p2(t.getUTCHours()) + ':' + p2(t.getUTCMinutes());
+    const extracted = S.review.filter((r) => (r.source || '').trim()).length;
+    const lines = [
+      'คลังคำ — ผลตรวจทาน (ไว้เทียบ AI)',
+      'เรื่อง: ' + (S.reviewNovel || '-'),
+      'AI: ' + (S.procProvider || '-') + (S.procModel ? ' · ' + S.procModel : ''),
+      'วันที่: ' + date,
+      'จำนวน: ' + S.review.length + ' คำ (สกัดจากประโยค ' + extracted + ')',
+      '────────────────────────────',
+    ];
+    S.review.forEach((r, i) => {
+      let l = (i + 1) + '. ' + r.text + '  [' + (r.kind || '-') + ']  หมวด: ' + (catName[r.category] || r.category || '-');
+      if (r.subpath) l += ' / ' + r.subpath;
+      if ((r.original || '').trim() && r.original !== r.text) l += '  (ต้นฉบับ: ' + r.original + ')';
+      if ((r.meaning || '').trim()) l += '  ความหมาย: ' + r.meaning;
+      if ((r.source || '').trim()) l += '  ✂ จาก: ' + r.source;
+      lines.push(l);
+    });
+    try {
+      const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const tag = (S.procModel || S.procProvider || 'ai').replace(/[^\wก-๙.-]/g, '');
+      a.href = url; a.download = 'ตรวจทาน_' + (S.reviewNovel || 'คลังคำ') + '_' + tag + '.txt';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      this.flash('ส่งออกไฟล์แล้ว');
+    } catch (e) { this.flash('ส่งออกไม่สำเร็จ'); }
+  };
 
   // ---------- save (Review → Library) ----------
   save = () => { if (!this.state.review.length) return; this.askConfirm({ title: 'บันทึกเข้าคลัง', msg: 'บันทึกคำในรายการตรวจทานเข้าคลัง (คำที่ซ้ำกับคลังจะถูกข้ามให้อัตโนมัติ)', okLabel: 'บันทึก', danger: false, onOk: this._save }); };
@@ -598,6 +634,7 @@ export default class WordBankApp extends React.Component {
                   {cur.models.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
                 </select>
               ) : null}
+              {cur.keyUrl ? <a href={cur.keyUrl} target="_blank" rel="noopener noreferrer" title={'เปิดเว็บขอกุญแจของ ' + cur.label} style={{ fontSize: '12.5px', color: '#5a7040', textDecoration: 'none', whiteSpace: 'nowrap', border: '1px solid #cbdcb8', borderRadius: '8px', padding: '7px 10px', background: '#eef3dc' }}>🔗 ขอกุญแจ</a> : null}
             </div>
           );
         })()}
@@ -1066,6 +1103,7 @@ export default class WordBankApp extends React.Component {
           </div>
           <div style={{ flex: 1 }} />
           <button onClick={this.openCats} style={{ padding: '9px 15px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '14px', cursor: 'pointer' }}>⚙ จัดการหมวด</button>
+          <button onClick={this.exportReview} title="ส่งออกผลตรวจทานเป็นไฟล์ .txt ไว้เทียบ AI แต่ละเจ้า" style={{ padding: '9px 15px', border: '1px solid #cbdcb8', borderRadius: '9px', background: '#eef3dc', color: '#5a7040', fontSize: '14px', cursor: 'pointer' }}>⬇ ส่งออก</button>
           {dupCount > 0 && <button onClick={() => this.removeDuplicates(dupItems.map((r) => r.id))} style={{ padding: '9px 16px', border: '1px solid #b81414', borderRadius: '9px', background: '#e01e1e', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', animation: 'wbalert 1.05s ease-in-out infinite' }}>⚠ ลบคำซ้ำ ({dupCount})</button>}
           <button onClick={this.save} style={{ padding: '10px 20px', border: 'none', borderRadius: '9px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 6px rgba(111,78,55,.28)' }}>✓ บันทึกเข้าคลัง ({reviewCount})</button>
         </div>
@@ -1621,6 +1659,13 @@ export default class WordBankApp extends React.Component {
                 </select>
               </div>
             );
+          })()}
+          {(() => {
+            // ปุ่มลิงก์ไปขอกุญแจ (API key) ของเจ้าที่เลือก — เปิดเว็บผู้ให้บริการในแท็บใหม่
+            const cur = PROVIDERS[aiProv];
+            return cur && cur.keyUrl ? (
+              <a href={cur.keyUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', marginTop: '14px', padding: '9px 14px', border: '1px solid #cbdcb8', borderRadius: '9px', background: '#eef3dc', color: '#5a7040', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>🔗 ไปขอกุญแจ (API key) ของ {cur.label}</a>
+            ) : null;
           })()}
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '24px' }}><button onClick={this.resetSettings} style={{ padding: '9px 15px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'transparent', color: '#6f6252', cursor: 'pointer' }}>คืนค่าเริ่มต้น</button><div style={{ flex: 1 }} /><button onClick={this.closeSettings} style={{ padding: '10px 22px', border: 'none', borderRadius: '9px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontWeight: 600, cursor: 'pointer' }}>เสร็จสิ้น</button></div>
         </div>
