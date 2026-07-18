@@ -1,24 +1,30 @@
 // โหลดข้อมูลทั้งหมดตอนเปิดแอป: หมวด + เรื่อง + คำ
 import { NextResponse } from 'next/server';
-import { getAdmin, mapCategory, mapWord } from '@/lib/supabaseAdmin';
+import { getAdmin, mapCategory, mapWord, mapReview } from '@/lib/supabaseAdmin';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
     const db = getAdmin();
-    const [cats, novels, words] = await Promise.all([
+    const [cats, novels, words, review] = await Promise.all([
       db.from('wb_categories').select('*').order('position', { ascending: true }),
       db.from('wb_novels').select('title').order('created_at', { ascending: true }),
       db.from('wb_words').select('*').order('created_at', { ascending: false }),
+      db.from('wb_review').select('*').order('position', { ascending: true }),
     ]);
     if (cats.error) throw cats.error;
     if (novels.error) throw novels.error;
     if (words.error) throw words.error;
+    if (review.error) throw review.error;
+    // เรื่องของคำที่ค้างในห้องพัก (โชว์ที่หัวหน้าตรวจทาน)
+    const reviewNovel = review.data.length ? (review.data[0].novel || 'ไม่ระบุเรื่อง') : '';
     return NextResponse.json({
       categories: cats.data.map(mapCategory),
       novels: novels.data.map((n) => n.title),
       words: words.data.map(mapWord),
+      review: review.data.map(mapReview),
+      reviewNovel,
     });
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 });

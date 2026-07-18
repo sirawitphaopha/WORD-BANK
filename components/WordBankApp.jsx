@@ -7,11 +7,13 @@ import { rgba, mix, shade, badge, pill, dot } from '@/lib/colors';
 import { SUBTREE } from '@/lib/subtree';
 import { CATMETA } from '@/lib/catmeta';
 import { PROVIDERS, PROVIDER_ORDER } from '@/lib/providers';
+import { BrandIcon } from '@/lib/brandIcons';
 import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_TH } from '@/lib/prompt';
 
 export const VERSION = '0.1.0.0';
 const UI_KEY = 'wordbank:v1:ui';
 const REVIEW_KEY = 'wordbank:v1:review';
+const DRAFT_KEY = 'wordbank:v1:draft'; // ข้อความที่กำลังจัด — เซฟกันหายตอนเผลอรีเฟรชระหว่างรอ AI
 const PAL = ['#8f6b4a', '#5f7f92', '#a86a79', '#6f8a56', '#7c6a99', '#3f7d6c'];
 
 export default class WordBankApp extends React.Component {
@@ -20,6 +22,10 @@ export default class WordBankApp extends React.Component {
     library: [], novels: [], categories: [],
     review: [], reviewNovel: '',
     processing: false, procStep: 0,
+    procElapsed: 0, procProvider: '', procProviderKey: '', procModel: '', // หน้าโหลด: วินาทีที่ใช้ + เจ้า/รุ่นที่กำลังใช้
+    draftRestored: false, // มีข้อความค้างจากรอบก่อนที่กู้กลับมา (โชว์แถบแจ้ง)
+    lastAiLogId: null,    // id แถว log ของรอบ AI ล่าสุด (เติมจำนวนคำที่บันทึกจริงตอนกดบันทึก)
+    aiLogs: [], aiSummary: null, aiLogLoading: false, aiLogFilter: 'all', // หน้าประวัติการใช้ AI
     q: '', filterCat: 'all', filterNovel: 'all', filterKind: 'all', sort: 'recent', libView: 'cards',
     confirmId: null, toast: '',
     modal: null, ui: {}, exactFilter: '', dupOnly: false, editing: null,
@@ -30,7 +36,11 @@ export default class WordBankApp extends React.Component {
     promptUnlock: false, // ต้องกด "เปิดแก้ไข" ก่อนถึงแก้คำสั่งได้ (กันเผลอลบ) · ล็อกใหม่ทุกครั้งที่โหลด
     confirm: null,       // ป๊อปอัปยืนยันกลาง {title,msg,okLabel,danger,onOk}
     reviewSort: null,    // การเรียงในตารางตรวจทาน {key,dir}
+    srcCollapsed: {},    // ยุบ/ขยายกลุ่มประโยคต้นทาง ในมุมมอง "จับกลุ่มประโยค"
+    treeCollapsed: {},   // ยุบ/ขยายหมวด ในมุมมอง "แบบคลังคำ" (ต้นไม้หมวด→หมวดย่อย)
   };
+  toggleSrc = (key) => this.setState((s) => ({ srcCollapsed: { ...s.srcCollapsed, [key]: !s.srcCollapsed[key] } }));
+  toggleTree = (key) => this.setState((s) => ({ treeCollapsed: { ...s.treeCollapsed, [key]: !s.treeCollapsed[key] } }));
   // เรียงตารางตรวจทาน: กดหัวคอลัมน์วน asc → desc → ไม่เรียง
   toggleReviewSort = (key) => this.setState((s) => ({ reviewSort: s.reviewSort && s.reviewSort.key === key ? (s.reviewSort.dir === 'asc' ? { key, dir: 'desc' } : null) : { key, dir: 'asc' } }));
 
@@ -41,14 +51,17 @@ export default class WordBankApp extends React.Component {
     const c = this.state.confirm;
     if (!c) return null;
     // คลิกนอกป๊อป (backdrop) = ไม่ปิด ต้องกดปุ่มเอง (กันเผลอ)
+    // โหมด alert = แจ้งเตือนอย่างเดียว (ปุ่มเดียว ไม่มียกเลิก) มีไอคอนใหญ่ เช่น AI ล้มเหลว
+    const isAlert = !!c.alert;
     return (
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(58,47,40,.42)', zIndex: 95, display: 'grid', placeItems: 'center', padding: '20px', animation: 'wbfade .18s ease' }}>
-        <div style={{ background: 'var(--surface,#fffdf6)', border: '1px solid #e0d0ac', borderRadius: '16px', padding: '26px 28px', width: 'min(410px,92vw)', boxShadow: '0 24px 64px rgba(58,47,40,.32)' }}>
-          <div style={{ fontFamily: "'Trirong',serif", fontWeight: 600, fontSize: '20px', color: '#33291f', marginBottom: c.msg ? '8px' : '20px' }}>{c.title}</div>
-          {c.msg ? <div style={{ fontSize: '14.5px', color: '#6f6252', lineHeight: 1.55, marginBottom: '24px' }}>{c.msg}</div> : null}
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-            <button onClick={this.closeConfirm} style={{ padding: '10px 18px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'transparent', color: '#6f6252', fontSize: '14.5px', cursor: 'pointer' }}>ยกเลิก</button>
-            <button onClick={() => { const ok = c.onOk; this.closeConfirm(); if (ok) ok(); }} style={{ padding: '10px 22px', border: 'none', borderRadius: '9px', background: c.danger ? 'var(--accent,#9c3b2b)' : 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '14.5px', fontWeight: 600, cursor: 'pointer' }}>{c.okLabel || 'ยืนยัน'}</button>
+      <div style={{ position: 'fixed', inset: 0, background: isAlert ? 'rgba(48,30,26,.55)' : 'rgba(58,47,40,.42)', zIndex: 95, display: 'grid', placeItems: 'center', padding: '20px', animation: 'wbfade .18s ease' }}>
+        <div style={{ background: 'var(--surface,#fffdf6)', border: '1px solid ' + (isAlert ? '#e8b4a8' : '#e0d0ac'), borderRadius: '16px', padding: isAlert ? '32px 30px 26px' : '26px 28px', width: 'min(' + (isAlert ? '460' : '410') + 'px,92vw)', boxShadow: '0 24px 64px rgba(58,47,40,.32)', textAlign: isAlert ? 'center' : 'left' }}>
+          {isAlert && <div style={{ width: '66px', height: '66px', margin: '0 auto 16px', borderRadius: '50%', background: '#fbe7e2', display: 'grid', placeItems: 'center', fontSize: '34px', animation: 'wbalert 1.1s ease-in-out infinite' }}>⚠</div>}
+          <div style={{ fontFamily: "'Trirong',serif", fontWeight: 600, fontSize: isAlert ? '23px' : '20px', color: isAlert ? '#9c3b2b' : '#33291f', marginBottom: c.msg ? '10px' : '20px' }}>{c.title}</div>
+          {c.msg ? <div style={{ fontSize: '14.5px', color: '#6f6252', lineHeight: 1.6, marginBottom: '24px', whiteSpace: 'pre-line' }}>{c.msg}</div> : null}
+          <div style={{ display: 'flex', gap: '10px', justifyContent: isAlert ? 'center' : 'flex-end' }}>
+            {!isAlert && <button onClick={this.closeConfirm} style={{ padding: '10px 18px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'transparent', color: '#6f6252', fontSize: '14.5px', cursor: 'pointer' }}>ยกเลิก</button>}
+            <button onClick={() => { const ok = c.onOk; this.closeConfirm(); if (ok) ok(); }} style={{ padding: isAlert ? '11px 34px' : '10px 22px', border: 'none', borderRadius: '9px', background: c.danger ? 'var(--accent,#9c3b2b)' : 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '14.5px', fontWeight: 600, cursor: 'pointer' }}>{c.okLabel || 'ยืนยัน'}</button>
           </div>
         </div>
       </div>
@@ -56,8 +69,16 @@ export default class WordBankApp extends React.Component {
   }
 
   // ---------- lifecycle ----------
+  componentWillUnmount() {
+    if (this._onUnload && typeof window !== 'undefined') window.removeEventListener('beforeunload', this._onUnload);
+    clearInterval(this._proc); clearInterval(this._sec); clearTimeout(this._rvPush);
+    this._flushReview(true);
+  }
   async componentDidMount() {
-    let ui = {}, review = [], collapsed = {}, hadCollapsed = false;
+    // ปิด/รีเฟรชหน้า → รีบ sync คำตรวจทานที่ค้างขึ้นคลาวด์ก่อน (กันหาย)
+    this._onUnload = () => this._flushReview(true);
+    if (typeof window !== 'undefined') window.addEventListener('beforeunload', this._onUnload);
+    let ui = {}, review = [], collapsed = {}, hadCollapsed = false, draft = '';
     try {
       const su = localStorage.getItem(UI_KEY);
       if (su) { const p = JSON.parse(su); if (p && typeof p === 'object') ui = p; }
@@ -65,8 +86,13 @@ export default class WordBankApp extends React.Component {
       if (rv) { const r = JSON.parse(rv); if (Array.isArray(r) && r.length) review = r; }
       const cl = localStorage.getItem('wordbank:v1:collapsed');
       if (cl) { const p = JSON.parse(cl); if (p && typeof p === 'object') { collapsed = p; hadCollapsed = true; } }
+      const dr = localStorage.getItem(DRAFT_KEY);
+      if (dr && typeof dr === 'string' && dr.trim()) draft = dr;
     } catch (e) {}
-    this.setState({ ui, review, collapsed });
+    // มีข้อความค้าง (เผลอรีเฟรช/ปิดหน้าระหว่างรอ AI) → กู้กลับมาใส่ช่องพิมพ์ + แจ้งเตือน
+    const patch = { ui, review, collapsed };
+    if (draft) { patch.addText = draft; patch.draftRestored = true; }
+    this.setState(patch);
     try {
       const res = await fetch('/api/bootstrap');
       const data = await res.json();
@@ -75,19 +101,65 @@ export default class WordBankApp extends React.Component {
       // ครั้งแรก (ยังไม่เคยตั้งค่ายุบ) → ยุบทุกหมวดไว้ก่อน กันหน้ายาว/หน่วงตอนโหลดคำ 679 ใบ
       let col = this.state.collapsed;
       if (!hadCollapsed) { col = {}; cats.forEach((c) => { col['g-' + c.id] = 1; }); }
-      this.setState({ categories: cats, novels: data.novels || [], library: data.words || [], loading: false, collapsed: col });
+      const base2 = { categories: cats, novels: data.novels || [], library: data.words || [], loading: false, collapsed: col };
+      const cloudReview = Array.isArray(data.review) ? data.review : [];
+      if (cloudReview.length) {
+        // คลาวด์มีคำค้าง → ใช้เป็นแหล่งหลัก ทับของในเครื่อง (เปิดเครื่องไหนก็เห็นตรงกัน)
+        base2.review = cloudReview;
+        base2.reviewNovel = data.reviewNovel || this.state.reviewNovel || 'ไม่ระบุเรื่อง';
+        this.setState(base2, () => { try { localStorage.setItem(REVIEW_KEY, JSON.stringify(cloudReview)); } catch (e) {} });
+      } else if (this.state.review.length) {
+        // คลาวด์ว่าง แต่ในเครื่องมีค้าง (sync รอบก่อนยังไม่ถึง) → ดันขึ้นคลาวด์
+        this.setState(base2, this.scheduleReviewPush);
+      } else {
+        this.setState(base2);
+      }
     } catch (e) {
       this.setState({ loading: false, loadError: e.message || 'โหลดข้อมูลไม่สำเร็จ' });
     }
   }
 
   persistUi = () => { try { localStorage.setItem(UI_KEY, JSON.stringify(this.state.ui || {})); } catch (e) {} };
-  persistReview = () => { try { localStorage.setItem(REVIEW_KEY, JSON.stringify(this.state.review)); } catch (e) {} };
+  // เซฟลงเบราว์เซอร์ (ทันที) + sync ขึ้นคลาวด์ (หน่วง 0.5 วิ กันยิงถี่ตอนพิมพ์)
+  persistReview = () => {
+    try { localStorage.setItem(REVIEW_KEY, JSON.stringify(this.state.review)); } catch (e) {}
+    this.scheduleReviewPush();
+  };
+  scheduleReviewPush = () => {
+    this._rvPending = { action: 'replace', novel: this.state.reviewNovel, items: this.state.review };
+    clearTimeout(this._rvPush);
+    this._rvPush = setTimeout(() => this._flushReview(false), 500);
+  };
+  _flushReview = (beacon) => {
+    const payload = this._rvPending;
+    if (!payload) return;
+    this._rvPending = null; clearTimeout(this._rvPush);
+    try {
+      if (beacon && navigator.sendBeacon) {
+        navigator.sendBeacon('/api/review', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+      } else {
+        fetch('/api/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true }).catch(() => {});
+      }
+    } catch (e) {}
+  };
 
   // ---------- helpers ----------
   flash(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2400); }
   stop = (e) => { e.stopPropagation(); };
-  onNav = (p) => () => this.setState({ page: p, confirmId: null });
+  onNav = (p) => () => { this.setState({ page: p, confirmId: null }); if (p === 'ailog') this.loadAiLogs(); };
+  // โหลดประวัติการใช้ AI (เรียกตอนเข้าหน้า + ปุ่มรีเฟรช)
+  loadAiLogs = async () => {
+    this.setState({ aiLogLoading: true });
+    try {
+      const res = await fetch('/api/logs');
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      this.setState({ aiLogs: data.logs || [], aiSummary: data.summary || null, aiLogLoading: false });
+    } catch (e) {
+      this.setState({ aiLogLoading: false });
+      this.flash('โหลดประวัติไม่สำเร็จ');
+    }
+  };
   setUi = (key, val) => () => { const ui = { ...this.state.ui, [key]: val }; this.setState({ ui }, this.persistUi); };
   resetSettings = () => this.setState({ ui: {} }, this.persistUi);
   openSettings = () => this.setState({ modal: 'settings' });
@@ -109,17 +181,26 @@ export default class WordBankApp extends React.Component {
   process = async () => {
     const text = this.state.addText.trim();
     if (!text) { this.flash('ยังไม่มีข้อความให้จัด'); return; }
-    this.setState({ processing: true, procStep: 0 });
+    const provider = this.eff('aiProvider', 'basic');
+    const model = this.eff('aiModel:' + provider, '');
+    // ชื่อเจ้า/รุ่นสำหรับโชว์บนหน้าโหลด
+    const base = PROVIDERS[provider] || { label: provider, models: [] };
+    const modelName = (base.models || []).reduce((a, m) => a || (m.id === model ? m.name : ''), '') || model || '';
+    // เซฟข้อความกันหาย (เผลอรีเฟรชระหว่างรอ) + เตรียมตัวยกเลิก
+    try { localStorage.setItem(DRAFT_KEY, text); } catch (e) {}
+    this._abort = new AbortController();
+    const started = Date.now();
+    this.setState({ processing: true, procStep: 0, procElapsed: 0, procProviderKey: provider, procProvider: base.label || provider, procModel: modelName, draftRestored: false });
     let i = 0; clearInterval(this._proc);
     this._proc = setInterval(() => { i++; if (i < 3) this.setState({ procStep: i }); }, 560);
-    const started = Date.now();
+    clearInterval(this._sec); // นับวินาทีที่ใช้ไป
+    this._sec = setInterval(() => this.setState({ procElapsed: Math.round((Date.now() - started) / 1000) }), 1000);
     try {
       const res = await fetch('/api/process', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
+        signal: this._abort.signal,
         body: JSON.stringify({
-          text,
-          provider: this.eff('aiProvider', 'basic'),
-          model: this.eff('aiModel:' + this.eff('aiProvider', 'basic'), ''),
+          text, provider, model,
           prompt: this.eff('aiPromptEn', '') || DEFAULT_PROMPT_EN,
           categories: this.state.categories.map((c) => ({ id: c.id, name_th: c.n })),
         }),
@@ -136,22 +217,42 @@ export default class WordBankApp extends React.Component {
       const review = (data.items || []).map((it) => {
         n++;
         const cat = it.category_id || nameToId[it.proposed_category] || 'c8';
-        return { id: 'r_' + n + '_' + Math.random().toString(36).slice(2, 6), text: it.text, original: it.original, kind: it.kind || '', subpath: it.subcategory || '', category: cat, proposedNew: !!it.proposed_category, meaning: '', selected: false, notes: it.notes || [] };
+        return { id: 'r_' + n + '_' + Math.random().toString(36).slice(2, 6), text: it.text, original: it.original, kind: it.kind || '', subpath: it.subcategory || '', category: cat, proposedNew: !!it.proposed_category, meaning: '', selected: false, notes: it.notes || [], source: it.source || '' };
       });
       const categories = proposedCats.length ? [...this.state.categories, ...proposedCats] : this.state.categories;
       const wait = Math.max(0, 1780 - (Date.now() - started));
       setTimeout(() => {
-        clearInterval(this._proc);
+        clearInterval(this._proc); clearInterval(this._sec);
+        try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} // จัดเสร็จแล้ว ข้อความไปอยู่หน้าตรวจทาน ลบตัวสำรองได้
         this.setState({
           categories, review, processing: false, page: 'review', addText: '',
           reviewNovel: this.state.novelInput.trim() || 'ไม่ระบุเรื่อง',
+          lastAiLogId: data.aiLogId || null, // ไว้เติมจำนวนคำที่บันทึกจริงลง log ตอนกดบันทึก
         }, this.persistReview);
       }, wait);
     } catch (e) {
-      clearInterval(this._proc);
+      clearInterval(this._proc); clearInterval(this._sec);
+      // ยกเลิกเอง (กดปุ่มยกเลิก) → เงียบๆ คงข้อความไว้ครบ ไม่ขึ้น error
+      if (e && e.name === 'AbortError') { this.setState({ processing: false }); return; }
       this.setState({ processing: false });
-      this.flash(e && e.message ? e.message : 'จัดคำไม่สำเร็จ ลองใหม่อีกครั้ง');
+      // AI ล้มเหลว (เช่น โควตาเต็ม/รุ่นล่ม) → เตือนใหญ่กลางจอ ข้อความที่พิมพ์ยังอยู่ครบ retry ได้
+      const detail = e && e.message ? String(e.message) : 'ไม่ทราบสาเหตุ';
+      this.askConfirm({
+        alert: true, danger: true, okLabel: 'รับทราบ',
+        title: 'AI จัดคำไม่สำเร็จ',
+        msg: 'ระบบ AI กรองคำไม่สำเร็จรอบนี้\n\nสาเหตุ: ' + detail + '\n\nข้อความที่พิมพ์ไว้ยังอยู่ครบ ลองกดจัดคำใหม่อีกครั้ง หรือสลับไปใช้ AI เจ้าอื่น/รุ่นอื่น (บางรุ่นอาจเต็มโควตาชั่วคราว)',
+      });
     }
+  };
+
+  // ยกเลิกการจัดคำระหว่างรอ (ผ่านป๊อปยืนยัน) — ข้อความยังอยู่ครบ
+  cancelProcess = () => {
+    this.askConfirm({ title: 'ยกเลิกการจัดคำ', msg: 'หยุดการทำงานของ AI รอบนี้ ข้อความที่พิมพ์ไว้จะยังอยู่ครบ', okLabel: 'ยกเลิกการจัดคำ', danger: true, onOk: () => {
+      if (this._abort) { try { this._abort.abort(); } catch (e) {} }
+      clearInterval(this._proc); clearInterval(this._sec);
+      this.setState({ processing: false });
+      this.flash('ยกเลิกการจัดคำแล้ว');
+    } });
   };
   get procText() { return ['กำลังตรวจและแก้คำสะกด…', 'กำลังแยกวลีย่อยที่น่าเก็บ…', 'กำลังจัดเข้าหมวดหมู่…'][this.state.procStep] || ''; }
 
@@ -201,6 +302,11 @@ export default class WordBankApp extends React.Component {
         novels: nv, review: [], page: 'library',
       }, this.persistReview);
       this.flash('บันทึกเข้าคลังแล้ว ' + saved.length + ' คำ' + (skipped ? ' (ข้ามที่มีอยู่แล้ว ' + skipped + ' คำ)' : ''));
+      // เติมจำนวนคำที่บันทึกจริง + ข้ามเพราะซ้ำ ลง log ของรอบ AI นี้
+      if (this.state.lastAiLogId) {
+        fetch('/api/logs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'saved', id: this.state.lastAiLogId, saved_count: saved.length, skipped_count: skipped }) }).catch(() => {});
+        this.setState({ lastAiLogId: null });
+      }
     } catch (e) {
       this.flash('บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง');
     }
@@ -380,10 +486,10 @@ export default class WordBankApp extends React.Component {
       if (active) return { ...base, background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontWeight: 600, boxShadow: side ? 'none' : '0 3px 10px rgba(111,78,55,.3)' };
       return { ...base, background: side ? 'transparent' : 'rgba(255,255,255,.35)', color: '#7a6a52' };
     };
-    const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
+    const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length], ['ailog', 'ประวัติ AI', 0]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
     const badgeStyle = (active) => ({ marginLeft: '2px', fontSize: '12px', fontWeight: 700, minWidth: '20px', height: '20px', padding: '0 6px', borderRadius: '10px', display: 'inline-grid', placeItems: 'center', background: active ? 'rgba(255,255,255,.22)' : '#e2d3b0', color: active ? '#fbf3e2' : '#8a7159' });
 
-    const isAdd = S.page === 'add', isReview = S.page === 'review', isLibrary = S.page === 'library';
+    const isAdd = S.page === 'add', isReview = S.page === 'review', isLibrary = S.page === 'library', isAiLog = S.page === 'ailog';
 
     return (
       <div style={rootStyle}>
@@ -415,6 +521,7 @@ export default class WordBankApp extends React.Component {
             {isAdd && this.renderAdd()}
             {isReview && this.renderReview(getCat, monoMode, spell, effLayout)}
             {isLibrary && this.renderLibrary(getCat, monoMode, accent)}
+            {isAiLog && this.renderAiLog()}
           </main>
         </div>
 
@@ -463,6 +570,12 @@ export default class WordBankApp extends React.Component {
         </div>
 
         <label style={{ display: 'block', fontWeight: 600, fontSize: '14px', color: '#5c5044', margin: '0 0 8px' }}>ข้อความที่เก็บมา</label>
+        {S.draftRestored && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13.5px', color: '#5a6a3a', background: '#eef3dc', border: '1px solid #cfdca8', borderRadius: '10px', padding: '10px 14px', marginBottom: '10px' }}>
+            <span style={{ flex: 1 }}>↩ กู้ข้อความค้างจากรอบก่อนกลับมาให้แล้ว หน้าปิด/รีเฟรชไปตอนกำลังรอ AI</span>
+            <button onClick={() => this.setState({ draftRestored: false })} style={{ border: 'none', background: 'transparent', color: '#7a8a5a', fontSize: '18px', cursor: 'pointer', lineHeight: 1 }}>✕</button>
+          </div>
+        )}
         <textarea value={S.addText} onChange={(e) => this.setState({ addText: e.target.value })} rows={11} placeholder={'วางคำหรือข้อความที่นี่…\nเว้นบรรทัดใหม่ หรือคั่นด้วยจุลภาค ( , ) เพื่อแยกหลายคำ\nประโยคยาว ๆ AI จะช่วยแยกวลีย่อยที่น่าเก็บให้เอง'} style={{ width: '100%', padding: '16px 18px', border: '1px solid #d8c7a2', borderRadius: '12px', background: 'var(--surface,#fffdf6)', lineHeight: 1.9, fontSize: '17px', color: '#3a2f28', outline: 'none', boxShadow: 'inset 0 1px 3px rgba(120,90,50,.06)' }} />
 
         {(() => {
@@ -473,6 +586,7 @@ export default class WordBankApp extends React.Component {
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: '9px', flexWrap: 'wrap', marginTop: '14px' }}>
               <span style={{ fontSize: '13px', color: '#8a7d6d' }}>ตัว AI</span>
+              <BrandIcon name={prov} size={19} />
               <select value={prov} onChange={(e) => this.setUi('aiProvider', e.target.value)()} style={selStyle}>
                 {PROVIDER_ORDER.map((k) => PROVIDERS[k] ? <option key={k} value={k}>{PROVIDERS[k].label}{PROVIDERS[k].tag ? ' · ' + PROVIDERS[k].tag : ''}</option> : null)}
               </select>
@@ -534,12 +648,30 @@ export default class WordBankApp extends React.Component {
   }
 
   renderProcessing(accent) {
+    const S = this.state;
+    const sec = S.procElapsed || 0;
+    const elapsed = sec < 60 ? sec + ' วินาที' : Math.floor(sec / 60) + ' นาที ' + (sec % 60) + ' วินาที';
     return (
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(58,47,40,.4)', backdropFilter: 'blur(3px)', display: 'grid', placeItems: 'center', zIndex: 60, animation: 'wbfade .2s ease' }}>
-        <div style={{ background: 'var(--panel,#f7f0e0)', border: '1px solid #e0d0ac', borderRadius: '18px', padding: '40px 48px', textAlign: 'center', boxShadow: '0 20px 60px rgba(58,47,40,.3)', maxWidth: '340px' }}>
-          <div style={{ width: '46px', height: '46px', border: '4px solid #e6d4b0', borderTopColor: accent, borderRadius: '50%', margin: '0 auto 20px', animation: 'wbspin 1s linear infinite' }} />
-          <div style={{ fontFamily: "'Trirong',serif", fontSize: '20px', fontWeight: 600, color: '#3a2f28', marginBottom: '6px' }}>AI กำลังจัดคำให้</div>
-          <div style={{ color: '#8a7d6d', fontSize: '15px', minHeight: '22px' }}>{this.procText}</div>
+      // เต็มจอ ทึบ กันเผลอคลิก/ปิดหน้าระหว่างรอ
+      <div style={{ position: 'fixed', inset: 0, background: 'rgba(48,38,30,.72)', backdropFilter: 'blur(5px)', display: 'grid', placeItems: 'center', zIndex: 90, padding: '20px', animation: 'wbfade .2s ease' }}>
+        <div style={{ background: 'var(--surface,#fffdf6)', border: '1px solid #e0d0ac', borderRadius: '20px', padding: '38px 40px 30px', textAlign: 'center', boxShadow: '0 24px 70px rgba(40,30,22,.5)', width: 'min(430px,94vw)' }}>
+          <div style={{ width: '54px', height: '54px', border: '4px solid #e6d4b0', borderTopColor: accent, borderRadius: '50%', margin: '0 auto 22px', animation: 'wbspin 1s linear infinite' }} />
+          <div style={{ fontFamily: "'Trirong',serif", fontSize: '22px', fontWeight: 600, color: '#3a2f28', marginBottom: '6px' }}>AI กำลังจัดคำให้</div>
+          <div style={{ color: '#8a7d6d', fontSize: '15px', minHeight: '22px', marginBottom: '18px' }}>{this.procText}</div>
+
+          {/* ตัวนับวินาที + เจ้า/รุ่นที่ใช้ */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '20px' }}>
+            <span style={{ fontSize: '13px', color: '#6f6252', background: '#f2e9d6', border: '1px solid #e4d8bd', borderRadius: '20px', padding: '5px 13px' }}>⏱ ใช้เวลา {elapsed}</span>
+            {S.procProvider ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#6f6252', background: '#f2e9d6', border: '1px solid #e4d8bd', borderRadius: '20px', padding: '5px 13px' }}><BrandIcon name={S.procProviderKey} size={15} />{S.procProvider}{S.procModel ? ' · ' + S.procModel : ''}</span> : null}
+          </div>
+
+          {/* เตือนห้ามปิด/รีเฟรช */}
+          <div style={{ fontSize: '13.5px', color: '#8a5a1e', background: '#fdf2dc', border: '1px solid #f0d9a8', borderRadius: '11px', padding: '11px 14px', lineHeight: 1.6, marginBottom: '20px', textAlign: 'left' }}>
+            <b>อย่าปิดหรือรีเฟรชหน้านี้ระหว่างรอ</b><br />
+            บางรุ่นใช้เวลาสักครู่ ข้อความถูกเซฟไว้แล้ว หากหลุดจริง แคลร์จะกู้กลับมาให้อัตโนมัติ
+          </div>
+
+          <button onClick={this.cancelProcess} style={{ padding: '10px 24px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'transparent', color: '#8a7160', fontSize: '14.5px', cursor: 'pointer' }}>ยกเลิกการจัดคำ</button>
         </div>
       </div>
     );
@@ -564,10 +696,10 @@ export default class WordBankApp extends React.Component {
     const dupCount = S.review.filter((r) => libTexts.has((r.text || '').trim())).length;
     // คำที่ AI สกัดออกมาจากประโยค (มีโน้ต "แยกจากประโยค") → โชว์ป้าย ✂
     const cutMark = (r) => (r.notes || []).some((n) => /แยกจากประโยค/.test(n))
-      ? <span title="สกัดออกมาจากประโยค" style={{ flex: 'none', fontSize: '10.5px', fontWeight: 600, color: '#7a6a4f', background: '#eae0cc', border: '1px solid #ddcba4', padding: '1px 7px', borderRadius: '20px', whiteSpace: 'nowrap' }}>✂ แยกจากประโยค</span>
+      ? <span title="สกัดออกมาจากประโยค" style={{ flex: 'none', fontSize: '11px', fontWeight: 700, color: '#fff', background: '#c6892b', border: '1px solid #a56f18', padding: '2px 9px', borderRadius: '20px', whiteSpace: 'nowrap', boxShadow: '0 1px 4px rgba(198,137,43,.4)' }}>✂ แยกจากประโยค</span>
       : null;
     const dupBadge = (r) => libTexts.has((r.text || '').trim())
-      ? <span title="คำนี้มีในคลังแล้ว จะถูกข้ามตอนบันทึก" style={{ flex: 'none', fontSize: '11px', fontWeight: 600, color: 'var(--accent,#9c3b2b)', background: 'rgba(156,59,43,.1)', border: '1px solid rgba(156,59,43,.4)', padding: '2px 8px', borderRadius: '20px', whiteSpace: 'nowrap' }}>⚠ มีในคลังแล้ว</span>
+      ? <span title="คำนี้มีในคลังแล้ว จะถูกข้ามตอนบันทึก" style={{ flex: 'none', fontSize: '11px', fontWeight: 700, color: '#fff', background: '#e01e1e', border: '1px solid #b81414', padding: '2px 9px', borderRadius: '20px', whiteSpace: 'nowrap', animation: 'wbalert 1.05s ease-in-out infinite' }}>⚠ มีในคลังแล้ว</span>
       : null;
     const spellCount = S.review.filter((r) => r.original && r.original !== r.text).length;
     const newCatCount = S.categories.filter((c) => c.proposed).length;
@@ -611,7 +743,7 @@ export default class WordBankApp extends React.Component {
                   <div style={{ flex: 1 }} />
                   <button onClick={() => this.removeReview(r.id)} title="ลบคำนี้" style={{ border: 'none', background: 'transparent', color: '#bcac8f', fontSize: '18px', cursor: 'pointer', lineHeight: 1 }}>✕</button>
                 </div>
-                {dupBadge(r) ? <div style={{ marginBottom: '9px' }}>{dupBadge(r)}</div> : null}
+                {(cutMark(r) || dupBadge(r)) ? <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '9px' }}>{cutMark(r)}{dupBadge(r)}</div> : null}
                 {hasSpell && (
                   <div style={spellBoxStyle}>
                     {spell === 'strikethrough' && (<><span style={{ color: '#b58175', textDecoration: 'line-through', textDecorationColor: '#cf7a63' }}>{r.original}</span><span style={{ color: 'var(--accent,#9c3b2b)' }}> → แก้เป็น</span></>)}
@@ -622,11 +754,15 @@ export default class WordBankApp extends React.Component {
                 <input value={r.text} onChange={(e) => this.updateReview(r.id, { text: e.target.value })} style={{ width: '100%', fontFamily: "'Trirong',serif", fontSize: '19px', fontWeight: 500, color: '#33291f', border: 'none', borderBottom: '1px dashed #ddcba4', background: 'transparent', padding: '2px 0 6px', outline: 'none' }} />
                 <input value={r.meaning} onChange={(e) => this.updateReview(r.id, { meaning: e.target.value })} placeholder="＋ เพิ่มความหมาย (ไม่บังคับ)" style={{ width: '100%', fontSize: '14px', color: '#6f6252', border: 'none', background: 'transparent', padding: '8px 0 2px', outline: 'none' }} />
                 {r.subpath ? <div style={{ fontSize: '12px', color: '#9a8c76', marginTop: '7px', display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#bcac8f' }}>↳</span> หมวดย่อย: {r.subpath}</div> : null}
-                {(r.notes || []).length > 0 && (
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '9px' }}>
-                    {r.notes.map((note, i) => <span key={i} style={{ fontSize: '11px', color: '#9a8c76', background: '#f0e8d4', border: '1px solid #e4d8bd', padding: '2px 8px', borderRadius: '5px' }}>{note}</span>)}
-                  </div>
-                )}
+                {(() => {
+                  // ซ่อนโน้ต "✂ แยกจากประโยค" เพราะโชว์เป็นป้ายทองด้านบนแล้ว (กันซ้ำ)
+                  const vn = (r.notes || []).filter((n) => !/แยกจากประโยค/.test(n));
+                  return vn.length > 0 ? (
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '9px' }}>
+                      {vn.map((note, i) => <span key={i} style={{ fontSize: '11px', color: '#9a8c76', background: '#f0e8d4', border: '1px solid #e4d8bd', padding: '2px 8px', borderRadius: '5px' }}>{note}</span>)}
+                    </div>
+                  ) : null;
+                })()}
               </div>
             );
           })}
@@ -679,8 +815,8 @@ export default class WordBankApp extends React.Component {
 
     const columnsView = (
       <>
-        <p style={{ fontSize: '13px', color: '#8a7d6d', margin: '0 0 12px' }}>ลากคำไปวางในหมวดที่ต้องการได้เลย · กด ✕ เพื่อลบ · แสดงทุกหมวด ไม่ต้องเลื่อนซ้ายขวา</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(210px,1fr))', gap: '14px', alignItems: 'start' }}>
+        <p style={{ fontSize: '13px', color: '#8a7d6d', margin: '0 0 12px' }}>ลากคำไปวางในหมวดที่ต้องการได้เลย · กด ✕ เพื่อลบ · ทุกหมวดเรียงแนวนอนแถวเดียว</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(' + S.categories.length + ',minmax(132px,1fr))', gap: '12px', alignItems: 'start', overflowX: 'auto', paddingBottom: '6px' }}>
           {S.categories.map((c) => {
             const items = S.review.filter((r) => r.category === c.id);
             return (
@@ -713,6 +849,124 @@ export default class WordBankApp extends React.Component {
       </>
     );
 
+    // มุมมองที่ 4 — จับกลุ่มคำที่สกัดไว้ใต้ประโยคต้นทาง (เห็นว่าแต่ละคำงอกมาจากประโยคไหน)
+    const rowInput = (r) => <input value={r.text} onChange={(e) => this.updateReview(r.id, { text: e.target.value })} style={{ flex: 1, fontFamily: "'Trirong',serif", fontSize: '16px', fontWeight: 500, color: '#33291f', border: 'none', borderBottom: '1px dashed #e0d0ac', background: 'transparent', outline: 'none', padding: '4px 0', minWidth: '80px' }} />;
+    const delBtn = (r) => <button onClick={() => this.removeReview(r.id)} title="ลบคำนี้" style={{ border: 'none', background: 'transparent', color: '#bcac8f', fontSize: '16px', cursor: 'pointer', lineHeight: 1 }}>✕</button>;
+    const sourcesView = (() => {
+      const groups = new Map(); // ประโยคต้นทาง → คำที่สกัดออกมา
+      const standalone = [];    // คำ/ประโยคที่พิมพ์มาเอง (ไม่มีต้นทาง)
+      S.review.forEach((r) => {
+        const src = (r.source || '').trim();
+        if (src) { if (!groups.has(src)) groups.set(src, []); groups.get(src).push(r); }
+        else standalone.push(r);
+      });
+      const groupArr = [...groups.entries()];
+      return (
+        <>
+          <p style={{ fontSize: '13px', color: '#8a7d6d', margin: '0 0 14px' }}>คำที่ AI สกัดออกมา จับกลุ่มไว้ใต้ประโยคที่มันงอกออกมา · กดหัวข้อเพื่อยุบหรือขยาย</p>
+          {groupArr.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#a99b83', background: '#f9f4e7', border: '1px dashed #ddcba4', borderRadius: '12px', marginBottom: '14px' }}>รอบนี้ AI ไม่ได้สกัดคำจากประโยคยาว (คำที่เข้ามาเป็นคำเดี่ยว/วลี อยู่แล้ว)</div>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {groupArr.map(([src, items]) => {
+              const collapsed = S.srcCollapsed[src];
+              return (
+                <div key={src} style={{ border: '1px solid #e0d0ac', borderRadius: '12px', background: 'var(--surface,#fffdf6)', overflow: 'hidden' }}>
+                  <div onClick={() => this.toggleSrc(src)} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '13px 16px', cursor: 'pointer', background: '#f3ead2', borderBottom: collapsed ? 'none' : '1px solid #eaddc0' }}>
+                    <span style={{ color: '#b08a4a', fontSize: '13px', flex: 'none' }}>{collapsed ? '▸' : '▾'}</span>
+                    <span style={{ flex: 1, fontFamily: "'Trirong',serif", fontSize: '17px', color: '#4a3f35', lineHeight: 1.45 }}>{src}</span>
+                    <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#fff', background: '#a8843f', borderRadius: '20px', padding: '3px 11px', whiteSpace: 'nowrap', flex: 'none' }}>งอกมา {items.length} คำ</span>
+                  </div>
+                  {!collapsed && (
+                    <div style={{ padding: '11px 14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {items.map((r) => (
+                        <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: '9px', flexWrap: 'wrap', padding: '8px 11px', background: '#faf4e6', border: '1px solid #ecdfc2', borderLeft: '3px solid #c9a050', borderRadius: '8px' }}>
+                          <span title="สกัดจากประโยคด้านบน" style={{ color: '#a8843f', flex: 'none' }}>✂</span>
+                          {kindSelect(r)}
+                          {rowInput(r)}
+                          {catSelect(r)}
+                          {dupBadge(r)}
+                          {delBtn(r)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {standalone.length > 0 && (
+              <div style={{ border: '1px dashed #ddcba4', borderRadius: '12px', background: '#f9f4e7', padding: '13px 16px' }}>
+                <div style={{ fontSize: '13.5px', fontWeight: 600, color: '#8a7d6d', marginBottom: '11px' }}>คำ / ประโยคที่พิมพ์มาเอง ไม่ได้สกัดจากประโยคอื่น ({standalone.length})</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {standalone.map((r) => (
+                    <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: '9px', flexWrap: 'wrap', padding: '8px 11px', background: 'var(--surface,#fffdf6)', border: '1px solid #e6dabf', borderRadius: '8px' }}>
+                      {kindSelect(r)}
+                      {rowInput(r)}
+                      {catSelect(r)}
+                      {dupBadge(r)}
+                      {delBtn(r)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      );
+    })();
+
+    // มุมมองที่ 5 — แบบคลังคำ: จัดคำตามหมวด → หมวดย่อย เป็นต้นไม้ยุบขยายเหมือนหน้าคลังคำ
+    const treeView = (
+      <>
+        <p style={{ fontSize: '13px', color: '#8a7d6d', margin: '0 0 14px' }}>คำจัดเข้าหมวดและหมวดย่อยแบบเดียวกับหน้าคลังคำ · กดหัวหมวดเพื่อยุบหรือขยาย</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {S.categories.map((c) => {
+            const items = S.review.filter((r) => r.category === c.id);
+            if (!items.length) return null;
+            const catCollapsed = S.treeCollapsed['c:' + c.id];
+            const bySub = new Map(); // จัดกลุ่มตามหมวดย่อย (subpath)
+            items.forEach((r) => {
+              const sp = (r.subpath || '').trim() || '— ไม่ระบุหมวดย่อย —';
+              if (!bySub.has(sp)) bySub.set(sp, []);
+              bySub.get(sp).push(r);
+            });
+            return (
+              <div key={c.id} style={{ border: '1px solid #e0d0ac', borderRadius: '12px', overflow: 'hidden', background: 'var(--surface,#fffdf6)' }}>
+                <div onClick={() => this.toggleTree('c:' + c.id)} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', cursor: 'pointer', background: rgba(c.c, 0.13), borderBottom: catCollapsed ? 'none' : '1px solid #eaddc0' }}>
+                  <span style={{ color: '#b08a4a', fontSize: '13px', flex: 'none' }}>{catCollapsed ? '▸' : '▾'}</span>
+                  <span style={badge(c, monoMode)}>{c.k}</span>
+                  <span style={{ flex: 1, fontWeight: 600, fontSize: '15px', color: '#4a3f35' }}>{c.n}</span>
+                  <span style={{ fontSize: '12.5px', color: '#a99b83', flex: 'none' }}>{items.length} คำ</span>
+                </div>
+                {!catCollapsed && (
+                  <div style={{ padding: '6px 12px 12px' }}>
+                    {[...bySub.entries()].map(([sp, subItems]) => (
+                      <div key={sp} style={{ marginTop: '8px' }}>
+                        <div style={{ fontSize: '12.5px', color: '#8a7d6d', fontWeight: 600, padding: '4px 2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span style={{ color: '#bcac8f', flex: 'none' }}>↳</span>{sp}<span style={{ color: '#c3b48f', fontWeight: 400 }}>· {subItems.length}</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '7px', paddingLeft: '15px' }}>
+                          {subItems.map((r) => (
+                            <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', padding: '7px 10px', background: '#faf4e6', border: '1px solid #ecdfc2', borderRadius: '8px' }}>
+                              {kindSelect(r)}
+                              {rowInput(r)}
+                              {cutMark(r)}
+                              {dupBadge(r)}
+                              {delBtn(r)}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </>
+    );
+
     return (
       <section style={{ maxWidth: '1200px', margin: '0 auto', animation: 'wbfade .35s ease' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
@@ -728,14 +982,13 @@ export default class WordBankApp extends React.Component {
 
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '18px' }}>
           <div style={{ display: 'inline-flex', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
-            {[['cards', 'การ์ด'], ['table', 'ตาราง'], ['columns', 'คอลัมน์']].map(([k, label]) => (
+            {[['cards', 'การ์ด'], ['table', 'ตาราง'], ['columns', 'คอลัมน์'], ['sources', '✂ จับกลุ่มประโยค'], ['tree', '📖 แบบคลังคำ']].map(([k, label]) => (
               <button key={k} onClick={this.setUi('reviewLayout', k)} style={layoutSeg(effLayout === k)}>{label}</button>
             ))}
           </div>
           <div style={{ flex: 1 }} />
           <button onClick={this.openCats} style={{ padding: '9px 15px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '14px', cursor: 'pointer' }}>⚙ จัดการหมวด</button>
-          {dupCount > 0 && <button onClick={this.removeDuplicates} style={{ padding: '9px 15px', border: '1px solid #e0b48f', borderRadius: '9px', background: '#f7ece0', color: '#9c5a2b', fontSize: '14px', cursor: 'pointer' }}>⚠ ลบคำซ้ำ ({dupCount})</button>}
-          <button onClick={this.discard} style={{ padding: '9px 15px', border: '1px solid #e6c3b7', borderRadius: '9px', background: '#faf1ee', color: 'var(--accent,#9c3b2b)', fontSize: '14px', cursor: 'pointer' }}>ทิ้งทั้งหมด</button>
+          {dupCount > 0 && <button onClick={this.removeDuplicates} style={{ padding: '9px 16px', border: '1px solid #b81414', borderRadius: '9px', background: '#e01e1e', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', animation: 'wbalert 1.05s ease-in-out infinite' }}>⚠ ลบคำซ้ำ ({dupCount})</button>}
           <button onClick={this.save} style={{ padding: '10px 20px', border: 'none', borderRadius: '9px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 6px rgba(111,78,55,.28)' }}>✓ บันทึกเข้าคลัง ({reviewCount})</button>
         </div>
 
@@ -756,6 +1009,106 @@ export default class WordBankApp extends React.Component {
         {effLayout === 'cards' && cardsView}
         {effLayout === 'table' && tableView}
         {effLayout === 'columns' && columnsView}
+        {effLayout === 'sources' && sourcesView}
+        {effLayout === 'tree' && treeView}
+      </section>
+    );
+  }
+
+  // ============ ประวัติการใช้ AI ============
+  renderAiLog() {
+    const S = this.state;
+    const sum = S.aiSummary;
+    const p2 = (n) => String(n).padStart(2, '0');
+    const fmtTH = (iso) => { // เวลาไทย (+7) พ.ศ.
+      if (!iso) return '';
+      const t = new Date(new Date(iso).getTime() + 7 * 3600 * 1000);
+      return t.getUTCDate() + '/' + (t.getUTCMonth() + 1) + '/' + (t.getUTCFullYear() + 543) + ' ' + p2(t.getUTCHours()) + ':' + p2(t.getUTCMinutes());
+    };
+    const fmtNum = (n) => Number(n || 0).toLocaleString('en-US');
+    const fmtCost = (c) => Number(c) > 0 ? '$' + Number(c).toFixed(Number(c) < 0.01 ? 5 : 4) : 'ฟรี';
+    const logs = S.aiLogFilter === 'all' ? S.aiLogs : S.aiLogs.filter((l) => l.provider === S.aiLogFilter);
+    const statCard = (label, value) => (
+      <div style={{ flex: '1 1 150px', background: 'var(--surface,#fffdf6)', border: '1px solid #e0d0ac', borderRadius: '12px', padding: '13px 16px' }}>
+        <div style={{ fontSize: '12px', color: '#8a7d6d', marginBottom: '4px' }}>{label}</div>
+        <div style={{ fontFamily: "'Trirong',serif", fontSize: '21px', fontWeight: 600, color: '#4a3f35' }}>{value}</div>
+      </div>
+    );
+    const btn = (on) => ({ padding: '6px 13px', borderRadius: '20px', fontSize: '13px', cursor: 'pointer', border: '1px solid ' + (on ? 'var(--primary,#6f4e37)' : '#ddcba4'), background: on ? 'var(--primary,#6f4e37)' : 'var(--panel,#f7f0e0)', color: on ? '#fbf3e2' : '#6f6252' });
+    const cols = '128px 1.4fr 1.5fr 96px 92px 70px';
+    return (
+      <section style={{ maxWidth: '1100px', margin: '0 auto', animation: 'wbfade .35s ease' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
+          <h1 style={{ fontFamily: "'Charmonman',cursive", fontWeight: 700, fontSize: 'clamp(34px,4.4vw,48px)', margin: 0, color: 'var(--accent,#9c3b2b)', lineHeight: 1.1 }}>ประวัติการใช้ AI</h1>
+          <div style={{ flex: 1 }} />
+          <button onClick={this.loadAiLogs} style={{ padding: '9px 16px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '14px', cursor: 'pointer' }}>↻ รีเฟรช</button>
+        </div>
+        <p style={{ fontSize: '14px', color: '#8a7d6d', margin: '10px 0 20px' }}>บันทึกทุกครั้งที่เรียก AI จัดคำ — เจ้าไหน รุ่นอะไร ใช้ token เท่าไหร่ กี่วินาที และค่าใช้จ่ายประมาณ (ราคาประเมิน ไม่ใช่ยอดจริง)</p>
+
+        {S.aiLogLoading && <div style={{ textAlign: 'center', padding: '40px', color: '#a99b83' }}>กำลังโหลด…</div>}
+
+        {sum && sum.totalCalls === 0 && !S.aiLogLoading && (
+          <div style={{ textAlign: 'center', padding: '70px 20px', color: '#a99b83' }}>
+            <div style={{ fontFamily: "'Charmonman',cursive", fontSize: '28px', color: '#c3b48f' }}>ยังไม่มีประวัติ</div>
+            <p>ลองไปหน้า “เพิ่มคำ” เลือก AI แล้วจัดคำสักครั้ง</p>
+          </div>
+        )}
+
+        {sum && sum.totalCalls > 0 && (
+          <>
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '14px' }}>
+              {statCard('เรียกทั้งหมด', fmtNum(sum.totalCalls) + ' ครั้ง')}
+              {statCard('token รวม', fmtNum(sum.totalTokens))}
+              {statCard('ค่าใช้จ่ายประมาณ', fmtCost(sum.totalCost))}
+              {statCard('พลาด', fmtNum(sum.totalErrors) + ' ครั้ง')}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(232px,1fr))', gap: '10px', marginBottom: '22px' }}>
+              {sum.byProvider.slice().sort((a, b) => b.calls - a.calls).map((b) => (
+                <div key={b.provider} style={{ background: 'var(--surface,#fffdf6)', border: '1px solid #e6dabf', borderRadius: '12px', padding: '13px 15px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '9px' }}>
+                    <BrandIcon name={b.provider} size={18} />
+                    <b style={{ color: '#4a3f35', flex: 1 }}>{b.label}</b>
+                    <span style={{ fontSize: '12.5px', color: '#a99b83' }}>{b.calls} ครั้ง</span>
+                  </div>
+                  <div style={{ fontSize: '13px', color: '#6f6252', lineHeight: 1.7 }}>
+                    <div>token: <b>{fmtNum(b.tokensIn + b.tokensOut)}</b> · ค่าใช้จ่าย: <b>{fmtCost(b.cost)}</b></div>
+                    <div>แยกได้ {fmtNum(b.items)} คำ · บันทึก {fmtNum(b.saved)} คำ{b.errors ? ' · พลาด ' + b.errors : ''}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+              <button onClick={() => this.setState({ aiLogFilter: 'all' })} style={btn(S.aiLogFilter === 'all')}>ทั้งหมด</button>
+              {sum.byProvider.map((b) => <button key={b.provider} onClick={() => this.setState({ aiLogFilter: b.provider })} style={btn(S.aiLogFilter === b.provider)}>{b.label}</button>)}
+            </div>
+
+            <div style={{ border: '1px solid #e0d0ac', borderRadius: '12px', overflow: 'hidden', background: 'var(--surface,#fffdf6)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: cols, gap: '10px', padding: '11px 16px', background: '#f0e6cd', borderBottom: '1px solid #e0d0ac', fontSize: '12px', fontWeight: 600, color: '#8a7d6d' }}>
+                <span>เวลา</span><span>เจ้า / รุ่น</span><span>คำ (เข้า→แยก→บันทึก)</span><span>token</span><span>ค่าใช้จ่าย</span><span>ผล</span>
+              </div>
+              <div style={{ maxHeight: '540px', overflowY: 'auto' }}>
+                {logs.map((l) => (
+                  <div key={l.id} style={{ display: 'grid', gridTemplateColumns: cols, gap: '10px', padding: '10px 16px', borderBottom: '1px solid #f0e6cd', alignItems: 'center', fontSize: '13px', color: '#5c5044' }}>
+                    <span style={{ color: '#8a7d6d', fontSize: '12px' }}>{fmtTH(l.created_at)}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                      <BrandIcon name={l.provider} size={15} />
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.model || l.provider_label}</span>
+                    </span>
+                    <span style={{ color: '#6f6252' }}>{fmtNum(l.input_chars)} ตัวอักษร → {fmtNum(l.item_count)} คำ{l.saved_count ? ' → บันทึก ' + fmtNum(l.saved_count) : ''}{l.skipped_count ? ' (ซ้ำ ' + l.skipped_count + ')' : ''}</span>
+                    <span>{l.tokens_in || l.tokens_out ? fmtNum((l.tokens_in || 0) + (l.tokens_out || 0)) : '—'}</span>
+                    <span>{fmtCost(l.cost_usd)}</span>
+                    <span>{l.status === 'error'
+                      ? <span title={l.error || ''} style={{ color: '#fff', background: '#e01e1e', borderRadius: '20px', padding: '2px 9px', fontSize: '11.5px', fontWeight: 600 }}>พลาด</span>
+                      : <span style={{ color: '#5a7040', background: '#e9efe1', border: '1px solid #cbdcb8', borderRadius: '20px', padding: '2px 9px', fontSize: '11.5px' }}>สำเร็จ</span>}</span>
+                  </div>
+                ))}
+                {logs.length === 0 && <div style={{ padding: '30px', textAlign: 'center', color: '#a99b83' }}>ไม่มีรายการในตัวกรองนี้</div>}
+              </div>
+            </div>
+          </>
+        )}
       </section>
     );
   }
@@ -1170,6 +1523,7 @@ export default class WordBankApp extends React.Component {
               const p = PROVIDERS[k]; if (!p) return null;
               return (
                 <button key={k} onClick={this.setUi('aiProvider', k)} style={aiBtn(aiProv === k)}>
+                  <BrandIcon name={k} size={17} />
                   <span style={{ flex: 1 }}>{p.label}</span>
                   {p.tag ? <span style={tagStyle}>{p.tag}</span> : null}
                 </button>

@@ -56,11 +56,14 @@
 
 มี 3 หน้า: **เพิ่มคำ** (วางข้อความ→ให้ AI จัด) → **ตรวจทาน** (ดูผลก่อนบันทึก แก้/ลากย้ายหมวด) → **คลังคำ** (คลังที่บันทึก เป็นต้นไม้ยุบขยาย + สารบัญ)
 
-## 🎛 UI/UX สำคัญ (อัปเดต 2026-07-17)
-- **เมนู = แบนเนอร์บนเสมอ** (เอา sidebar ออกแล้ว) · `navStyle` บังคับ 'tabs'
-- **หน้าเพิ่มคำ**: เลือกเจ้า/รุ่น AI + กล่องแก้ prompt (2 กรอบ EN/TH ยุบ+ล็อก) + ปุ่ม **📋 วาง** (วางจากคลิปบอร์ด) + ชื่อนิยายมีดรอปดาวน์เลือกเรื่องเก่า
-- **หน้าตรวจทาน**: ป้ายชนิด (คำ/วลี/ประโยค กดเปลี่ยนได้) + หมวดย่อย + ป้าย **⚠ มีในคลังแล้ว** + ป้าย **✂ แยกจากประโยค** (คำที่ AI สกัด) · 3 มุมมอง (การ์ด/ตาราง[หัวคอลัมน์กดเรียงได้]/คอลัมน์[กริดพับ เห็นทุกหมวด]) · ปุ่ม **ลบคำซ้ำ** · save ข้ามคำซ้ำ
-- 🚨 **ระบบยืนยันกลาง `askConfirm({title,msg,okLabel,danger,onOk})` + `renderConfirm()`** — ทุกปุ่ม action สำคัญ (ลบ/ลบที่เลือก/ทิ้งทั้งหมด/บันทึก/ลบคำซ้ำ) ต้องผ่านป๊อปนี้ · คลิกนอกป๊อป = ไม่ปิด · **ปุ่ม action ใหม่ทุกปุ่มให้ต่อผ่าน askConfirm เสมอ**
+## 🎛 UI/UX สำคัญ (อัปเดต 2026-07-18)
+- **เมนู = แบนเนอร์บนเสมอ** (เอา sidebar ออกแล้ว) · `navStyle` บังคับ 'tabs' · 4 หน้า: เพิ่มคำ / ตรวจทาน / คลังคำ / **ประวัติ AI**
+- **หน้าเพิ่มคำ**: เลือกเจ้า/รุ่น AI (มี**โลโก้จริงของแต่ละแบรนด์** จาก `lib/brandIcons.jsx`) + กล่องแก้ prompt (2 กรอบ EN/TH ยุบ+ล็อก) + ปุ่ม **📋 วาง** + ชื่อนิยายมีดรอปดาวน์ + กู้ข้อความค้างอัตโนมัติ (draft ใน localStorage กันหายตอนรีเฟรชระหว่างรอ AI)
+- **หน้าโหลด "AI กำลังจัดคำ"** (`renderProcessing`): เต็มจอ + นับวินาที + โชว์เจ้า/รุ่น (โลโก้) + เตือนห้ามปิด + ปุ่มยกเลิก (AbortController)
+- **หน้าตรวจทาน**: ป้ายชนิด (คำ/วลี/ประโยค) + หมวดย่อย + ป้าย **⚠ มีในคลังแล้ว** (แดงกระพริบ `wbalert`) + ป้าย **✂ แยกจากประโยค** (ทองอำพันเด่น) · **5 มุมมอง**: การ์ด / ตาราง[หัวคอลัมน์กดเรียง] / คอลัมน์[8 หมวดแนวนอนแถวเดียว] / **✂ จับกลุ่มประโยค** (คำที่สกัดจัดใต้ประโยคต้นทาง จาก field `source`) / **📖 แบบคลังคำ** (ต้นไม้หมวด→หมวดย่อยยุบขยาย) · ปุ่ม **ลบคำซ้ำ** · save ข้ามคำซ้ำ · **ไม่มีปุ่มทิ้งทั้งหมดแล้ว** (ใช้เลือกทั้งหมด→ลบที่เลือกแทน กันเผลอ)
+- **คำตรวจทานเก็บบนคลาวด์** (`wb_review`) — คลาวด์เป็นหลัก + localStorage สำรอง · sync ทุก mutation ผ่าน `persistReview → scheduleReviewPush` (debounce 0.5 วิ) + flush ตอนปิดหน้า (sendBeacon) · เปิดเครื่องไหนก็เห็นคำค้างตรงกัน
+- **ประวัติการใช้ AI** (`renderAiLog`) — ทุกครั้งที่เรียก AI บันทึกลง `wb_ai_log` (เจ้า/รุ่น/token/ค่าใช้จ่ายประมาณ/เวลา/สำเร็จ-พลาด/คำที่แยก-บันทึก) · หน้ามีสรุปยอดรวม + การ์ดต่อเจ้า + รายการ + กรอง
+- 🚨 **ระบบยืนยันกลาง `askConfirm({title,msg,okLabel,danger,onOk,alert})` + `renderConfirm()`** — ทุกปุ่ม action สำคัญ (ลบ/ลบที่เลือก/บันทึก/ลบคำซ้ำ/ยกเลิกจัดคำ) ต้องผ่านป๊อปนี้ · คลิกนอกป๊อป = ไม่ปิด · **โหมด `alert:true`** = ป๊อปเตือนใหญ่ปุ่มเดียว (ใช้ตอน AI ล้มเหลว) · **ปุ่ม action ใหม่ทุกปุ่มให้ต่อผ่าน askConfirm เสมอ**
 
 ---
 
@@ -74,7 +77,8 @@
   - เลือกเจ้า + รุ่น (model) ได้ในหน้าเพิ่มคำ + หน้าตั้งค่า (เก็บใน localStorage `aiProvider`, `aiModel:<provider>`)
   - **กุญแจ (API key) เก็บฝั่งเซิร์ฟเวอร์ใน `.env.local` เท่านั้น** ไม่หลุดเบราว์เซอร์ · เจ้าไหนไม่มีกุญแจ → โยน error ไทยให้ UI แสดง
   - **prompt (คำสั่ง AI) แก้เองได้บนหน้าเว็บ** — 2 กรอบ อังกฤษ (ส่งจริง แก้ได้) + ไทย (อ่านอย่างเดียว) อยู่ในหน้าเพิ่มคำ (ยุบ/ล็อกกันเผลอลบ) · ค่าเริ่มต้นใน `lib/prompt.js` · **ส่งอังกฤษอย่างเดียวให้ AI** (แม่นสุด) · เก็บที่แก้ใน localStorage `aiPromptEn`
-  - งานที่ AI ทำ: (1) แก้คำสะกด (2) เก็บประโยคเต็ม + **สกัดคำเด่นเพิ่มเป็นก้อนแยก** (3) แปะชนิด `kind` (word/phrase/sentence) (4) จัดหมวด + **หมวดย่อย** (subpath) (5) ดักซ้ำ
+  - งานที่ AI ทำ: (1) แก้คำสะกด (2) เก็บประโยคเต็ม + **สกัดคำเด่นเพิ่มเป็นก้อนแยก** (แนบ **`source`** = ประโยคต้นทางที่สกัดมา) (3) แปะชนิด `kind` (word/phrase/sentence) (4) จัดหมวด + **หมวดย่อย** (subpath) (5) ดักซ้ำ
+  - `runAI()` คืน `{ items, proposed_categories, usage:{in,out}, model, provider }` — usage (token) อ่านจาก response แต่ละเจ้า (OpenAI `usage`, Gemini `usageMetadata`, Claude `msg.usage`) ไว้บันทึก log + คิดค่าใช้จ่าย (`lib/pricing.js`)
 
 ## 📂 โครงไฟล์
 ```
@@ -82,27 +86,32 @@ app/
   layout.js            ฟอนต์ (Google Fonts) + โครง html
   page.js              โหลด <WordBankApp/>
   api/
-    bootstrap/route.js   GET โหลด categories+novels+words ตอนเปิดแอป
-    process/route.js     POST จัดคำ (heuristic → สลับเป็น Claude ทีหลัง)
+    bootstrap/route.js   GET โหลด categories+novels+words+**review**(คำตรวจทานค้าง) ตอนเปิดแอป
+    process/route.js     POST จัดคำ (runAI) + **บันทึก log ลง wb_ai_log** (คืน aiLogId)
     words/route.js       POST บันทึกคำ (bulk) จากหน้าตรวจทาน
     words/[id]/route.js  PATCH/DELETE คำเดี่ยว
     categories/route.js  POST เพิ่มหมวด · categories/[id] PATCH/DELETE · categories/merge POST รวมหมวด
-components/WordBankApp.jsx   แอปทั้งหมด (class component เดียว — ทุกหน้า/modal/settings)
+    review/route.js      POST จัดการคำตรวจทานบนคลาวด์ (action: replace/update/remove/clear)
+    logs/route.js        GET ประวัติ+สรุป · POST action:'saved' เติมจำนวนคำที่บันทึกจริง
+components/WordBankApp.jsx   แอปทั้งหมด (class component เดียว — ทุกหน้า/modal/settings/ประวัติ AI)
 lib/
-  ai.js         🧠 หัวใจ AI — provider adapter: buildUserPrompt (เติมหมวด+หมวดย่อยจาก subtree), normalize, callOpenAICompatible/callGemini/callClaude, runAI()
-  providers.js  ทะเบียน 8 ตัวเลือก (label/model/models[{id,name}]/baseURL/envKey) — แก้ชื่อรุ่น/URL/กุญแจที่นี่จุดเดียว
-  prompt.js     คำสั่ง AI เริ่มต้น (system prompt): DEFAULT_PROMPT_EN + DEFAULT_PROMPT_TH (ทั้งสองภาษา) — โชว์บนหน้าเว็บ แก้ได้
-  data.js       ข้อมูลกลาง engine: MISSPELL, SEED, SUBTAX (ใช้ให้ engine จัดหมวดคำใหม่)
+  ai.js         🧠 หัวใจ AI — provider adapter: buildUserPrompt, normalize, callOpenAICompatible/callGemini/callClaude, runAI() (คืน usage+model+provider)
+  providers.js  ทะเบียน 8 ตัวเลือก (label/tag/model/models[{id,name}]/baseURL/envKey) — แก้ชื่อรุ่น/URL/กุญแจที่นี่จุดเดียว (ข้อมูลล้วน import ฝั่ง client ได้)
+  brandIcons.jsx โลโก้จริง SVG ของแต่ละเจ้า AI — <BrandIcon name={provider} size color/> (gpt→โลโก้ openai)
+  pricing.js    ราคาต่อ 1M token ต่อรุ่น (ประมาณ) + estCost() คิดค่าใช้จ่าย
+  prompt.js     คำสั่ง AI เริ่มต้น: DEFAULT_PROMPT_EN + DEFAULT_PROMPT_TH — โชว์บนหน้าเว็บ แก้ได้
+  data.js       ข้อมูลกลาง engine: MISSPELL, SEED, SUBTAX
   engine.js     ตัวจัดคำ heuristic (server) — runEngine() = ตัวเลือก "พื้นฐาน" (ฟรี ไม่ใช้กุญแจ)
   colors.js     rgba/mix/shade/badge/pill/dot (สีหมวด soft/mono)
   subtree.js    โครงต้นไม้หมวดย่อย + ชื่ออังกฤษ + คำบรรยาย (สร้างจากไฟล์จริง อย่าแก้มือ)
   catmeta.js    ชื่ออังกฤษ + คำบรรยาย ของหมวดหลัก
-  supabaseAdmin.js  client ฝั่ง server (service_role) + mapCategory/mapWord
+  supabaseAdmin.js  client ฝั่ง server (service_role) + mapCategory/mapWord/**mapReview/reviewRow**
 scripts/
   001_schema.sql        โครงตาราง + RLS deny-all
-  003_import_realvocab.sql  คลังคำจริง (นำเข้าครั้งแรก)
-  import_tree.mjs       สคริปต์นำเข้าคำ (อ่าน vocab_tree.json + .env.local)
-  vocab_tree.json       คำจริง 679 คำพร้อม subpath (ต้นไม้หมวดย่อย)
+  004_add_kind.sql      เพิ่มคอลัมน์ kind
+  005_wb_review.sql     ตารางคำตรวจทานบนคลาวด์
+  006_wb_ai_log.sql     ตารางประวัติการใช้ AI
+  import_tree.mjs       สคริปต์นำเข้าคำ · vocab_tree.json คำจริง 679 คำ
 ```
 
 ## 🗄 ฐานข้อมูล (ตาราง wb_)
@@ -112,8 +121,11 @@ scripts/
   - `kind` = ชนิดคำ `'word'` | `'phrase'` | `'sentence'` (AI แปะให้ · กดเปลี่ยนได้หน้าตรวจทาน · ใช้กรองหน้าคลังคำ) — เพิ่มด้วย `scripts/004_add_kind.sql`
   - `subpath` = เส้นทางหมวดย่อยเต็ม (ลึกได้ 3 ชั้น) คั่นด้วย " / " — หน้าคลังคำสร้างต้นไม้จากค่านี้
   - `highlight` = คำสำคัญที่เดิมอยู่ในวงเล็บ (เก็บไว้เผื่อทำระบบไฮไลต์คำเน้น ยังไม่ได้ใช้)
+- `wb_review` (ห้องพักคำตรวจทานบนคลาวด์) — id(=r_xxx ฝั่งเว็บ), text, original, meaning, kind, category_id, subpath, **source**(ประโยคต้นทาง), proposed_new, notes(jsonb), novel, position · กดบันทึกเข้าคลัง = ย้ายไป wb_words แล้ว clear · `scripts/005`
+- `wb_ai_log` (ประวัติการใช้ AI) — provider, provider_label, model, novel, input_text, input_chars, item_count, extracted_count, items_json, **saved_count/skipped_count**(เติมตอนบันทึก), tokens_in/out, **cost_usd**, duration_ms, status, error · `scripts/006`
 - RLS เปิด deny-all ทุกตาราง → มีแต่ service_role ผ่านได้
 - คำซ้ำ = ข้อความตรงกันเป๊ะ · คำยาว > 24 ตัวอักษร ไม่นับซ้ำ
+- 🗄 Supabase = dev/production ตัวเดียวกัน (single env) → รัน SQL ครั้งเดียวใช้ทั้งสองที่ ไม่ต้องรันซ้ำตอน deploy
 
 ## 🔑 env (.env.local — ห้าม commit · ดูเทมเพลตครบใน .env.example)
 - `SUPABASE_URL` = https://ryewggkhunpuipgkgbfv.supabase.co
