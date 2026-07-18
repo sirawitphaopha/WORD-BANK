@@ -1,4 +1,15 @@
 import './globals.css';
+// 🔤 ฟอนต์ทั้งหมด "ฝังในเว็บ" ผ่าน next/font/google — ดาวน์โหลด+ฝังตอน build
+// เว็บจริงเสิร์ฟฟอนต์เอง ไม่พึ่ง Google ตอน runtime (ขึ้นชัวร์ทุกเครื่อง/เน็ต ไม่กระพริบ)
+// 📌 กฎโปรเจกต์: ฟอนต์ใหม่ทุกตัว "ต้องฝังแบบนี้" ห้ามใช้ <link> CDN
+//    เพิ่มฟอนต์ = import ที่นี่ + ตั้ง variable + ต่อ className ใน <html> + ใช้ var(--font-xxx) ในโค้ด
+import { Charmonman, Chonburi, Maitree, Sarabun, Trirong } from 'next/font/google';
+
+const charmonman = Charmonman({ subsets: ['thai', 'latin'], weight: ['400', '700'], variable: '--font-charmonman', display: 'swap' });
+const chonburi = Chonburi({ subsets: ['thai', 'latin'], weight: '400', variable: '--font-chonburi', display: 'swap' });
+const maitree = Maitree({ subsets: ['thai', 'latin'], weight: ['400', '500', '600'], variable: '--font-maitree', display: 'swap' });
+const sarabun = Sarabun({ subsets: ['thai', 'latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-sarabun', display: 'swap' });
+const trirong = Trirong({ subsets: ['thai', 'latin'], weight: ['400', '500', '600', '700'], style: ['normal', 'italic'], variable: '--font-trirong', display: 'swap' });
 
 export const metadata = {
   title: 'คลังคำ · Word Bank',
@@ -11,16 +22,9 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
+  const fontVars = `${charmonman.variable} ${chonburi.variable} ${maitree.variable} ${sarabun.variable} ${trirong.variable}`;
   return (
-    <html lang="th">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&family=Chonburi&family=Maitree:wght@400;500;600&family=Sarabun:wght@300;400;500;600;700&family=Trirong:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="th" className={fontVars}>
       <body>{children}</body>
     </html>
   );

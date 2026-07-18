@@ -15,7 +15,7 @@
 - ปรับสี ฟอนต์ เลย์เอาต์ได้เอง (จำค่าไว้ให้)
 
 ## 🛠 เทคโนโลยี
-Next.js 15 + React 19 · Supabase (Postgres) · ระบบ AI สลับหลายเจ้า (provider adapter) — กุญแจเก็บฝั่งเซิร์ฟเวอร์ (.env.local) · มีตัวเลือก "พื้นฐาน" (heuristic ในเครื่อง) เป็นตัวสำรองฟรี · deploy บน Cloudflare Workers
+Next.js 15 + React 19 · Supabase (Postgres) · ระบบ AI สลับหลายเจ้า (provider adapter) — กุญแจเก็บฝั่งเซิร์ฟเวอร์ (.env.local) · มีตัวเลือก "พื้นฐาน" (heuristic ในเครื่อง) เป็นตัวสำรองฟรี · **ฟอนต์ไทยฝังในเว็บ** (next/font ไม่พึ่ง CDN) · deploy บน Cloudflare Workers
 
 ## ▶️ เริ่มใช้งาน
 ```bash

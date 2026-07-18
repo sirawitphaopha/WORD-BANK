@@ -1,6 +1,6 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{background:#e7dbc0;font-family:'Sarabun',system-ui,sans-serif;color:#3a2f28}
+body{background:#e7dbc0;font-family:var(--font-sarabun),system-ui,sans-serif;color:#3a2f28}
 input,textarea,select,button{font-family:inherit;font-size:inherit}
 textarea{resize:vertical}
 a{color:var(--accent,#9c3b2b);text-decoration:none}

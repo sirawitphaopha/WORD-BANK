@@ -46,6 +46,7 @@ npm install · npm run dev (localhost:3000) · npm run build (เช็ค error
 - ⚠️ env vars บน Cloudflare ต้องตั้งที่ **Settings → Variables and Secrets (runtime)** ไม่ใช่ Build (โค้ดอ่าน process.env ตอน runtime)
 
 ## กฎสำคัญของโปรเจกต์นี้ (นอกจากสกิลกลาง)
+- 🔤 **ฟอนต์ฝังในเว็บผ่าน `next/font/google`** (`app/layout.js`) ในโค้ดใช้ `var(--font-xxx)` — ฟอนต์ใหม่ต้องฝังแบบนี้เสมอ **ห้าม `<link>` CDN**
 - ข้อความ UI ภาษาทางการ ไม่มี ค่ะ/นะคะ ไม่มีเครื่องหมาย `?`
 - หน้าคลังคำเปิดมา**ยุบหมวดไว้ก่อน** (กันหน่วง 679 การ์ด)
 - 🚨 **ทุกปุ่ม action สำคัญต้องผ่านป๊อปยืนยันกลาง** `askConfirm({title,msg,okLabel,danger,onOk})` + `renderConfirm()` (คลิกนอกป๊อปไม่ปิด)
