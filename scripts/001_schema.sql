@@ -32,6 +32,11 @@ create table if not exists wb_words (
   original_text text,
   meaning text,
   category_id text references wb_categories(id) on delete set null,
+  -- หมวดย่อยของคำ — เดิม 3 ช่องนี้ถูกเพิ่มเข้าฐานข้อมูลด้วยมือตอนนำเข้าคำจาก .docx ครั้งแรก (17 ก.ค. 2569)
+  --  แต่ลืมเขียนกำกับในสคีมา ทำให้รันสคริปต์ไล่ลำดับ 001→010 บนฐานเปล่าแล้วพังที่ 003 — ยกมาไว้ที่นี่ให้ครบ
+  subcategory text,             -- หมวดย่อยหลัก = ชั้นบนสุดของ subpath
+  subpath text,                 -- เส้นทางหมวดย่อยเต็ม คั่นด้วย " / " (ลึกได้ 3 ชั้น)
+  highlight text,               -- คำเน้นที่เดิมอยู่ในวงเล็บ (เก็บไว้เผื่อทำระบบไฮไลต์)
   novel text,
   reviewed boolean default true,
   created_at timestamptz default now()

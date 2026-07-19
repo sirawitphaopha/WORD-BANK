@@ -58,7 +58,8 @@ export async function POST(req) {
             id: 'r_' + batch.at + '_' + (i + 1) + '_' + Math.random().toString(36).slice(2, 6),
             text: String(it.text || '').trim(),
             original: it.original || null,
-            meaning: null,
+            meaning: it.meaning || null,   // เดิม hardcode null → เก็บ "ความหมาย" ที่ AI เขียนตั้งแต่จังหวะเซฟทันที (กันหายถ้ารีเฟรชก่อนเบราว์เซอร์ sync ตาม)
+            reason: it.reason || null,     // เก็บ "เหตุผลการจัดหมวด" ที่ AI เขียนพร้อมกันเลย เหตุผลเดียวกัน
             kind: it.kind || null,
             category_id: it.category_id || null, // หมวดที่ AI เสนอใหม่ ฝั่งเว็บจะเติม id ให้ทีหลัง
             subpath: subs[0] || null,
