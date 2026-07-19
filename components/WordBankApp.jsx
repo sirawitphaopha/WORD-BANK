@@ -10,7 +10,7 @@ import { PROVIDERS, PROVIDER_ORDER } from '@/lib/providers';
 import { BrandIcon } from '@/lib/brandIcons';
 import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_TH } from '@/lib/prompt';
 
-export const VERSION = '0.1.0.0';
+export const VERSION = '0.0.0.0'; // ยังไม่เริ่มนับเวอร์ชัน — เลื่อนเมื่อพี่กันสั่งเท่านั้น
 const UI_KEY = 'wordbank:v1:ui';
 const REVIEW_KEY = 'wordbank:v1:review';
 const DRAFT_KEY = 'wordbank:v1:draft'; // ข้อความที่กำลังจัด — เซฟกันหายตอนเผลอรีเฟรชระหว่างรอ AI
@@ -21,11 +21,13 @@ export default class WordBankApp extends React.Component {
     page: 'add', novelInput: '', addText: '',
     library: [], novels: [], categories: [],
     review: [], reviewNovel: '',
+    activeBatch: '',     // ช่อที่กำลังเปิดดูในหน้าตรวจทาน (แสดงทีละช่อ กันหน้าหน่วงตอนมีหลายช่อ)
     processing: false, procStep: 0,
     procElapsed: 0, procProvider: '', procProviderKey: '', procModel: '', // หน้าโหลด: วินาทีที่ใช้ + เจ้า/รุ่นที่กำลังใช้
     draftRestored: false, // มีข้อความค้างจากรอบก่อนที่กู้กลับมา (โชว์แถบแจ้ง)
     lastAiLogId: null,    // id แถว log ของรอบ AI ล่าสุด (เติมจำนวนคำที่บันทึกจริงตอนกดบันทึก)
     aiLogs: [], aiSummary: null, aiLogLoading: false, aiLogFilter: 'all', // หน้าประวัติการใช้ AI
+    aiReady: {},          // AI เจ้าไหนใส่กุญแจไว้แล้ว (true/false ล้วน มาจากเซิร์ฟเวอร์) — ใช้ในหน้าเกี่ยวกับ
     q: '', filterCat: 'all', filterNovel: 'all', filterKind: 'all', sort: 'recent', libView: 'cards',
     confirmId: null, toast: '',
     modal: null, ui: {}, exactFilter: '', dupOnly: false, editing: null,
@@ -54,12 +56,13 @@ export default class WordBankApp extends React.Component {
     // คลิกนอกป๊อป (backdrop) = ไม่ปิด ต้องกดปุ่มเอง (กันเผลอ)
     // โหมด alert = แจ้งเตือนอย่างเดียว (ปุ่มเดียว ไม่มียกเลิก) มีไอคอนใหญ่ เช่น AI ล้มเหลว
     const isAlert = !!c.alert;
+    const info = c.tone === 'info'; // โทนแจ้งให้ทราบ (เขียว ไม่กระพริบ) — ต่างจากโทนเตือนล้มเหลว (แดง)
     return (
       <div style={{ position: 'fixed', inset: 0, background: isAlert ? 'rgba(48,30,26,.55)' : 'rgba(58,47,40,.42)', zIndex: 95, display: 'grid', placeItems: 'center', padding: '20px', animation: 'wbfade .18s ease' }}>
-        <div style={{ background: 'var(--surface,#fffdf6)', border: '1px solid ' + (isAlert ? '#e8b4a8' : '#e0d0ac'), borderRadius: '16px', padding: isAlert ? '32px 30px 26px' : '26px 28px', width: 'min(' + (isAlert ? '460' : '410') + 'px,92vw)', boxShadow: '0 24px 64px rgba(58,47,40,.32)', textAlign: isAlert ? 'center' : 'left' }}>
-          {isAlert && <div style={{ width: '66px', height: '66px', margin: '0 auto 16px', borderRadius: '50%', background: '#fbe7e2', display: 'grid', placeItems: 'center', fontSize: '34px', animation: 'wbalert 1.1s ease-in-out infinite' }}>⚠</div>}
-          <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 600, fontSize: isAlert ? '23px' : '20px', color: isAlert ? '#9c3b2b' : '#33291f', marginBottom: c.msg ? '10px' : '20px' }}>{c.title}</div>
-          {c.msg ? <div style={{ fontSize: '14.5px', color: '#6f6252', lineHeight: 1.6, marginBottom: '24px', whiteSpace: 'pre-line' }}>{c.msg}</div> : null}
+        <div style={{ background: 'var(--surface,#fffdf6)', border: '1px solid ' + (isAlert ? (info ? '#cbdcb8' : '#e8b4a8') : '#e0d0ac'), borderRadius: '16px', padding: isAlert ? '32px 30px 26px' : '26px 28px', width: 'min(' + (isAlert ? '460' : '410') + 'px,92vw)', boxShadow: '0 24px 64px rgba(58,47,40,.32)', textAlign: isAlert ? 'center' : 'left' }}>
+          {isAlert && <div style={{ width: '66px', height: '66px', margin: '0 auto 16px', borderRadius: '50%', background: info ? '#e9efe1' : '#fbe7e2', display: 'grid', placeItems: 'center', fontSize: '34px', animation: info ? 'none' : 'wbalert 1.1s ease-in-out infinite' }}>{c.icon || '⚠'}</div>}
+          <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 600, fontSize: isAlert ? '23px' : '20px', color: isAlert ? (info ? '#4f6b3c' : '#9c3b2b') : '#33291f', marginBottom: c.msg ? '10px' : '20px' }}>{c.title}</div>
+          {c.msg ? <div style={{ fontSize: '14.5px', color: '#6f6252', lineHeight: 1.6, marginBottom: '24px', whiteSpace: 'pre-line', textAlign: isAlert && c.msg.indexOf('\n') >= 0 ? 'left' : undefined }}>{c.msg}</div> : null}
           <div style={{ display: 'flex', gap: '10px', justifyContent: isAlert ? 'center' : 'flex-end' }}>
             {!isAlert && <button onClick={this.closeConfirm} style={{ padding: '10px 18px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'transparent', color: '#6f6252', fontSize: '14.5px', cursor: 'pointer' }}>ยกเลิก</button>}
             <button onClick={() => { const ok = c.onOk; this.closeConfirm(); if (ok) ok(); }} style={{ padding: isAlert ? '11px 34px' : '10px 22px', border: 'none', borderRadius: '9px', background: c.danger ? 'var(--accent,#9c3b2b)' : 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '14.5px', fontWeight: 600, cursor: 'pointer' }}>{c.okLabel || 'ยืนยัน'}</button>
@@ -84,14 +87,14 @@ export default class WordBankApp extends React.Component {
       const su = localStorage.getItem(UI_KEY);
       if (su) { const p = JSON.parse(su); if (p && typeof p === 'object') ui = p; }
       const rv = localStorage.getItem(REVIEW_KEY);
-      if (rv) { const r = JSON.parse(rv); if (Array.isArray(r) && r.length) review = r; }
+      if (rv) { const r = JSON.parse(rv); if (Array.isArray(r) && r.length) review = this.normBatches(r); }
       const cl = localStorage.getItem('wordbank:v1:collapsed');
       if (cl) { const p = JSON.parse(cl); if (p && typeof p === 'object') { collapsed = p; hadCollapsed = true; } }
       const dr = localStorage.getItem(DRAFT_KEY);
       if (dr && typeof dr === 'string' && dr.trim()) draft = dr;
     } catch (e) {}
     // มีข้อความค้าง (เผลอรีเฟรช/ปิดหน้าระหว่างรอ AI) → กู้กลับมาใส่ช่องพิมพ์ + แจ้งเตือน
-    const patch = { ui, review, collapsed };
+    const patch = { ui, review, collapsed, activeBatch: this.activeBatchId(review, '') };
     if (draft) { patch.addText = draft; patch.draftRestored = true; }
     this.setState(patch);
     try {
@@ -102,11 +105,12 @@ export default class WordBankApp extends React.Component {
       // ครั้งแรก (ยังไม่เคยตั้งค่ายุบ) → ยุบทุกหมวดไว้ก่อน กันหน้ายาว/หน่วงตอนโหลดคำ 679 ใบ
       let col = this.state.collapsed;
       if (!hadCollapsed) { col = {}; cats.forEach((c) => { col['g-' + c.id] = 1; }); }
-      const base2 = { categories: cats, novels: data.novels || [], library: data.words || [], loading: false, collapsed: col };
-      const cloudReview = Array.isArray(data.review) ? data.review : [];
+      const base2 = { categories: cats, novels: data.novels || [], library: data.words || [], loading: false, collapsed: col, aiReady: data.aiReady || {} };
+      const cloudReview = this.normBatches(Array.isArray(data.review) ? data.review : [], data.reviewNovel);
       if (cloudReview.length) {
         // คลาวด์มีคำค้าง → ใช้เป็นแหล่งหลัก ทับของในเครื่อง (เปิดเครื่องไหนก็เห็นตรงกัน)
         base2.review = cloudReview;
+        base2.activeBatch = this.activeBatchId(cloudReview, '');
         base2.reviewNovel = data.reviewNovel || this.state.reviewNovel || 'ไม่ระบุเรื่อง';
         this.setState(base2, () => { try { localStorage.setItem(REVIEW_KEY, JSON.stringify(cloudReview)); } catch (e) {} });
       } else if (this.state.review.length) {
@@ -142,6 +146,50 @@ export default class WordBankApp extends React.Component {
         fetch('/api/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true }).catch(() => {});
       }
     } catch (e) {}
+  };
+
+  // ---------- ช่อคำ (batch) ----------
+  // ทุกครั้งที่กดจัดคำ = ช่อใหม่ ต่อท้ายของเดิม คำที่ยังไม่บันทึกจึงไม่มีทางถูกทับ
+  // หน้าตรวจทานเปิดทีละช่อ (แท็บ) — 3 ช่อ ช่อละ 40 คำ ก็ไม่ต้องเรนเดอร์ 120 การ์ดพร้อมกัน
+  static thNum(n) { return String(n).replace(/\d/g, (d) => '๐๑๒๓๔๕๖๗๘๙'[+d]); }
+  // คำที่ค้างมาก่อนมีระบบช่อ → ยกเป็นช่อที่ ๑
+  normBatches(list, fallbackNovel) {
+    return (list || []).map((r) => r && r.batch ? r : { ...r, batch: 'b_legacy', batchNo: 1, batchAt: r.batchAt || 0, batchAi: r.batchAi || '', novel: r.novel || fallbackNovel || '' });
+  }
+  batchList(review) {
+    const src = review || this.state.review;
+    const m = new Map();
+    src.forEach((r) => {
+      const id = r.batch || 'b_legacy';
+      if (!m.has(id)) m.set(id, { id, no: r.batchNo || 1, at: r.batchAt || 0, ai: r.batchAi || '', novel: r.novel || '', count: 0 });
+      m.get(id).count++;
+    });
+    return [...m.values()].sort((a, b) => a.no - b.no);
+  }
+  // ช่อที่เปิดอยู่ — ถ้าช่อที่จำไว้หายไปแล้ว (บันทึก/ลบไป) ให้ตกไปที่ช่อล่าสุด
+  activeBatchId(review, prefer) {
+    const list = this.batchList(review);
+    if (!list.length) return '';
+    const want = prefer !== undefined ? prefer : this.state.activeBatch;
+    return list.some((b) => b.id === want) ? want : list[list.length - 1].id;
+  }
+  batchItems(review, id) {
+    const src = review || this.state.review;
+    const bid = id || this.activeBatchId(src);
+    return src.filter((r) => (r.batch || 'b_legacy') === bid);
+  }
+  // เปลี่ยนช่อ = ล้างการเลือกเดิม (กันเผลอสั่งงานกับคำในช่อที่ไม่ได้มองอยู่)
+  setBatch = (id) => this.setState((s) => ({ activeBatch: id, review: s.review.map((r) => r.selected ? { ...r, selected: false } : r) }));
+  // ลบทั้งช่อ (ผ่านป๊อปยืนยัน) — ขอบเขตชัด ไม่ใช่ปุ่มทิ้งทั้งหมดแบบเดิม
+  deleteBatch = (b) => {
+    this.askConfirm({
+      title: 'ลบทั้งช่อที่ ' + WordBankApp.thNum(b.no), danger: true, okLabel: 'ลบทั้งช่อ',
+      msg: 'นำคำในช่อนี้ทั้ง ' + b.count + ' คำ ออกจากรายการตรวจทาน ช่ออื่นไม่กระทบ',
+      onOk: () => this.setState((s) => {
+        const rest = s.review.filter((r) => (r.batch || 'b_legacy') !== b.id);
+        return { review: rest, activeBatch: this.activeBatchId(rest, '') };
+      }, () => { this.persistReview(); this.flash('ลบช่อที่ ' + WordBankApp.thNum(b.no) + ' แล้ว'); }),
+    });
   };
 
   // ---------- helpers ----------
@@ -214,12 +262,21 @@ export default class WordBankApp extends React.Component {
         proposedCats.push({ id, n: pc.name_th, en: '', c: PAL[idx % PAL.length], k: '✦', proposed: true });
         nameToId[pc.name_th] = id;
       });
+      // ===== ช่อใหม่ =====  ต่อท้ายคำที่ค้างอยู่เดิม ไม่ทับ (แก้บั๊กคำค้างหาย)
+      const prevReview = this.normBatches(this.state.review);
+      const maxNo = prevReview.reduce((a, r) => Math.max(a, r.batchNo || 1), 0);
+      const bId = 'b_' + Date.now().toString(36);
+      const bNo = maxNo + 1;
+      const bAt = Date.now();
+      const bAi = (base.label || provider) + (modelName ? ' · ' + modelName : '');
+      const bNovel = this.state.novelInput.trim() || 'ไม่ระบุเรื่อง';
       let n = 0;
-      const review = (data.items || []).map((it) => {
+      const fresh = (data.items || []).map((it) => {
         n++;
         const cat = it.category_id || nameToId[it.proposed_category] || 'c8';
-        return { id: 'r_' + n + '_' + Math.random().toString(36).slice(2, 6), text: it.text, original: it.original, kind: it.kind || '', subpath: it.subcategory || '', category: cat, proposedNew: !!it.proposed_category, meaning: '', selected: false, notes: it.notes || [], source: it.source || '' };
+        return { id: 'r_' + bAt.toString(36) + '_' + n + '_' + Math.random().toString(36).slice(2, 6), text: it.text, original: it.original, kind: it.kind || '', subpath: it.subcategory || '', category: cat, proposedNew: !!it.proposed_category, meaning: '', selected: false, notes: it.notes || [], source: it.source || '', batch: bId, batchNo: bNo, batchAt: bAt, batchAi: bAi, novel: bNovel };
       });
+      const review = [...prevReview, ...fresh];
       const categories = proposedCats.length ? [...this.state.categories, ...proposedCats] : this.state.categories;
       const wait = Math.max(0, 1780 - (Date.now() - started));
       setTimeout(() => {
@@ -227,9 +284,22 @@ export default class WordBankApp extends React.Component {
         try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} // จัดเสร็จแล้ว ข้อความไปอยู่หน้าตรวจทาน ลบตัวสำรองได้
         this.setState({
           categories, review, processing: false, page: 'review', addText: '',
-          reviewNovel: this.state.novelInput.trim() || 'ไม่ระบุเรื่อง',
+          activeBatch: bId, // เปิดช่อใหม่ให้เลย
+          reviewNovel: bNovel,
           lastAiLogId: data.aiLogId || null, // ไว้เติมจำนวนคำที่บันทึกจริงลง log ตอนกดบันทึก
-        }, this.persistReview);
+        }, () => {
+          this.persistReview();
+          // มีคำค้างจากช่อก่อน → แจ้งอย่างเดียวว่าตอนนี้มีกี่ช่อ ช่อละกี่คำ (ไม่ถามให้เลือก คำเก่าอยู่ครบเสมอ)
+          if (prevReview.length) {
+            const list = this.batchList(review);
+            const lines = list.map((b) => '• ช่อที่ ' + WordBankApp.thNum(b.no) + (b.novel ? ' · ' + b.novel : '') + '  —  ' + b.count + ' คำ');
+            this.askConfirm({
+              alert: true, tone: 'info', icon: '🌿', okLabel: 'ไปหน้าตรวจทาน',
+              title: 'เพิ่มเป็นช่อที่ ' + WordBankApp.thNum(bNo) + ' แล้ว',
+              msg: 'คำรอตรวจทานที่มีอยู่ตอนนี้\n\n' + lines.join('\n') + '\n\nรวม ' + list.length + ' ช่อ ' + review.length + ' คำ',
+            });
+          }
+        });
       }, wait);
     } catch (e) {
       clearInterval(this._proc); clearInterval(this._sec);
@@ -260,7 +330,8 @@ export default class WordBankApp extends React.Component {
   // ---------- review actions (transient) ----------
   updateReview(id, patch) { this.setState((s) => ({ review: s.review.map((r) => r.id === id ? { ...r, ...patch } : r) }), this.persistReview); }
   toggleSel(id) { this.setState((s) => ({ review: s.review.map((r) => r.id === id ? { ...r, selected: !r.selected } : r) })); }
-  selectAll = (e) => { const v = e.target.checked; this.setState((s) => ({ review: s.review.map((r) => ({ ...r, selected: v })) })); };
+  // เลือกทั้งหมด = เฉพาะคำในช่อที่เปิดอยู่
+  selectAll = (e) => { const v = e.target.checked; const bid = this.activeBatchId(); this.setState((s) => ({ review: s.review.map((r) => (r.batch || 'b_legacy') === bid ? { ...r, selected: v } : r) })); };
   removeReview(id) { this.askConfirm({ title: 'ลบคำนี้', msg: 'นำคำนี้ออกจากรายการตรวจทาน', okLabel: 'ลบ', danger: true, onOk: () => this._removeReview(id) }); }
   _removeReview(id) { this.setState((s) => ({ review: s.review.filter((r) => r.id !== id) }), this.persistReview); }
   bulkMove = (e) => { const cid = e.target.value; if (!cid) return; this.setState((s) => ({ review: s.review.map((r) => r.selected ? { ...r, category: cid, proposedNew: false, selected: false } : r) }), this.persistReview); e.target.value = ''; this.flash('ย้ายหมวดแล้ว'); };
@@ -279,21 +350,24 @@ export default class WordBankApp extends React.Component {
   // ส่งออกผลตรวจทานเป็นไฟล์ .txt (ไว้เทียบผลระหว่าง AI แต่ละเจ้า/รุ่น)
   exportReview = () => {
     const S = this.state;
-    if (!S.review.length) { this.flash('ยังไม่มีคำให้ส่งออก'); return; }
+    const items = this.batchItems(); // ส่งออกเฉพาะช่อที่เปิดอยู่ (ไว้เทียบผลข้ามช่อ = ข้าม AI)
+    if (!items.length) { this.flash('ยังไม่มีคำให้ส่งออก'); return; }
+    const bMeta = this.batchList().find((x) => x.id === this.activeBatchId()) || { no: 1, ai: '', novel: '' };
     const catName = {}; S.categories.forEach((c) => { catName[c.id] = c.n; });
     const t = new Date(Date.now() + 7 * 3600 * 1000);
     const p2 = (n) => String(n).padStart(2, '0');
     const date = t.getUTCDate() + '/' + (t.getUTCMonth() + 1) + '/' + (t.getUTCFullYear() + 543) + ' ' + p2(t.getUTCHours()) + ':' + p2(t.getUTCMinutes());
-    const extracted = S.review.filter((r) => (r.source || '').trim()).length;
+    const extracted = items.filter((r) => (r.source || '').trim()).length;
     const lines = [
       'คลังคำ — ผลตรวจทาน (ไว้เทียบ AI)',
-      'เรื่อง: ' + (S.reviewNovel || '-'),
-      'AI: ' + (S.procProvider || '-') + (S.procModel ? ' · ' + S.procModel : ''),
+      'ช่อที่ ' + WordBankApp.thNum(bMeta.no),
+      'เรื่อง: ' + (bMeta.novel || S.reviewNovel || '-'),
+      'AI: ' + (bMeta.ai || S.procProvider || '-'),
       'วันที่: ' + date,
-      'จำนวน: ' + S.review.length + ' คำ (สกัดจากประโยค ' + extracted + ')',
+      'จำนวน: ' + items.length + ' คำ (สกัดจากประโยค ' + extracted + ')',
       '────────────────────────────',
     ];
-    S.review.forEach((r, i) => {
+    items.forEach((r, i) => {
       let l = (i + 1) + '. ' + r.text + '  [' + (r.kind || '-') + ']  หมวด: ' + (catName[r.category] || r.category || '-');
       if (r.subpath) l += ' / ' + r.subpath;
       if ((r.original || '').trim() && r.original !== r.text) l += '  (ต้นฉบับ: ' + r.original + ')';
@@ -305,8 +379,8 @@ export default class WordBankApp extends React.Component {
       const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const tag = (S.procModel || S.procProvider || 'ai').replace(/[^\wก-๙.-]/g, '');
-      a.href = url; a.download = 'ตรวจทาน_' + (S.reviewNovel || 'คลังคำ') + '_' + tag + '.txt';
+      const tag = (bMeta.ai || S.procModel || S.procProvider || 'ai').replace(/[^\wก-๙.-]/g, '');
+      a.href = url; a.download = 'ตรวจทาน_ช่อ' + bMeta.no + '_' + (bMeta.novel || S.reviewNovel || 'คลังคำ') + '_' + tag + '.txt';
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       URL.revokeObjectURL(url);
       this.flash('ส่งออกไฟล์แล้ว');
@@ -314,10 +388,19 @@ export default class WordBankApp extends React.Component {
   };
 
   // ---------- save (Review → Library) ----------
-  save = () => { if (!this.state.review.length) return; this.askConfirm({ title: 'บันทึกเข้าคลัง', msg: 'บันทึกคำในรายการตรวจทานเข้าคลัง (คำที่ซ้ำกับคลังจะถูกข้ามให้อัตโนมัติ)', okLabel: 'บันทึก', danger: false, onOk: this._save }); };
+  // บันทึกเฉพาะ "ช่อที่เปิดอยู่" — ช่ออื่นยังค้างรอตรวจทานต่อ
+  save = () => {
+    const items = this.batchItems();
+    if (!items.length) return;
+    const b = this.batchList().find((x) => x.id === this.activeBatchId()) || { no: 1 };
+    this.askConfirm({ title: 'บันทึกช่อที่ ' + WordBankApp.thNum(b.no) + ' เข้าคลัง', msg: 'บันทึกคำในช่อนี้ ' + items.length + ' คำ เข้าคลัง (คำที่ซ้ำกับคลังจะถูกข้ามให้อัตโนมัติ)\nช่ออื่นยังอยู่ครบ', okLabel: 'บันทึก', danger: false, onOk: this._save });
+  };
   _save = async () => {
-    const { review, reviewNovel, categories } = this.state;
+    const { categories } = this.state;
+    const bid = this.activeBatchId();
+    const review = this.batchItems(null, bid);
     if (!review.length) return;
+    const reviewNovel = (review[0] && review[0].novel) || this.state.reviewNovel;
     const newCategories = categories.filter((c) => c.proposed).map((c) => ({ id: c.id, name_th: c.n, color: c.c, glyph: c.k }));
     const allWords = review.map((r) => ({ text: r.text.trim(), original_text: r.original || null, meaning: (r.meaning || '').trim(), category_id: r.category, kind: r.kind || null, subpath: r.subpath || null })).filter((w) => w.text);
     // ข้ามคำที่มีในคลังอยู่แล้ว (ข้อความตรงกันเป๊ะ) — ไม่เขียนทับ ไม่สร้างซ้ำ
@@ -335,12 +418,16 @@ export default class WordBankApp extends React.Component {
       if (data.error) throw new Error(data.error);
       const saved = data.words || [];
       const nv = (novel && novel !== 'ไม่ระบุเรื่อง' && !this.state.novels.includes(novel)) ? [novel, ...this.state.novels] : this.state.novels;
+      // เอาเฉพาะคำในช่อนี้ออก — ช่ออื่นยังค้างอยู่ ถ้ายังเหลือช่อ อยู่หน้าตรวจทานต่อ
+      const rest = this.state.review.filter((r) => (r.batch || 'b_legacy') !== bid);
       this.setState({
         library: [...saved, ...this.state.library],
         categories: this.state.categories.map((c) => c.proposed ? { ...c, proposed: false } : c),
-        novels: nv, review: [], page: 'library',
+        novels: nv, review: rest,
+        activeBatch: this.activeBatchId(rest, ''),
+        page: rest.length ? 'review' : 'library',
       }, this.persistReview);
-      this.flash('บันทึกเข้าคลังแล้ว ' + saved.length + ' คำ' + (skipped ? ' (ข้ามที่มีอยู่แล้ว ' + skipped + ' คำ)' : ''));
+      this.flash('บันทึกเข้าคลังแล้ว ' + saved.length + ' คำ' + (skipped ? ' (ข้ามที่มีอยู่แล้ว ' + skipped + ' คำ)' : '') + (rest.length ? ' · ยังเหลืออีก ' + rest.length + ' คำในช่ออื่น' : ''));
       // เติมจำนวนคำที่บันทึกจริง + ข้ามเพราะซ้ำ ลง log ของรอบ AI นี้
       if (this.state.lastAiLogId) {
         fetch('/api/logs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'saved', id: this.state.lastAiLogId, saved_count: saved.length, skipped_count: skipped }) }).catch(() => {});
@@ -525,10 +612,10 @@ export default class WordBankApp extends React.Component {
       if (active) return { ...base, background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontWeight: 600, boxShadow: side ? 'none' : '0 3px 10px rgba(111,78,55,.3)' };
       return { ...base, background: side ? 'transparent' : 'rgba(255,255,255,.35)', color: '#7a6a52' };
     };
-    const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length], ['ailog', 'ประวัติ AI', 0]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
+    const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length], ['ailog', 'ประวัติ AI', 0], ['about', 'เกี่ยวกับ', 0]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
     const badgeStyle = (active) => ({ marginLeft: '2px', fontSize: '12px', fontWeight: 700, minWidth: '20px', height: '20px', padding: '0 6px', borderRadius: '10px', display: 'inline-grid', placeItems: 'center', background: active ? 'rgba(255,255,255,.22)' : '#e2d3b0', color: active ? '#fbf3e2' : '#8a7159' });
 
-    const isAdd = S.page === 'add', isReview = S.page === 'review', isLibrary = S.page === 'library', isAiLog = S.page === 'ailog';
+    const isAdd = S.page === 'add', isReview = S.page === 'review', isLibrary = S.page === 'library', isAiLog = S.page === 'ailog', isAbout = S.page === 'about';
 
     return (
       <div style={rootStyle}>
@@ -561,6 +648,7 @@ export default class WordBankApp extends React.Component {
             {isReview && this.renderReview(getCat, monoMode, spell, effLayout)}
             {isLibrary && this.renderLibrary(getCat, monoMode, accent)}
             {isAiLog && this.renderAiLog()}
+            {isAbout && this.renderAbout()}
           </main>
         </div>
 
@@ -719,8 +807,8 @@ export default class WordBankApp extends React.Component {
 
   // ============ REVIEW ============
   renderReview(getCat, monoMode, spell, effLayout) {
-    const S = this.state;
-    if (S.review.length === 0) {
+    const ST = this.state;
+    if (ST.review.length === 0) {
       return (
         <section style={{ maxWidth: '100%', margin: '0 auto', animation: 'wbfade .35s ease' }}>
           <div style={{ textAlign: 'center', padding: '90px 20px' }}>
@@ -731,6 +819,29 @@ export default class WordBankApp extends React.Component {
         </section>
       );
     }
+    // ===== ช่อคำ =====  จอแสดงทีละช่อ → ทุกมุมมองข้างล่างมองเห็นเฉพาะคำในช่อที่เปิดอยู่ (S.review ถูกย่อขอบเขตไว้แล้ว)
+    const batches = this.batchList();
+    const activeId = this.activeBatchId();
+    const activeMeta = batches.find((b) => b.id === activeId) || { no: 1, ai: '', novel: '', count: 0 };
+    const S = { ...ST, review: ST.review.filter((r) => (r.batch || 'b_legacy') === activeId) };
+    // คำซ้ำข้ามช่อ — คำเดียวกันโผล่ในช่ออื่นที่ยังไม่บันทึก (คนละ AI อาจให้หมวด/ความหมายไม่เหมือนกัน)
+    const otherBatchText = new Map();
+    ST.review.forEach((r) => {
+      if ((r.batch || 'b_legacy') === activeId) return;
+      const t = (r.text || '').trim();
+      if (t && !otherBatchText.has(t)) otherBatchText.set(t, r);
+    });
+    const crossBadge = (r) => {
+      const other = otherBatchText.get((r.text || '').trim());
+      if (!other) return null;
+      return <span onClick={() => this.setBatch(other.batch || 'b_legacy')} title="คำนี้มีในช่ออื่นด้วย กดเพื่อไปดูใบนั้น" style={{ flex: 'none', fontSize: '11px', fontWeight: 700, color: '#5f4c80', background: '#efe9f7', border: '1px solid #c6bcda', padding: '2px 9px', borderRadius: '20px', whiteSpace: 'nowrap', cursor: 'pointer' }}>↺ ซ้ำกับช่อที่ {WordBankApp.thNum(other.batchNo || 1)}</span>;
+    };
+    const crossItems = S.review.filter((r) => otherBatchText.has((r.text || '').trim()));
+    // ลบคำซ้ำข้ามช่อ = ลบใบที่อยู่ในช่อนี้ (ใบในช่อก่อนหน้ายังอยู่)
+    const removeCrossDup = () => {
+      const ids = new Set(crossItems.map((r) => r.id));
+      this.askConfirm({ title: 'ลบคำซ้ำข้ามช่อ', msg: 'ลบคำในช่อนี้ที่ซ้ำกับช่ออื่น ' + ids.size + ' คำ (ใบในช่อก่อนหน้ายังอยู่)', okLabel: 'ลบคำซ้ำ', danger: true, onOk: () => { this.setState((s) => ({ review: s.review.filter((r) => !ids.has(r.id)) }), this.persistReview); this.flash('ลบคำซ้ำข้ามช่อ ' + ids.size + ' คำ'); } });
+    };
     const reviewCount = S.review.length;
     const libTexts = new Set(S.library.map((w) => (w.text || '').trim())); // คำที่มีในคลังแล้ว → เตือนซ้ำ
     // คำที่ AI สกัดออกมาจากประโยค (มีโน้ต "แยกจากประโยค") → โชว์ป้าย ✂
@@ -742,7 +853,7 @@ export default class WordBankApp extends React.Component {
       : null;
     // คอลัมน์สถานะในตาราง — ค่าจัดเรียง: ซ้ำ(0) < สกัดจากประโยค(1) < ปกติ(2)
     const statusVal = (r) => libTexts.has((r.text || '').trim()) ? 0 : ((r.notes || []).some((n) => /แยกจากประโยค/.test(n)) ? 1 : 2);
-    const statusCell = (r) => <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-start' }}>{cutMark(r)}{dupBadge(r)}</div>;
+    const statusCell = (r) => <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-start' }}>{cutMark(r)}{dupBadge(r)}{crossBadge(r)}</div>;
     // ไฮไลต์คำที่สกัด (word) ในประโยคตั้งต้น (source) — โชว์ให้เห็นว่าดึงมาจากตรงไหน
     const srcHighlight = (source, word) => {
       const s = String(source || ''), w = String(word || '').trim();
@@ -881,7 +992,7 @@ export default class WordBankApp extends React.Component {
                   <button onClick={() => this.removeReview(r.id)} title="ลบคำนี้" style={{ border: 'none', background: 'transparent', color: '#bcac8f', fontSize: '18px', cursor: 'pointer', lineHeight: 1 }}>✕</button>
                 </div>
                 {/* จองพื้นที่ป้ายเสมอ (แม้ไม่มีป้าย) → ตัวคำอยู่ระดับเดียวกันทุกการ์ด */}
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', minHeight: '25px', marginBottom: '9px' }}>{cutMark(r)}{dupBadge(r)}</div>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', minHeight: '25px', marginBottom: '9px' }}>{cutMark(r)}{dupBadge(r)}{crossBadge(r)}</div>
                 {hasSpell && (
                   <div style={spellBoxStyle}>
                     {spell === 'strikethrough' && (<><span style={{ color: '#b58175', textDecoration: 'line-through', textDecorationColor: '#cf7a63' }}>{r.original}</span><span style={{ color: 'var(--accent,#9c3b2b)' }}> → แก้เป็น</span></>)}
@@ -967,6 +1078,8 @@ export default class WordBankApp extends React.Component {
                         </div>
                         {r.subpath ? <div style={{ fontSize: '11px', color: '#9a8c76' }}>↳ {r.subpath}</div> : null}
                         {cutMark(r) ? <div>{cutMark(r)}</div> : null}
+                        {dupBadge(r) ? <div>{dupBadge(r)}</div> : null}
+                        {crossBadge(r) ? <div>{crossBadge(r)}</div> : null}
                         {pulledBadge(r) ? <div>{pulledBadge(r)}</div> : null}
                       </div>
                     );
@@ -1000,7 +1113,7 @@ export default class WordBankApp extends React.Component {
                 <div key={src} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                   {/* การ์ดประโยคตั้งต้น (ซ้าย) */}
                   <div style={{ flex: '1 1 320px', minWidth: '260px', background: 'var(--surface,#fffdf6)', border: '1px solid #e0d0ac', borderRadius: '13px', padding: '14px 16px', boxShadow: '0 1px 2px rgba(120,90,50,.05)' }}>
-                    {parent && <div style={{ display: 'flex', gap: '8px', marginBottom: '9px', flexWrap: 'wrap', alignItems: 'center' }}>{kindSelect(parent)}{catSelect(parent)}{dupBadge(parent)}</div>}
+                    {parent && <div style={{ display: 'flex', gap: '8px', marginBottom: '9px', flexWrap: 'wrap', alignItems: 'center' }}>{kindSelect(parent)}{catSelect(parent)}{dupBadge(parent)}{crossBadge(parent)}</div>}
                     <div style={{ fontFamily: "var(--font-trirong),serif", fontSize: '18px', color: '#33291f', lineHeight: 1.75 }}>{highlightColored(src, childTexts)}</div>
                   </div>
                   {/* ลูกศรชี้ */}
@@ -1015,6 +1128,7 @@ export default class WordBankApp extends React.Component {
                           {rowInput(r)}
                           {catSelect(r)}
                           {dupBadge(r)}
+                          {crossBadge(r)}
                           {delBtn(r)}
                         </div>
                       );
@@ -1065,6 +1179,7 @@ export default class WordBankApp extends React.Component {
                               {rowInput(r)}
                               {cutMark(r)}
                               {dupBadge(r)}
+                              {crossBadge(r)}
                               {pulledBadge(r)}
                               {delBtn(r)}
                             </div>
@@ -1085,27 +1200,50 @@ export default class WordBankApp extends React.Component {
       <section style={{ maxWidth: '1200px', margin: '0 auto', animation: 'wbfade .35s ease' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
           <h1 style={{ fontFamily: "var(--font-charmonman),cursive", fontWeight: 700, fontSize: 'clamp(34px,4.4vw,48px)', margin: 0, color: 'var(--accent,#9c3b2b)', lineHeight: 1.1 }}>ตรวจทาน</h1>
-          <span style={{ color: '#8a7d6d', paddingBottom: '10px' }}>จากเรื่อง <b style={{ color: '#5c5044' }}>{S.reviewNovel}</b></span>
+          <span style={{ color: '#8a7d6d', paddingBottom: '10px' }}>จากเรื่อง <b style={{ color: '#5c5044' }}>{activeMeta.novel || S.reviewNovel}</b></span>
+          {batches.length > 1 && <span style={{ color: '#a99b83', paddingBottom: '11px', fontSize: '13.5px' }}>· มี {batches.length} ช่อ รวม {ST.review.length} คำ</span>}
         </div>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', margin: '16px 0 8px' }}>
+
+        {/* แถบสถิติ + คำอธิบาย อยู่นอกก้อนตรึง (เลื่อนหายไปได้ ไม่กินพื้นที่จอ) */}
+        <div id="wb-stats-row" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', margin: '14px 0 8px' }}>
           <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#f0e6cd', border: '1px solid #e0d0ac', fontSize: '13px', color: '#6f6252' }}>พบ <b>{reviewCount}</b> คำ</span>
           <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#f5e4dd', border: '1px solid #e6c3b7', fontSize: '13px', color: 'var(--accent,#9c3b2b)' }}>✎ แก้สะกด <b>{spellCount}</b></span>
           <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#e9efe1', border: '1px solid #cbdcb8', fontSize: '13px', color: '#5a7040' }}>✦ หมวดใหม่ <b>{newCatCount}</b></span>
+          {/* ปุ่มจัดการหมวด โผล่เฉพาะตอน AI เสนอหมวดใหม่ (ไว้รวมหมวดที่ซ้ำซ้อนเข้าหมวดเดิม) */}
+          {newCatCount > 0 && <button onClick={this.openCats} title="แก้ชื่อหมวด รวมหมวดที่ซ้ำซ้อนเข้าด้วยกัน เพิ่มหรือลบหมวด" style={{ padding: '6px 13px', borderRadius: '20px', background: '#f7f0e0', border: '1px dashed #b8cba0', fontSize: '13px', color: '#5a7040', cursor: 'pointer' }}>⚙ จัดการหมวด</button>}
           {extractedCount > 0 && <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#fbeecb', border: '1px solid #ecd39a', fontSize: '13px', color: '#8a5a1e' }}>พิมพ์เข้า <b>{reviewCount - extractedCount}</b> + ✂ สกัดเพิ่ม <b>{extractedCount}</b></span>}
+          {activeMeta.ai ? <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #cfd4e0', fontSize: '13px', color: '#5d6478' }}>{activeMeta.ai}{activeMeta.at ? ' · ' + new Date(activeMeta.at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.' : ''}</span> : null}
         </div>
-        <p style={{ fontSize: '14px', color: '#8a7d6d', margin: '0 0 20px' }}>ค่าเริ่มต้นคือยืนยันตามที่ AI แยกให้ — แก้ตัวคำ เปลี่ยนหมวด ลากย้าย หรือเลือกหลายคำจัดการพร้อมกันได้ตามใจ</p>
+        <p style={{ fontSize: '14px', color: '#8a7d6d', margin: '0 0 6px' }}>ค่าเริ่มต้นคือยืนยันตามที่ AI แยกให้ — แก้ตัวคำ เปลี่ยนหมวด ลากย้าย หรือเลือกหลายคำจัดการพร้อมกันได้ตามใจ</p>
 
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', position: 'sticky', top: '64px', zIndex: 15, background: 'var(--paper,#e7dbc0)', padding: '12px 0 14px', marginBottom: '4px' }}>
+        {/* แท็บช่อ + แถบเครื่องมือ = ตรึงติดกันเป็นก้อนเดียว (สองอย่างนี้กดบ่อยสุด เลื่อนดูคำล่าง ๆ ก็ยังกดได้) */}
+        <div style={{ position: 'sticky', top: '69px', zIndex: 16, background: 'var(--paper,#e7dbc0)' }}>
+        {batches.length > 1 && (
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'flex-end', borderBottom: '2px solid #ddcba4', paddingTop: '10px' }}>
+            {batches.map((b) => {
+              const on = b.id === activeId;
+              return (
+                <button key={b.id} onClick={() => this.setBatch(b.id)} style={{ border: '1px solid #ddcba4', borderBottom: 'none', borderRadius: '10px 10px 0 0', background: on ? 'var(--surface,#fffdf6)' : '#efe4cc', color: on ? '#33291f' : '#8a7d6d', fontWeight: on ? 700 : 400, padding: on ? '8px 16px 11px' : '8px 16px 9px', cursor: 'pointer', textAlign: 'left', position: 'relative', top: '2px', boxShadow: on ? 'inset 0 -3px 0 #c9a050' : 'none', fontSize: '14px', lineHeight: 1.25 }}>
+                  ช่อที่ {WordBankApp.thNum(b.no)}
+                  <span style={{ display: 'block', fontSize: '11.5px', fontWeight: 400, color: '#a08f74' }}>{b.count} คำ{b.novel ? ' · ' + b.novel : ''}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', background: 'var(--paper,#e7dbc0)', padding: '11px 0 12px', marginBottom: '4px' }}>
           <div style={{ display: 'inline-flex', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
             {[['cards', 'การ์ด'], ['table', 'ตาราง'], ['columns', 'คอลัมน์'], ['sources', '✂ จับกลุ่มประโยค'], ['tree', '📖 แบบคลังคำ']].map(([k, label]) => (
               <button key={k} onClick={this.setUi('reviewLayout', k)} style={layoutSeg(effLayout === k)}>{label}</button>
             ))}
           </div>
           <div style={{ flex: 1 }} />
-          <button onClick={this.openCats} style={{ padding: '9px 15px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '14px', cursor: 'pointer' }}>⚙ จัดการหมวด</button>
           <button onClick={this.exportReview} title="ส่งออกผลตรวจทานเป็นไฟล์ .txt ไว้เทียบ AI แต่ละเจ้า" style={{ padding: '9px 15px', border: '1px solid #cbdcb8', borderRadius: '9px', background: '#eef3dc', color: '#5a7040', fontSize: '14px', cursor: 'pointer' }}>⬇ ส่งออก</button>
-          {dupCount > 0 && <button onClick={() => this.removeDuplicates(dupItems.map((r) => r.id))} style={{ padding: '9px 16px', border: '1px solid #b81414', borderRadius: '9px', background: '#e01e1e', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', animation: 'wbalert 1.05s ease-in-out infinite' }}>⚠ ลบคำซ้ำ ({dupCount})</button>}
-          <button onClick={this.save} style={{ padding: '10px 20px', border: 'none', borderRadius: '9px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 6px rgba(111,78,55,.28)' }}>✓ บันทึกเข้าคลัง ({reviewCount})</button>
+          {dupCount > 0 && <button onClick={() => this.removeDuplicates(dupItems.map((r) => r.id))} style={{ padding: '9px 16px', border: '1px solid #b81414', borderRadius: '9px', background: '#e01e1e', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', animation: 'wbalert 1.05s ease-in-out infinite' }}>⚠ ลบซ้ำกับคลัง ({dupCount})</button>}
+          {crossItems.length > 0 && <button onClick={removeCrossDup} title="คำในช่อนี้ที่ไปซ้ำกับช่ออื่นที่ยังไม่บันทึก" style={{ padding: '9px 16px', border: '1px solid #b3a4cc', borderRadius: '9px', background: '#efe9f7', color: '#5f4c80', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>↺ ลบซ้ำข้ามช่อ ({crossItems.length})</button>}
+          {batches.length > 1 && <button onClick={() => this.deleteBatch(activeMeta)} style={{ padding: '9px 15px', border: '1px solid #e6c3b7', borderRadius: '9px', background: '#fbeae6', color: 'var(--accent,#9c3b2b)', fontSize: '14px', cursor: 'pointer' }}>ลบทั้งช่อ</button>}
+          <button onClick={this.save} style={{ padding: '10px 20px', border: 'none', borderRadius: '9px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 6px rgba(111,78,55,.28)' }}>✓ บันทึก{batches.length > 1 ? 'ช่อนี้' : ''}เข้าคลัง ({reviewCount})</button>
+        </div>
         </div>
 
         {selCount > 0 && (
@@ -1225,6 +1363,168 @@ export default class WordBankApp extends React.Component {
             </div>
           </>
         )}
+      </section>
+    );
+  }
+
+  // ============ เกี่ยวกับ ============
+  // หน้าแนะนำตัวเว็บ — โทนกระดาษวรรณกรรม ใช้ฟอนต์ลายมือให้มากที่สุดเท่าที่ยังอ่านง่าย
+  renderAbout() {
+    const S = this.state;
+    const HAND = "var(--font-charmonman),cursive";  // ลายมือ
+    const SERIF = "var(--font-trirong),serif";      // ค่าที่ต้องอ่านชัด
+    const ink = '#33291f', faint = '#8a7d6d', line = '#e0d0ac';
+
+    const card = { background: 'var(--surface,#fffdf6)', border: '1px solid ' + line, borderRadius: '14px', padding: '24px 26px 26px', marginBottom: '18px', boxShadow: '0 1px 3px rgba(120,90,50,.06)' };
+    // หัวข้อบล็อก: เลขไทยในวงกลมหมึก + ชื่อหัวข้อลายมือ (แพตเทิร์นเดียวกับกล่องขั้นตอนในหน้าเพิ่มคำ)
+    const head = (num, title) => (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px' }}>
+        <span style={{ flex: 'none', width: '30px', height: '30px', borderRadius: '50%', background: 'var(--accent,#9c3b2b)', color: '#fbf3e2', display: 'grid', placeItems: 'center', fontSize: '15px', fontFamily: SERIF, fontWeight: 600 }}>{num}</span>
+        <span style={{ fontFamily: HAND, fontSize: '25px', color: ink, lineHeight: 1.1, paddingTop: '6px' }}>{title}</span>
+        <span style={{ flex: 1, height: '1px', borderTop: '1px dashed #ddcba4', marginTop: '4px' }} />
+      </div>
+    );
+    // แถวข้อมูล ค่าซ้าย-ขวา
+    const row = (label, value, last) => (
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', padding: '9px 0', borderBottom: last ? 'none' : '1px dashed #eadfc6' }}>
+        <span style={{ fontSize: '14.5px', color: faint }}>{label}</span>
+        <span style={{ flex: 1 }} />
+        <span style={{ fontFamily: SERIF, fontSize: '16px', fontWeight: 600, color: ink }}>{value}</span>
+      </div>
+    );
+    // ตัวเลขสถิติ ตัวใหญ่ลายมือ
+    const stat = (n, label) => (
+      <div style={{ flex: '1 1 120px', textAlign: 'center', padding: '14px 10px', background: '#faf4e6', border: '1px solid #ecdfc2', borderRadius: '11px' }}>
+        <div style={{ fontFamily: HAND, fontSize: '38px', lineHeight: 1, color: 'var(--accent,#9c3b2b)' }}>{n}</div>
+        <div style={{ fontSize: '13.5px', color: faint, marginTop: '7px' }}>{label}</div>
+      </div>
+    );
+
+    const batches = this.batchList();
+    // หมวดย่อยเก็บเป็น "เส้นทาง" คั่นด้วย / เช่น "การเคลื่อนที่ / การเดิน"
+    // → นับ 2 แบบ: กลุ่มชั้นแรก (ตัวเลขที่คนเข้าใจว่าเป็นหมวดย่อย) และแขนงเต็มทั้งเส้นทาง
+    const paths = S.library.map((w) => (w.subpath || '').trim()).filter(Boolean);
+    const branchCount = new Set(paths).size;
+    const subCount = new Set(paths.map((p) => p.split(' / ')[0].trim())).size;
+    const techs = [
+      { k: 'nextjs', n: 'Next.js 15', d: 'โครงเว็บ' },
+      { k: 'react', n: 'React 19', d: 'หน้าจอ' },
+      { k: 'supabase', n: 'Supabase', d: 'ฐานข้อมูล' },
+      { k: 'cloudflare', n: 'Cloudflare', d: 'ที่วางเว็บ' },
+    ];
+    // ชิปเทคโนโลยี (หน้าตาเดียวกันทุกตัว) — Claude Code ใช้ชิปแบบเดียวกัน แต่วางกลางแถวล่างของตัวเอง
+    const techChip = (t) => (
+      <div key={t.k} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', background: '#faf4e6', border: '1px solid #ecdfc2', borderRadius: '22px' }}>
+        <BrandIcon name={t.k} size={16} />
+        <span style={{ fontSize: '14px', color: ink }}>{t.n}</span>
+        <span style={{ fontSize: '12px', color: '#b3a488' }}>{t.d}</span>
+      </div>
+    );
+
+    return (
+      <section style={{ maxWidth: '780px', margin: '0 auto', animation: 'wbfade .35s ease' }}>
+        {/* หัวหน้า */}
+        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+          <h1 style={{ fontFamily: HAND, fontWeight: 700, fontSize: 'clamp(38px,5vw,52px)', margin: 0, color: 'var(--accent,#9c3b2b)', lineHeight: 1.15 }}>เกี่ยวกับคลังคำ</h1>
+          <p style={{ fontFamily: HAND, fontSize: '20px', color: '#b09a72', margin: '6px 0 0' }}>ห้องเก็บถ้อยคำงามของนักเขียน</p>
+          <p style={{ fontSize: '14.5px', color: faint, margin: '12px auto 0', maxWidth: '520px', lineHeight: 1.7 }}>
+            เว็บส่วนตัวไว้เก็บคำ วลี และประโยคสวยงามที่เจอระหว่างอ่านนิยาย ให้ AI ช่วยแก้คำสะกด สกัดคำเด่นออกจากประโยคยาว แล้วจัดเข้าหมวดหมู่ให้พร้อมหยิบไปใช้เขียนงานของตัวเอง
+          </p>
+        </div>
+
+        {/* ๑ ผู้พัฒนา */}
+        <div style={card}>
+          {head('๑', 'ผู้เขียนและผู้พัฒนา')}
+          <div style={{ textAlign: 'center', padding: '4px 0 2px' }}>
+            <div style={{ fontFamily: HAND, fontSize: '34px', color: ink, lineHeight: 1.2 }}>สิรวิชญ์ เผ่าผา</div>
+            <div style={{ fontSize: '14px', color: faint, marginTop: '4px' }}>เก็บคำเอง เขียนเอง และทำเว็บนี้ขึ้นมาเอง</div>
+            <a href="mailto:siravitphoapha9928@hotmail.com" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '15px', padding: '9px 20px', borderRadius: '22px', background: '#f6eed9', border: '1px solid ' + line, color: '#6f5a3e', fontSize: '14.5px', textDecoration: 'none' }}>
+              ✉ siravitphoapha9928@hotmail.com
+            </a>
+          </div>
+        </div>
+
+        {/* ๒ ข้อมูลแอป */}
+        <div style={card}>
+          {head('๒', 'ข้อมูลแอป')}
+          {row('เวอร์ชันปัจจุบัน', VERSION)}
+          {row('เผยแพร่ครั้งแรก', '๑๗ กรกฎาคม ๒๕๖๙')}
+          {row('อัปเดตล่าสุด', '๑๙ กรกฎาคม ๒๕๖๙', true)}
+        </div>
+
+        {/* ๓ คลังคำตอนนี้ */}
+        <div style={card}>
+          {head('๓', 'คลังคำตอนนี้')}
+          <div style={{ display: 'flex', gap: '11px', flexWrap: 'wrap' }}>
+            {stat(S.library.length, 'คำในคลัง')}
+            {stat(S.categories.length, 'หมวดใหญ่')}
+            {stat(subCount, 'กลุ่มหมวดย่อย')}
+            {/* คลังตั้งต้นยังไม่ได้แยกเรื่อง → ถ้ายังไม่มีเรื่องเลย โชว์จำนวนคำรอตรวจทานแทน จะได้ไม่ขึ้นเลข 0 เปล่า ๆ */}
+            {S.novels.length > 0 ? stat(S.novels.length, 'เรื่องที่เก็บมา') : stat(S.review.length, 'คำรอตรวจทาน')}
+          </div>
+          {S.review.length > 0 && (
+            <div style={{ marginTop: '13px', padding: '11px 15px', background: '#fbeecb', border: '1px solid #ecd39a', borderRadius: '10px', fontSize: '14px', color: '#8a5a1e' }}>
+              ยังมีคำรอตรวจทานอยู่ <b>{S.review.length}</b> คำ ใน <b>{batches.length}</b> ช่อ
+            </div>
+          )}
+          <p style={{ fontSize: '14.5px', color: faint, lineHeight: 1.75, margin: '16px 0 0' }}>
+            คลังตั้งต้น ๖๗๙ คำ มาจากสมุดคำศัพท์จริงที่สะสมไว้ระหว่างอ่านนิยาย นำเข้ามาทั้งเล่มพร้อมหมวดย่อยเดิม แล้วค่อย ๆ เก็บเพิ่มทีละรอบผ่านหน้าเพิ่มคำ
+            <br />หมวดย่อย {subCount} กลุ่ม แตกลึกลงไปอีกรวมเป็น {branchCount} แขนง ทุกคำในคลังมีหมวดย่อยกำกับครบ
+          </p>
+        </div>
+
+        {/* ๔ AI ที่รองรับ */}
+        <div style={card}>
+          {head('๔', 'ตัวช่วยจัดคำ')}
+          <p style={{ fontSize: '14.5px', color: faint, lineHeight: 1.75, margin: '0 0 16px' }}>
+            สลับตัว AI ได้ตามใจในหน้าเพิ่มคำ กุญแจของแต่ละเจ้าเก็บอยู่ฝั่งเซิร์ฟเวอร์เท่านั้น ไม่หลุดมาถึงเบราว์เซอร์
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: '9px' }}>
+            {PROVIDER_ORDER.map((k) => {
+              const p = PROVIDERS[k];
+              if (!p) return null;
+              const ready = !!S.aiReady[k];
+              return (
+                <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', background: '#faf4e6', border: '1px solid #ecdfc2', borderRadius: '10px' }}>
+                  <BrandIcon name={k} size={19} />
+                  <span title={p.label} style={{ flex: 1, fontSize: '14.5px', color: ink, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.label}</span>
+                  <span style={{ flex: 'none', fontSize: '11.5px', fontWeight: 700, padding: '2px 9px', borderRadius: '20px', whiteSpace: 'nowrap', background: ready ? '#e9efe1' : '#f0e8d4', border: '1px solid ' + (ready ? '#cbdcb8' : '#e4d8bd'), color: ready ? '#5a7040' : '#a2937b' }}>
+                    {ready ? 'พร้อมใช้' : 'ยังไม่ต่อกุญแจ'}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ๕ ข้อมูลเก็บที่ไหน (แยกจากบล็อกเทคโนโลยี — คนละเรื่องกัน) */}
+        <div style={card}>
+          {head('๕', 'ข้อมูลเก็บที่ไหน')}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '13px', padding: '13px 15px', background: '#faf4e6', border: '1px solid #ecdfc2', borderRadius: '11px' }}>
+            <BrandIcon name="supabase" size={26} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: SERIF, fontSize: '17px', fontWeight: 600, color: ink }}>Supabase</div>
+              <div style={{ fontSize: '13.5px', color: faint, lineHeight: 1.65, marginTop: '2px' }}>
+                ฐานข้อมูล PostgreSQL บนคลาวด์ · เปิดเครื่องไหนก็เห็นคลังเดียวกัน · ทุกตารางล็อกไว้ให้เข้าถึงได้เฉพาะฝั่งเซิร์ฟเวอร์
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ๖ สร้างด้วยเทคโนโลยี */}
+        <div style={card}>
+          {head('๖', 'สร้างด้วยเทคโนโลยี')}
+          <div style={{ display: 'flex', gap: '9px', flexWrap: 'wrap' }}>
+            {techs.map(techChip)}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', paddingTop: '18px', borderTop: '1px dashed #ddcba4' }}>
+            {techChip({ k: 'claude', n: 'Claude Code', d: 'ผู้ช่วยเขียนโค้ด' })}
+          </div>
+        </div>
+
+        <p style={{ fontFamily: HAND, fontSize: '21px', color: '#b09a72', textAlign: 'center', margin: '26px 0 0' }}>
+          “เก็บคำงาม ไว้แต่งเรื่องของเราเอง”
+        </p>
       </section>
     );
   }
