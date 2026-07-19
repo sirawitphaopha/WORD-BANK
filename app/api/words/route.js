@@ -1,7 +1,7 @@
 // บันทึกคำเข้าคลัง (bulk) จากหน้าตรวจทาน
 // รับ: { novel, newCategories:[{id,name_th,color,glyph}], words:[{text,original_text,meaning,category_id}] }
 import { NextResponse } from 'next/server';
-import { getAdmin, mapWord } from '@/lib/supabaseAdmin';
+import { getAdmin, mapWord, toPaths } from '@/lib/supabaseAdmin';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,17 +37,22 @@ export async function POST(req) {
     if (!words.length) return NextResponse.json({ words: [] });
     const rows = words
       .filter((w) => w.text && w.text.trim())
-      .map((w) => ({
+      .map((w) => {
+        // คำหนึ่งติดได้หลายกิ่ง — subpath (เดี่ยว) = กิ่งหลัก = อันแรกของ subpaths เสมอ
+        const paths = toPaths(w.subpaths, w.subpath);
+        return {
         text: w.text.trim(),
         original_text: w.original_text || null,
         meaning: (w.meaning || '').trim() || null,
         category_id: w.category_id || 'c8',
         kind: w.kind || null,
-        subpath: w.subpath || null,
-        subcategory: w.subpath ? String(w.subpath).split(' / ').pop() : null,
+        subpath: paths[0] || null,
+        subpaths: paths,
+        subcategory: paths[0] ? String(paths[0]).split(' / ').pop() : null,
         novel: novel || null,
         reviewed: true,
-      }));
+        };
+      });
     const ins = await db.from('wb_words').insert(rows).select('*');
     if (ins.error) throw ins.error;
     return NextResponse.json({ words: ins.data.map(mapWord) });

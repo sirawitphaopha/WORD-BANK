@@ -1,6 +1,6 @@
 // แก้ไข / ลบ คำเดี่ยว ในคลัง
 import { NextResponse } from 'next/server';
-import { getAdmin, mapWord } from '@/lib/supabaseAdmin';
+import { getAdmin, mapWord, toPaths } from '@/lib/supabaseAdmin';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +14,13 @@ export async function PATCH(req, { params }) {
     if (body.meaning != null) patch.meaning = String(body.meaning).trim() || null;
     if (body.category_id != null) patch.category_id = body.category_id;
     if (body.novel != null) patch.novel = String(body.novel).trim() || null;
+    // แก้หมวดย่อยได้หลายกิ่ง (subpath เดี่ยว = กิ่งหลัก เก็บคู่กันไว้เสมอ)
+    if (body.subpaths != null || body.subpath != null) {
+      const paths = toPaths(body.subpaths, body.subpath);
+      patch.subpaths = paths;
+      patch.subpath = paths[0] || null;
+      patch.subcategory = paths[0] ? String(paths[0]).split(' / ').pop() : null;
+    }
     const r = await db.from('wb_words').update(patch).eq('id', id).select('*').single();
     if (r.error) throw r.error;
     return NextResponse.json({ word: mapWord(r.data) });

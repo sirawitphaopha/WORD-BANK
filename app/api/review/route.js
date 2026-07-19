@@ -59,6 +59,15 @@ export async function POST(req) {
       return NextResponse.json({ ok: true });
     }
 
+    // ลบทั้งช่อ — ใช้ตอนผู้ใช้กดยกเลิกระหว่าง AI ทำงาน (เซิร์ฟเวอร์อาจเขียนช่อนั้นลงไปแล้ว)
+    if (action === 'removeBatch') {
+      const b = body.batch ? String(body.batch) : '';
+      if (!b) return NextResponse.json({ ok: true });
+      const del = await db.from('wb_review').delete().eq('batch', b);
+      if (del.error) throw del.error;
+      return NextResponse.json({ ok: true });
+    }
+
     if (action === 'clear') {
       const del = await ALL(db.from('wb_review').delete());
       if (del.error) throw del.error;
