@@ -1,7 +1,7 @@
 // บันทึกคำเข้าคลัง (bulk) จากหน้าตรวจทาน
 // รับ: { novel, newCategories:[{id,name_th,color,glyph}], words:[{text,original_text,meaning,category_id}] }
 import { NextResponse } from 'next/server';
-import { getAdmin, mapWord, toPaths } from '@/lib/supabaseAdmin';
+import { getAdmin, mapWord, toPaths, registerBranches } from '@/lib/supabaseAdmin';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,6 +44,7 @@ export async function POST(req) {
         text: w.text.trim(),
         original_text: w.original_text || null,
         meaning: (w.meaning || '').trim() || null,
+        reason: (w.reason || '').trim() || null,   // เหตุผลที่ AI เขียนกำกับการจัดหมวด ติดไปกับคำตลอด
         category_id: w.category_id || 'c8',
         kind: w.kind || null,
         subpath: paths[0] || null,
@@ -55,6 +56,9 @@ export async function POST(req) {
       });
     const ins = await db.from('wb_words').insert(rows).select('*');
     if (ins.error) throw ins.error;
+    // ลงทะเบียนกิ่งที่ใช้ในรอบนี้เข้าทะเบียนกิ่ง (wb_branches) — กิ่งเดิมถูกข้าม ไม่ทับ
+    // ทำแบบ fire-and-forget ถ้าล้มเหลวไม่กระทบการบันทึกคำ
+    registerBranches(db, rows, 'user').catch(() => {});
     return NextResponse.json({ words: ins.data.map(mapWord) });
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 });

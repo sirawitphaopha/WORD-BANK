@@ -9,6 +9,9 @@ import { CATMETA } from '@/lib/catmeta';
 import { PROVIDERS, PROVIDER_ORDER } from '@/lib/providers';
 import { BrandIcon } from '@/lib/brandIcons';
 import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_TH } from '@/lib/prompt';
+import { PROMPT_LOG } from '@/lib/promptlog';
+import { diffLines, diffStat, collapseSame } from '@/lib/promptdiff';
+import { AI_TEST } from '@/lib/aitest';
 
 export const VERSION = '0.0.0.0'; // ยังไม่เริ่มนับเวอร์ชัน — เลื่อนเมื่อพี่กันสั่งเท่านั้น
 const UI_KEY = 'wordbank:v1:ui';
@@ -44,6 +47,10 @@ export default class WordBankApp extends React.Component {
     stickH: 128,         // ความสูงจริงของก้อนตรึง (แท็บช่อ + แถบเครื่องมือ) — หัวตารางเอาไปคำนวณว่าต้องเกาะที่ตำแหน่งไหน
     addPathFor: null,    // id ของคำที่กำลังพิมพ์เพิ่มหมวดย่อยอยู่
     newBranchOnly: false, // หน้าตรวจทาน: กรองเหลือเฉพาะคำที่มีกิ่งใหม่ (ป้าย ✦ เขียว)
+    branchPick: '',       // หน้าตรวจทาน: กดชิปในลิสกิ่งใหม่ = ดูเฉพาะคำที่อยู่กิ่งนั้นกิ่งเดียว
+    testSide: 'typed',    // หน้าผลทดสอบ: ดูตารางเทียบของคำที่พิมพ์เข้า ('typed') หรือคำที่ AI สกัด ('ext')
+    promptOpen: null,     // หน้าประวัติคำสั่ง: ฉบับที่กางข้อความเต็มอยู่
+    promptLang: 'en',     // หน้าประวัติคำสั่ง: ดูฉบับอังกฤษ (ที่ส่งจริง) หรือไทย
     libStickH: 103,      // ความสูงจริงของแถบตรึงหน้าคลังคำ (ค้นหา+ตัวกรอง+ชิปหมวด) — สารบัญเอาไปหลบใต้แถบนี้
   };
   _stickRef = React.createRef();
@@ -86,12 +93,16 @@ export default class WordBankApp extends React.Component {
     // คลิกนอกป๊อป (backdrop) = ไม่ปิด ต้องกดปุ่มเอง (กันเผลอ)
     // โหมด alert = แจ้งเตือนอย่างเดียว (ปุ่มเดียว ไม่มียกเลิก) มีไอคอนใหญ่ เช่น AI ล้มเหลว
     const isAlert = !!c.alert;
-    const info = c.tone === 'info'; // โทนแจ้งให้ทราบ (เขียว ไม่กระพริบ) — ต่างจากโทนเตือนล้มเหลว (แดง)
+    // โทนป๊อป 3 แบบ: info=เขียว (แจ้งให้ทราบ) · warn=เหลืองอำพัน (ระบบแก้ให้แล้วแต่ควรรู้ไว้) · ไม่ระบุ=แดงกระพริบ (ล้มเหลว)
+    const info = c.tone === 'info';
+    const warn = c.tone === 'warn';
+    const soft = info || warn; // 2 โทนนี้ไม่กระพริบ
+    const cTone = { border: info ? '#cbdcb8' : warn ? '#ecd39a' : '#e8b4a8', bg: info ? '#e9efe1' : warn ? '#fbeecb' : '#fbe7e2', text: info ? '#4f6b3c' : warn ? '#8a5a1e' : '#9c3b2b' };
     return (
       <div style={{ position: 'fixed', inset: 0, background: isAlert ? 'rgba(48,30,26,.55)' : 'rgba(58,47,40,.42)', zIndex: 95, display: 'grid', placeItems: 'center', padding: '20px', animation: 'wbfade .18s ease' }}>
-        <div style={{ background: 'var(--surface,#fffdf6)', border: '1px solid ' + (isAlert ? (info ? '#cbdcb8' : '#e8b4a8') : '#e0d0ac'), borderRadius: '16px', padding: isAlert ? '32px 30px 26px' : '26px 28px', width: 'min(' + (isAlert ? '460' : '410') + 'px,92vw)', boxShadow: '0 24px 64px rgba(58,47,40,.32)', textAlign: isAlert ? 'center' : 'left' }}>
-          {isAlert && <div style={{ width: '66px', height: '66px', margin: '0 auto 16px', borderRadius: '50%', background: info ? '#e9efe1' : '#fbe7e2', display: 'grid', placeItems: 'center', fontSize: '34px', animation: info ? 'none' : 'wbalert 1.1s ease-in-out infinite' }}>{c.icon || '⚠'}</div>}
-          <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 600, fontSize: isAlert ? '23px' : '20px', color: isAlert ? (info ? '#4f6b3c' : '#9c3b2b') : '#33291f', marginBottom: c.msg ? '10px' : '20px' }}>{c.title}</div>
+        <div style={{ background: 'var(--surface,#fffdf6)', border: '1px solid ' + (isAlert ? cTone.border : '#e0d0ac'), borderRadius: '16px', padding: isAlert ? '32px 30px 26px' : '26px 28px', width: 'min(' + (isAlert ? '460' : '410') + 'px,92vw)', boxShadow: '0 24px 64px rgba(58,47,40,.32)', textAlign: isAlert ? 'center' : 'left' }}>
+          {isAlert && <div style={{ width: '66px', height: '66px', margin: '0 auto 16px', borderRadius: '50%', background: cTone.bg, display: 'grid', placeItems: 'center', fontSize: '34px', animation: soft ? 'none' : 'wbalert 1.1s ease-in-out infinite' }}>{c.icon || '⚠'}</div>}
+          <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 600, fontSize: isAlert ? '23px' : '20px', color: isAlert ? cTone.text : '#33291f', marginBottom: c.msg ? '10px' : '20px' }}>{c.title}</div>
           {c.msg ? <div style={{ fontSize: '14.5px', color: '#6f6252', lineHeight: 1.6, marginBottom: '24px', whiteSpace: 'pre-line', textAlign: isAlert && c.msg.indexOf('\n') >= 0 ? 'left' : undefined }}>{c.msg}</div> : null}
           <div style={{ display: 'flex', gap: '10px', justifyContent: isAlert ? 'center' : 'flex-end' }}>
             {!isAlert && <button onClick={this.closeConfirm} style={{ padding: '10px 18px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'transparent', color: '#6f6252', fontSize: '14.5px', cursor: 'pointer' }}>ยกเลิก</button>}
@@ -401,7 +412,7 @@ export default class WordBankApp extends React.Component {
       const fresh = (data.items || []).map((it) => {
         n++;
         const cat = it.category_id || nameToId[it.proposed_category] || 'c8';
-        return { id: 'r_' + bAt.toString(36) + '_' + n + '_' + Math.random().toString(36).slice(2, 6), text: it.text, original: it.original, kind: it.kind || '', subpath: (it.subcategories && it.subcategories[0]) || it.subcategory || '', subpaths: Array.isArray(it.subcategories) ? it.subcategories : (it.subcategory ? [it.subcategory] : []), category: cat, proposedNew: !!it.proposed_category, meaning: '', selected: false, notes: it.notes || [], source: it.source || '', batch: bId, batchNo: bNo, batchAt: bAt, batchAi: bAi, novel: bNovel };
+        return { id: 'r_' + bAt.toString(36) + '_' + n + '_' + Math.random().toString(36).slice(2, 6), text: it.text, original: it.original, kind: it.kind || '', subpath: (it.subcategories && it.subcategories[0]) || it.subcategory || '', subpaths: Array.isArray(it.subcategories) ? it.subcategories : (it.subcategory ? [it.subcategory] : []), category: cat, proposedNew: !!it.proposed_category, meaning: it.meaning || '', reason: it.reason || '', selected: false, notes: it.notes || [], source: it.source || '', batch: bId, batchNo: bNo, batchAt: bAt, batchAi: bAi, novel: bNovel };
       });
       const review = [...prevReview, ...fresh];
       const categories = proposedCats.length ? [...this.state.categories, ...proposedCats] : this.state.categories;
@@ -426,6 +437,19 @@ export default class WordBankApp extends React.Component {
               title: 'เพิ่มเป็นช่อที่ ' + WordBankApp.thNum(bNo) + ' แล้ว',
               msg: 'คำรอตรวจทานที่มีอยู่ตอนนี้\n\n' + lines.join('\n') + '\n\nรวม ' + list.length + ' ช่อ ' + review.length + ' คำ',
             });
+          }
+          // 🚨 ตาข่ายกันคำหายทำงาน — ต้องบอกผู้ใช้เสมอ ไม่ใช่เติมกลับเงียบ ๆ
+          // (บางรุ่นตัดบรรทัดที่พิมพ์เข้ามาทิ้ง โดยเฉพาะคำเดี่ยวที่ไปซ้ำกับคำในประโยคยาวบรรทัดอื่น)
+          const restored = Array.isArray(data.restored) ? data.restored : [];
+          if (restored.length) {
+            const show = restored.slice(0, 12).map((w) => '• ' + w).join('\n');
+            setTimeout(() => this.askConfirm({
+              alert: true, tone: 'warn', icon: '🛟', okLabel: 'เข้าใจแล้ว',
+              title: 'ระบบเติมคำที่ AI ตัดทิ้งกลับให้ ' + restored.length + ' คำ',
+              msg: 'AI รุ่นนี้ตัดบรรทัดที่พิมพ์เข้ามาทิ้ง ระบบตรวจเจอและเติมกลับให้แล้ว\n\n' + show
+                + (restored.length > 12 ? '\n… และอีก ' + (restored.length - 12) + ' คำ' : '')
+                + '\n\nคำเหล่านี้ยังไม่ได้จัดหมวด ติดป้าย "⚠ ระบบเติมกลับ" ไว้ในหน้าตรวจทาน เลือกหมวดให้ได้เลย',
+            }), prevReview.length ? 400 : 0);
           }
         });
       }, wait);
@@ -752,10 +776,11 @@ export default class WordBankApp extends React.Component {
       if (active) return { ...base, background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontWeight: 600, boxShadow: side ? 'none' : '0 3px 10px rgba(111,78,55,.3)' };
       return { ...base, background: side ? 'transparent' : 'rgba(255,255,255,.35)', color: '#7a6a52' };
     };
-    const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length], ['ailog', 'ประวัติ AI', 0], ['about', 'เกี่ยวกับ', 0]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
+    const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length], ['ailog', 'ประวัติ AI', 0], ['aitest', 'ผลทดสอบ AI', 0], ['prompts', 'ประวัติคำสั่ง', 0], ['about', 'เกี่ยวกับ', 0]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
     const badgeStyle = (active) => ({ marginLeft: '2px', fontSize: '12px', fontWeight: 700, minWidth: '20px', height: '20px', padding: '0 6px', borderRadius: '10px', display: 'inline-grid', placeItems: 'center', background: active ? 'rgba(255,255,255,.22)' : '#e2d3b0', color: active ? '#fbf3e2' : '#8a7159' });
 
     const isAdd = S.page === 'add', isReview = S.page === 'review', isLibrary = S.page === 'library', isAiLog = S.page === 'ailog', isAbout = S.page === 'about';
+    const isAiTest = S.page === 'aitest', isPrompts = S.page === 'prompts';
 
     return (
       <div style={rootStyle}>
@@ -791,6 +816,8 @@ export default class WordBankApp extends React.Component {
             {isReview && this.renderReview(getCat, monoMode, spell, effLayout)}
             {isLibrary && this.renderLibrary(getCat, monoMode, accent)}
             {isAiLog && this.renderAiLog()}
+            {isAiTest && this.renderAiTest()}
+            {isPrompts && this.renderPromptLog()}
             {isAbout && this.renderAbout()}
           </main>
         </div>
@@ -985,8 +1012,20 @@ export default class WordBankApp extends React.Component {
     // ตัวกรอง "เฉพาะกิ่งใหม่" — เหลือแต่คำที่มีกิ่งซึ่งยังไม่มีในคลัง (ป้าย ✦ เขียว) ไว้ตรวจอนุมัติทีเดียว
     const knownForFilter = this.knownPaths();
     const hasNewBranch = (r) => WordBankApp.pathsOf(r).some((p) => !knownForFilter.has(p));
-    const newBranchCount = batchScoped.filter(hasNewBranch).length;
-    const S = { ...ST, review: ST.newBranchOnly ? batchScoped.filter(hasNewBranch) : batchScoped };
+    const newBranchCount = batchScoped.filter(hasNewBranch).length; // จำนวน "คำ" ที่มีกิ่งใหม่
+    // จำนวน "กิ่ง" ที่ไม่ซ้ำกันจริง ๆ — คนละตัวเลขกับจำนวนคำ (กิ่งเดียวใช้กับหลายคำได้)
+    // ต้องแยกให้ชัด เพราะเวลาเทส AI ใช้ตัวเลขนี้ตัดสินว่าโมเดลประดิษฐ์กิ่งมั่วแค่ไหน
+    // เก็บเป็น map "ชื่อกิ่ง → จำนวนคำที่ใช้กิ่งนั้น" เพื่อโชว์เป็นลิสให้เห็นครบโดยไม่ต้องกดเข้าไปนับเอง
+    const newBranchMap = new Map();
+    batchScoped.forEach((r) => WordBankApp.pathsOf(r).forEach((p) => { if (!knownForFilter.has(p)) newBranchMap.set(p, (newBranchMap.get(p) || 0) + 1); }));
+    const newBranchList = [...newBranchMap.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'th'));
+    const newBranchNames = new Set(newBranchMap.keys());
+    const newBranchKinds = newBranchMap.size;
+    // เลือกดูเฉพาะกิ่งเดียว (กดชิปในลิส) — ถ้ากิ่งนั้นหายไปแล้วให้ตกกลับเป็นดูทุกกิ่งใหม่
+    const pick = ST.branchPick && newBranchMap.has(ST.branchPick) ? ST.branchPick : '';
+    const scopedReview = pick ? batchScoped.filter((r) => WordBankApp.pathsOf(r).includes(pick))
+      : ST.newBranchOnly ? batchScoped.filter(hasNewBranch) : batchScoped;
+    const S = { ...ST, review: scopedReview };
     // คำซ้ำข้ามช่อ — คำเดียวกันโผล่ในช่ออื่นที่ยังไม่บันทึก (คนละ AI อาจให้หมวด/ความหมายไม่เหมือนกัน)
     const otherBatchText = new Map();
     ST.review.forEach((r) => {
@@ -1205,6 +1244,13 @@ export default class WordBankApp extends React.Component {
                 {renderWord(r, { width: '100%', fontFamily: "var(--font-trirong),serif", fontSize: '19px', fontWeight: 500, color: '#33291f', borderBottom: '1px dashed #ddcba4', padding: '2px 0 6px', lineHeight: 1.5, minHeight: '31px', boxSizing: 'border-box' }, true)}
                 {/* ความหมายอยู่ชิดใต้คำหลักเสมอ → ตรงกันทุกการ์ด (ป้าย ✂/↳ ไปอยู่ล่าง) */}
                 <input value={r.meaning} onChange={(e) => this.updateReview(r.id, { meaning: e.target.value })} placeholder="＋ เพิ่มความหมาย (ไม่บังคับ)" style={{ width: '100%', fontSize: '14px', color: '#6f6252', border: 'none', background: 'transparent', padding: '8px 0 2px', outline: 'none' }} />
+                {/* เหตุผลที่ AI เขียนกำกับ — มีเฉพาะคำที่กำกวม อยู่หลายกิ่ง หรือเสนอกิ่งใหม่
+                    ช่วยให้ตัดสินใจได้เร็วว่าจะเอาตามที่ AI จัด หรือย้ายเอง (ผลทดสอบพบว่าโมเดลจัดตรงกันแค่ 29%) */}
+                {r.reason ? (
+                  <div style={{ marginTop: '8px', padding: '8px 11px', background: '#f7f1e2', borderLeft: '3px solid #d9c9a4', borderRadius: '0 8px 8px 0', fontSize: '12.5px', color: '#7a6c58', lineHeight: 1.65 }}>
+                    <span style={{ color: '#b0a084' }}>💭 </span>{r.reason}
+                  </div>
+                ) : null}
                 {pulledBadge(r) ? <div style={{ marginTop: '7px' }}>{pulledBadge(r)}</div> : null}
                 {r.source ? <div style={{ fontSize: '12.5px', color: '#9a8c76', marginTop: '7px', lineHeight: 1.55, fontFamily: "var(--font-trirong),serif" }}><span style={{ color: '#bcac8f' }}>↳ จาก:</span> {srcHighlight(r.source, r.text)}</div> : null}
                 {(() => {
@@ -1424,6 +1470,30 @@ export default class WordBankApp extends React.Component {
           {extractedCount > 0 && <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#fbeecb', border: '1px solid #ecd39a', fontSize: '13px', color: '#8a5a1e' }}>พิมพ์เข้า <b>{reviewCount - extractedCount}</b> + ✂ สกัดเพิ่ม <b>{extractedCount}</b></span>}
           {activeMeta.ai ? <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #cfd4e0', fontSize: '13px', color: '#5d6478' }}>{activeMeta.ai}{activeMeta.at ? ' · ' + new Date(activeMeta.at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.' : ''}</span> : null}
         </div>
+        {/* ลิสกิ่งใหม่ — แสดงชื่อกิ่งครบทุกกิ่งตรง ๆ ไม่ต้องเอาเมาส์ชี้หรือกดเข้าไปนับเอง
+            สำคัญตอนเทส AI: ต้องเห็นว่าโมเดล "สร้างกี่กิ่ง" (ไม่ใช่กี่คำ) และตั้งชื่อกิ่งว่าอะไรบ้าง */}
+        {newBranchKinds > 0 && (
+          <div style={{ margin: '0 0 10px', padding: '11px 14px', background: '#eef3e4', border: '1px solid #cbdcb8', borderRadius: '11px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '9px' }}>
+              <b style={{ fontSize: '14px', color: '#4d6136' }}>✦ กิ่งใหม่ที่ AI เสนอในช่อนี้</b>
+              <span style={{ fontSize: '13px', color: '#5a7040' }}>{newBranchKinds} กิ่ง · ใช้กับ {newBranchCount} คำ</span>
+              {pick && <button onClick={() => this.setState({ branchPick: '' }, this.toTop)} style={{ marginLeft: 'auto', padding: '4px 12px', border: '1px solid #cbdcb8', borderRadius: '20px', background: '#fbf7ec', color: '#5a7040', fontSize: '12.5px', cursor: 'pointer' }}>ดูทุกคำในช่อ</button>}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px' }}>
+              {newBranchList.map(([p, n]) => {
+                const on = pick === p;
+                return (
+                  <button key={p} onClick={() => this.setState({ branchPick: on ? '' : p, newBranchOnly: false }, this.toTop)}
+                    title={on ? 'กดอีกครั้งเพื่อเลิกกรอง' : 'ดูเฉพาะคำที่อยู่ในกิ่งนี้'}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '5px 12px', borderRadius: '20px', background: on ? '#5a7040' : '#fbf7ec', border: '1px solid ' + (on ? '#4d6136' : '#cbdcb8'), color: on ? '#f4f7ec' : '#4d6136', fontSize: '13px', cursor: 'pointer', textAlign: 'left' }}>
+                    <span>{p}</span>
+                    <span style={{ padding: '0 7px', borderRadius: '20px', background: on ? 'rgba(255,255,255,.22)' : '#e2ebd4', fontSize: '11.5px', fontWeight: 700 }}>{n}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
         <p style={{ fontSize: '14px', color: '#8a7d6d', margin: '0 0 6px' }}>ค่าเริ่มต้นคือยืนยันตามที่ AI แยกให้ — แก้ตัวคำ เปลี่ยนหมวด ลากย้าย หรือเลือกหลายคำจัดการพร้อมกันได้ตามใจ</p>
 
         {/* แท็บช่อ + แถบเครื่องมือ = ตรึงติดกันเป็นก้อนเดียว (สองอย่างนี้กดบ่อยสุด เลื่อนดูคำล่าง ๆ ก็ยังกดได้) */}
@@ -1451,10 +1521,10 @@ export default class WordBankApp extends React.Component {
           <button onClick={this.exportReview} title="ส่งออกผลตรวจทานเป็นไฟล์ .txt ไว้เทียบ AI แต่ละเจ้า" style={{ padding: '9px 15px', border: '1px solid #cbdcb8', borderRadius: '9px', background: '#eef3dc', color: '#5a7040', fontSize: '14px', cursor: 'pointer' }}>⬇ ส่งออก</button>
           {dupCount > 0 && <button onClick={() => this.removeDuplicates(dupItems.map((r) => r.id))} style={{ padding: '9px 16px', border: '1px solid #b81414', borderRadius: '9px', background: '#e01e1e', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', animation: 'wbalert 1.05s ease-in-out infinite' }}>⚠ ลบซ้ำกับคลัง ({dupCount})</button>}
           {(newBranchCount > 0 || ST.newBranchOnly) && (
-            <button onClick={() => this.setState({ newBranchOnly: !ST.newBranchOnly }, this.toTop)}
-              title="ดูเฉพาะคำที่มีหมวดย่อยกิ่งใหม่ที่ยังไม่มีในคลัง"
+            <button onClick={() => this.setState({ newBranchOnly: !ST.newBranchOnly, branchPick: '' }, this.toTop)}
+              title={'ดูเฉพาะคำที่มีหมวดย่อยกิ่งใหม่ที่ยังไม่มีในคลัง\n\nกิ่งใหม่ ' + newBranchKinds + ' กิ่ง ใช้กับ ' + newBranchCount + ' คำ\n' + [...newBranchNames].map((p) => '· ' + p).join('\n')}
               style={{ padding: '9px 15px', border: '1px solid ' + (ST.newBranchOnly ? '#5a7040' : '#cbdcb8'), borderRadius: '9px', background: ST.newBranchOnly ? '#5a7040' : '#eef3dc', color: ST.newBranchOnly ? '#fbf3e2' : '#5a7040', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
-              ✦ เฉพาะกิ่งใหม่ ({newBranchCount})
+              ✦ เฉพาะกิ่งใหม่ {newBranchKinds} กิ่ง · {newBranchCount} คำ
             </button>
           )}
           {crossItems.length > 0 && <button onClick={removeCrossDup} title="คำในช่อนี้ที่ไปซ้ำกับช่ออื่นที่ยังไม่บันทึก" style={{ padding: '9px 16px', border: '1px solid #b3a4cc', borderRadius: '9px', background: '#efe9f7', color: '#5f4c80', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>↺ ลบซ้ำข้ามช่อ ({crossItems.length})</button>}
@@ -1602,6 +1672,424 @@ export default class WordBankApp extends React.Component {
       <div style={{ position: 'fixed', right: '18px', bottom: '22px', zIndex: 60, display: 'flex', flexDirection: 'column', gap: '9px' }}>
         <button onClick={this.toTopSmooth} title="ขึ้นบนสุด" style={btn}>▲</button>
         <button onClick={this.toBottom} title="ลงล่างสุด" style={btn}>▼</button>
+      </div>
+    );
+  }
+
+  // ============ ตัวช่วยกลางของ 2 หน้ารายงาน (ผลทดสอบ AI + ประวัติคำสั่ง) ============
+  // ใช้ภาษาภาพเดียวกับหน้าเกี่ยวกับ: การ์ดกระดาษ + เลขไทยในวงกลมหมึก + หัวข้อลายมือ
+  // ชุดคำทดสอบมาตรฐาน เวอร์ชัน ๑ — 31 บรรทัด ห้ามแก้โดยพลการ
+  // ถ้าจะเปลี่ยนชุดคำ = ขึ้นเวอร์ชัน ๒ และเก็บผลของเวอร์ชันเดิมไว้เทียบ (ผลข้ามเวอร์ชันเทียบตรง ๆ ไม่ได้)
+  // คำในชุดนี้เลือกมาให้ครอบคลุมกรณีทดสอบ: ช่องเติมคำ 6 จุด · ตัวอักษรแทนชื่อตัวละคร · คู่ประโยคยาวกับคำเดี่ยวที่ซ้อนกัน 3 คู่ · คำทับศัพท์ · สำนวน · คำจัดหมวดยาก
+  static TEST_WORDS = "ขาดสติไตร่ตรอง\nอ้างตัวว่าชื่อ…\nท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น\nบรรจงหยิบ..\nสาธิต\nเหล่าสุจริตชน\nไม่คาดคิดแม้แต่น้อยว่า..\nชะตากรรมสุดสยอง\nความน่าสะพรึงกลัวดุจดั่งภาพจากนรก\nดุจดั่ง\nทรุดลงขาดใจตายทันที\nทรุดลง\nดิ้นทุรนทุรายไปรอบๆ\nฉวย\nเผ่นหนีไป\nชะเง้อมอง\nความสับสนอลหม่าน\n…อย่างน่าหวุดหวิด\nสิ้นลม\nรุดมาถึง\nป่าเถื่อนผิดมนุษย์\nจนแล้วจนรอด\nบานปลายกลายเป็น..\nนิ่งนอนใจ\nภาพสเกตช์\nชวนหัว\nหลั่งไหลมา…ไม่ขาดสาย\nอลหม่าน\nหน้าตาเหมือนBราวกับพิมพ์เดียวกัน\nพลอยเดือดร้อน\nหนแล้วหนเล่า";
+
+  static RP = {
+    hand: 'var(--font-charmonman),cursive',
+    serif: 'var(--font-trirong),serif',
+    mono: 'ui-monospace,SFMono-Regular,Menlo,monospace',
+    ink: '#33291f', faint: '#8a7d6d', line: '#e0d0ac',
+  };
+
+  rpCard = (extra) => ({ background: 'var(--surface,#fffdf6)', border: '1px solid ' + WordBankApp.RP.line, borderRadius: '14px', padding: '24px 26px 26px', marginBottom: '18px', boxShadow: '0 1px 3px rgba(120,90,50,.06)', ...extra });
+
+  rpHead = (num, title, sub) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
+      <span style={{ width: '30px', height: '30px', flex: '0 0 30px', borderRadius: '50%', background: WordBankApp.RP.ink, color: '#fbf3e2', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontFamily: WordBankApp.RP.serif }}>{num}</span>
+      <h3 style={{ margin: 0, fontSize: '21px', fontFamily: WordBankApp.RP.hand, color: WordBankApp.RP.ink, fontWeight: 400 }}>{title}</h3>
+      {sub && <span style={{ fontSize: '13px', color: WordBankApp.RP.faint }}>{sub}</span>}
+    </div>
+  );
+
+  // หัวเรื่องใหญ่ของหน้า — ใช้ทั้ง 2 หน้าให้หน้าตาเป็นชุดเดียวกัน
+  rpTitle = (glyph, title, sub) => (
+    <div style={{ textAlign: 'center', marginBottom: '26px' }}>
+      <div style={{ fontSize: '34px', marginBottom: '2px' }}>{glyph}</div>
+      <h2 style={{ margin: '0 0 6px', fontSize: '30px', fontFamily: WordBankApp.RP.hand, color: WordBankApp.RP.ink, fontWeight: 400 }}>{title}</h2>
+      <p style={{ margin: 0, fontSize: '14px', color: WordBankApp.RP.faint }}>{sub}</p>
+    </div>
+  );
+
+  // กล่องข้อความยาว (ชุดคำทดสอบ / ตัวคำสั่ง) พร้อมปุ่มคัดลอก
+  rpTextBox = (text, maxH) => (
+    <pre style={{ margin: 0, padding: '13px 15px', background: '#fbf7ec', border: '1px solid ' + WordBankApp.RP.line, borderRadius: '10px', fontSize: '12.5px', lineHeight: 1.75, color: WordBankApp.RP.ink, whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxHeight: maxH || '300px', overflow: 'auto', fontFamily: 'var(--font-sarabun),sans-serif' }}>{text}</pre>
+  );
+
+  copyText = (text, msg) => {
+    try { navigator.clipboard.writeText(text); this.flash(msg || 'คัดลอกแล้ว'); }
+    catch { this.flash('คัดลอกไม่สำเร็จ ลองเลือกข้อความแล้วกด Ctrl+C'); }
+  };
+
+  rpCopyBtn = (text, label, msg) => (
+    <button onClick={() => this.copyText(text, msg)} style={{ padding: '5px 13px', border: '1px solid ' + WordBankApp.RP.line, borderRadius: '20px', background: '#fbf7ec', color: '#6f6252', fontSize: '12.5px', cursor: 'pointer' }}>📋 {label || 'คัดลอก'}</button>
+  );
+
+  // แถบสัดส่วน 3 สี (ตรงกันหมด / กิ่งต่าง / หมวดต่าง) — เห็นภาพรวมก่อนอ่านตาราง
+  rpBar = (t) => {
+    const total = t.total - (t.single || 0) || 1;
+    const seg = [
+      { n: t.full, c: '#7d9a5c', label: 'ตรงกันหมด' },
+      { n: t.branch, c: '#d9a63e', label: 'หมวดตรง กิ่งต่าง' },
+      { n: t.cat, c: '#c1614c', label: 'หมวดต่างกัน' },
+    ];
+    return (
+      <div style={{ marginBottom: '16px' }}>
+        <div style={{ display: 'flex', height: '15px', borderRadius: '20px', overflow: 'hidden', border: '1px solid ' + WordBankApp.RP.line }}>
+          {seg.map((s) => s.n > 0 && <div key={s.label} style={{ width: (s.n / total * 100) + '%', background: s.c }} title={s.label + ' ' + s.n + ' คำ'} />)}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', marginTop: '9px', fontSize: '13px' }}>
+          {seg.map((s) => (
+            <span key={s.label} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#6f6252' }}>
+              <i style={{ width: '11px', height: '11px', borderRadius: '3px', background: s.c, display: 'inline-block' }} />
+              {s.label} <b style={{ color: WordBankApp.RP.ink }}>{s.n}</b> คำ <span style={{ color: WordBankApp.RP.faint }}>({Math.round(s.n / total * 100)}%)</span>
+            </span>
+          ))}
+          {t.single > 0 && <span style={{ color: WordBankApp.RP.faint, fontSize: '12.5px' }}>· อีก {t.single} คำมีโมเดลเดียวที่สกัดออกมา จึงเทียบกันไม่ได้</span>}
+        </div>
+      </div>
+    );
+  };
+
+  // ============ ผลทดสอบ AI ============
+  // รายงานการทดลอง 2 มุม: (๑) สกัดได้แค่ไหน (๒) จัดกลุ่มตรงกันไหม
+  // ข้อมูลทั้งหมดมาจาก lib/aitest.js ซึ่งสร้างด้วย scripts/gen_aitest.mjs (ดึงจากช่อคำจริงใน Supabase)
+  renderAiTest() {
+    const R = WordBankApp.RP;
+    const D = AI_TEST;
+    const S = this.state;
+    const side = S.testSide === 'ext' ? 'extracted' : 'typed';
+    const pane = D[side];
+    const nameOf = (b) => (D.runs.find((r) => r.batch === b) || {}).ai || ('ช่อ ' + b);
+    // ชื่อรุ่นแบบสั้น ใช้เป็นหัวตาราง (ตัดชื่อเจ้าและคำโฆษณาออก)
+    const shortOf = (b) => {
+      const s = nameOf(b).split('·').map((x) => x.trim());
+      return (s[1] || s[0] || '').replace(/\s*·.*$/, '').replace('Gemini ', '').replace('GPT-', 'GPT-');
+    };
+    const star = (n) => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+    // คะแนนดาว: ให้จากผลจริง 2 มุม (คำครบ+สกัด / กิ่งใหม่+รูปแบบ+หลายกิ่ง) — เขียนไว้ตายตัวเพราะเป็นการตัดสินของคน ไม่ใช่สูตร
+    const SCORE = { 6: 3.5, 7: 4.5, 8: 5, 9: 1.5, 10: 2.5, 11: 3 };
+    const NOTE = { 6: 'ใช้คำสั่งฉบับเก่า จึงสร้างกิ่งซ้ำชื่อหมวดตัวเอง 2 กิ่ง', 7: 'ไม่มีจุดเสียเลย ด้อยกว่า Pro แค่จำนวนคำที่สกัดได้', 8: 'ดีที่สุดทุกมิติ — คำครบ สกัดมากสุด ไม่สร้างกิ่งใหม่', 9: '⛔ สกัดได้แค่ 2 คำ และสร้างกิ่งใหม่ 10 กิ่งสำหรับ 10 คำ', 10: '🔴 ทำคำที่พิมพ์เข้าหาย 3 คำ · ไม่ให้หลายกิ่งเลย', 11: '🔴 ทำคำที่พิมพ์เข้าหาย 2 คำ · ไม่ให้หลายกิ่งเลย' };
+    // แปลงรหัสหมวด (c0-c8) เป็นชื่อไทย จากหมวดจริงในคลัง
+    const catName = (id) => (S.categories.find((x) => x.id === id) || {}).name_th || id || '—';
+    const agreeTag = { full: ['ตรงกันหมด', '#7d9a5c', '#eef3e4'], branch: ['กิ่งต่าง', '#a8791f', '#fbf1d8'], cat: ['หมวดต่าง', '#b4503a', '#f7e5e0'], single: ['มีตัวเดียว', '#8a7d6d', '#f2ece0'] };
+
+    return (
+      <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
+        {this.rpTitle('🔬', 'ผลทดสอบโมเดล AI', 'รายงานการทดลอง · ชุดคำมาตรฐาน เวอร์ชัน ' + WordBankApp.thNum(D.version) + ' · ช่อ ' + WordBankApp.thNum(D.runFrom) + '–' + WordBankApp.thNum(D.runTo))}
+
+        {/* ① ทดสอบ 2 มุม — วางไว้บนสุดเพราะเป็นกรอบคิดของทั้งรายงาน */}
+        <div style={this.rpCard()}>
+          {this.rpHead('๑', 'การทดลองนี้วัด ๒ มุม')}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: '14px' }}>
+            {[['✂', 'มุมที่ ๑ — สกัดได้แค่ไหน', 'AI มองเห็นคำงามครบไหม เก็บคำที่พิมพ์เข้าไปครบไหม และดึงคำเด่นจากประโยคยาวได้กี่คำ', '#8a5a1e', '#fbeecb', '#ecd39a'],
+              ['🗂', 'มุมที่ ๒ — จัดกลุ่มตรงกันไหม', 'คำเดียวกัน โมเดลต่างกันจัดเข้าหมวดและกิ่งเหมือนกันหรือไม่ ตรงไหนที่ทุกตัวเห็นพ้อง ตรงไหนที่เห็นต่าง', '#4d6136', '#eef3e4', '#cbdcb8']].map(([g, t, d, col, bg, bd]) => (
+              <div key={t} style={{ padding: '15px 17px', background: bg, border: '1px solid ' + bd, borderRadius: '12px' }}>
+                <div style={{ fontSize: '15px', fontWeight: 700, color: col, marginBottom: '6px' }}>{g} {t}</div>
+                <div style={{ fontSize: '13.5px', color: '#6f6252', lineHeight: 1.75 }}>{d}</div>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: '13.5px', color: '#6f6252', lineHeight: 1.9, margin: '15px 0 0', padding: '13px 15px', background: '#f7f1e2', borderRadius: '10px', border: '1px dashed ' + R.line }}>
+            <b>สิ่งที่ต้องเข้าใจก่อนอ่านผล</b> — มุมที่ ๒ วัดได้แค่ว่า <b>“ตรงกันไหม”</b> ยังวัดไม่ได้ว่า <b>“ถูกไหม”</b> เพราะยังไม่มีเฉลย
+            ถ้าโมเดลทุกตัวจัดผิดเหมือนกันหมด ตัวเลขจะขึ้นว่าตรงกัน 100% ทั้งที่ผิด
+            <br />และความเห็นต่างไม่ใช่ข้อบกพร่องเสมอไป — วลีไทยวลีเดียวตีความได้หลายชั้นตามบริบทในเรื่อง ความเห็นต่างจึงเป็น <b>ตัวเลือกให้เจ้าของคลังเลือกเอง</b>
+          </p>
+        </div>
+
+        {/* ② ตารางสรุปรายรุ่น */}
+        <div style={this.rpCard()}>
+          {this.rpHead('๒', 'สรุปผลรายรุ่น', 'เรียงตามคะแนน')}
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px', minWidth: '780px' }}>
+              <thead>
+                <tr style={{ background: '#f0e6cd', color: '#8a7d6d', fontSize: '12px' }}>
+                  {['คะแนน', 'รุ่น', 'ช่อ', 'พิมพ์เข้า', '✂ สกัดเพิ่ม', 'กิ่งใหม่', 'หลายกิ่ง', 'หมายเหตุ'].map((h) => (
+                    <th key={h} style={{ padding: '9px 11px', textAlign: h === 'รุ่น' || h === 'หมายเหตุ' ? 'left' : 'center', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[...D.runs].sort((a, b) => (SCORE[b.batch] || 0) - (SCORE[a.batch] || 0)).map((r) => {
+                  const lost = 31 - r.typed;
+                  return (
+                    <tr key={r.batch} style={{ borderBottom: '1px solid #efe6d2' }}>
+                      <td style={{ padding: '10px 11px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                        <span style={{ color: '#c9962e', fontSize: '13px', letterSpacing: '1px' }}>{star(SCORE[r.batch] || 0)}</span>
+                        <div style={{ fontSize: '12px', color: R.faint }}>{(SCORE[r.batch] || 0).toFixed(1)}</div>
+                      </td>
+                      <td style={{ padding: '10px 11px', fontWeight: 600, color: R.ink }}>{shortOf(r.batch)}</td>
+                      <td style={{ padding: '10px 11px', textAlign: 'center', color: R.faint }}>{WordBankApp.thNum(r.batch)}</td>
+                      <td style={{ padding: '10px 11px', textAlign: 'center', color: lost ? '#b4503a' : '#4d6136', fontWeight: 700 }}>{r.typed}/31{lost ? ' 🔴' : ''}</td>
+                      <td style={{ padding: '10px 11px', textAlign: 'center', fontWeight: 700, color: R.ink }}>{r.extracted}</td>
+                      <td style={{ padding: '10px 11px', textAlign: 'center' }}>{r.newBranchKinds ? <span style={{ color: '#a8791f' }}>{r.newBranchKinds} กิ่ง<span style={{ color: R.faint, fontSize: '12px' }}> / {r.newBranchWords} คำ</span></span> : <span style={{ color: '#4d6136' }}>0</span>}</td>
+                      <td style={{ padding: '10px 11px', textAlign: 'center', color: r.multiBranch ? R.ink : '#b4503a', fontWeight: r.multiBranch ? 400 : 700 }}>{r.multiBranch}</td>
+                      <td style={{ padding: '10px 11px', color: '#6f6252', fontSize: '12.5px', lineHeight: 1.6 }}>{NOTE[r.batch] || ''}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ marginTop: '13px', display: 'grid', gap: '5px', fontSize: '12.5px', color: R.faint, lineHeight: 1.7 }}>
+            <span><b>พิมพ์เข้า</b> ต้องได้ 31/31 ทุกรุ่น ถ้าน้อยกว่าแปลว่า AI กลืนคำที่ผู้ใช้พิมพ์เข้ามาหายไปโดยไม่แจ้งเตือน</span>
+            <span><b>กิ่งใหม่</b> ยิ่งน้อยยิ่งดี แปลว่าหากิ่งเดิมที่มีอยู่แล้วเจอ · ดูที่ “จำนวนกิ่ง” ไม่ใช่ “จำนวนคำ” (กิ่งเดียวใช้กับหลายคำได้ = ดี)</span>
+            <span><b>หลายกิ่ง</b> จำนวนคำที่ได้หมวดย่อยมากกว่า 1 กิ่ง — ตระกูล GPT ได้ 0 ทั้งหมด ทั้งที่คำสั่งเดียวกับ Gemini</span>
+          </div>
+        </div>
+
+        {/* ③ กิ่งใหม่ที่แต่ละรุ่นสร้าง */}
+        <div style={this.rpCard()}>
+          {this.rpHead('๓', 'กิ่งใหม่ที่แต่ละรุ่นคิดขึ้นเอง', 'กิ่งที่ยังไม่มีทั้งในคลังคำและในโครงตั้งต้น')}
+          <div style={{ display: 'grid', gap: '10px' }}>
+            {D.runs.filter((r) => r.newBranches.length).map((r) => (
+              <div key={r.batch} style={{ padding: '13px 15px', background: '#fbf7ec', border: '1px solid ' + R.line, borderRadius: '11px' }}>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: R.ink, marginBottom: '9px' }}>
+                  ช่อ {WordBankApp.thNum(r.batch)} · {shortOf(r.batch)} <span style={{ color: '#a8791f', fontWeight: 400 }}>— {r.newBranchKinds} กิ่ง ใช้กับ {r.newBranchWords} คำ</span>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px' }}>
+                  {r.newBranches.map((b) => (
+                    <span key={b.path} style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '4px 11px', borderRadius: '20px', background: '#eef3e4', border: '1px solid #cbdcb8', fontSize: '12.5px', color: '#4d6136' }}>
+                      {b.path}<b style={{ padding: '0 6px', borderRadius: '20px', background: '#e2ebd4', fontSize: '11.5px' }}>{b.n}</b>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {!D.runs.some((r) => r.newBranches.length) && <p style={{ fontSize: '13.5px', color: R.faint, margin: 0 }}>ไม่มีรุ่นไหนสร้างกิ่งใหม่เลยในการทดลองรอบนี้</p>}
+          </div>
+        </div>
+
+        {/* ④ ตารางเทียบการจัดกลุ่มรายคำ — หัวใจของมุมที่ ๒ */}
+        <div style={this.rpCard()}>
+          {this.rpHead('๔', 'เทียบการจัดกลุ่มทีละคำ', 'กางครบทุกคำ ไม่ตัดทอน')}
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '15px', flexWrap: 'wrap' }}>
+            {[['typed', 'คำที่พิมพ์เข้า', D.typed.tally.total], ['ext', 'คำที่ AI สกัดมา', D.extracted.tally.total]].map(([id, label, n]) => {
+              const on = (id === 'ext') === (side === 'extracted');
+              return (
+                <button key={id} onClick={() => this.setState({ testSide: id })}
+                  style={{ padding: '8px 17px', border: '1px solid ' + (on ? R.ink : R.line), borderRadius: '9px', background: on ? R.ink : '#fbf7ec', color: on ? '#fbf3e2' : '#6f6252', fontSize: '14px', fontWeight: on ? 700 : 400, cursor: 'pointer' }}>
+                  {label} <span style={{ opacity: .75 }}>{n}</span>
+                </button>
+              );
+            })}
+          </div>
+          {this.rpBar(pane.tally)}
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', minWidth: '900px' }}>
+              <thead>
+                <tr style={{ background: '#f0e6cd', color: '#8a7d6d', fontSize: '11.5px' }}>
+                  <th style={{ padding: '9px 10px', textAlign: 'left', position: 'sticky', left: 0, background: '#f0e6cd', minWidth: '180px' }}>คำ</th>
+                  <th style={{ padding: '9px 8px' }}>ผล</th>
+                  {D.runs.map((r) => (
+                    <th key={r.batch} style={{ padding: '9px 8px', textAlign: 'left', minWidth: '150px', fontWeight: 600 }}>
+                      ช่อ {WordBankApp.thNum(r.batch)}<div style={{ fontWeight: 400, color: '#a1937f' }}>{shortOf(r.batch)}</div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {pane.rows.map((row, i) => {
+                  const [tagT, tagC, tagBg] = agreeTag[row.agree];
+                  return (
+                    <tr key={row.text + i} style={{ borderBottom: '1px solid #efe6d2', background: i % 2 ? '#fdfaf2' : 'transparent' }}>
+                      <td style={{ padding: '9px 10px', fontWeight: 600, color: R.ink, position: 'sticky', left: 0, background: i % 2 ? '#fdfaf2' : 'var(--surface,#fffdf6)', borderRight: '1px solid #efe6d2' }}>{row.text}</td>
+                      <td style={{ padding: '9px 8px', textAlign: 'center' }}>
+                        <span style={{ display: 'inline-block', padding: '2px 9px', borderRadius: '20px', background: tagBg, color: tagC, fontSize: '11.5px', whiteSpace: 'nowrap' }}>{tagT}</span>
+                      </td>
+                      {D.runs.map((r) => {
+                        const cell = row.by[r.batch];
+                        if (!cell) return <td key={r.batch} style={{ padding: '9px 8px', color: '#c9bda8', textAlign: 'center' }}>—</td>;
+                        // กิ่งยาวมาก แสดงเฉพาะปลายทาง แล้วให้ดูเส้นทางเต็มตอนเอาเมาส์ชี้
+                        return (
+                          <td key={r.batch} style={{ padding: '9px 8px', color: '#6f6252', lineHeight: 1.55, verticalAlign: 'top' }}>
+                            <div style={{ fontSize: '11px', color: '#a1937f' }}>{catName(cell.cat)}</div>
+                            {cell.paths.length ? cell.paths.map((p) => (
+                              <div key={p} title={p} style={{ marginTop: '2px' }}>{p.split(' / ').pop()}</div>
+                            )) : <div style={{ color: '#c9bda8' }}>(ไม่มีกิ่ง)</div>}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* ⑤ ชุดคำทดสอบ + คำสั่งที่ใช้ */}
+        <div style={this.rpCard()}>
+          {this.rpHead('๕', 'ชุดคำทดสอบและคำสั่งที่ใช้', 'ต้องคงที่ ผลถึงเทียบกันได้')}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
+            <b style={{ fontSize: '14px', color: R.ink }}>ชุดคำมาตรฐาน เวอร์ชัน {WordBankApp.thNum(D.version)}</b>
+            <span style={{ fontSize: '13px', color: R.faint }}>31 บรรทัด</span>
+            {this.rpCopyBtn(WordBankApp.TEST_WORDS, 'คัดลอกชุดคำ', 'คัดลอกชุดคำทดสอบแล้ว ไปวางในหน้าเพิ่มคำได้เลย')}
+          </div>
+          {this.rpTextBox(WordBankApp.TEST_WORDS, '260px')}
+          <div style={{ marginTop: '16px', display: 'flex', flexWrap: 'wrap', gap: '9px', alignItems: 'center' }}>
+            <span style={{ fontSize: '13.5px', color: '#6f6252' }}>คำสั่ง (prompt) ที่ใช้ในการทดลองนี้ กดเพื่อดูฉบับเต็ม</span>
+            {PROMPT_LOG.filter((p) => p.batches && p.batches.length).map((p) => (
+              <button key={p.v} onClick={() => this.setState({ page: 'prompts', promptOpen: p.v }, this.toTop)}
+                style={{ padding: '5px 13px', border: '1px solid ' + R.line, borderRadius: '20px', background: '#f7f1e2', color: '#6f6252', fontSize: '12.5px', cursor: 'pointer' }}>
+                📜 {p.no} · ช่อ {p.batches.map((b) => WordBankApp.thNum(b)).join(' ')} →
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* ⑥ สิ่งที่ค้นพบ */}
+        <div style={this.rpCard()}>
+          {this.rpHead('๖', 'สิ่งที่ค้นพบ')}
+          <div style={{ display: 'grid', gap: '11px' }}>
+            {[
+              ['คำสั่งสำคัญกว่าตัวโมเดล', 'ช่อ ๖ กับ ๘ ใช้โมเดลเดียวกัน (Gemini 3.1 Pro) ต่างกันแค่คำสั่ง ผลเปลี่ยนทุกมิติ — กิ่งผิดรูปแบบ 2 → 0 · สกัดเพิ่ม 14 → 17 · ก่อนแก้คำสั่ง โมเดลราคาแพงยังแพ้โมเดลฟรี ⇒ AI จัดไม่ดีให้สงสัยคำสั่งก่อนสงสัยโมเดล', '#4d6136', '#eef3e4'],
+              ['ตระกูล GPT กลืนคำที่ผู้ใช้พิมพ์เข้า', 'คำที่หายทุกกรณีมีลักษณะเดียวกัน คือผู้ใช้พิมพ์คำเดี่ยวแยกบรรทัด และคำนั้นไปปรากฏในประโยคยาวบรรทัดอื่นด้วย (ทรุดลง · อลหม่าน · ดุจดั่ง) GPT ตีความว่าซ้ำจึงตัดทิ้ง โดยไม่แจ้งเตือน ส่วน Gemini เก็บครบ 31/31 ทุกรอบ', '#b4503a', '#f7e5e0'],
+              ['ตระกูล GPT ไม่ให้หมวดย่อยหลายกิ่งเลย', 'ได้ 0 ทั้ง 3 รุ่นที่ทดสอบ ขณะที่ Gemini ได้ 1–3 ทั้งที่ได้รับคำสั่งเดียวกัน ไม่ใช่เรื่องฉลาดกว่าหรือแย่กว่า แต่เป็นความต่างของการตีความคำสั่ง ⇒ ต้องเขียนคำสั่งแยกต่อตระกูล', '#b4503a', '#f7e5e0'],
+              ['สร้างกิ่งเยอะ ไม่เท่ากับสร้างกิ่งมั่ว', 'GPT-4.1 สร้าง 2 กิ่งแล้วใช้กับ 8 คำ = จัดหมวดอย่างมีเหตุผล · GPT-5.6 Sol สร้าง 10 กิ่งสำหรับ 10 คำ = แทบไม่ใช้กิ่งเดิมเลย ทำให้คลังงอกกิ่งซ้ำความหมาย ⇒ ตัวชี้วัดที่ถูกคืออัตราส่วนกิ่งต่อคำ', '#a8791f', '#fbf1d8'],
+              ['ความเห็นต่างคือวัตถุดิบ ไม่ใช่ข้อบกพร่อง', 'คำที่พิมพ์เข้า จัดตรงกันทุกโมเดลเพียง ' + Math.round(D.typed.tally.full / (D.typed.tally.total - D.typed.tally.single) * 100) + '% · และคำที่สกัดมา ' + D.extracted.tally.single + ' จาก ' + D.extracted.tally.total + ' คำ มีโมเดลเดียวที่มองเห็น ⇒ ใช้ AI ตัวเดียวจะพลาดคำงามที่ตัวอื่นเห็น นี่คือเหตุผลที่ควรให้ AI หลายตัวช่วยกันเสนอ แล้วเจ้าของคลังเลือกเอง', '#4d6136', '#eef3e4'],
+            ].map(([t, d, col, bg]) => (
+              <div key={t} style={{ padding: '14px 16px', background: bg, borderRadius: '11px', borderLeft: '4px solid ' + col }}>
+                <div style={{ fontSize: '14.5px', fontWeight: 700, color: col, marginBottom: '5px' }}>{t}</div>
+                <div style={{ fontSize: '13.5px', color: '#5f5346', lineHeight: 1.85 }}>{d}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ⑦ ข้อจำกัด */}
+        <div style={this.rpCard()}>
+          {this.rpHead('๗', 'ข้อจำกัดของการทดลองนี้', 'เขียนไว้กันตัวเองเชื่อผลมากเกินจริง')}
+          <ol style={{ margin: 0, paddingLeft: '20px', fontSize: '13.5px', color: '#5f5346', lineHeight: 2 }}>
+            <li><b>ทดสอบรุ่นละครั้งเดียว</b> — AI ให้ผลไม่เหมือนเดิมทุกครั้ง ผลที่ได้อาจคลาดเคลื่อนจากความบังเอิญ ควรรันซ้ำอย่างน้อย 3 ครั้งต่อรุ่น</li>
+            <li><b>ไม่มีเฉลย</b> — วัดได้แค่ว่าโมเดลเห็นพ้องกันไหม บอกไม่ได้ว่าใครจัดถูก ต้องให้เจ้าของคลังทำเฉลยไว้ก่อน</li>
+            <li><b>ช่อ ๖ ใช้คำสั่งคนละฉบับ</b> — เทียบกับช่ออื่นตรง ๆ ไม่ได้ เทียบได้เฉพาะกับช่อ ๘ เพื่อดูผลของการแก้คำสั่ง</li>
+            <li><b>ชุดคำมีกรณีพิเศษเยอะกว่าการใช้งานจริง</b> — มีช่องเติมคำ 6 จุดจาก 31 บรรทัด (19%) สูงกว่าการเก็บคำตามปกติ</li>
+            <li><b>ยังไม่ได้วัดต้นทุนและเวลา</b> — ข้อมูลมีอยู่ในหน้าประวัติ AI แต่ยังไม่ได้นำมาเปรียบเทียบความคุ้มค่า</li>
+          </ol>
+        </div>
+
+        {this.renderScrollButtons()}
+      </div>
+    );
+  }
+
+  // ============ ประวัติคำสั่ง AI (prompt) ============
+  // ทำไมต้องมี: คำสั่งมีผลต่อผลลัพธ์มากกว่าตัวโมเดล ถ้าไม่เก็บสำเนา ผลทดสอบเก่าจะอ้างอิงกลับไม่ได้
+  renderPromptLog() {
+    const R = WordBankApp.RP;
+    const S = this.state;
+    const list = [...PROMPT_LOG].reverse(); // ฉบับใหม่สุดอยู่บน
+    const open = S.promptOpen;
+    const lang = S.promptLang === 'th' ? 'th' : 'en';
+    // เทียบกับฉบับก่อนหน้าเสมอ (ฉบับแรกไม่มีให้เทียบ)
+    const prevOf = (v) => PROMPT_LOG.find((p) => p.v === v - 1);
+
+    return (
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        {this.rpTitle('📜', 'ประวัติคำสั่ง AI', 'ทุกฉบับที่เคยใช้ · เก็บไว้เพื่อให้ผลทดสอบย้อนกลับมาอ้างอิงได้')}
+
+        <div style={this.rpCard({ background: '#f7f1e2', borderStyle: 'dashed' })}>
+          <p style={{ margin: 0, fontSize: '13.5px', color: '#5f5346', lineHeight: 1.95 }}>
+            <b>คำสั่ง (prompt)</b> คือข้อความที่ส่งไปบอก AI ว่าต้องทำอะไรบ้าง — จัดเป็นตัวแปรที่มีผลต่อผลลัพธ์มากกว่าการเลือกตัวโมเดลเสียอีก
+            (พิสูจน์แล้วในหน้าผลทดสอบ: โมเดลเดียวกัน เปลี่ยนแค่คำสั่ง ผลเปลี่ยนทุกมิติ)
+            <br />หน้านี้เก็บทุกฉบับที่เคยใช้ พร้อมเหตุผลว่าแก้เพราะเจอปัญหาอะไร และผลที่ได้หลังแก้
+            <span style={{ color: '#4d6136' }}> บรรทัดพื้นเขียวคือที่เพิ่มเข้ามา</span> <span style={{ color: '#b4503a' }}>บรรทัดพื้นแดงขีดฆ่าคือที่ถูกลบ</span>
+          </p>
+        </div>
+
+        {list.map((p) => {
+          const prev = prevOf(p.v);
+          const rows = prev ? diffLines(prev[lang], p[lang]) : [];
+          const st = prev ? diffStat(rows) : null;
+          const isOpen = open === p.v;
+          const isCurrent = p.v === PROMPT_LOG.length;
+          return (
+            <div key={p.v} style={this.rpCard(isCurrent ? { borderColor: '#cbdcb8', borderWidth: '2px' } : {})}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '13px', flexWrap: 'wrap' }}>
+                <span style={{ width: '34px', height: '34px', flex: '0 0 34px', borderRadius: '50%', background: isCurrent ? '#5a7040' : R.ink, color: '#fbf3e2', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontFamily: R.serif }}>{isCurrent ? '●' : WordBankApp.thNum(p.v)}</span>
+                <div style={{ flex: 1, minWidth: '240px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '9px', flexWrap: 'wrap' }}>
+                    <h3 style={{ margin: 0, fontSize: '19px', fontFamily: R.hand, color: R.ink, fontWeight: 400 }}>{p.title}</h3>
+                    {isCurrent && <span style={{ padding: '2px 10px', borderRadius: '20px', background: '#eef3e4', border: '1px solid #cbdcb8', color: '#4d6136', fontSize: '12px' }}>ใช้อยู่ตอนนี้</span>}
+                  </div>
+                  <div style={{ fontSize: '12.5px', color: R.faint, marginTop: '3px' }}>
+                    ฉบับที่ {WordBankApp.thNum(p.v)} · {p.date}
+                    {p.commit ? ' · ' + p.commit : ''}
+                    {st ? <span style={{ marginLeft: '8px' }}><b style={{ color: '#4d6136' }}>+{st.add}</b> <b style={{ color: '#b4503a' }}>−{st.del}</b> บรรทัด</span> : null}
+                    {p.batches && p.batches.length ? <span style={{ marginLeft: '8px' }}>· ทดสอบในช่อ {p.batches.map((b) => WordBankApp.thNum(b)).join(' ')}</span> : null}
+                  </div>
+                </div>
+                {p.batches && p.batches.length ? (
+                  <button onClick={() => this.setState({ page: 'aitest' }, this.toTop)} style={{ padding: '5px 13px', border: '1px solid ' + R.line, borderRadius: '20px', background: '#fbf7ec', color: '#6f6252', fontSize: '12.5px', cursor: 'pointer' }}>🔬 ดูผลทดสอบ</button>
+                ) : null}
+              </div>
+
+              <div style={{ marginTop: '15px', display: 'grid', gap: '11px' }}>
+                {p.changes && p.changes.length > 0 && (
+                  <div style={{ padding: '13px 15px', background: '#eef3e4', borderRadius: '11px', borderLeft: '4px solid #7d9a5c' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#4d6136', marginBottom: '6px' }}>แก้อะไร</div>
+                    <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13.5px', color: '#5f5346', lineHeight: 1.85 }}>
+                      {p.changes.map((x, i) => <li key={i}>{x}</li>)}
+                    </ul>
+                  </div>
+                )}
+                {p.why && (
+                  <div style={{ padding: '13px 15px', background: '#fbf1d8', borderRadius: '11px', borderLeft: '4px solid #d9a63e' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#a8791f', marginBottom: '5px' }}>ทำไมถึงแก้</div>
+                    <div style={{ fontSize: '13.5px', color: '#5f5346', lineHeight: 1.85 }}>{p.why}</div>
+                  </div>
+                )}
+                {p.effect && (
+                  <div style={{ padding: '13px 15px', background: '#f0e6cd', borderRadius: '11px', borderLeft: '4px solid #8a7d6d' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#6f6252', marginBottom: '5px' }}>ผลที่ได้</div>
+                    <div style={{ fontSize: '13.5px', color: '#5f5346', lineHeight: 1.85 }}>{p.effect}</div>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ marginTop: '14px', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <button onClick={() => this.setState({ promptOpen: isOpen ? null : p.v })}
+                  style={{ padding: '6px 15px', border: '1px solid ' + R.line, borderRadius: '9px', background: isOpen ? R.ink : '#fbf7ec', color: isOpen ? '#fbf3e2' : '#6f6252', fontSize: '13.5px', cursor: 'pointer' }}>
+                  {isOpen ? '▾ ปิดข้อความเต็ม' : '▸ ดูข้อความเต็มและจุดที่เปลี่ยน'}
+                </button>
+                {isOpen && (
+                  <>
+                    {[['en', 'อังกฤษ (ส่งจริง)'], ['th', 'ไทย']].map(([id, label]) => (
+                      <button key={id} onClick={() => this.setState({ promptLang: id })}
+                        style={{ padding: '6px 14px', border: '1px solid ' + (lang === id ? R.ink : R.line), borderRadius: '9px', background: lang === id ? '#f0e6cd' : '#fbf7ec', color: '#6f6252', fontSize: '13px', cursor: 'pointer' }}>{label}</button>
+                    ))}
+                    {this.rpCopyBtn(p[lang], 'คัดลอกคำสั่ง', 'คัดลอกคำสั่งฉบับที่ ' + WordBankApp.thNum(p.v) + ' แล้ว')}
+                  </>
+                )}
+              </div>
+
+              {isOpen && (
+                <div style={{ marginTop: '13px' }}>
+                  {prev ? (
+                    <>
+                      <div style={{ fontSize: '13px', color: R.faint, marginBottom: '7px' }}>เทียบกับฉบับที่ {WordBankApp.thNum(prev.v)} — ย่อบรรทัดที่ไม่เปลี่ยนให้อัตโนมัติ</div>
+                      <div style={{ border: '1px solid ' + R.line, borderRadius: '10px', overflow: 'hidden', fontSize: '12.5px', fontFamily: 'var(--font-sarabun),sans-serif', lineHeight: 1.7 }}>
+                        {collapseSame(rows).map((r, i) => {
+                          const sty = { padding: '3px 12px 3px 26px', position: 'relative', whiteSpace: 'pre-wrap', wordBreak: 'break-word', borderBottom: '1px solid rgba(224,208,172,.4)' };
+                          if (r.t === 'add') return <div key={i} style={{ ...sty, background: '#e9f2df', color: '#3d5228' }}><span style={{ position: 'absolute', left: '9px', color: '#7d9a5c', fontWeight: 700 }}>+</span>{r.text || ' '}</div>;
+                          if (r.t === 'del') return <div key={i} style={{ ...sty, background: '#f9e6e1', color: '#8e4130', textDecoration: 'line-through', textDecorationColor: 'rgba(180,80,58,.5)' }}><span style={{ position: 'absolute', left: '9px', color: '#c1614c', fontWeight: 700, textDecoration: 'none' }}>−</span>{r.text || ' '}</div>;
+                          if (r.t === 'skip') return <div key={i} style={{ ...sty, background: '#f4efe3', color: '#a1937f', fontSize: '11.5px', textAlign: 'center', paddingLeft: '12px' }}>{r.text}</div>;
+                          return <div key={i} style={{ ...sty, background: '#fffdf6', color: '#6f6252' }}>{r.text || ' '}</div>;
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: '13px', color: R.faint, marginBottom: '7px' }}>ฉบับแรก ไม่มีฉบับก่อนหน้าให้เทียบ</div>
+                      {this.rpTextBox(p[lang], '420px')}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {this.renderScrollButtons()}
       </div>
     );
   }
