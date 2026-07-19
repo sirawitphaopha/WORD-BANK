@@ -44,8 +44,10 @@ export default class WordBankApp extends React.Component {
     stickH: 128,         // ความสูงจริงของก้อนตรึง (แท็บช่อ + แถบเครื่องมือ) — หัวตารางเอาไปคำนวณว่าต้องเกาะที่ตำแหน่งไหน
     addPathFor: null,    // id ของคำที่กำลังพิมพ์เพิ่มหมวดย่อยอยู่
     newBranchOnly: false, // หน้าตรวจทาน: กรองเหลือเฉพาะคำที่มีกิ่งใหม่ (ป้าย ✦ เขียว)
+    libStickH: 103,      // ความสูงจริงของแถบตรึงหน้าคลังคำ (ค้นหา+ตัวกรอง+ชิปหมวด) — สารบัญเอาไปหลบใต้แถบนี้
   };
   _stickRef = React.createRef();
+  _libStickRef = React.createRef();
   // เฝ้าดูความสูงก้อนตรึง (เปลี่ยนเมื่อมี/ไม่มีแท็บช่อ หรือปุ่มล้นบรรทัดตอนจอแคบ)
   watchStick() {
     const el = this._stickRef.current;
@@ -57,6 +59,16 @@ export default class WordBankApp extends React.Component {
       this._ro.observe(el);
     } else if (!el && this._ro) {
       this._ro.disconnect(); this._ro = null;
+    }
+    const el2 = this._libStickRef.current;
+    if (el2 && !this._ro2 && typeof ResizeObserver !== 'undefined') {
+      this._ro2 = new ResizeObserver(() => {
+        const h = Math.round(el2.getBoundingClientRect().height);
+        if (h && h !== this.state.libStickH) this.setState({ libStickH: h });
+      });
+      this._ro2.observe(el2);
+    } else if (!el2 && this._ro2) {
+      this._ro2.disconnect(); this._ro2 = null;
     }
   }
   componentDidUpdate() { this.watchStick(); }
@@ -95,6 +107,7 @@ export default class WordBankApp extends React.Component {
     if (this._onUnload && typeof window !== 'undefined') window.removeEventListener('beforeunload', this._onUnload);
     clearInterval(this._proc); clearInterval(this._sec); clearTimeout(this._rvPush);
     if (this._ro) { this._ro.disconnect(); this._ro = null; }
+    if (this._ro2) { this._ro2.disconnect(); this._ro2 = null; }
     this._flushReview(true);
   }
   async componentDidMount() {
@@ -787,6 +800,7 @@ export default class WordBankApp extends React.Component {
         {S.modal === 'cats' && this.renderCatModal(monoMode)}
         {S.modal === 'settings' && this.renderSettings(monoMode, navStyle, spell, effLayout, accent, primary, paper)}
         {this.renderConfirm()}
+        {this.renderScrollButtons()}
         {S.toast && (
           <div style={{ position: 'fixed', bottom: '28px', left: '50%', transform: 'translateX(-50%)', background: '#3a2f28', color: '#fbf3e2', padding: '13px 26px', borderRadius: '24px', fontSize: '15px', zIndex: 80, boxShadow: '0 8px 24px rgba(58,47,40,.35)', animation: 'wbtoast .28s ease' }}>{S.toast}</div>
         )}
@@ -1570,6 +1584,28 @@ export default class WordBankApp extends React.Component {
     );
   }
 
+  // ============ ปุ่มขึ้นบนสุด / ลงล่างสุด ============
+  // ลอยมุมขวาล่างทุกหน้า · โผล่เฉพาะตอนหน้ายาวพอให้เลื่อนจริง (กันปุ่มไร้ประโยชน์เกะกะ)
+  toBottom = () => { try { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); } catch (e) {} };
+  toTopSmooth = () => { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} };
+  renderScrollButtons() {
+    if (typeof window === 'undefined') return null;
+    const canScroll = (document.documentElement.scrollHeight - window.innerHeight) > 300;
+    if (!canScroll) return null;
+    const btn = {
+      width: '42px', height: '42px', borderRadius: '50%', border: '1px solid #ddcba4',
+      background: 'var(--surface,#fffdf6)', color: 'var(--primary,#6f4e37)', fontSize: '17px',
+      cursor: 'pointer', boxShadow: '0 3px 12px rgba(120,90,50,.22)', display: 'grid', placeItems: 'center',
+      lineHeight: 1, padding: 0,
+    };
+    return (
+      <div style={{ position: 'fixed', right: '18px', bottom: '22px', zIndex: 60, display: 'flex', flexDirection: 'column', gap: '9px' }}>
+        <button onClick={this.toTopSmooth} title="ขึ้นบนสุด" style={btn}>▲</button>
+        <button onClick={this.toBottom} title="ลงล่างสุด" style={btn}>▼</button>
+      </div>
+    );
+  }
+
   // ============ เกี่ยวกับ ============
   // หน้าแนะนำตัวเว็บ — โทนกระดาษวรรณกรรม ใช้ฟอนต์ลายมือให้มากที่สุดเท่าที่ยังอ่านง่าย
   renderAbout() {
@@ -1609,11 +1645,15 @@ export default class WordBankApp extends React.Component {
     const paths = S.library.map((w) => (w.subpath || '').trim()).filter(Boolean);
     const branchCount = new Set(paths).size;
     const subCount = new Set(paths.map((p) => p.split(' / ')[0].trim())).size;
-    const techs = [
+    // แบ่ง 2 แถว: แถวแรก = ของที่ใช้สร้างตัวเว็บ · แถวสอง = บริการคลาวด์ที่เว็บไปอาศัยอยู่
+    const techs1 = [
       { k: 'nextjs', n: 'Next.js 15', d: 'โครงเว็บ' },
       { k: 'react', n: 'React 19', d: 'หน้าจอ' },
-      { k: 'supabase', n: 'Supabase', d: 'ฐานข้อมูล' },
+      { k: 'javascript', n: 'JavaScript', d: 'ภาษาที่ใช้เขียน' },
+    ];
+    const techs2 = [
       { k: 'cloudflare', n: 'Cloudflare', d: 'ที่วางเว็บ' },
+      { k: 'supabase', n: 'Supabase', d: 'ฐานข้อมูล' },
     ];
     // ชิปเทคโนโลยี (หน้าตาเดียวกันทุกตัว) — Claude Code ใช้ชิปแบบเดียวกัน แต่วางกลางแถวล่างของตัวเอง
     const techChip = (t) => (
@@ -1718,7 +1758,10 @@ export default class WordBankApp extends React.Component {
         <div style={card}>
           {head('๖', 'สร้างด้วยเทคโนโลยี')}
           <div style={{ display: 'flex', gap: '9px', flexWrap: 'wrap' }}>
-            {techs.map(techChip)}
+            {techs1.map(techChip)}
+          </div>
+          <div style={{ display: 'flex', gap: '9px', flexWrap: 'wrap', marginTop: '9px' }}>
+            {techs2.map(techChip)}
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', paddingTop: '18px', borderTop: '1px dashed #ddcba4' }}>
             {techChip({ k: 'claude', n: 'Claude Code', d: 'ผู้ช่วยเขียนโค้ด' })}
@@ -1784,10 +1827,14 @@ export default class WordBankApp extends React.Component {
     const SZ = ({ s: { min: 168, w: 16.5, lw: 19 }, m: { min: 228, w: 19, lw: 22 }, l: { min: 302, w: 23, lw: 27 } })[cardSize] || { min: 228, w: 19, lw: 22 };
     const gridStyle = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(' + SZ.min + 'px,1fr))', gap: '12px', marginBottom: '8px' };
     const wordFont = this.eff('wordFont', 'trirong');
-    const FF = ({ trirong: "var(--font-trirong),serif", sarabun: "var(--font-sarabun),sans-serif", maitree: "var(--font-maitree),serif", chonburi: "var(--font-chonburi),serif" })[wordFont] || "var(--font-trirong),serif";
+    // ฟอนต์ไทยดั้งเดิมตัวเล็กกว่ามาตรฐาน ต้องคูณขนาดชดเชย + ใช้ตัวหนาให้อ่านชัด
+    const FSCALE = { thsarabun: 1.38, cordia: 1.38 }[wordFont] || 1;
+    const FWEIGHT = { thsarabun: 700, cordia: 700 }[wordFont] || 500;
+    const fsz = (n) => Math.round(n * FSCALE) + 'px';
+    const FF = ({ trirong: "var(--font-trirong),serif", sarabun: "var(--font-sarabun),sans-serif", thsarabun: "var(--font-thsarabun),sans-serif", cordia: "'Cordia New','CordiaUPC','Cordia',var(--font-sarabun),sans-serif", maitree: "var(--font-maitree),serif", chonburi: "var(--font-chonburi),serif" })[wordFont] || "var(--font-trirong),serif";
     const isCards = S.libView === 'cards', isList = S.libView === 'list';
 
-    const seg = (on) => ({ padding: '7px 15px', border: 'none', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', background: on ? 'var(--surface,#fffdf6)' : 'transparent', color: on ? '#3a2f28' : '#8a7d6d', fontWeight: on ? 600 : 400, boxShadow: on ? '0 1px 3px rgba(120,90,50,.15)' : 'none' });
+    const seg = (on) => ({ padding: '0 15px', height: '32px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, border: 'none', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', background: on ? 'var(--surface,#fffdf6)' : 'transparent', color: on ? '#3a2f28' : '#8a7d6d', fontWeight: on ? 600 : 400, boxShadow: on ? '0 1px 3px rgba(120,90,50,.15)' : 'none' });
 
     const novelFilterOpts = [{ v: 'all', label: 'ทุกเรื่อง' }].concat([...new Set(S.library.map((w) => w.novel).filter(Boolean))].map((n) => ({ v: n, label: n })));
     const catChipStyle = (active) => ({ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '7px 14px', borderRadius: '20px', fontSize: '13.5px', cursor: 'pointer', border: '1px solid ' + (active ? 'var(--primary,#6f4e37)' : '#ddcba4'), background: active ? 'var(--primary,#6f4e37)' : 'var(--panel,#f7f0e0)', color: active ? '#fbf3e2' : '#6f6252', fontWeight: active ? 600 : 400 });
@@ -1841,7 +1888,7 @@ export default class WordBankApp extends React.Component {
         return (
           <div key={w.id} style={{ ...baseCard, padding: '20px 18px 15px' }}>
             <span style={{ position: 'absolute', top: '-8px', left: '9px', fontFamily: 'Georgia,serif', fontSize: '64px', lineHeight: 1, color: rgba(accent, 0.15), zIndex: 0 }}>“</span>
-            <div style={{ fontFamily: FF, fontSize: SZ.lw + 'px', fontWeight: 500, color: '#33291f', lineHeight: 1.3, textWrap: 'pretty', position: 'relative', zIndex: 1 }}>{w.text}</div>
+            <div style={{ fontFamily: FF, fontSize: fsz(SZ.lw), fontWeight: FWEIGHT, color: '#33291f', lineHeight: 1.3, textWrap: 'pretty', position: 'relative', zIndex: 1 }}>{w.text}</div>
             {w.meaning && w.meaning.trim() && <div style={{ fontSize: '14px', fontStyle: 'italic', color: '#8a7d6d', marginTop: '8px', lineHeight: 1.5 }}>{w.meaning}</div>}
             {footer}
           </div>
@@ -1851,7 +1898,7 @@ export default class WordBankApp extends React.Component {
         return (
           <div key={w.id} style={{ ...baseCard, padding: '0 15px 13px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: '0 -15px 11px', padding: '6px 15px', background: monoMode ? '#efe4cc' : rgba(cat.c, 0.16), color: monoMode ? '#5c5044' : shade(cat.c), borderBottom: '1px solid ' + (isDup ? dupB : '#ecdcbf'), fontSize: '12px', fontWeight: 600 }}>{cat.k}  {cat.n}</div>
-            <div style={{ fontFamily: FF, fontSize: SZ.w + 'px', fontWeight: 500, color: '#33291f', lineHeight: 1.35, textWrap: 'pretty', paddingBottom: '8px', borderBottom: '1px dashed #e0d0ac' }}>{w.text}</div>
+            <div style={{ fontFamily: FF, fontSize: fsz(SZ.w), fontWeight: FWEIGHT, color: '#33291f', lineHeight: 1.35, textWrap: 'pretty', paddingBottom: '8px', borderBottom: '1px dashed #e0d0ac' }}>{w.text}</div>
             {w.meaning && w.meaning.trim() && <div style={{ fontSize: '13.5px', color: '#8a7d6d', marginTop: '8px', lineHeight: 1.4 }}>{w.meaning}</div>}
             {footer}
           </div>
@@ -1859,7 +1906,7 @@ export default class WordBankApp extends React.Component {
       }
       return (
         <div key={w.id} style={{ ...baseCard, padding: '14px 15px', borderLeft: '3px solid ' + (isDup ? dupB : bar) }}>
-          <div style={{ fontFamily: FF, fontSize: SZ.w + 'px', fontWeight: 500, color: '#33291f', lineHeight: 1.35, textWrap: 'pretty' }}>{w.text}</div>
+          <div style={{ fontFamily: FF, fontSize: fsz(SZ.w), fontWeight: FWEIGHT, color: '#33291f', lineHeight: 1.35, textWrap: 'pretty' }}>{w.text}</div>
           {w.meaning && w.meaning.trim() && <div style={{ fontSize: '13.5px', color: '#8a7d6d', marginTop: '5px', lineHeight: 1.4 }}>{w.meaning}</div>}
           {footer}
         </div>
@@ -1952,7 +1999,8 @@ export default class WordBankApp extends React.Component {
     };
 
     // สารบัญฝั่งซ้าย
-    const tocTop = navStyle === 'tabs' ? 74 : 16;
+    // สารบัญต้องหลบใต้แถบค้นหาที่ตรึงอยู่ ไม่งั้นโดนทับ (69 = ความสูงแบนเนอร์ · +10 เว้นช่องไฟ)
+    const tocTop = navStyle === 'tabs' ? (69 + S.libStickH + 10) : 16;
     const toc = (
       <aside style={{ width: '236px', flex: 'none', position: 'sticky', top: tocTop + 'px', alignSelf: 'flex-start', maxHeight: 'calc(100vh - ' + (tocTop + 20) + 'px)', overflow: 'auto', paddingRight: '6px' }}>
         <div style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '19px', color: 'var(--accent,#9c3b2b)', margin: '0 0 10px' }}>สารบัญ</div>
@@ -1991,6 +2039,8 @@ export default class WordBankApp extends React.Component {
         <h1 style={{ fontFamily: "var(--font-charmonman),cursive", fontWeight: 700, fontSize: 'clamp(34px,4.4vw,48px)', margin: '0 0 8px', color: 'var(--accent,#9c3b2b)', lineHeight: 1.1 }}>คลังคำของฉัน</h1>
         <p style={{ color: '#6f6252', margin: '0 0 24px' }}><b style={{ color: '#4a3f35' }}>{S.library.length}</b> คำ ใน {new Set(S.library.map((w) => w.category)).size} หมวด จาก {new Set(S.library.map((w) => w.novel)).size} เรื่อง</p>
 
+        {/* แถบค้นหา/ตัวกรอง + ชิปหมวด = ตรึงเป็นก้อนเดียว (กดบ่อยสุด เลื่อนดูคำล่าง ๆ ก็ยังกรองได้) */}
+        <div ref={this._libStickRef} style={{ position: 'sticky', top: '69px', zIndex: 16, background: 'var(--paper,#e7dbc0)', paddingTop: '4px' }}>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '18px' }}>
           <div style={{ position: 'relative', flex: 1, minWidth: '220px', maxWidth: '420px' }}>
             <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#b0a184', fontSize: '16px' }}>⌕</span>
@@ -2022,7 +2072,7 @@ export default class WordBankApp extends React.Component {
           )}
           {isCards && (
             <div style={{ display: 'inline-flex', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
-              {[['trirong', 'ไทรรงค์', "var(--font-trirong),serif"], ['sarabun', 'สารบรรณ', "var(--font-sarabun),sans-serif"], ['maitree', 'ไมตรี', "var(--font-maitree),serif"], ['chonburi', 'ชลบุรี', "var(--font-chonburi),serif"]].map(([k, label, ff]) => <button key={k} onClick={this.setUi('wordFont', k)} style={{ ...seg(wordFont === k), fontFamily: ff, fontSize: '14px' }}>{label}</button>)}
+              {[['trirong', 'ไทรรงค์', "var(--font-trirong),serif"], ['sarabun', 'สารบรรณ', "var(--font-sarabun),sans-serif"], ['thsarabun', 'สารบรรณราชการ', "var(--font-thsarabun),sans-serif"], ['cordia', 'คอร์เดีย', "'Cordia New','CordiaUPC','Cordia',var(--font-sarabun),sans-serif"], ['maitree', 'ไมตรี', "var(--font-maitree),serif"], ['chonburi', 'ชลบุรี', "var(--font-chonburi),serif"]].map(([k, label, ff]) => <button key={k} onClick={this.setUi('wordFont', k)} style={{ ...seg(wordFont === k), fontFamily: ff, fontSize: ({ trirong: 14, sarabun: 16, thsarabun: 23, cordia: 19, maitree: 14, chonburi: 15 })[k] + 'px', fontWeight: (k === 'thsarabun' || k === 'cordia') ? 700 : undefined }}>{label}</button>)}
             </div>
           )}
         </div>
@@ -2041,6 +2091,7 @@ export default class WordBankApp extends React.Component {
             if (!cnt) return null;
             return <button key={c.id} onClick={this.setFilterCat(c.id)} style={catChipStyle(S.filterCat === c.id)}><span style={dot(c, monoMode)} />{c.n} <span style={{ opacity: 0.6 }}>{cnt}</span></button>;
           })}
+        </div>
         </div>
 
         {!anyResults && (
@@ -2061,7 +2112,9 @@ export default class WordBankApp extends React.Component {
                 const bigBadge = { ...badge(g.cat, monoMode), width: '36px', height: '36px', fontSize: '17px' };
                 return (
                   <div key={g.cat.id} id={catKey} style={{ marginBottom: '30px', scrollMarginTop: (tocTop + 6) + 'px' }}>
-                    <div onClick={this.toggleCollapse(catKey)} style={{ cursor: 'pointer', userSelect: 'none', padding: '13px 16px', background: monoMode ? '#f2ead7' : rgba(g.cat.c, 0.13), border: '1px solid ' + (monoMode ? '#ddcba4' : rgba(g.cat.c, 0.32)), borderLeft: '5px solid ' + (monoMode ? '#c9b78f' : g.cat.c), borderRadius: '12px', marginBottom: '12px' }}>
+                    {/* หัวข้อหมวดตรึงไว้ระหว่างเลื่อนอ่านหมวดนั้น พอเลื่อนถึงหมวดถัดไป หัวข้อใหม่จะดันหัวข้อเก่าออกแล้วค้างแทน
+                        (sticky ทำงานในขอบเขตกล่องหมวดของตัวเอง จึงเปลี่ยนหัวตามหมวดอัตโนมัติ) · พื้นทึบกันคำด้านหลังทะลุ */}
+                    <div onClick={this.toggleCollapse(catKey)} style={{ position: 'sticky', top: tocTop + 'px', zIndex: 12, cursor: 'pointer', userSelect: 'none', padding: '13px 16px', background: monoMode ? '#f2ead7' : mix(g.cat.c, '#fffdf6', 0.88), border: '1px solid ' + (monoMode ? '#ddcba4' : rgba(g.cat.c, 0.32)), borderLeft: '5px solid ' + (monoMode ? '#c9b78f' : g.cat.c), borderRadius: '12px', marginBottom: '12px', boxShadow: '0 2px 8px rgba(120,90,50,.08)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '11px' }}>
                         {chev(isCol)}
                         <span style={bigBadge}>{g.cat.k}</span>
