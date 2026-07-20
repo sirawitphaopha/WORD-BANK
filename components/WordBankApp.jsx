@@ -1635,8 +1635,8 @@ export default class WordBankApp extends React.Component {
     };
     const fmtNum = (n) => Number(n || 0).toLocaleString('en-US');
     const fmtCost = (c) => Number(c) > 0 ? '$' + Number(c).toFixed(Number(c) < 0.01 ? 5 : 4) : 'ฟรี';
-    // อัตราแลกเปลี่ยนคงที่ USD→บาท (ก.ค. 2569 ~33.6 บาท/USD) — แก้ตัวเลขนี้จุดเดียวถ้าอยากปรับอัตรา
-    const USD_THB = 33.6;
+    // อัตราแลกเปลี่ยนพื้นฐาน USD→บาท (ค่าคงที่ ไม่ผูกกับอัตราวันนี้) — 35 คือเลขกลมที่ใช้อ้างอิงทั่วไป · แก้จุดเดียวถ้าอยากปรับ
+    const USD_THB = 35;
     const fmtBaht = (c) => Number(c) > 0 ? (Number(c) * USD_THB).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' บาท' : 'ฟรี';
     const logs = S.aiLogFilter === 'all' ? S.aiLogs : S.aiLogs.filter((l) => l.provider === S.aiLogFilter);
     const statCard = (label, value, sub) => (
