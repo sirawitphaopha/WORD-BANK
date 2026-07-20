@@ -2224,11 +2224,10 @@ export default class WordBankApp extends React.Component {
     const ink = '#33291f', faint = '#8a7d6d', line = '#e0d0ac';
 
     const card = { background: 'var(--surface,#fffdf6)', border: '1px solid ' + line, borderRadius: '14px', padding: '24px 26px 26px', marginBottom: '18px', boxShadow: '0 1px 3px rgba(120,90,50,.06)' };
-    // หัวข้อบล็อก: เลขไทยในวงกลมหมึก + ชื่อหัวข้อลายมือ (แพตเทิร์นเดียวกับกล่องขั้นตอนในหน้าเพิ่มคำ)
+    // หัวข้อบล็อก — เอาวงกลมเลขไทยออก (พี่กัน 2026-07-20b) · ชื่อหัวข้อใช้ "สีแดงน้ำตาล" (สีที่วงกลมเลขเคยเป็น = accent) · num คงพารามิเตอร์ไว้เฉย ๆ ไม่ได้ใช้แล้ว
     const head = (num, title) => (
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px' }}>
-        <span style={{ flex: 'none', width: '30px', height: '30px', borderRadius: '50%', background: 'var(--accent,#9c3b2b)', color: '#fbf3e2', display: 'grid', placeItems: 'center', fontSize: '15px', fontFamily: SERIF, fontWeight: 600 }}>{num}</span>
-        <span style={{ fontFamily: HAND, fontSize: '25px', color: ink, lineHeight: 1.1, paddingTop: '6px' }}>{title}</span>
+        <span style={{ fontFamily: HAND, fontSize: '25px', color: 'var(--accent,#9c3b2b)', lineHeight: 1.1, paddingTop: '6px' }}>{title}</span>
         <span style={{ flex: 1, height: '1px', borderTop: '1px dashed #ddcba4', marginTop: '4px' }} />
       </div>
     );
@@ -2254,22 +2253,23 @@ export default class WordBankApp extends React.Component {
     const paths = S.library.map((w) => (w.subpath || '').trim()).filter(Boolean);
     const branchCount = new Set(paths).size;
     const subCount = new Set(paths.map((p) => p.split(' / ')[0].trim())).size;
-    // แบ่ง 2 แถว: แถวแรก = ของที่ใช้สร้างตัวเว็บ · แถวสอง = บริการคลาวด์ที่เว็บไปอาศัยอยู่
-    const techs1 = [
+    // เทคโนโลยีทั้งหมด (รวม Claude Code เข้ามาด้วย พี่กัน 2026-07-20b) — จัด grid 2 คอลัมน์แบบบล็อกชนิด AI
+    const allTechs = [
       { k: 'nextjs', n: 'Next.js 15', d: 'โครงเว็บ' },
       { k: 'react', n: 'React 19', d: 'หน้าจอ' },
       { k: 'javascript', n: 'JavaScript', d: 'ภาษาที่ใช้เขียน' },
-    ];
-    const techs2 = [
       { k: 'cloudflare', n: 'Cloudflare', d: 'ที่วางเว็บ' },
       { k: 'supabase', n: 'Supabase', d: 'ฐานข้อมูล' },
+      { k: 'claude', n: 'Claude Code', d: 'ผู้ช่วยเขียนโค้ด' },
     ];
-    // ชิปเทคโนโลยี (หน้าตาเดียวกันทุกตัว) — Claude Code ใช้ชิปแบบเดียวกัน แต่วางกลางแถวล่างของตัวเอง
-    const techChip = (t) => (
-      <div key={t.k} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px', background: '#faf4e6', border: '1px solid #ecdfc2', borderRadius: '22px' }}>
-        <BrandIcon name={t.k} size={16} />
-        <span style={{ fontSize: '14px', color: ink }}>{t.n}</span>
-        <span style={{ fontSize: '12px', color: '#b3a488' }}>{t.d}</span>
+    // เซลล์เทคโนโลยี (โครงเดียวกับเซลล์ชนิด AI) — ไอคอน + ชื่อบน + คำไทยล่าง (stack กันคำไทยล้นช่องแคบ = "ย้ำคำไทยที่เกิน")
+    const techCell = (t) => (
+      <div key={t.k} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 13px', background: '#faf4e6', border: '1px solid #ecdfc2', borderRadius: '10px' }}>
+        <BrandIcon name={t.k} size={19} />
+        <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+          <span style={{ fontSize: '14px', color: ink, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.n}</span>
+          <span style={{ fontSize: '11.5px', color: '#b3a488', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.d}</span>
+        </span>
       </div>
     );
 
@@ -2363,17 +2363,11 @@ export default class WordBankApp extends React.Component {
           </div>
         </div>
 
-        {/* ๖ สร้างด้วยเทคโนโลยี */}
+        {/* สร้างด้วยเทคโนโลยี — grid 2 คอลัมน์แบบบล็อกชนิด AI · รวม Claude Code เข้าไปด้วย (เอาเส้นแบ่งเดิมออก) */}
         <div style={card}>
           {head('๖', 'สร้างด้วยเทคโนโลยี')}
-          <div style={{ display: 'flex', gap: '9px', flexWrap: 'wrap' }}>
-            {techs1.map(techChip)}
-          </div>
-          <div style={{ display: 'flex', gap: '9px', flexWrap: 'wrap', marginTop: '9px' }}>
-            {techs2.map(techChip)}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', paddingTop: '18px', borderTop: '1px dashed #ddcba4' }}>
-            {techChip({ k: 'claude', n: 'Claude Code', d: 'ผู้ช่วยเขียนโค้ด' })}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: '9px' }}>
+            {allTechs.map(techCell)}
           </div>
         </div>
 
@@ -2437,7 +2431,7 @@ export default class WordBankApp extends React.Component {
     const SZ = ({ s: { min: 168, w: 16.5, lw: 19 }, m: { min: 228, w: 19, lw: 22 }, l: { min: 302, w: 23, lw: 27 } })[cardSize] || { min: 228, w: 19, lw: 22 };
     // มือถือ: วางคำเป็นตาราง 3 คอลัมน์ ให้เห็นคำเยอะๆ ไม่ต้องเลื่อนยาว (อ่านซ้าย→ขวาตามปกติ) · จอคอมพิวเตอร์ใช้กริดเดิม
     const gridStyle = S.isMobile
-      ? { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: '7px', marginBottom: '8px', alignItems: 'start' }
+      ? { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gridAutoFlow: 'dense', gap: '7px', marginBottom: '8px', alignItems: 'stretch' }
       : { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(' + SZ.min + 'px,1fr))', gap: '12px', marginBottom: '8px' };
     const wordFont = this.eff('wordFont', 'trirong');
     // ฟอนต์ไทยดั้งเดิมตัวเล็กกว่ามาตรฐาน ต้องคูณขนาดชดเชย + ใช้ตัวหนาให้อ่านชัด
@@ -2502,8 +2496,11 @@ export default class WordBankApp extends React.Component {
       const bar = monoMode ? '#c9b78f' : cat.c, dupB = rgba(accent, 0.55), dupBg = rgba(accent, 0.08);
       // มือถือ: การ์ดกะทัดรัด แตะทั้งใบเพื่อดู/แก้ · จัดเป็นหลายคอลัมน์ (masonry) เพื่อคำแน่น เลื่อนน้อย
       if (S.isMobile) {
+        // วลียาวกินหลายคอลัมน์ (พี่กัน 2026-07-20b) — กันการ์ดสูงแคบหลายบรรทัด · สั้น=1 · กลาง=2 · ยาว=3 (เต็มแถว) · grid dense อุดช่องว่าง + alignItems stretch ให้สูงเท่ากันในแถวเดียว
+        const tlen = (w.text || '').length;
+        const span = tlen > 30 ? 3 : tlen > 15 ? 2 : 1;
         return (
-          <div key={w.id} onClick={this.openEdit(w)} style={{ background: isDup ? dupBg : 'var(--surface,#fffdf6)', border: '1px solid ' + (isDup ? dupB : '#e6dabf'), borderLeft: '3px solid ' + (isDup ? dupB : bar), borderRadius: '10px', padding: '7px 9px', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+          <div key={w.id} onClick={this.openEdit(w)} style={{ gridColumn: 'span ' + span, minHeight: '44px', display: 'flex', flexDirection: 'column', justifyContent: 'center', background: isDup ? dupBg : 'var(--surface,#fffdf6)', border: '1px solid ' + (isDup ? dupB : '#e6dabf'), borderLeft: '3px solid ' + (isDup ? dupB : bar), borderRadius: '10px', padding: '7px 9px', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
             <div style={{ fontFamily: FF, fontSize: fsz(14.5), fontWeight: FWEIGHT, color: '#33291f', lineHeight: 1.28, wordBreak: 'break-word' }}>{w.text}</div>
             {w.meaning && w.meaning.trim() && <div style={{ fontSize: '11px', color: '#8a7d6d', marginTop: '3px', lineHeight: 1.32, wordBreak: 'break-word' }}>{w.meaning}</div>}
             {(isDup || nBranch > 1) && (
