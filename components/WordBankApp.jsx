@@ -3,27 +3,10 @@
 // เก็บข้อมูลจริงบน Supabase ผ่าน API (แทน localStorage ในต้นแบบ)
 // การตั้งค่าแสดงผล (ui) ยังเก็บใน localStorage
 import React from 'react';
-import { rgba, mix, shade, badge, pill, dot } from '@/lib/colors';
 import { SUBTREE } from '@/lib/subtree';
-import { CATMETA } from '@/lib/catmeta';
-import { PROVIDERS, PROVIDER_ORDER } from '@/lib/providers';
-import { BrandIcon } from '@/lib/brandIcons';
-import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_TH } from '@/lib/prompt';
-import { PROMPT_LOG } from '@/lib/promptlog';
-import { diffLines, diffStat, collapseSame } from '@/lib/promptdiff';
-import { AI_TEST } from '@/lib/aitest';
 import { renderShell } from '@/components/shell';
 import { installHandlers } from '@/components/handlers';
-import { VERSION, thNum, aiModel, shortDate, pathsOf, UI_KEY, REVIEW_KEY, DRAFT_KEY } from '@/components/helpers';
-import { RP, TEST_WORDS } from '@/components/pages/reportShared';
-import { renderAdd, renderProcessing } from '@/components/pages/add';
-import { renderReview } from '@/components/pages/review';
-import { renderAiLog } from '@/components/pages/aiLog';
-import { renderAiTest } from '@/components/pages/aiTest';
-import { renderPromptLog } from '@/components/pages/promptLog';
-import { renderAbout } from '@/components/pages/about';
-import { renderLibrary } from '@/components/pages/library';
-import { renderEditModal, renderCatModal, renderSettings } from '@/components/pages/modals';
+import { VERSION, pathsOf, UI_KEY, REVIEW_KEY, DRAFT_KEY } from '@/components/helpers';
 export { VERSION } from '@/components/helpers';
 
 

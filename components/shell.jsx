@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { rgba, mix, shade, badge, pill, dot } from '@/lib/colors';
+import { rgba, mix } from '@/lib/colors';
 import { renderAdd, renderProcessing } from '@/components/pages/add';
 import { renderReview } from '@/components/pages/review';
 import { renderLibrary } from '@/components/pages/library';

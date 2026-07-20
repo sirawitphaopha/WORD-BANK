@@ -1,16 +1,7 @@
 'use client';
-import React from 'react';
-import { rgba, mix, shade, badge, pill, dot } from '@/lib/colors';
-import { SUBTREE } from '@/lib/subtree';
-import { CATMETA } from '@/lib/catmeta';
-import { PROVIDERS, PROVIDER_ORDER } from '@/lib/providers';
-import { BrandIcon } from '@/lib/brandIcons';
-import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_TH } from '@/lib/prompt';
-import { PROMPT_LOG } from '@/lib/promptlog';
-import { diffLines, diffStat, collapseSame } from '@/lib/promptdiff';
-import { AI_TEST } from '@/lib/aitest';
-import { VERSION, thNum, aiModel, shortDate, pathsOf, UI_KEY, REVIEW_KEY, DRAFT_KEY, PAL } from '@/components/helpers';
-import { RP, TEST_WORDS } from '@/components/pages/reportShared';
+import { PROVIDERS } from '@/lib/providers';
+import { DEFAULT_PROMPT_EN } from '@/lib/prompt';
+import { thNum, aiModel, DRAFT_KEY, PAL } from '@/components/helpers';
 
 export function processActions(app) {
   app.loadAiLogs = async () => {
