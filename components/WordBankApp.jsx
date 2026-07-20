@@ -1527,7 +1527,7 @@ export default class WordBankApp extends React.Component {
           <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#f5e4dd', border: '1px solid #e6c3b7', fontSize: '13px', color: 'var(--accent,#9c3b2b)' }}>✎ แก้สะกด <b>{spellCount}</b></span>
           <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#e9efe1', border: '1px solid #cbdcb8', fontSize: '13px', color: '#5a7040' }}>✦ หมวดใหม่ <b>{newCatCount}</b></span>
           {/* ปุ่มจัดการหมวด โผล่เฉพาะตอน AI เสนอหมวดใหม่ (ไว้รวมหมวดที่ซ้ำซ้อนเข้าหมวดเดิม) */}
-          {newCatCount > 0 && <button onClick={this.openCats} title="แก้ชื่อหมวด รวมหมวดที่ซ้ำซ้อนเข้าด้วยกัน เพิ่มหรือลบหมวด" style={{ padding: '6px 13px', borderRadius: '20px', background: '#f7f0e0', border: '1px dashed #b8cba0', fontSize: '13px', color: '#5a7040', cursor: 'pointer' }}>⚙ จัดการหมวด</button>}
+          {newCatCount > 0 && <button onClick={this.openCats} title="แก้ชื่อหมวด รวมหมวดที่ซ้ำซ้อนเข้าด้วยกัน เพิ่มหรือลบหมวด" aria-label="จัดการหมวด" style={{ padding: '6px 13px', borderRadius: '20px', background: '#f7f0e0', border: '1px dashed #b8cba0', fontSize: '13px', color: '#5a7040', cursor: 'pointer' }}>{S.isMobile ? '⚙' : '⚙ จัดการหมวด'}</button>}
           {extractedCount > 0 && <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#fbeecb', border: '1px solid #ecd39a', fontSize: '13px', color: '#8a5a1e' }}>พิมพ์เข้า <b>{reviewCount - extractedCount}</b> + ✂ สกัดเพิ่ม <b>{extractedCount}</b></span>}
           {activeMeta.ai ? <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #cfd4e0', fontSize: '13px', color: '#5d6478' }}>{activeMeta.ai}{activeMeta.at ? ' · ' + new Date(activeMeta.at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.' : ''}</span> : null}
         </div>
@@ -1574,23 +1574,24 @@ export default class WordBankApp extends React.Component {
         )}
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', background: 'var(--paper,#e7dbc0)', padding: '11px 0 12px', marginBottom: '4px' }}>
           <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
-            {[['cards', 'การ์ด'], ['table', 'ตาราง'], ['columns', 'คอลัมน์'], ['sources', '✂ จับกลุ่มประโยค'], ['tree', '📖 แบบคลังคำ']].filter(([k]) => !(ST.isMobile && (k === 'table' || k === 'columns'))).map(([k, label]) => (
-              <button key={k} onClick={this.setUiTop('reviewLayout', k)} style={layoutSeg(effLayout === k)}>{label}</button>
+            {[['cards', 'การ์ด', '▦'], ['table', 'ตาราง', 'ตาราง'], ['columns', 'คอลัมน์', 'คอลัมน์'], ['sources', '✂ จับกลุ่มประโยค', '✂'], ['tree', '📖 แบบคลังคำ', '📖']].filter(([k]) => !(ST.isMobile && (k === 'table' || k === 'columns'))).map(([k, label, mlabel]) => (
+              <button key={k} onClick={this.setUiTop('reviewLayout', k)} title={label} aria-label={label} style={layoutSeg(effLayout === k)}>{ST.isMobile ? mlabel : label}</button>
             ))}
           </div>
           <div style={{ flex: 1 }} />
-          <button onClick={this.exportReview} title="ส่งออกผลตรวจทานเป็นไฟล์ .txt ไว้เทียบ AI แต่ละเจ้า" style={{ padding: '9px 15px', border: '1px solid #cbdcb8', borderRadius: '9px', background: '#eef3dc', color: '#5a7040', fontSize: '14px', cursor: 'pointer' }}>⬇ ส่งออก</button>
-          {dupCount > 0 && <button onClick={() => this.removeDuplicates(dupItems.map((r) => r.id))} style={{ padding: '9px 16px', border: '1px solid #b81414', borderRadius: '9px', background: '#e01e1e', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', animation: 'wbalert 1.05s ease-in-out infinite' }}>⚠ ลบซ้ำกับคลัง ({dupCount})</button>}
+          <button onClick={this.exportReview} title="ส่งออกผลตรวจทานเป็นไฟล์ .txt ไว้เทียบ AI แต่ละเจ้า" aria-label="ส่งออก" style={{ padding: '9px 15px', border: '1px solid #cbdcb8', borderRadius: '9px', background: '#eef3dc', color: '#5a7040', fontSize: '14px', cursor: 'pointer' }}>{ST.isMobile ? '⬇' : '⬇ ส่งออก'}</button>
+          {dupCount > 0 && <button onClick={() => this.removeDuplicates(dupItems.map((r) => r.id))} title={'ลบคำที่ซ้ำกับคลัง ' + dupCount + ' คำ'} aria-label={'ลบซ้ำกับคลัง ' + dupCount + ' คำ'} style={{ padding: '9px 16px', border: '1px solid #b81414', borderRadius: '9px', background: '#e01e1e', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', animation: 'wbalert 1.05s ease-in-out infinite' }}>{ST.isMobile ? '⚠ ' + dupCount : '⚠ ลบซ้ำกับคลัง (' + dupCount + ')'}</button>}
           {(newBranchCount > 0 || ST.newBranchOnly) && (
             <button onClick={() => this.setState({ newBranchOnly: !ST.newBranchOnly, branchPick: '' }, this.toTop)}
               title={'ดูเฉพาะคำที่มีหมวดย่อยกิ่งใหม่ที่ยังไม่มีในคลัง\n\nกิ่งใหม่ ' + newBranchKinds + ' กิ่ง ใช้กับ ' + newBranchCount + ' คำ\n' + [...newBranchNames].map((p) => '· ' + p).join('\n')}
+              aria-label={'เฉพาะกิ่งใหม่ ' + newBranchKinds + ' กิ่ง ' + newBranchCount + ' คำ'}
               style={{ padding: '9px 15px', border: '1px solid ' + (ST.newBranchOnly ? '#5a7040' : '#cbdcb8'), borderRadius: '9px', background: ST.newBranchOnly ? '#5a7040' : '#eef3dc', color: ST.newBranchOnly ? '#fbf3e2' : '#5a7040', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
-              ✦ เฉพาะกิ่งใหม่ {newBranchKinds} กิ่ง · {newBranchCount} คำ
+              {ST.isMobile ? '✦ ' + newBranchKinds : '✦ เฉพาะกิ่งใหม่ ' + newBranchKinds + ' กิ่ง · ' + newBranchCount + ' คำ'}
             </button>
           )}
-          {crossItems.length > 0 && <button onClick={removeCrossDup} title="คำในช่อนี้ที่ไปซ้ำกับช่ออื่นที่ยังไม่บันทึก" style={{ padding: '9px 16px', border: '1px solid #b3a4cc', borderRadius: '9px', background: '#efe9f7', color: '#5f4c80', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>↺ ลบซ้ำข้ามช่อ ({crossItems.length})</button>}
-          {batches.length > 1 && <button onClick={() => this.deleteBatch(activeMeta)} style={{ padding: '9px 15px', border: '1px solid #e6c3b7', borderRadius: '9px', background: '#fbeae6', color: 'var(--accent,#9c3b2b)', fontSize: '14px', cursor: 'pointer' }}>ลบทั้งช่อ</button>}
-          <button onClick={this.save} style={{ padding: '10px 20px', border: 'none', borderRadius: '9px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 6px rgba(111,78,55,.28)' }}>✓ บันทึก{batches.length > 1 ? 'ช่อนี้' : ''}เข้าคลัง ({reviewCount})</button>
+          {crossItems.length > 0 && <button onClick={removeCrossDup} title={'ลบคำในช่อนี้ที่ไปซ้ำกับช่ออื่นที่ยังไม่บันทึก ' + crossItems.length + ' คำ'} aria-label={'ลบซ้ำข้ามช่อ ' + crossItems.length + ' คำ'} style={{ padding: '9px 16px', border: '1px solid #b3a4cc', borderRadius: '9px', background: '#efe9f7', color: '#5f4c80', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>{ST.isMobile ? '↺ ' + crossItems.length : '↺ ลบซ้ำข้ามช่อ (' + crossItems.length + ')'}</button>}
+          {batches.length > 1 && <button onClick={() => this.deleteBatch(activeMeta)} title="ลบทั้งช่อ" aria-label="ลบทั้งช่อ" style={{ padding: '9px 15px', border: '1px solid #e6c3b7', borderRadius: '9px', background: '#fbeae6', color: 'var(--accent,#9c3b2b)', fontSize: '14px', cursor: 'pointer' }}>{ST.isMobile ? '🗑' : 'ลบทั้งช่อ'}</button>}
+          <button onClick={this.save} title="บันทึกคำในช่อนี้เข้าคลัง" style={{ padding: '10px 20px', border: 'none', borderRadius: '9px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 6px rgba(111,78,55,.28)' }}>{ST.isMobile ? '✓ บันทึก (' + reviewCount + ')' : '✓ บันทึก' + (batches.length > 1 ? 'ช่อนี้' : '') + 'เข้าคลัง (' + reviewCount + ')'}</button>
         </div>
         </div>
 
@@ -2744,6 +2745,7 @@ export default class WordBankApp extends React.Component {
   // ============ EDIT MODAL ============
   renderEditModal() {
     const ed = this.state.editing || {};
+    const S = this.state; // ช่อง "＋ เพิ่มกิ่ง" อ่าน/เขียน S.editPathDraft — ก่อนหน้านี้ลืมประกาศ S ทำให้หน้าต่างแก้ไขคำพังทั้งจอคอมและมือถือ
     return (
       <div onClick={this.cancelEdit} style={{ position: 'fixed', inset: 0, background: 'rgba(58,47,40,.4)', backdropFilter: 'blur(3px)', display: 'grid', placeItems: 'center', zIndex: 70, padding: '20px', animation: 'wbfade .2s ease' }}>
         <div onClick={this.stop} style={{ background: 'var(--panel,#f7f0e0)', border: '1px solid #e0d0ac', borderRadius: '16px', padding: '28px', width: 'min(460px,100%)', boxShadow: '0 20px 60px rgba(58,47,40,.3)' }}>
