@@ -31,7 +31,7 @@ export default class WordBankApp extends React.Component {
     lastAiLogId: null,    // id แถว log ของรอบ AI ล่าสุด (เติมจำนวนคำที่บันทึกจริงตอนกดบันทึก)
     aiLogs: [], aiSummary: null, aiLogLoading: false, aiLogFilter: 'all', // หน้าประวัติการใช้ AI
     aiReady: {},          // AI เจ้าไหนใส่กุญแจไว้แล้ว (true/false ล้วน มาจากเซิร์ฟเวอร์) — ใช้ในหน้าเกี่ยวกับ
-    q: '', filterCat: 'all', filterNovel: 'all', filterKind: 'all', filterSlot: 'all', sort: 'recent', libView: 'cards',
+    q: '', filterCat: 'all', filterNovels: [], novelMenuOpen: false, filterKind: 'all', filterSlot: 'all', sort: 'recent', libView: 'cards',
     confirmId: null, toast: '',
     modal: null, ui: {}, exactFilter: '', dupOnly: false, editing: null,
     mergeFrom: '', mergeTo: '', newCatName: '',
@@ -694,7 +694,10 @@ export default class WordBankApp extends React.Component {
 
   // ---------- library actions ----------
   onQ = (e) => this.setState({ q: e.target.value });
-  onFilterNovel = (e) => this.setState({ filterNovel: e.target.value });
+  // ตัวกรองนิยายแบบเลือกได้หลายเรื่อง (filterNovels = array · ว่าง = ดูทุกเรื่อง) — เมนูติ๊กหลายอันได้
+  toggleNovelMenu = () => this.setState((s) => ({ novelMenuOpen: !s.novelMenuOpen }));
+  toggleNovel = (n) => () => this.setState((s) => { const cur = s.filterNovels || []; return { filterNovels: cur.includes(n) ? cur.filter((x) => x !== n) : cur.concat([n]) }; });
+  clearNovels = () => this.setState({ filterNovels: [], novelMenuOpen: false });
   onSort = (e) => this.setState({ sort: e.target.value });
   setLibView = (v) => () => this.setState({ libView: v }, this.toTop);
   setFilterCat = (id) => () => this.setState({ filterCat: id });
@@ -2406,7 +2409,8 @@ export default class WordBankApp extends React.Component {
     const branchesOf = (w) => (branchMap[w.text] ? branchMap[w.text].size : 0);
     const dupTotal = new Set(Object.keys(dupMap).filter((k) => dupMap[k] > 1 && k.split('|')[0].length <= 24).map((k) => k.split('|')[0])).size;
     const ql = S.q.trim().toLowerCase();
-    const matchQN = (w) => (S.filterNovel === 'all' || w.novel === S.filterNovel) && (!ql || w.text.toLowerCase().includes(ql) || (w.meaning || '').toLowerCase().includes(ql));
+    const selNovels = S.filterNovels || [];
+    const matchQN = (w) => (selNovels.length === 0 || selNovels.includes(w.novel)) && (!ql || w.text.toLowerCase().includes(ql) || (w.meaning || '').toLowerCase().includes(ql));
     const ctxLib = S.library.filter(matchQN);
     // ช่องเติมคำ = คำใบ้ในวงเล็บเหลี่ยม เช่น "อ้างตัวว่าชื่อ [ชื่อคน]" — อ่านจากตัวคำตรงๆ ไม่ต้องเก็บคอลัมน์เพิ่ม
     const slotsOf = (w) => (String(w.text || '').match(/\[[^\]]+\]/g) || []);
@@ -2446,7 +2450,31 @@ export default class WordBankApp extends React.Component {
 
     const seg = (on) => ({ padding: '0 15px', height: '32px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, border: 'none', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', background: on ? 'var(--surface,#fffdf6)' : 'transparent', color: on ? '#3a2f28' : '#8a7d6d', fontWeight: on ? 600 : 400, boxShadow: on ? '0 1px 3px rgba(120,90,50,.15)' : 'none' });
 
-    const novelFilterOpts = [{ v: 'all', label: 'ทุกเรื่อง' }].concat([...new Set(S.library.map((w) => w.novel).filter(Boolean))].map((n) => ({ v: n, label: n })));
+    // เมนูเลือกนิยาย (เลือกได้หลายเรื่อง — filterNovels เก็บเป็น array · ว่าง = ดูทุกเรื่อง) · ใช้ทั้งมือถือ (แถว 2) และจอคอม (ในแถวตัวกรอง)
+    const novelNames = [...new Set(S.library.map((w) => w.novel).filter(Boolean))];
+    const novelLabel = selNovels.length === 0 ? 'เลือกนิยาย' : selNovels.length === 1 ? selNovels[0] : 'เลือกนิยาย (' + WordBankApp.thNum(selNovels.length) + ')';
+    const novelPicker = (full) => (
+      <div style={{ position: 'relative', ...(full ? { width: '100%' } : {}) }}>
+        <button onClick={this.toggleNovelMenu} title="กรองตามนิยาย เลือกได้หลายเรื่อง" style={{ width: full ? '100%' : 'auto', display: 'inline-flex', alignItems: 'center', gap: '8px', justifyContent: 'space-between', padding: '11px 13px', border: '1px solid ' + (selNovels.length ? 'var(--primary,#6f4e37)' : '#d8c7a2'), borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', cursor: 'pointer', fontSize: '14px', fontWeight: selNovels.length ? 600 : 400 }}>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{novelLabel}</span>
+          <span style={{ color: '#b0a184', fontSize: '11px', flex: 'none' }}>▾</span>
+        </button>
+        {S.novelMenuOpen && (
+          <>
+            <div onClick={this.toggleNovelMenu} style={{ position: 'fixed', inset: 0, zIndex: 44 }} />
+            <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, minWidth: '100%', maxWidth: '320px', zIndex: 45, background: 'var(--surface,#fffdf6)', border: '1px solid #d8c7a2', borderRadius: '10px', boxShadow: '0 12px 30px rgba(58,47,40,.22)', padding: '6px', maxHeight: '300px', overflow: 'auto' }}>
+              {novelNames.length === 0 ? <div style={{ padding: '8px 10px', color: '#a99b83', fontSize: '13px' }}>ยังไม่มีนิยาย</div> : novelNames.map((n) => (
+                <label key={n} style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '8px 10px', borderRadius: '7px', cursor: 'pointer', fontSize: '13.5px', color: '#3a2f28', whiteSpace: 'nowrap' }}>
+                  <input type="checkbox" checked={selNovels.includes(n)} onChange={this.toggleNovel(n)} style={{ width: '16px', height: '16px', accentColor: 'var(--primary,#6f4e37)', flex: 'none' }} />
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{n}</span>
+                </label>
+              ))}
+              {selNovels.length > 0 && <button onClick={this.clearNovels} style={{ width: '100%', marginTop: '4px', padding: '8px', border: '1px solid #ddcba4', borderRadius: '7px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '13px', cursor: 'pointer' }}>ล้าง (ดูทุกเรื่อง)</button>}
+            </div>
+          </>
+        )}
+      </div>
+    );
     const catChipStyle = (active) => ({ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '7px 14px', borderRadius: '20px', fontSize: '13.5px', cursor: 'pointer', border: '1px solid ' + (active ? 'var(--primary,#6f4e37)' : '#ddcba4'), background: active ? 'var(--primary,#6f4e37)' : 'var(--panel,#f7f0e0)', color: active ? '#fbf3e2' : '#6f6252', fontWeight: active ? 600 : 400 });
 
     // คำที่ติดหลายกิ่ง → กระจายเป็นหนึ่งชิ้นต่อกิ่ง เพื่อให้โผล่ในต้นไม้ครบทุกกิ่ง
@@ -2626,7 +2654,8 @@ export default class WordBankApp extends React.Component {
     // สารบัญฝั่งซ้าย
     // สารบัญต้องหลบใต้แถบค้นหาที่ตรึงอยู่ ไม่งั้นโดนทับ (69 = ความสูงแบนเนอร์ · +10 เว้นช่องไฟ)
     // มือถือ: แถบกรองไม่ตรึง (สูงเกินไป จะบังครึ่งจอ) → หัวข้อหมวดเกาะใต้แบนเนอร์อย่างเดียว
-    const tocTop = navStyle !== 'tabs' ? 16 : S.isMobile ? (S.bannerH + 8) : (S.bannerH + S.libStickH + 10);
+    // แถบค้นหา/ตัวกรองตรึงทั้ง 2 จอแล้ว → หัวข้อหมวด (และสารบัญจอคอม) หลบใต้แถบด้วยความสูงจริงที่วัดไว้ (libStickH)
+    const tocTop = navStyle !== 'tabs' ? 16 : (S.bannerH + S.libStickH + 10);
     const toc = (
       <aside style={{ width: '236px', flex: 'none', position: 'sticky', top: tocTop + 'px', alignSelf: 'flex-start', maxHeight: 'calc(100vh - ' + (tocTop + 20) + 'px)', overflow: 'auto', paddingRight: '6px' }}>
         <div style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '19px', color: 'var(--accent,#9c3b2b)', margin: '0 0 10px' }}>สารบัญ</div>
@@ -2666,44 +2695,73 @@ export default class WordBankApp extends React.Component {
         <p style={{ color: '#6f6252', margin: '0 0 24px' }}><b style={{ color: '#4a3f35' }}>{S.library.length}</b> คำ ใน {new Set(S.library.map((w) => w.category)).size} หมวด จาก {new Set(S.library.map((w) => w.novel)).size} เรื่อง</p>
 
         {/* แถบค้นหา/ตัวกรอง + ชิปหมวด = ตรึงเป็นก้อนเดียว (กดบ่อยสุด เลื่อนดูคำล่าง ๆ ก็ยังกรองได้) */}
-        <div ref={this._libStickRef} style={{ position: S.isMobile ? 'static' : 'sticky', top: S.bannerH + 'px', zIndex: 16, background: 'var(--paper,#e7dbc0)', paddingTop: '4px' }}>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '18px' }}>
-          <div style={{ position: 'relative', flex: 1, minWidth: '220px', maxWidth: '420px' }}>
-            <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#b0a184', fontSize: '16px' }}>⌕</span>
-            <input value={S.q} onChange={this.onQ} placeholder="ค้นหาคำ วลี หรือความหมาย…" style={{ width: '100%', padding: '11px 14px 11px 38px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', outline: 'none' }} />
-          </div>
-          <select value={S.filterNovel} onChange={this.onFilterNovel} style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>{novelFilterOpts.map((o) => <option key={o.v} value={o.v}>{o.label}</option>)}</select>
-          <select value={S.filterKind} onChange={(e) => this.setState({ filterKind: e.target.value })} title="กรองตามชนิด" style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>
-            <option value="all">ทุกชนิด</option><option value="word">คำ</option><option value="phrase">วลี</option><option value="sentence">ประโยค</option>
-          </select>
-          {/* กรองตามช่องเติมคำ — โผล่เฉพาะตอนในคลังมีคำที่มีช่องเติมจริง */}
-          {withSlotCount > 0 && (
-            <select value={S.filterSlot} onChange={(e) => this.setState({ filterSlot: e.target.value })} title="กรองตามช่องเติมคำ เช่น [ชื่อคน]" style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>
-              <option value="all">ช่องเติมคำ: ทั้งหมด</option>
-              <option value="any">มีช่องเติมคำ ({withSlotCount})</option>
-              <option value="none">ไม่มีช่องเติมคำ</option>
-              {slotOpts.map(([s, n]) => <option key={s} value={s}>{s} ({n})</option>)}
+        <div ref={this._libStickRef} style={{ position: 'sticky', top: S.bannerH + 'px', zIndex: 16, background: 'var(--paper,#e7dbc0)', paddingTop: '4px' }}>
+        {S.isMobile ? (
+          /* ===== มือถือ: แถบตรึง 3 แถวชิดๆ (พี่กันกำหนด) — กันแบนเนอร์ตรึงสูงเกินจนบังคำ =====
+             แถว 1 ค้นหา+ชนิดวลี+เรียง · แถว 2 เลือกนิยาย (หลายเรื่อง) · แถว 3 เลือกหมวดวลี */
+          <>
+            <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '7px' }}>
+              <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
+                <span style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', color: '#b0a184', fontSize: '15px' }}>⌕</span>
+                <input value={S.q} onChange={this.onQ} placeholder="ค้นหา…" style={{ width: '100%', padding: '10px 8px 10px 30px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', outline: 'none', fontSize: '14px' }} />
+              </div>
+              <select value={S.filterKind} onChange={(e) => this.setState({ filterKind: e.target.value })} title="กรองตามชนิด" style={{ flex: 'none', padding: '10px 5px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', fontSize: '13px' }}>
+                <option value="all">ชนิดวลี</option><option value="word">คำ</option><option value="phrase">วลี</option><option value="sentence">ประโยค</option>
+              </select>
+              <select value={S.sort} onChange={this.onSort} title="เรียงลำดับ" style={{ flex: 'none', padding: '10px 5px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', fontSize: '13px' }}>
+                <option value="recent">เรียง</option><option value="old">เก่าก่อน</option><option value="az">ก - ฮ</option>
+              </select>
+            </div>
+            <div style={{ marginBottom: '7px' }}>{novelPicker(true)}</div>
+            <select value={S.filterCat} onChange={(e) => this.setFilterCat(e.target.value)()} style={{ width: '100%', marginBottom: '12px', padding: '11px 13px', border: '1px solid ' + (S.filterCat === 'all' ? '#d8c7a2' : 'var(--primary,#6f4e37)'), borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', fontSize: '14px', fontWeight: 600, outline: 'none' }}>
+              <option value="all">เลือกหมวดวลี ({ctxLib.length})</option>
+              {S.categories.map((c) => {
+                const cnt = ctxLib.filter((w) => w.category === c.id).length;
+                if (!cnt) return null;
+                return <option key={c.id} value={c.id}>{c.n} ({cnt})</option>;
+              })}
             </select>
-          )}
-          <select value={S.sort} onChange={this.onSort} style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>
-            <option value="recent">ล่าสุดก่อน</option><option value="old">เก่าก่อน</option><option value="az">ก - ฮ</option>
-          </select>
-          {!S.isMobile && (
-            <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
-              {[['cards', 'การ์ด'], ['list', 'รายการ']].map(([k, label]) => <button key={k} onClick={this.setLibView(k)} style={seg(S.libView === k)}>{label}</button>)}
+          </>
+        ) : (
+          /* ===== จอคอม: แถวตัวกรองเดียว (flex-wrap) เหมือนเดิม — เปลี่ยนแค่ นิยาย=เลือกหลายเรื่อง + ชื่อ ชนิดวลี/เรียง ===== */
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '18px' }}>
+            <div style={{ position: 'relative', flex: 1, minWidth: '220px', maxWidth: '420px' }}>
+              <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#b0a184', fontSize: '16px' }}>⌕</span>
+              <input value={S.q} onChange={this.onQ} placeholder="ค้นหาคำ วลี หรือความหมาย…" style={{ width: '100%', padding: '11px 14px 11px 38px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', outline: 'none' }} />
             </div>
-          )}
-          {isCards && !S.isMobile && (
-            <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
-              {[['s', 'เล็ก'], ['m', 'กลาง'], ['l', 'ใหญ่']].map(([k, label]) => <button key={k} onClick={this.setUi('cardSize', k)} style={seg(cardSize === k)}>{label}</button>)}
-            </div>
-          )}
-          {isCards && !S.isMobile && (
-            <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
-              {[['trirong', 'ไทรรงค์', "var(--font-trirong),serif"], ['sarabun', 'สารบรรณ', "var(--font-sarabun),sans-serif"], ['thsarabun', 'สารบรรณราชการ', "var(--font-thsarabun),sans-serif"], ['cordia', 'คอร์เดีย', "'Cordia New','CordiaUPC','Cordia',var(--font-sarabun),sans-serif"], ['maitree', 'ไมตรี', "var(--font-maitree),serif"], ['chonburi', 'ชลบุรี', "var(--font-chonburi),serif"]].map(([k, label, ff]) => <button key={k} onClick={this.setUi('wordFont', k)} style={{ ...seg(wordFont === k), fontFamily: ff, fontSize: ({ trirong: 14, sarabun: 16, thsarabun: 23, cordia: 19, maitree: 14, chonburi: 15 })[k] + 'px', fontWeight: (k === 'thsarabun' || k === 'cordia') ? 700 : undefined }}>{label}</button>)}
-            </div>
-          )}
-        </div>
+            {novelPicker(false)}
+            <select value={S.filterKind} onChange={(e) => this.setState({ filterKind: e.target.value })} title="กรองตามชนิด" style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>
+              <option value="all">ชนิดวลี</option><option value="word">คำ</option><option value="phrase">วลี</option><option value="sentence">ประโยค</option>
+            </select>
+            {/* กรองตามช่องเติมคำ — โผล่เฉพาะตอนในคลังมีคำที่มีช่องเติมจริง */}
+            {withSlotCount > 0 && (
+              <select value={S.filterSlot} onChange={(e) => this.setState({ filterSlot: e.target.value })} title="กรองตามช่องเติมคำ เช่น [ชื่อคน]" style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>
+                <option value="all">ช่องเติมคำ: ทั้งหมด</option>
+                <option value="any">มีช่องเติมคำ ({withSlotCount})</option>
+                <option value="none">ไม่มีช่องเติมคำ</option>
+                {slotOpts.map(([s, n]) => <option key={s} value={s}>{s} ({n})</option>)}
+              </select>
+            )}
+            <select value={S.sort} onChange={this.onSort} title="เรียงลำดับ" style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>
+              <option value="recent">เรียง</option><option value="old">เก่าก่อน</option><option value="az">ก - ฮ</option>
+            </select>
+            {!S.isMobile && (
+              <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
+                {[['cards', 'การ์ด'], ['list', 'รายการ']].map(([k, label]) => <button key={k} onClick={this.setLibView(k)} style={seg(S.libView === k)}>{label}</button>)}
+              </div>
+            )}
+            {isCards && !S.isMobile && (
+              <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
+                {[['s', 'เล็ก'], ['m', 'กลาง'], ['l', 'ใหญ่']].map(([k, label]) => <button key={k} onClick={this.setUi('cardSize', k)} style={seg(cardSize === k)}>{label}</button>)}
+              </div>
+            )}
+            {isCards && !S.isMobile && (
+              <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
+                {[['trirong', 'ไทรรงค์', "var(--font-trirong),serif"], ['sarabun', 'สารบรรณ', "var(--font-sarabun),sans-serif"], ['thsarabun', 'สารบรรณราชการ', "var(--font-thsarabun),sans-serif"], ['cordia', 'คอร์เดีย', "'Cordia New','CordiaUPC','Cordia',var(--font-sarabun),sans-serif"], ['maitree', 'ไมตรี', "var(--font-maitree),serif"], ['chonburi', 'ชลบุรี', "var(--font-chonburi),serif"]].map(([k, label, ff]) => <button key={k} onClick={this.setUi('wordFont', k)} style={{ ...seg(wordFont === k), fontFamily: ff, fontSize: ({ trirong: 14, sarabun: 16, thsarabun: 23, cordia: 19, maitree: 14, chonburi: 15 })[k] + 'px', fontWeight: (k === 'thsarabun' || k === 'cordia') ? 700 : undefined }}>{label}</button>)}
+              </div>
+            )}
+          </div>
+        )}
 
         {(dupTotal > 0 || S.exactFilter) && (
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '16px' }}>
@@ -2712,14 +2770,17 @@ export default class WordBankApp extends React.Component {
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '26px' }}>
-          <button onClick={this.setFilterCat('all')} style={catChipStyle(S.filterCat === 'all')}>ทั้งหมด <span style={{ opacity: 0.6 }}>{ctxLib.length}</span></button>
-          {S.categories.map((c) => {
-            const cnt = ctxLib.filter((w) => w.category === c.id).length;
-            if (!cnt) return null;
-            return <button key={c.id} onClick={this.setFilterCat(c.id)} style={catChipStyle(S.filterCat === c.id)}><span style={dot(c, monoMode)} />{c.n} <span style={{ opacity: 0.6 }}>{cnt}</span></button>;
-          })}
-        </div>
+        {/* จอคอม: ชิปหมวดสีเรียงเหมือนเดิมทุก pixel (มือถือย้ายไปเป็นดรอปดาวน์ "เลือกหมวดวลี" แถว 3 ในแถบตรึงด้านบนแล้ว) */}
+        {!S.isMobile && (
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '26px' }}>
+            <button onClick={this.setFilterCat('all')} style={catChipStyle(S.filterCat === 'all')}>ทั้งหมด <span style={{ opacity: 0.6 }}>{ctxLib.length}</span></button>
+            {S.categories.map((c) => {
+              const cnt = ctxLib.filter((w) => w.category === c.id).length;
+              if (!cnt) return null;
+              return <button key={c.id} onClick={this.setFilterCat(c.id)} style={catChipStyle(S.filterCat === c.id)}><span style={dot(c, monoMode)} />{c.n} <span style={{ opacity: 0.6 }}>{cnt}</span></button>;
+            })}
+          </div>
+        )}
         </div>
 
         {/* มือถือไม่มีสารบัญข้าง → ยกปุ่มยุบ/กางทุกหมวดมาไว้ตรงนี้แทน */}
