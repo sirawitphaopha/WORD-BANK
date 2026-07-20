@@ -31,7 +31,7 @@ export default class WordBankApp extends React.Component {
     lastAiLogId: null,    // id แถว log ของรอบ AI ล่าสุด (เติมจำนวนคำที่บันทึกจริงตอนกดบันทึก)
     aiLogs: [], aiSummary: null, aiLogLoading: false, aiLogFilter: 'all', // หน้าประวัติการใช้ AI
     aiReady: {},          // AI เจ้าไหนใส่กุญแจไว้แล้ว (true/false ล้วน มาจากเซิร์ฟเวอร์) — ใช้ในหน้าเกี่ยวกับ
-    q: '', filterCat: 'all', filterNovels: [], novelMenuOpen: false, filterKind: 'all', filterSlot: 'all', sort: 'recent', libView: 'cards',
+    q: '', filterCat: 'all', filterNovels: [], novelMenuOpen: false, fontMenuOpen: false, filterKind: 'all', filterSlot: 'all', sort: 'recent', libView: 'cards',
     confirmId: null, toast: '',
     modal: null, ui: {}, exactFilter: '', dupOnly: false, editing: null,
     mergeFrom: '', mergeTo: '', newCatName: '',
@@ -698,6 +698,7 @@ export default class WordBankApp extends React.Component {
   toggleNovelMenu = () => this.setState((s) => ({ novelMenuOpen: !s.novelMenuOpen }));
   toggleNovel = (n) => () => this.setState((s) => { const cur = s.filterNovels || []; return { filterNovels: cur.includes(n) ? cur.filter((x) => x !== n) : cur.concat([n]) }; });
   clearNovels = () => this.setState({ filterNovels: [], novelMenuOpen: false });
+  toggleFontMenu = () => this.setState((s) => ({ fontMenuOpen: !s.fontMenuOpen }));
   onSort = (e) => this.setState({ sort: e.target.value });
   setLibView = (v) => () => this.setState({ libView: v }, this.toTop);
   setFilterCat = (id) => () => this.setState({ filterCat: id });
@@ -2439,6 +2440,11 @@ export default class WordBankApp extends React.Component {
     const FWEIGHT = { thsarabun: 700, cordia: 700 }[wordFont] || 500;
     const fsz = (n) => Math.round(n * FSCALE) + 'px';
     const FF = ({ trirong: "var(--font-trirong),serif", sarabun: "var(--font-sarabun),sans-serif", thsarabun: "var(--font-thsarabun),sans-serif", cordia: "'Cordia New','CordiaUPC','Cordia',var(--font-sarabun),sans-serif", maitree: "var(--font-maitree),serif", chonburi: "var(--font-chonburi),serif" })[wordFont] || "var(--font-trirong),serif";
+    // เปลี่ยนฟอนต์คำบนมือถือ — ปุ่ม dropdown แบบเดียวกับ "เลือกนิยาย" (กรอบเท่ากันเป๊ะ) · โชว์ "เลือกฟอนต์" · ฟอนต์ครบ 6 ตัว (พี่กัน 2026-07-20b) · จอคอมยังมีปุ่มฟอนต์ segment 6 ตัวเหมือนเดิม
+    const FONTS_ALL = [
+      { k: 'trirong', label: 'ไทรรงค์' }, { k: 'sarabun', label: 'สารบรรณ' }, { k: 'thsarabun', label: 'Sarabun New' },
+      { k: 'cordia', label: 'Cordia New' }, { k: 'maitree', label: 'ไมตรี' }, { k: 'chonburi', label: 'ชลบุรี' },
+    ];
     // มือถือใช้การ์ดกะทัดรัดหลายคอลัมน์เสมอ (มุมมองรายการเป็นแถวกว้างเกินจอแคบ)
     const isCards = S.isMobile ? true : S.libView === 'cards', isList = S.isMobile ? false : S.libView === 'list';
 
@@ -2464,6 +2470,26 @@ export default class WordBankApp extends React.Component {
                 </label>
               ))}
               {selNovels.length > 0 && <button onClick={this.clearNovels} style={{ width: '100%', marginTop: '4px', padding: '8px', border: '1px solid #ddcba4', borderRadius: '7px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '13px', cursor: 'pointer' }}>ล้าง (ดูทุกเรื่อง)</button>}
+            </div>
+          </>
+        )}
+      </div>
+    );
+    // ปุ่มเลือกฟอนต์ (โครงเดียวกับ novelPicker เป๊ะ → กรอบสูงเท่ากรอบนิยาย ไม่อวบกว่า) · โชว์ "เลือกฟอนต์" · เมนูลิสต์ฟอนต์ 6 ตัว แต่ละอันพรีวิวด้วยฟอนต์จริง
+    const fontFam = { trirong: "var(--font-trirong),serif", sarabun: "var(--font-sarabun),sans-serif", thsarabun: "var(--font-thsarabun),sans-serif", cordia: "'Cordia New','CordiaUPC','Cordia',var(--font-sarabun),sans-serif", maitree: "var(--font-maitree),serif", chonburi: "var(--font-chonburi),serif" };
+    const fontPicker = () => (
+      <div style={{ position: 'relative', flex: 'none' }}>
+        <button onClick={this.toggleFontMenu} title="เลือกฟอนต์คำ" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', justifyContent: 'space-between', padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', cursor: 'pointer', fontSize: '14px', whiteSpace: 'nowrap' }}>
+          <span>เลือกฟอนต์</span>
+          <span style={{ color: '#b0a184', fontSize: '11px', flex: 'none' }}>▾</span>
+        </button>
+        {S.fontMenuOpen && (
+          <>
+            <div onClick={this.toggleFontMenu} style={{ position: 'fixed', inset: 0, zIndex: 44 }} />
+            <div style={{ position: 'absolute', top: 'calc(100% + 4px)', right: 0, minWidth: '156px', zIndex: 45, background: 'var(--surface,#fffdf6)', border: '1px solid #d8c7a2', borderRadius: '10px', boxShadow: '0 12px 30px rgba(58,47,40,.22)', padding: '6px', maxHeight: '320px', overflow: 'auto' }}>
+              {FONTS_ALL.map((f) => (
+                <button key={f.k} onClick={() => { this.setUi('wordFont', f.k)(); this.setState({ fontMenuOpen: false }); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 11px', border: 'none', borderRadius: '7px', background: wordFont === f.k ? '#efe4cc' : 'transparent', color: '#3a2f28', cursor: 'pointer', fontFamily: fontFam[f.k], fontSize: '16px', whiteSpace: 'nowrap' }}>{f.label}</button>
+              ))}
             </div>
           </>
         )}
@@ -2709,7 +2735,10 @@ export default class WordBankApp extends React.Component {
                 <option value="recent">เรียง</option><option value="old">เก่าก่อน</option><option value="az">ก - ฮ</option>
               </select>
             </div>
-            <div style={{ marginBottom: '7px' }}>{novelPicker(true)}</div>
+            <div style={{ display: 'flex', gap: '7px', marginBottom: '7px' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>{novelPicker(true)}</div>
+              {fontPicker()}
+            </div>
             <select value={S.filterCat} onChange={(e) => this.setFilterCat(e.target.value)()} style={{ width: '100%', marginBottom: '12px', padding: '11px 13px', border: '1px solid ' + (S.filterCat === 'all' ? '#d8c7a2' : 'var(--primary,#6f4e37)'), borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', fontSize: '14px', fontWeight: 600, outline: 'none' }}>
               <option value="all">เลือกหมวดวลี ({ctxLib.length})</option>
               {S.categories.map((c) => {
