@@ -288,6 +288,9 @@ export default class WordBankApp extends React.Component {
   // ทุกครั้งที่กดจัดคำ = ช่อใหม่ ต่อท้ายของเดิม คำที่ยังไม่บันทึกจึงไม่มีทางถูกทับ
   // หน้าตรวจทานเปิดทีละช่อ (แท็บ) — 3 ช่อ ช่อละ 40 คำ ก็ไม่ต้องเรนเดอร์ 120 การ์ดพร้อมกัน
   static thNum(n) { return String(n).replace(/\d/g, (d) => '๐๑๒๓๔๕๖๗๘๙'[+d]); }
+  // ป้ายชื่อ AI ของช่อ เดิมเก็บเป็น "ชื่อเจ้า · ชื่อรุ่น" (เช่น "GPT · GPT-4.1") ซึ่งซ้ำซ้อน
+  // → โชว์เฉพาะชื่อรุ่น (ส่วนหลัง " · ") · ช่อที่ไม่มีรุ่น (เช่น "พื้นฐาน (ในเครื่อง)") โชว์ตามเดิม
+  static aiModel(ai) { if (!ai) return ''; const i = ai.indexOf(' · '); return i >= 0 ? ai.slice(i + 3) : ai; }
   // คำที่ค้างมาก่อนมีระบบช่อ → ยกเป็นช่อที่ ๑
   normBatches(list, fallbackNovel) {
     return (list || []).map((r) => r && r.batch ? r : { ...r, batch: 'b_legacy', batchNo: 1, batchAt: r.batchAt || 0, batchAi: r.batchAi || '', novel: r.novel || fallbackNovel || '' });
@@ -403,7 +406,7 @@ export default class WordBankApp extends React.Component {
       id: 'b_' + Date.now().toString(36),
       no: prevAll.reduce((mx, r) => Math.max(mx, r.batchNo || 1), 0) + 1,
       at: Date.now(),
-      ai: (base.label || provider) + (modelName ? ' · ' + modelName : ''),
+      ai: modelName || (base.label || provider), // เก็บชื่อรุ่นล้วน (ไม่ซ้ำชื่อเจ้า) · ไม่มีรุ่น (พื้นฐาน) เก็บชื่อเจ้า
       novel: this.state.novelInput.trim() || 'ไม่ระบุเรื่อง',
       startPos: prevAll.length,
     };
@@ -553,7 +556,7 @@ export default class WordBankApp extends React.Component {
       'คลังคำ — ผลตรวจทาน (ไว้เทียบ AI)',
       'ช่อที่ ' + WordBankApp.thNum(bMeta.no),
       'เรื่อง: ' + (bMeta.novel || S.reviewNovel || '-'),
-      'AI: ' + (bMeta.ai || S.procProvider || '-'),
+      'AI: ' + (WordBankApp.aiModel(bMeta.ai) || S.procProvider || '-'),
       'วันที่: ' + date,
       'จำนวน: ' + items.length + ' คำ (สกัดจากประโยค ' + extracted + ')',
       '────────────────────────────',
@@ -570,7 +573,7 @@ export default class WordBankApp extends React.Component {
       const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const tag = (bMeta.ai || S.procModel || S.procProvider || 'ai').replace(/[^\wก-๙.-]/g, '');
+      const tag = (WordBankApp.aiModel(bMeta.ai) || S.procModel || S.procProvider || 'ai').replace(/[^\wก-๙.-]/g, '');
       a.href = url; a.download = 'ตรวจทาน_ช่อ' + bMeta.no + '_' + (bMeta.novel || S.reviewNovel || 'คลังคำ') + '_' + tag + '.txt';
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       URL.revokeObjectURL(url);
@@ -1529,7 +1532,7 @@ export default class WordBankApp extends React.Component {
           {/* ปุ่มจัดการหมวด โผล่เฉพาะตอน AI เสนอหมวดใหม่ (ไว้รวมหมวดที่ซ้ำซ้อนเข้าหมวดเดิม) */}
           {newCatCount > 0 && <button onClick={this.openCats} title="แก้ชื่อหมวด รวมหมวดที่ซ้ำซ้อนเข้าด้วยกัน เพิ่มหรือลบหมวด" aria-label="จัดการหมวด" style={{ padding: '6px 13px', borderRadius: '20px', background: '#f7f0e0', border: '1px dashed #b8cba0', fontSize: '13px', color: '#5a7040', cursor: 'pointer' }}>{S.isMobile ? '⚙' : '⚙ จัดการหมวด'}</button>}
           {extractedCount > 0 && <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#fbeecb', border: '1px solid #ecd39a', fontSize: '13px', color: '#8a5a1e' }}>พิมพ์เข้า <b>{reviewCount - extractedCount}</b> + ✂ สกัดเพิ่ม <b>{extractedCount}</b></span>}
-          {activeMeta.ai ? <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #cfd4e0', fontSize: '13px', color: '#5d6478' }}>{activeMeta.ai}{activeMeta.at ? ' · ' + new Date(activeMeta.at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.' : ''}</span> : null}
+          {activeMeta.ai ? <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #cfd4e0', fontSize: '13px', color: '#5d6478' }}>{WordBankApp.aiModel(activeMeta.ai)}{activeMeta.at ? ' · ' + new Date(activeMeta.at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.' : ''}</span> : null}
         </div>
         {/* ลิสกิ่งใหม่ — แสดงชื่อกิ่งครบทุกกิ่งตรง ๆ ไม่ต้องเอาเมาส์ชี้หรือกดเข้าไปนับเอง
             สำคัญตอนเทส AI: ต้องเห็นว่าโมเดล "สร้างกี่กิ่ง" (ไม่ใช่กี่คำ) และตั้งชื่อกิ่งว่าอะไรบ้าง */}
