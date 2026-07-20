@@ -886,6 +886,13 @@ export default class WordBankApp extends React.Component {
           </main>
         </div>
 
+        {/* กรอบล่างสุด (footer) — โผล่ทุกหน้า ทั้งมือถือและจอคอม · ธีมกระดาษวรรณกรรม จัดกลาง */}
+        <footer style={{ borderTop: '1px solid #e0d0ac', background: 'var(--panel,#f7f0e0)', padding: '30px clamp(16px,2.5vw,40px)', textAlign: 'center' }}>
+          <div style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '24px', color: 'var(--accent,#9c3b2b)', lineHeight: 1.15 }}>คลังคำ <span style={{ fontFamily: "var(--font-trirong),serif", fontSize: '15px', color: '#a89a86', fontStyle: 'italic' }}>Word Bank</span></div>
+          <div style={{ fontSize: '13.5px', color: '#8a7d6d', margin: '8px 0 12px' }}>เก็บคำงาม ไว้แต่งเรื่องของเราเอง</div>
+          <div style={{ fontSize: '12px', color: '#b0a184' }}>© ๒๕๖๙ · คลังคำ (Word Bank) · สร้างด้วยความรักในภาษาไทย 🤍</div>
+        </footer>
+
         {S.processing && this.renderProcessing(accent)}
         {S.modal === 'edit' && this.renderEditModal()}
         {S.modal === 'cats' && this.renderCatModal(monoMode)}
@@ -903,7 +910,8 @@ export default class WordBankApp extends React.Component {
   renderAdd() {
     const S = this.state;
     const lc = S.addText.split('\n').filter((l) => l.trim()).length;
-    const lineHint = S.addText.trim() ? (lc + ' บรรทัด · ราว ' + S.addText.trim().length + ' ตัวอักษร') : 'ยังว่างอยู่';
+    // นับ "คำ/วลี" = จำนวนบรรทัดที่มีข้อความ (แต่ละบรรทัด = 1 คำ/วลีที่จะส่งให้ AI) · ว่าง = 0 คำ/วลี · ย้ายไปโชว์ข้างป้าย "ข้อความที่เก็บมา"
+    const countHint = lc + ' คำ/วลี';
     const novelChips = S.novels.slice(0, 5);
     const howSteps = [
       { n: '๑', t: 'แก้คำสะกดผิดก่อนเป็นอันดับแรก', d: 'เช่น “หายสายสูญ” → “หายสาบสูญ”, “ระแวกบ้าน” → “ละแวกบ้าน”' },
@@ -912,8 +920,8 @@ export default class WordBankApp extends React.Component {
     ];
     return (
       <section style={{ maxWidth: '1040px', margin: '0 auto', animation: 'wbfade .35s ease' }}>
-        <h1 style={{ fontFamily: "var(--font-charmonman),cursive", fontWeight: 700, fontSize: 'clamp(34px,4.4vw,48px)', margin: '0 0 8px', color: 'var(--accent,#9c3b2b)', lineHeight: 1.1 }}>เพิ่มคำเข้าคลัง</h1>
-        <p style={{ fontSize: '17px', color: '#6f6252', maxWidth: '620px', margin: '0 0 30px', textWrap: 'pretty' }}>วางข้อความที่เก็บมาจากการอ่าน จะเป็นคำเดี่ยว วลี หรือทั้งประโยคปนกันก็ได้ แล้วให้ AI ช่วยแก้คำสะกด แยกวลีย่อย และจัดเข้าหมวดให้อัตโนมัติ</p>
+        <h1 style={{ fontFamily: "var(--font-charmonman),cursive", fontWeight: 700, fontSize: 'clamp(34px,4.4vw,48px)', margin: '0 0 8px', color: 'var(--accent,#9c3b2b)', lineHeight: 1.1, textAlign: S.isMobile ? 'center' : undefined }}>เพิ่มคำเข้าคลัง</h1>
+        <p style={{ fontSize: '17px', color: '#6f6252', maxWidth: '620px', margin: S.isMobile ? '0 auto 30px' : '0 0 30px', textWrap: 'pretty', textAlign: S.isMobile ? 'center' : undefined }}>วางข้อความที่เก็บมาจากการอ่าน จะเป็นคำเดี่ยว วลี หรือทั้งประโยคปนกันก็ได้ แล้วให้ AI ช่วยแก้คำสะกด แยกวลีย่อย และจัดเข้าหมวดให้อัตโนมัติ</p>
 
         <label style={{ display: 'block', fontWeight: 600, fontSize: '14px', color: '#5c5044', margin: '0 0 8px' }}>เรื่อง / นิยายที่คำชุดนี้มาจาก</label>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', maxWidth: '620px' }}>
@@ -931,14 +939,18 @@ export default class WordBankApp extends React.Component {
           ))}
         </div>
 
-        <label style={{ display: 'block', fontWeight: 600, fontSize: '14px', color: '#5c5044', margin: '0 0 8px' }}>ข้อความที่เก็บมา</label>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', margin: '0 0 8px' }}>
+          <label style={{ fontWeight: 600, fontSize: '14px', color: '#5c5044' }}>ข้อความที่เก็บมา</label>
+          <div style={{ flex: 1 }} />
+          <span style={{ fontSize: '13px', color: '#8a7d6d', whiteSpace: 'nowrap' }}>{countHint}</span>
+        </div>
         {S.draftRestored && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13.5px', color: '#5a6a3a', background: '#eef3dc', border: '1px solid #cfdca8', borderRadius: '10px', padding: '10px 14px', marginBottom: '10px' }}>
             <span style={{ flex: 1 }}>↩ กู้ข้อความค้างจากรอบก่อนกลับมาให้แล้ว หน้าปิด/รีเฟรชไปตอนกำลังรอ AI</span>
             <button onClick={() => this.setState({ draftRestored: false })} style={{ border: 'none', background: 'transparent', color: '#7a8a5a', fontSize: '18px', cursor: 'pointer', lineHeight: 1 }}>✕</button>
           </div>
         )}
-        <textarea value={S.addText} onChange={(e) => this.setState({ addText: e.target.value })} rows={11} placeholder={'วางคำหรือข้อความที่นี่…\nเว้นบรรทัดใหม่ หรือคั่นด้วยจุลภาค ( , ) เพื่อแยกหลายคำ\nประโยคยาว ๆ AI จะช่วยแยกวลีย่อยที่น่าเก็บให้เอง'} style={{ width: '100%', padding: '16px 18px', border: '1px solid #d8c7a2', borderRadius: '12px', background: 'var(--surface,#fffdf6)', lineHeight: 1.9, fontSize: '17px', color: '#3a2f28', outline: 'none', boxShadow: 'inset 0 1px 3px rgba(120,90,50,.06)' }} />
+        <textarea value={S.addText} onChange={(e) => this.setState({ addText: e.target.value })} rows={11} placeholder={S.isMobile ? 'วางคำหรือข้อความที่นี่…\nขึ้นบรรทัดใหม่ หรือคั่นด้วย ( , )\nประโยคยาว AI ช่วยแยกวลีให้เอง' : 'วางคำหรือข้อความที่นี่…\nเว้นบรรทัดใหม่ หรือคั่นด้วยจุลภาค ( , ) เพื่อแยกหลายคำ\nประโยคยาว ๆ AI จะช่วยแยกวลีย่อยที่น่าเก็บให้เอง'} style={{ width: '100%', padding: '16px 18px', border: '1px solid #d8c7a2', borderRadius: '12px', background: 'var(--surface,#fffdf6)', lineHeight: 1.9, fontSize: '17px', color: '#3a2f28', outline: 'none', boxShadow: 'inset 0 1px 3px rgba(120,90,50,.06)' }} />
 
         {(() => {
           const prov = this.eff('aiProvider', 'basic');
@@ -947,25 +959,35 @@ export default class WordBankApp extends React.Component {
           const selStyle = { padding: '8px 11px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#4a4034', fontSize: '13.5px', cursor: 'pointer', outline: 'none' };
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: '9px', flexWrap: 'wrap', marginTop: '14px' }}>
-              <span style={{ fontSize: '13px', color: '#8a7d6d' }}>ตัว AI</span>
+              <span style={{ fontSize: '13px', color: '#8a7d6d' }}>ผู้ช่วย AI</span>
               <BrandIcon name={prov} size={19} />
-              <select value={prov} onChange={(e) => this.setUi('aiProvider', e.target.value)()} style={selStyle}>
+              {/* มือถือ: แถว 1 = ป้าย+โลโก้+ช่องเลือกเจ้า (flex:1 หดพอดีจอ) + ปุ่ม "api key" (อยู่แถวเดียวกับช่องเลือกเจ้า ตามที่พี่กันสั่ง) →
+                  ขึ้นบรรทัดใหม่ (ตัวเว้นบรรทัด flexBasis:100%) → แถว 2 = ช่องเลือกรุ่น (flex:1 = ยาวเต็มแถวคนเดียว โชว์ชื่อรุ่นเต็ม ไม่ต้องหด) →
+                  · จอคอมไม่ใส่ตัวเว้นบรรทัด (guard S.isMobile) ใช้ flex-wrap แถวเดียว ปุ่ม api key อยู่ท้ายสุดเหมือนเดิม */}
+              <select value={prov} onChange={(e) => this.setUi('aiProvider', e.target.value)()} style={{ ...selStyle, ...(S.isMobile ? { flex: 1, minWidth: 0 } : {}) }}>
                 {PROVIDER_ORDER.map((k) => PROVIDERS[k] ? <option key={k} value={k}>{PROVIDERS[k].label}{PROVIDERS[k].tag ? ' · ' + PROVIDERS[k].tag : ''}</option> : null)}
               </select>
+              {S.isMobile && cur.keyUrl ? <a href={cur.keyUrl} target="_blank" rel="noopener noreferrer" title={'เปิดเว็บขอ API key ของ ' + cur.label} style={{ fontSize: '12.5px', color: '#5a7040', textDecoration: 'none', whiteSpace: 'nowrap', border: '1px solid #cbdcb8', borderRadius: '8px', padding: '7px 10px', background: '#eef3dc', flex: 'none' }}>🔗 api key</a> : null}
+              {S.isMobile ? <div style={{ flexBasis: '100%', height: 0 }} /> : null}
               {Array.isArray(cur.models) && cur.models.length ? (
-                <select value={selModel} onChange={(e) => this.setUi('aiModel:' + prov, e.target.value)()} style={selStyle}>
+                <select value={selModel} onChange={(e) => this.setUi('aiModel:' + prov, e.target.value)()} style={{ ...selStyle, ...(S.isMobile ? { flex: 1, minWidth: 0 } : {}) }}>
                   {cur.models.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
                 </select>
               ) : null}
-              {cur.keyUrl ? <a href={cur.keyUrl} target="_blank" rel="noopener noreferrer" title={'เปิดเว็บขอกุญแจของ ' + cur.label} style={{ fontSize: '12.5px', color: '#5a7040', textDecoration: 'none', whiteSpace: 'nowrap', border: '1px solid #cbdcb8', borderRadius: '8px', padding: '7px 10px', background: '#eef3dc' }}>🔗 ขอกุญแจ</a> : null}
+              {!S.isMobile && cur.keyUrl ? <a href={cur.keyUrl} target="_blank" rel="noopener noreferrer" title={'เปิดเว็บขอ API key ของ ' + cur.label} style={{ fontSize: '12.5px', color: '#5a7040', textDecoration: 'none', whiteSpace: 'nowrap', border: '1px solid #cbdcb8', borderRadius: '8px', padding: '7px 10px', background: '#eef3dc' }}>🔗 api key</a> : null}
             </div>
           );
         })()}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', marginTop: '14px' }}>
-          <span style={{ fontSize: '13px', color: '#8a7d6d' }}>{lineHint}</span>
-          <div style={{ flex: 1 }} />
-          <button onClick={this.pasteClipboard} style={{ padding: '11px 18px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '15px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '7px' }}><span style={{ fontSize: '16px' }}>📋</span> วาง</button>
-          <button onClick={this.process} style={{ padding: '11px 22px', border: 'none', borderRadius: '10px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '7px', boxShadow: '0 2px 8px rgba(111,78,55,.3)' }}><span style={{ fontSize: '17px' }}>✎</span> ให้ AI ช่วยจัด</button>
+        {/* มือถือ: ปุ่มใหญ่เต็มความกว้าง จัดกลาง (วางบน · ให้ AI ช่วยจัด = ปุ่มหลักใหญ่สุดล่าง เหมือนปุ่มตกลง) · จอคอม: 2 ปุ่มชิดขวาเหมือนเดิม */}
+        <div style={S.isMobile
+          ? { display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px', alignItems: 'stretch' }
+          : { display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', marginTop: '14px', justifyContent: 'flex-end' }}>
+          <button onClick={this.pasteClipboard} style={S.isMobile
+            ? { width: '100%', padding: '15px', border: '1px solid #d8c7a2', borderRadius: '12px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '17px', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }
+            : { padding: '11px 18px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '15px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '7px' }}><span style={{ fontSize: S.isMobile ? '19px' : '16px' }}>📋</span> วาง</button>
+          <button onClick={this.process} style={S.isMobile
+            ? { width: '100%', padding: '19px', border: 'none', borderRadius: '14px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '20px', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 4px 14px rgba(111,78,55,.34)' }
+            : { padding: '11px 22px', border: 'none', borderRadius: '10px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '7px', boxShadow: '0 2px 8px rgba(111,78,55,.3)' }}><span style={{ fontSize: S.isMobile ? '23px' : '17px' }}>✎</span> ให้ AI ช่วยจัด</button>
         </div>
 
         {(() => {
@@ -1004,7 +1026,7 @@ export default class WordBankApp extends React.Component {
                     {copyPromptBtn('ไทย', DEFAULT_PROMPT_TH)}
                   </div>
                   <textarea value={DEFAULT_PROMPT_TH} readOnly rows={12} style={taStyle(true)} />
-                  <div style={{ fontSize: '11.5px', color: '#a89a86', marginTop: '8px' }}>ส่งเฉพาะภาษาอังกฤษให้ AI (ตอบแม่นสุด) · หมวดและข้อความระบบเติมให้อัตโนมัติ · ใช้กับตัว AI จริง ไม่ใช่ "พื้นฐาน"</div>
+                  <div style={{ fontSize: '11.5px', color: '#a89a86', marginTop: '8px' }}>ส่งเฉพาะภาษาอังกฤษให้ AI (ตอบแม่นสุด) · หมวดและข้อความระบบเติมให้อัตโนมัติ · ใช้กับผู้ช่วย AI จริง ไม่ใช่ "พื้นฐาน"</div>
                 </div>
               ) : null}
             </div>
@@ -2304,7 +2326,7 @@ export default class WordBankApp extends React.Component {
         <div style={card}>
           {head('๔', 'ตัวช่วยจัดคำ')}
           <p style={{ fontSize: '14.5px', color: faint, lineHeight: 1.75, margin: '0 0 16px' }}>
-            สลับตัว AI ได้ตามใจในหน้าเพิ่มคำ กุญแจของแต่ละเจ้าเก็บอยู่ฝั่งเซิร์ฟเวอร์เท่านั้น ไม่หลุดมาถึงเบราว์เซอร์
+            สลับผู้ช่วย AI ได้ตามใจในหน้าเพิ่มคำ กุญแจของแต่ละเจ้าเก็บอยู่ฝั่งเซิร์ฟเวอร์เท่านั้น ไม่หลุดมาถึงเบราว์เซอร์
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: '9px' }}>
             {PROVIDER_ORDER.map((k) => {
@@ -2888,7 +2910,7 @@ export default class WordBankApp extends React.Component {
             {segRow('สีหมวด', 'categoryColor', monoMode ? 'mono' : 'soft', [['soft', 'มีสี'], ['mono', 'ขาว-ดำ']])}
           </div>
           <div style={{ height: '1px', background: '#e0d0ac', margin: '22px 0 18px' }} />
-          <div style={{ fontWeight: 600, fontSize: '14px', color: '#5c5044', marginBottom: '4px' }}>ตัว AI ที่ใช้จัดคำ</div>
+          <div style={{ fontWeight: 600, fontSize: '14px', color: '#5c5044', marginBottom: '4px' }}>ผู้ช่วย AI ที่ใช้จัดคำ</div>
           <p style={{ color: '#8a7d6d', fontSize: '12.5px', margin: '0 0 12px', lineHeight: 1.5 }}>เลือกตัวช่วยจัดคำในหน้าเพิ่มคำ · เจ้าที่ไม่ใช่ "พื้นฐาน" ต้องตั้งกุญแจ (API key) ในไฟล์ .env.local ก่อน</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
             {PROVIDER_ORDER.map((k) => {
