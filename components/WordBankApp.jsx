@@ -1009,7 +1009,9 @@ export default class WordBankApp extends React.Component {
                 <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 600, fontSize: '18px' }}>คำสั่ง AI (prompt)</div>
                 <span style={{ fontSize: '12.5px', color: '#8a7d6d' }}>คำสั่งที่บอก AI ว่าให้จัดคำอย่างไร</span>
                 <div style={{ flex: 1 }} />
-                <span style={{ color: '#8a7d6d', fontSize: '15px', transform: open ? 'rotate(90deg)' : 'none', transition: 'transform .2s' }}>▸</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '34px', height: '34px', borderRadius: '10px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', flex: 'none', boxShadow: '0 2px 5px rgba(90,60,30,.3)' }}>
+                  <span style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform .2s', lineHeight: 1 }}>▸</span>
+                </span>
               </div>
               {open ? (
                 <div style={{ marginTop: '14px' }}>
@@ -1506,7 +1508,7 @@ export default class WordBankApp extends React.Component {
             return (
               <div key={c.id} style={{ border: '1px solid #e0d0ac', borderRadius: '12px', overflow: 'hidden', background: 'var(--surface,#fffdf6)' }}>
                 <div onClick={() => this.toggleTree('c:' + c.id)} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', cursor: 'pointer', background: rgba(c.c, 0.13), borderBottom: catCollapsed ? 'none' : '1px solid #eaddc0' }}>
-                  <span style={{ color: '#b08a4a', fontSize: '13px', flex: 'none' }}>{catCollapsed ? '▸' : '▾'}</span>
+                  <span style={{ color: 'var(--primary,#6f4e37)', fontSize: '13px', fontWeight: 800, flex: 'none' }}>{catCollapsed ? '▸' : '▾'}</span>
                   <span style={badge(c, monoMode)}>{c.k}</span>
                   <span style={{ flex: 1, fontWeight: 600, fontSize: '15px', color: '#4a3f35' }}>{c.n}</span>
                   <span style={{ fontSize: '12.5px', color: '#a99b83', flex: 'none' }}>{items.length} คำ</span>
@@ -2617,8 +2619,9 @@ export default class WordBankApp extends React.Component {
       );
     };
 
+    // ลูกศรยุบ/กางหน้าหัวข้อหมวด — ทำให้เด่นขึ้น (พี่กัน 2026-07-20b): สีน้ำตาลเข้ม primary + ใหญ่ + หนา (เดิมจางเล็ก #b0a184 11px) · ไม่ใส่กรอบหนากันแน่น
     const chev = (collapsed) => (
-      <span style={{ display: 'inline-block', width: '16px', color: '#b0a184', fontSize: '11px', transition: 'transform .15s', transform: collapsed ? 'rotate(-90deg)' : 'none' }}>▼</span>
+      <span style={{ display: 'inline-block', width: '16px', color: 'var(--primary,#6f4e37)', fontSize: '13px', fontWeight: 800, transition: 'transform .15s', transform: collapsed ? 'rotate(-90deg)' : 'none' }}>▼</span>
     );
 
     // เรนเดอร์กลุ่มย่อยแบบซ้อนชั้น (recursive)
@@ -2683,8 +2686,14 @@ export default class WordBankApp extends React.Component {
       <aside style={{ width: '236px', flex: 'none', position: 'sticky', top: tocTop + 'px', alignSelf: 'flex-start', maxHeight: 'calc(100vh - ' + (tocTop + 20) + 'px)', overflow: 'auto', paddingRight: '6px' }}>
         <div style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '19px', color: 'var(--accent,#9c3b2b)', margin: '0 0 10px' }}>สารบัญ</div>
         <div style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
-          <button onClick={this.collapseAll(allCatKeys)} style={{ flex: 1, padding: '6px 8px', border: '1px solid #ddcba4', borderRadius: '8px', background: 'var(--surface,#fffdf6)', color: '#6f6252', fontSize: '12.5px', cursor: 'pointer' }}>ยุบทั้งหมด</button>
-          <button onClick={this.expandAll} style={{ flex: 1, padding: '6px 8px', border: '1px solid #ddcba4', borderRadius: '8px', background: 'var(--surface,#fffdf6)', color: '#6f6252', fontSize: '12.5px', cursor: 'pointer' }}>ขยายทั้งหมด</button>
+          <button onClick={this.collapseAll(allCatKeys)} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '7px 8px', border: '1px solid #ddcba4', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#5c5044', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '19px', height: '19px', borderRadius: '6px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '9px', flex: 'none', boxShadow: '0 1px 2px rgba(90,60,30,.25)' }}>▲</span>
+            ยุบทั้งหมด
+          </button>
+          <button onClick={this.expandAll} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '7px 8px', border: '1px solid #ddcba4', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#5c5044', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '19px', height: '19px', borderRadius: '6px', background: 'var(--accent,#9c3b2b)', color: '#fbf3e2', fontSize: '9px', flex: 'none', boxShadow: '0 1px 2px rgba(90,60,30,.25)' }}>▼</span>
+            ขยายทั้งหมด
+          </button>
         </div>
         {visCats.map((g) => {
           const catKey = 'g-' + g.cat.id;
@@ -2812,8 +2821,14 @@ export default class WordBankApp extends React.Component {
         {/* มือถือไม่มีสารบัญข้าง → ยกปุ่มยุบ/กางทุกหมวดมาไว้ตรงนี้แทน */}
         {S.isMobile && anyResults && (
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-            <button onClick={this.collapseAll(allCatKeys)} style={{ flex: 1, padding: '9px 8px', border: '1px solid #ddcba4', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#6f6252', fontSize: '13px', cursor: 'pointer' }}>▸ ยุบทุกหมวด</button>
-            <button onClick={this.expandAll} style={{ flex: 1, padding: '9px 8px', border: '1px solid #ddcba4', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#6f6252', fontSize: '13px', cursor: 'pointer' }}>▾ กางทุกหมวด</button>
+            <button onClick={this.collapseAll(allCatKeys)} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 8px', border: '1px solid #ddcba4', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#5c5044', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '22px', height: '22px', borderRadius: '7px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '10px', flex: 'none', boxShadow: '0 1px 2px rgba(90,60,30,.25)' }}>▲</span>
+              ยุบทุกหมวด
+            </button>
+            <button onClick={this.expandAll} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '10px 8px', border: '1px solid #ddcba4', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#5c5044', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '22px', height: '22px', borderRadius: '7px', background: 'var(--accent,#9c3b2b)', color: '#fbf3e2', fontSize: '10px', flex: 'none', boxShadow: '0 1px 2px rgba(90,60,30,.25)' }}>▼</span>
+              กางทุกหมวด
+            </button>
           </div>
         )}
 
