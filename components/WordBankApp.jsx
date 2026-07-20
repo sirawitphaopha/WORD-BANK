@@ -1635,11 +1635,15 @@ export default class WordBankApp extends React.Component {
     };
     const fmtNum = (n) => Number(n || 0).toLocaleString('en-US');
     const fmtCost = (c) => Number(c) > 0 ? '$' + Number(c).toFixed(Number(c) < 0.01 ? 5 : 4) : 'ฟรี';
+    // อัตราแลกเปลี่ยนคงที่ USD→บาท (ก.ค. 2569 ~33.6 บาท/USD) — แก้ตัวเลขนี้จุดเดียวถ้าอยากปรับอัตรา
+    const USD_THB = 33.6;
+    const fmtBaht = (c) => Number(c) > 0 ? (Number(c) * USD_THB).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' บาท' : 'ฟรี';
     const logs = S.aiLogFilter === 'all' ? S.aiLogs : S.aiLogs.filter((l) => l.provider === S.aiLogFilter);
-    const statCard = (label, value) => (
+    const statCard = (label, value, sub) => (
       <div style={{ flex: '1 1 150px', background: 'var(--surface,#fffdf6)', border: '1px solid #e0d0ac', borderRadius: '12px', padding: '13px 16px' }}>
         <div style={{ fontSize: '12px', color: '#8a7d6d', marginBottom: '4px' }}>{label}</div>
         <div style={{ fontFamily: "var(--font-trirong),serif", fontSize: '21px', fontWeight: 600, color: '#4a3f35' }}>{value}</div>
+        {sub ? <div style={{ fontSize: '12.5px', color: '#a99b83', marginTop: '3px' }}>{sub}</div> : null}
       </div>
     );
     const btn = (on) => ({ padding: '6px 13px', borderRadius: '20px', fontSize: '13px', cursor: 'pointer', border: '1px solid ' + (on ? 'var(--primary,#6f4e37)' : '#ddcba4'), background: on ? 'var(--primary,#6f4e37)' : 'var(--panel,#f7f0e0)', color: on ? '#fbf3e2' : '#6f6252' });
@@ -1651,7 +1655,7 @@ export default class WordBankApp extends React.Component {
           <div style={{ flex: 1 }} />
           <button onClick={this.loadAiLogs} style={{ padding: '9px 16px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--panel,#f7f0e0)', color: '#6f6252', fontSize: '14px', cursor: 'pointer' }}>↻ รีเฟรช</button>
         </div>
-        <p style={{ fontSize: '14px', color: '#8a7d6d', margin: '10px 0 20px' }}>บันทึกทุกครั้งที่เรียก AI จัดคำ — เจ้าไหน รุ่นอะไร ใช้ token เท่าไหร่ กี่วินาที และค่าใช้จ่ายประมาณ (ราคาประเมิน ไม่ใช่ยอดจริง)</p>
+        <p style={{ fontSize: '14px', color: '#8a7d6d', margin: '10px 0 20px' }}>บันทึกทุกครั้งที่เรียก AI จัดคำ — เจ้าไหน รุ่นอะไร ใช้ token เท่าไหร่ กี่วินาที และค่าใช้จ่ายประมาณ (ราคาประเมิน ไม่ใช่ยอดจริง) · คิดเป็นเงินบาทที่อัตราคงที่ {USD_THB.toFixed(2)} บาท/USD</p>
 
         {S.aiLogLoading && <div style={{ textAlign: 'center', padding: '40px', color: '#a99b83' }}>กำลังโหลด…</div>}
 
@@ -1667,7 +1671,7 @@ export default class WordBankApp extends React.Component {
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '14px' }}>
               {statCard('เรียกทั้งหมด', fmtNum(sum.totalCalls) + ' ครั้ง')}
               {statCard('token รวม', fmtNum(sum.totalTokens))}
-              {statCard('ค่าใช้จ่ายประมาณ', fmtCost(sum.totalCost))}
+              {statCard('ค่าใช้จ่ายประมาณ', fmtBaht(sum.totalCost), Number(sum.totalCost) > 0 ? fmtCost(sum.totalCost) : '')}
               {statCard('พลาด', fmtNum(sum.totalErrors) + ' ครั้ง')}
             </div>
 
@@ -1680,7 +1684,8 @@ export default class WordBankApp extends React.Component {
                     <span style={{ fontSize: '12.5px', color: '#a99b83' }}>{b.calls} ครั้ง</span>
                   </div>
                   <div style={{ fontSize: '13px', color: '#6f6252', lineHeight: 1.7 }}>
-                    <div>token: <b>{fmtNum(b.tokensIn + b.tokensOut)}</b> · ค่าใช้จ่าย: <b>{fmtCost(b.cost)}</b></div>
+                    <div>ค่าใช้จ่าย: <b>{fmtBaht(b.cost)}</b>{Number(b.cost) > 0 ? ' (' + fmtCost(b.cost) + ')' : ''}</div>
+                    <div>token: <b>{fmtNum(b.tokensIn + b.tokensOut)}</b></div>
                     <div>แยกได้ {fmtNum(b.items)} คำ · บันทึก {fmtNum(b.saved)} คำ{b.errors ? ' · พลาด ' + b.errors : ''}</div>
                   </div>
                 </div>
@@ -1708,7 +1713,7 @@ export default class WordBankApp extends React.Component {
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px 16px', fontSize: '12.5px', color: '#8a7d6d', marginTop: '5px' }}>
                       <span>{fmtTH(l.created_at)}</span>
                       <span>token {l.tokens_in || l.tokens_out ? fmtNum((l.tokens_in || 0) + (l.tokens_out || 0)) : '—'}</span>
-                      <span>ค่าใช้จ่าย {fmtCost(l.cost_usd)}</span>
+                      <span>ค่าใช้จ่าย {fmtCost(l.cost_usd)}{Number(l.cost_usd) > 0 ? ' · ' + fmtBaht(l.cost_usd) : ''}</span>
                     </div>
                   </div>
                 ))}
@@ -1729,7 +1734,7 @@ export default class WordBankApp extends React.Component {
                       </span>
                       <span style={{ color: '#6f6252' }}>{fmtNum(l.input_chars)} ตัวอักษร → {fmtNum(l.item_count)} คำ{l.saved_count ? ' → บันทึก ' + fmtNum(l.saved_count) : ''}{l.skipped_count ? ' (ซ้ำ ' + l.skipped_count + ')' : ''}</span>
                       <span>{l.tokens_in || l.tokens_out ? fmtNum((l.tokens_in || 0) + (l.tokens_out || 0)) : '—'}</span>
-                      <span>{fmtCost(l.cost_usd)}</span>
+                      <span>{fmtCost(l.cost_usd)}{Number(l.cost_usd) > 0 ? <span style={{ display: 'block', fontSize: '11px', color: '#a99b83' }}>{fmtBaht(l.cost_usd)}</span> : null}</span>
                       <span>{l.status === 'error'
                         ? <span title={l.error || ''} style={{ color: '#fff', background: '#e01e1e', borderRadius: '20px', padding: '2px 9px', fontSize: '11.5px', fontWeight: 600 }}>พลาด</span>
                         : <span style={{ color: '#5a7040', background: '#e9efe1', border: '1px solid #cbdcb8', borderRadius: '20px', padding: '2px 9px', fontSize: '11.5px' }}>สำเร็จ</span>}</span>
