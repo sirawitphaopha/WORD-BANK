@@ -291,6 +291,8 @@ export default class WordBankApp extends React.Component {
   // ป้ายชื่อ AI ของช่อ เดิมเก็บเป็น "ชื่อเจ้า · ชื่อรุ่น" (เช่น "GPT · GPT-4.1") ซึ่งซ้ำซ้อน
   // → โชว์เฉพาะชื่อรุ่น (ส่วนหลัง " · ") · ช่อที่ไม่มีรุ่น (เช่น "พื้นฐาน (ในเครื่อง)") โชว์ตามเดิม
   static aiModel(ai) { if (!ai) return ''; const i = ai.indexOf(' · '); return i >= 0 ? ai.slice(i + 3) : ai; }
+  // วันที่แบบสั้น วัน/เดือน/ปี พ.ศ. 2 หลัก เช่น 20/7/69 (2569 → 69)
+  static shortDate(at) { const d = new Date(at); return d.getDate() + '/' + (d.getMonth() + 1) + '/' + String((d.getFullYear() + 543) % 100).padStart(2, '0'); }
   // คำที่ค้างมาก่อนมีระบบช่อ → ยกเป็นช่อที่ ๑
   normBatches(list, fallbackNovel) {
     return (list || []).map((r) => r && r.batch ? r : { ...r, batch: 'b_legacy', batchNo: 1, batchAt: r.batchAt || 0, batchAi: r.batchAi || '', novel: r.novel || fallbackNovel || '' });
@@ -1532,7 +1534,7 @@ export default class WordBankApp extends React.Component {
           {/* ปุ่มจัดการหมวด โผล่เฉพาะตอน AI เสนอหมวดใหม่ (ไว้รวมหมวดที่ซ้ำซ้อนเข้าหมวดเดิม) */}
           {newCatCount > 0 && <button onClick={this.openCats} title="แก้ชื่อหมวด รวมหมวดที่ซ้ำซ้อนเข้าด้วยกัน เพิ่มหรือลบหมวด" aria-label="จัดการหมวด" style={{ padding: '6px 13px', borderRadius: '20px', background: '#f7f0e0', border: '1px dashed #b8cba0', fontSize: '13px', color: '#5a7040', cursor: 'pointer' }}>{S.isMobile ? '⚙' : '⚙ จัดการหมวด'}</button>}
           {extractedCount > 0 && <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#fbeecb', border: '1px solid #ecd39a', fontSize: '13px', color: '#8a5a1e' }}>พิมพ์เข้า <b>{reviewCount - extractedCount}</b> + ✂ สกัดเพิ่ม <b>{extractedCount}</b></span>}
-          {activeMeta.ai ? <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #cfd4e0', fontSize: '13px', color: '#5d6478' }}>{WordBankApp.aiModel(activeMeta.ai)}{activeMeta.at ? ' · ' + new Date(activeMeta.at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.' : ''}</span> : null}
+          {activeMeta.ai ? <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #cfd4e0', fontSize: '13px', color: '#5d6478' }}>{WordBankApp.aiModel(activeMeta.ai)}{activeMeta.at ? ' · ' + WordBankApp.shortDate(activeMeta.at) : ''}</span> : null}
         </div>
         {/* ลิสกิ่งใหม่ — แสดงชื่อกิ่งครบทุกกิ่งตรง ๆ ไม่ต้องเอาเมาส์ชี้หรือกดเข้าไปนับเอง
             สำคัญตอนเทส AI: ต้องเห็นว่าโมเดล "สร้างกี่กิ่ง" (ไม่ใช่กี่คำ) และตั้งชื่อกิ่งว่าอะไรบ้าง */}
