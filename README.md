@@ -41,6 +41,19 @@
 ## 🛠 เทคโนโลยี
 Next.js 15 + React 19 · Supabase (Postgres) · ระบบ AI สลับหลายเจ้า (provider adapter) — กุญแจเก็บฝั่งเซิร์ฟเวอร์ (.env.local) · มีตัวเลือก "พื้นฐาน" (heuristic ในเครื่อง) เป็นตัวสำรองฟรี · **ฟอนต์ไทยฝังในเว็บ** (next/font ไม่พึ่ง CDN) · deploy บน Cloudflare Workers
 
+## 📂 โครงไฟล์ (โค้ดแบ่งเป็นส่วนย่อยต่อหน้า)
+เดิมแอปอยู่ในไฟล์เดียว 3055 บรรทัด — แยกเป็นไฟล์ต่อหน้าให้แก้ง่าย (หน้าตา/พฤติกรรมเหมือนเดิมเป๊ะ)
+```
+app/            หน้าเว็บ (Next.js) + API routes (คุยกับฐานข้อมูลฝั่งเซิร์ฟเวอร์)
+components/
+  WordBankApp.jsx  คลาสหลัก — state + การทำงานทั้งหมด + โครงหน้า (เมนู/ฟุตเตอร์/สลับหน้า)
+  helpers.js       ฟังก์ชันกลาง (เลขไทย ฯลฯ)
+  pages/           โค้ดของแต่ละหน้าแยกไฟล์:
+    add · review · library · about · aiLog · aiTest · promptLog · modals · reportShared
+lib/            หัวใจระบบ AI · สี · ราคา · โครงหมวดย่อย · client ฐานข้อมูล
+scripts/        SQL + สคริปต์นำเข้า/สร้างข้อมูล
+```
+
 ## ▶️ เริ่มใช้งาน
 ```bash
 npm install

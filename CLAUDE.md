@@ -251,7 +251,20 @@ app/
     categories/route.js  POST เพิ่มหมวด · categories/[id] PATCH/DELETE · categories/merge POST รวมหมวด
     review/route.js      POST จัดการคำตรวจทานบนคลาวด์ (action: replace/update/remove/clear)
     logs/route.js        GET ประวัติ+สรุป · POST action:'saved' เติมจำนวนคำที่บันทึกจริง
-components/WordBankApp.jsx   แอปทั้งหมด (class component เดียว — ทุกหน้า/modal/settings/ประวัติ AI)
+components/                  🧩 แอปแบ่งเป็นไฟล์ต่อหน้าแล้ว (2026-07-20b · เดิมไฟล์เดียว 3055 บรรทัด)
+  WordBankApp.jsx            คลาสหลัก (~1027 บรรทัด): state + handler ทั้งหมด + lifecycle + render() (แบนเนอร์/เมนู ☰/footer/สลับหน้า) + renderConfirm + renderScrollButtons + rp* (ตัวช่วยหน้ารายงาน)
+  helpers.js                 ฟังก์ชัน/ค่าคงที่กลาง (แยกไว้กัน circular import): VERSION · thNum (เลขไทย) · aiModel · shortDate · pathsOf
+  pages/                     👇 view แต่ละหน้า = export function renderX(app, ...) · เรียก state/handler ผ่าน `app.` (= ตัว instance) · main render() เรียก renderX(this,...)
+    add.jsx                  renderAdd + renderProcessing (หน้าเพิ่มคำ + หน้าโหลด AI)
+    review.jsx               renderReview (หน้าตรวจทาน · ก้อนใหญ่สุด ~580 บรรทัด · 5 มุมมอง+ช่อคำ)
+    library.jsx              renderLibrary (หน้าคลังคำ · renderCard/renderLevel/novelPicker/fontPicker/chev/spread)
+    about.jsx                renderAbout (หน้าเกี่ยวกับ)
+    aiLog.jsx                renderAiLog (ประวัติการใช้ AI)
+    aiTest.jsx               renderAiTest (ผลทดสอบ AI)
+    promptLog.jsx            renderPromptLog (ประวัติคำสั่ง)
+    reportShared.jsx         ข้อมูลกลาง 2 หน้ารายงาน: RP (สี/ฟอนต์) · TEST_WORDS (ชุดคำทดสอบ)
+    modals.jsx               renderEditModal (แก้ไขคำ) + renderCatModal (จัดการหมวด) + renderSettings (ตั้งค่า)
+  🔑 กฎแบ่งไฟล์: view ทุกตัวรับ `app` เป็นพารามิเตอร์แรก · ข้างในใช้ `app.state`/`app.<handler>()` (ไม่ใช่ this) · static เดิม `WordBankApp.thNum` → import จาก helpers · **ห้ามเปลี่ยน logic/UI ตอนย้าย — ต้อง byte-identical** (พิสูจน์ด้วยเทียบ HTML ก่อน/หลัง)
 lib/
   ai.js         🧠 หัวใจ AI — provider adapter: buildUserPrompt, normalize, callOpenAICompatible/callGemini/callClaude, runAI() (คืน usage+model+provider)
   providers.js  ทะเบียน 8 ตัวเลือก (label/tag/model/models[{id,name}]/baseURL/envKey) — แก้ชื่อรุ่น/URL/กุญแจที่นี่จุดเดียว (ข้อมูลล้วน import ฝั่ง client ได้)
