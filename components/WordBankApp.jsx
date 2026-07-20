@@ -52,9 +52,13 @@ export default class WordBankApp extends React.Component {
     promptOpen: null,     // หน้าประวัติคำสั่ง: ฉบับที่กางข้อความเต็มอยู่
     promptLang: 'en',     // หน้าประวัติคำสั่ง: ดูฉบับอังกฤษ (ที่ส่งจริง) หรือไทย
     libStickH: 103,      // ความสูงจริงของแถบตรึงหน้าคลังคำ (ค้นหา+ตัวกรอง+ชิปหมวด) — สารบัญเอาไปหลบใต้แถบนี้
+    isMobile: false,     // จอเล็ก (มือถือ) — ปรับเลย์เอาต์เฉพาะตอนจริง จอคอมพิวเตอร์เหมือนเดิมทุกอย่าง
+    menuOpen: false,     // เมนู ☰ บนมือถือ เปิด/ปิด
+    bannerH: 69,         // ความสูงจริงของแบนเนอร์บนสุด (วัดเอง) — แถบตรึงทุกอันเกาะใต้ค่านี้ (เดิม hardcode 69)
   };
   _stickRef = React.createRef();
   _libStickRef = React.createRef();
+  _bannerRef = React.createRef();
   // เฝ้าดูความสูงก้อนตรึง (เปลี่ยนเมื่อมี/ไม่มีแท็บช่อ หรือปุ่มล้นบรรทัดตอนจอแคบ)
   watchStick() {
     const el = this._stickRef.current;
@@ -76,6 +80,17 @@ export default class WordBankApp extends React.Component {
       this._ro2.observe(el2);
     } else if (!el2 && this._ro2) {
       this._ro2.disconnect(); this._ro2 = null;
+    }
+    // วัดความสูงแบนเนอร์บนสุด — บนมือถือแบนเนอร์สูงไม่เท่าจอคอมพิวเตอร์ (69px) แถบตรึงทุกอันจะได้เกาะพอดี
+    const el3 = this._bannerRef.current;
+    if (el3 && !this._ro3 && typeof ResizeObserver !== 'undefined') {
+      this._ro3 = new ResizeObserver(() => {
+        const h = Math.round(el3.getBoundingClientRect().height);
+        if (h && h !== this.state.bannerH) this.setState({ bannerH: h });
+      });
+      this._ro3.observe(el3);
+    } else if (!el3 && this._ro3) {
+      this._ro3.disconnect(); this._ro3 = null;
     }
   }
   componentDidUpdate() { this.watchStick(); }
@@ -119,12 +134,25 @@ export default class WordBankApp extends React.Component {
     clearInterval(this._proc); clearInterval(this._sec); clearTimeout(this._rvPush);
     if (this._ro) { this._ro.disconnect(); this._ro = null; }
     if (this._ro2) { this._ro2.disconnect(); this._ro2 = null; }
+    if (this._ro3) { this._ro3.disconnect(); this._ro3 = null; }
+    if (this._mq && this._onMq) {
+      if (this._mq.removeEventListener) this._mq.removeEventListener('change', this._onMq);
+      else if (this._mq.removeListener) this._mq.removeListener(this._onMq);
+    }
     this._flushReview(true);
   }
   async componentDidMount() {
     // ปิด/รีเฟรชหน้า → รีบ sync คำตรวจทานที่ค้างขึ้นคลาวด์ก่อน (กันหาย)
     this._onUnload = () => this._flushReview(true);
     if (typeof window !== 'undefined') window.addEventListener('beforeunload', this._onUnload);
+    // ตรวจว่าเปิดบนจอเล็ก (มือถือ) ไหม — ปรับ layout เฉพาะจอเล็ก จอกว้างเหมือนเดิมทุกอย่าง · อัปเดตเมื่อหมุน/ย่อจอ
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      this._mq = window.matchMedia('(max-width: 760px)');
+      this._onMq = (e) => this.setState({ isMobile: e.matches, menuOpen: false });
+      if (this._mq.addEventListener) this._mq.addEventListener('change', this._onMq);
+      else if (this._mq.addListener) this._mq.addListener(this._onMq); // เผื่อเบราว์เซอร์เก่า
+      if (this._mq.matches) this.setState({ isMobile: true });
+    }
     let ui = {}, review = [], collapsed = {}, hadCollapsed = false, draft = '';
     try {
       const su = localStorage.getItem(UI_KEY);
@@ -788,10 +816,14 @@ export default class WordBankApp extends React.Component {
         {/* รายชื่อกิ่งหมวดย่อยที่มีอยู่ — ช่วยเติมคำตอนพิมพ์เพิ่มกิ่งเอง */}
         <datalist id="wb-paths">{[...this.knownPaths()].slice(0, 800).map((p) => <option key={p} value={p} />)}</datalist>
 
-        <button onClick={this.openSettings} title="ตั้งค่าการแสดงผล" style={{ position: 'fixed', top: '16px', right: '18px', zIndex: 55, padding: '9px 18px', borderRadius: '20px', border: '1px solid #d8c7a2', background: 'var(--surface,#fffdf6)', color: 'var(--primary,#6f4e37)', fontSize: '14.5px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 3px 10px rgba(120,90,50,.16)' }}>ตั้งค่า</button>
+        {/* ปุ่มตั้งค่าลอยมุมขวาบน — เฉพาะจอคอมพิวเตอร์ (บนมือถือย้ายเข้าเมนู ☰ กันทับปุ่มเมนู) */}
+        {!S.isMobile && (
+          <button onClick={this.openSettings} title="ตั้งค่าการแสดงผล" style={{ position: 'fixed', top: '16px', right: '18px', zIndex: 55, padding: '9px 18px', borderRadius: '20px', border: '1px solid #d8c7a2', background: 'var(--surface,#fffdf6)', color: 'var(--primary,#6f4e37)', fontSize: '14.5px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 3px 10px rgba(120,90,50,.16)' }}>ตั้งค่า</button>
+        )}
 
-        {navStyle === 'tabs' && (
-          <header style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '13px clamp(20px,3vw,40px)', background: 'linear-gradient(180deg, rgba(255,255,255,.4), var(--panel,#f7f0e0))', borderBottom: '1px solid ' + rgba(primary, 0.16), boxShadow: '0 3px 16px rgba(120,90,50,.07)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 20 }}>
+        {/* ===== แบนเนอร์จอคอมพิวเตอร์ (แถบแท็บ 7 หน้า) — เหมือนเดิมทุกอย่าง ===== */}
+        {navStyle === 'tabs' && !S.isMobile && (
+          <header ref={this._bannerRef} style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '13px clamp(20px,3vw,40px)', background: 'linear-gradient(180deg, rgba(255,255,255,.4), var(--panel,#f7f0e0))', borderBottom: '1px solid ' + rgba(primary, 0.16), boxShadow: '0 3px 16px rgba(120,90,50,.07)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 20 }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '9px' }}>
               <span style={{ fontFamily: "var(--font-charmonman),cursive", fontWeight: 700, fontSize: '34px', color: 'var(--accent,#9c3b2b)', lineHeight: 1, marginTop: '8px' }}>คลังคำ</span>
               <span style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '20px', color: '#b09a72', fontWeight: 400 }}>Word&nbsp;Bank</span>
@@ -805,12 +837,39 @@ export default class WordBankApp extends React.Component {
               ))}
             </nav>
             <div style={{ flex: 1 }} />
-            <span style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '17px', color: '#b3a488', whiteSpace: 'nowrap', paddingRight: '112px' }}>“เก็บคำงาม ไว้แต่งเรื่องของเราเอง”</span>
+            <span className="wb-quote" style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '17px', color: '#b3a488', whiteSpace: 'nowrap', paddingRight: '112px' }}>“เก็บคำงาม ไว้แต่งเรื่องของเราเอง”</span>
           </header>
         )}
 
+        {/* ===== แบนเนอร์มือถือ — โลโก้ + ปุ่ม ☰ (แตะแล้วเมนูเด้งลงมา) ===== */}
+        {navStyle === 'tabs' && S.isMobile && (
+          <>
+            <header ref={this._bannerRef} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '11px clamp(14px,4vw,20px)', background: 'linear-gradient(180deg, rgba(255,255,255,.55), var(--panel,#f7f0e0))', borderBottom: '1px solid ' + rgba(primary, 0.16), boxShadow: '0 3px 16px rgba(120,90,50,.07)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 40 }}>
+              <span style={{ fontFamily: "var(--font-charmonman),cursive", fontWeight: 700, fontSize: '27px', color: 'var(--accent,#9c3b2b)', lineHeight: 1 }}>คลังคำ</span>
+              <span style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '16px', color: '#b09a72' }}>Word&nbsp;Bank</span>
+              <div style={{ flex: 1 }} />
+              <button onClick={() => this.setState((s) => ({ menuOpen: !s.menuOpen }))} title="เมนู" aria-label="เมนู" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '42px', height: '42px', borderRadius: '11px', border: '1px solid #d8c7a2', background: S.menuOpen ? 'var(--primary,#6f4e37)' : 'var(--surface,#fffdf6)', color: S.menuOpen ? '#fbf3e2' : 'var(--primary,#6f4e37)', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: 0 }}>{S.menuOpen ? '✕' : '☰'}</button>
+            </header>
+            {S.menuOpen && (
+              <div onClick={() => this.setState({ menuOpen: false })} style={{ position: 'fixed', inset: 0, top: S.bannerH + 'px', background: 'rgba(58,47,40,.32)', zIndex: 35, animation: 'wbfade .16s ease' }}>
+                <nav onClick={this.stop} style={{ display: 'flex', flexDirection: 'column', gap: '5px', padding: '10px 12px 14px', background: 'var(--panel,#f7f0e0)', borderBottom: '1px solid #e0d0ac', boxShadow: '0 12px 28px rgba(58,47,40,.22)', animation: 'wbdrop .2s ease' }}>
+                  {navItems.map((n) => (
+                    <button key={n.id} onClick={() => { this.setState({ menuOpen: false }); this.onNav(n.id)(); }} style={navBtn(n.active, true)}>
+                      <span style={{ flex: 1 }}>{n.label}</span>{n.badgeN > 0 && <span style={badgeStyle(n.active)}>{n.badgeN}</span>}
+                    </button>
+                  ))}
+                  <div style={{ height: '1px', background: '#e0d0ac', margin: '5px 4px' }} />
+                  <button onClick={() => { this.setState({ menuOpen: false }); this.openSettings(); }} style={navBtn(false, true)}>
+                    <span style={{ flex: 1 }}>⚙ ตั้งค่าการแสดงผล</span>
+                  </button>
+                </nav>
+              </div>
+            )}
+          </>
+        )}
+
         {/* ลบความสูงแบนเนอร์ออกจากพื้นที่เนื้อหา ไม่งั้นหน้าสูงเกินจอ 69px เสมอ = เลื่อนได้ทั้งที่ข้อมูลไม่เต็มจอ */}
-        <div style={{ display: 'flex', alignItems: 'stretch', minHeight: 'calc(100vh - 69px)' }}>
+        <div style={{ display: 'flex', alignItems: 'stretch', minHeight: 'calc(100vh - ' + S.bannerH + 'px)' }}>
           <main style={{ flex: 1, minWidth: 0, padding: '40px clamp(16px,2.5vw,40px) 72px' }}>
             {isAdd && this.renderAdd()}
             {isReview && this.renderReview(getCat, monoMode, spell, effLayout)}
@@ -993,6 +1052,8 @@ export default class WordBankApp extends React.Component {
   // ============ REVIEW ============
   renderReview(getCat, monoMode, spell, effLayout) {
     const ST = this.state;
+    // มือถือ: มุมมองตาราง/คอลัมน์เป็นแบบหลายคอลัมน์กว้าง ไม่เหมาะจอแคบ → ใช้การ์ดแทน
+    if (ST.isMobile && (effLayout === 'table' || effLayout === 'columns')) effLayout = 'cards';
     if (ST.review.length === 0) {
       return (
         <section style={{ maxWidth: '100%', margin: '0 auto', animation: 'wbfade .35s ease' }}>
@@ -1275,7 +1336,7 @@ export default class WordBankApp extends React.Component {
     const tableView = (
       <div style={{ border: '1px solid #e0d0ac', borderRadius: '12px', background: 'var(--surface,#fffdf6)' }}>
         {/* หัวตารางตรึงต่อใต้ก้อนแท็บ+แถบเครื่องมือพอดี (69px = แบนเนอร์ + ความสูงจริงของก้อนตรึงที่วัดมา) */}
-        <div style={{ position: 'sticky', top: (69 + S.stickH) + 'px', zIndex: 14, display: 'grid', gridTemplateColumns: '34px minmax(0,1.25fr) 120px 165px minmax(0,1.05fr) minmax(0,1fr) 34px', gap: '12px', padding: '12px 16px', background: '#f0e6cd', borderBottom: '1px solid #e0d0ac', borderRadius: '11px 11px 0 0', fontSize: '12px', fontWeight: 600, color: '#8a7d6d', letterSpacing: '.4px' }}>
+        <div style={{ position: 'sticky', top: (S.bannerH + S.stickH) + 'px', zIndex: 14, display: 'grid', gridTemplateColumns: '34px minmax(0,1.25fr) 120px 165px minmax(0,1.05fr) minmax(0,1fr) 34px', gap: '12px', padding: '12px 16px', background: '#f0e6cd', borderBottom: '1px solid #e0d0ac', borderRadius: '11px 11px 0 0', fontSize: '12px', fontWeight: 600, color: '#8a7d6d', letterSpacing: '.4px' }}>
           <input type="checkbox" checked={allSelected} onChange={this.selectAll} style={{ width: '16px', height: '16px', accentColor: 'var(--primary,#6f4e37)', cursor: 'pointer' }} />
           {sortH('text', 'คำ / วลี')}{sortH('status', 'สถานะ')}{sortH('cat', 'หมวด')}{sortH('subpath', 'หมวดย่อย')}<span>ความหมาย</span><span></span>
         </div>
@@ -1497,7 +1558,7 @@ export default class WordBankApp extends React.Component {
         <p style={{ fontSize: '14px', color: '#8a7d6d', margin: '0 0 6px' }}>ค่าเริ่มต้นคือยืนยันตามที่ AI แยกให้ — แก้ตัวคำ เปลี่ยนหมวด ลากย้าย หรือเลือกหลายคำจัดการพร้อมกันได้ตามใจ</p>
 
         {/* แท็บช่อ + แถบเครื่องมือ = ตรึงติดกันเป็นก้อนเดียว (สองอย่างนี้กดบ่อยสุด เลื่อนดูคำล่าง ๆ ก็ยังกดได้) */}
-        <div ref={this._stickRef} style={{ position: 'sticky', top: '69px', zIndex: 16, background: 'var(--paper,#e7dbc0)' }}>
+        <div ref={this._stickRef} style={{ position: 'sticky', top: S.bannerH + 'px', zIndex: 16, background: 'var(--paper,#e7dbc0)' }}>
         {batches.length > 1 && (
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'flex-end', borderBottom: '2px solid #ddcba4', paddingTop: '10px' }}>
             {batches.map((b) => {
@@ -1512,8 +1573,8 @@ export default class WordBankApp extends React.Component {
           </div>
         )}
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', background: 'var(--paper,#e7dbc0)', padding: '11px 0 12px', marginBottom: '4px' }}>
-          <div style={{ display: 'inline-flex', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
-            {[['cards', 'การ์ด'], ['table', 'ตาราง'], ['columns', 'คอลัมน์'], ['sources', '✂ จับกลุ่มประโยค'], ['tree', '📖 แบบคลังคำ']].map(([k, label]) => (
+          <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
+            {[['cards', 'การ์ด'], ['table', 'ตาราง'], ['columns', 'คอลัมน์'], ['sources', '✂ จับกลุ่มประโยค'], ['tree', '📖 แบบคลังคำ']].filter(([k]) => !(ST.isMobile && (k === 'table' || k === 'columns'))).map(([k, label]) => (
               <button key={k} onClick={this.setUiTop('reviewLayout', k)} style={layoutSeg(effLayout === k)}>{label}</button>
             ))}
           </div>
@@ -1548,7 +1609,7 @@ export default class WordBankApp extends React.Component {
         )}
 
         {effLayout === 'cards' && cardsView}
-        {effLayout === 'table' && tableView}
+        {effLayout === 'table' && (S.isMobile ? <div style={{ overflowX: 'auto' }}>{tableView}</div> : tableView)}
         {effLayout === 'columns' && columnsView}
         {effLayout === 'sources' && sourcesView}
         {effLayout === 'tree' && treeView}
@@ -1625,29 +1686,53 @@ export default class WordBankApp extends React.Component {
               {sum.byProvider.map((b) => <button key={b.provider} onClick={() => this.setState({ aiLogFilter: b.provider })} style={btn(S.aiLogFilter === b.provider)}>{b.label}</button>)}
             </div>
 
-            <div style={{ border: '1px solid #e0d0ac', borderRadius: '12px', overflow: 'hidden', background: 'var(--surface,#fffdf6)' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: cols, gap: '10px', padding: '11px 16px', background: '#f0e6cd', borderBottom: '1px solid #e0d0ac', fontSize: '12px', fontWeight: 600, color: '#8a7d6d' }}>
-                <span>เวลา</span><span>เจ้า / รุ่น</span><span>คำ (เข้า→แยก→บันทึก)</span><span>token</span><span>ค่าใช้จ่าย</span><span>ผล</span>
-              </div>
-              <div style={{ maxHeight: '540px', overflowY: 'auto' }}>
+            {S.isMobile ? (
+              /* มือถือ: แต่ละครั้งที่เรียก AI = การ์ด 1 ใบ (แทนตาราง 6 คอลัมน์ที่เบียดจอ) */
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {logs.map((l) => (
-                  <div key={l.id} style={{ display: 'grid', gridTemplateColumns: cols, gap: '10px', padding: '10px 16px', borderBottom: '1px solid #f0e6cd', alignItems: 'center', fontSize: '13px', color: '#5c5044' }}>
-                    <span style={{ color: '#8a7d6d', fontSize: '12px' }}>{fmtTH(l.created_at)}</span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
-                      <BrandIcon name={l.provider} size={15} />
-                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.model || l.provider_label}</span>
-                    </span>
-                    <span style={{ color: '#6f6252' }}>{fmtNum(l.input_chars)} ตัวอักษร → {fmtNum(l.item_count)} คำ{l.saved_count ? ' → บันทึก ' + fmtNum(l.saved_count) : ''}{l.skipped_count ? ' (ซ้ำ ' + l.skipped_count + ')' : ''}</span>
-                    <span>{l.tokens_in || l.tokens_out ? fmtNum((l.tokens_in || 0) + (l.tokens_out || 0)) : '—'}</span>
-                    <span>{fmtCost(l.cost_usd)}</span>
-                    <span>{l.status === 'error'
-                      ? <span title={l.error || ''} style={{ color: '#fff', background: '#e01e1e', borderRadius: '20px', padding: '2px 9px', fontSize: '11.5px', fontWeight: 600 }}>พลาด</span>
-                      : <span style={{ color: '#5a7040', background: '#e9efe1', border: '1px solid #cbdcb8', borderRadius: '20px', padding: '2px 9px', fontSize: '11.5px' }}>สำเร็จ</span>}</span>
+                  <div key={l.id} style={{ border: '1px solid #e6dabf', borderRadius: '12px', background: 'var(--surface,#fffdf6)', padding: '12px 14px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '7px' }}>
+                      <BrandIcon name={l.provider} size={17} />
+                      <span style={{ flex: 1, fontWeight: 600, color: '#4a3f35', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.model || l.provider_label}</span>
+                      {l.status === 'error'
+                        ? <span title={l.error || ''} style={{ flex: 'none', color: '#fff', background: '#e01e1e', borderRadius: '20px', padding: '2px 10px', fontSize: '11.5px', fontWeight: 600 }}>พลาด</span>
+                        : <span style={{ flex: 'none', color: '#5a7040', background: '#e9efe1', border: '1px solid #cbdcb8', borderRadius: '20px', padding: '2px 10px', fontSize: '11.5px' }}>สำเร็จ</span>}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#6f6252', lineHeight: 1.65 }}>{fmtNum(l.input_chars)} ตัวอักษร → {fmtNum(l.item_count)} คำ{l.saved_count ? ' → บันทึก ' + fmtNum(l.saved_count) : ''}{l.skipped_count ? ' (ซ้ำ ' + l.skipped_count + ')' : ''}</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px 16px', fontSize: '12.5px', color: '#8a7d6d', marginTop: '5px' }}>
+                      <span>{fmtTH(l.created_at)}</span>
+                      <span>token {l.tokens_in || l.tokens_out ? fmtNum((l.tokens_in || 0) + (l.tokens_out || 0)) : '—'}</span>
+                      <span>ค่าใช้จ่าย {fmtCost(l.cost_usd)}</span>
+                    </div>
                   </div>
                 ))}
                 {logs.length === 0 && <div style={{ padding: '30px', textAlign: 'center', color: '#a99b83' }}>ไม่มีรายการในตัวกรองนี้</div>}
               </div>
-            </div>
+            ) : (
+              <div style={{ border: '1px solid #e0d0ac', borderRadius: '12px', overflow: 'hidden', background: 'var(--surface,#fffdf6)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: cols, gap: '10px', padding: '11px 16px', background: '#f0e6cd', borderBottom: '1px solid #e0d0ac', fontSize: '12px', fontWeight: 600, color: '#8a7d6d' }}>
+                  <span>เวลา</span><span>เจ้า / รุ่น</span><span>คำ (เข้า→แยก→บันทึก)</span><span>token</span><span>ค่าใช้จ่าย</span><span>ผล</span>
+                </div>
+                <div style={{ maxHeight: '540px', overflowY: 'auto' }}>
+                  {logs.map((l) => (
+                    <div key={l.id} style={{ display: 'grid', gridTemplateColumns: cols, gap: '10px', padding: '10px 16px', borderBottom: '1px solid #f0e6cd', alignItems: 'center', fontSize: '13px', color: '#5c5044' }}>
+                      <span style={{ color: '#8a7d6d', fontSize: '12px' }}>{fmtTH(l.created_at)}</span>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                        <BrandIcon name={l.provider} size={15} />
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.model || l.provider_label}</span>
+                      </span>
+                      <span style={{ color: '#6f6252' }}>{fmtNum(l.input_chars)} ตัวอักษร → {fmtNum(l.item_count)} คำ{l.saved_count ? ' → บันทึก ' + fmtNum(l.saved_count) : ''}{l.skipped_count ? ' (ซ้ำ ' + l.skipped_count + ')' : ''}</span>
+                      <span>{l.tokens_in || l.tokens_out ? fmtNum((l.tokens_in || 0) + (l.tokens_out || 0)) : '—'}</span>
+                      <span>{fmtCost(l.cost_usd)}</span>
+                      <span>{l.status === 'error'
+                        ? <span title={l.error || ''} style={{ color: '#fff', background: '#e01e1e', borderRadius: '20px', padding: '2px 9px', fontSize: '11.5px', fontWeight: 600 }}>พลาด</span>
+                        : <span style={{ color: '#5a7040', background: '#e9efe1', border: '1px solid #cbdcb8', borderRadius: '20px', padding: '2px 9px', fontSize: '11.5px' }}>สำเร็จ</span>}</span>
+                    </div>
+                  ))}
+                  {logs.length === 0 && <div style={{ padding: '30px', textAlign: 'center', color: '#a99b83' }}>ไม่มีรายการในตัวกรองนี้</div>}
+                </div>
+              </div>
+            )}
           </>
         )}
       </section>
@@ -1769,7 +1854,7 @@ export default class WordBankApp extends React.Component {
     const SCORE = { 6: 3.5, 7: 4.5, 8: 5, 9: 1.5, 10: 2.5, 11: 3 };
     const NOTE = { 6: 'ใช้คำสั่งฉบับเก่า จึงสร้างกิ่งซ้ำชื่อหมวดตัวเอง 2 กิ่ง', 7: 'ไม่มีจุดเสียเลย ด้อยกว่า Pro แค่จำนวนคำที่สกัดได้', 8: 'ดีที่สุดทุกมิติ — คำครบ สกัดมากสุด ไม่สร้างกิ่งใหม่', 9: '⛔ สกัดได้แค่ 2 คำ และสร้างกิ่งใหม่ 10 กิ่งสำหรับ 10 คำ', 10: '🔴 ทำคำที่พิมพ์เข้าหาย 3 คำ · ไม่ให้หลายกิ่งเลย', 11: '🔴 ทำคำที่พิมพ์เข้าหาย 2 คำ · ไม่ให้หลายกิ่งเลย' };
     // แปลงรหัสหมวด (c0-c8) เป็นชื่อไทย จากหมวดจริงในคลัง
-    const catName = (id) => (S.categories.find((x) => x.id === id) || {}).name_th || id || '—';
+    const catName = (id) => (S.categories.find((x) => x.id === id) || {}).n || id || '—';
     const agreeTag = { full: ['ตรงกันหมด', '#7d9a5c', '#eef3e4'], branch: ['กิ่งต่าง', '#a8791f', '#fbf1d8'], cat: ['หมวดต่าง', '#b4503a', '#f7e5e0'], single: ['มีตัวเดียว', '#8a7d6d', '#f2ece0'] };
 
     return (
@@ -2313,14 +2398,18 @@ export default class WordBankApp extends React.Component {
     const cardMode = this.eff('cardStyle', 'classic');
     const cardSize = this.eff('cardSize', 'm');
     const SZ = ({ s: { min: 168, w: 16.5, lw: 19 }, m: { min: 228, w: 19, lw: 22 }, l: { min: 302, w: 23, lw: 27 } })[cardSize] || { min: 228, w: 19, lw: 22 };
-    const gridStyle = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(' + SZ.min + 'px,1fr))', gap: '12px', marginBottom: '8px' };
+    // มือถือ: วางคำเป็นตาราง 3 คอลัมน์ ให้เห็นคำเยอะๆ ไม่ต้องเลื่อนยาว (อ่านซ้าย→ขวาตามปกติ) · จอคอมพิวเตอร์ใช้กริดเดิม
+    const gridStyle = S.isMobile
+      ? { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(104px,1fr))', gap: '7px', marginBottom: '8px', alignItems: 'start' }
+      : { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(' + SZ.min + 'px,1fr))', gap: '12px', marginBottom: '8px' };
     const wordFont = this.eff('wordFont', 'trirong');
     // ฟอนต์ไทยดั้งเดิมตัวเล็กกว่ามาตรฐาน ต้องคูณขนาดชดเชย + ใช้ตัวหนาให้อ่านชัด
     const FSCALE = { thsarabun: 1.38, cordia: 1.38 }[wordFont] || 1;
     const FWEIGHT = { thsarabun: 700, cordia: 700 }[wordFont] || 500;
     const fsz = (n) => Math.round(n * FSCALE) + 'px';
     const FF = ({ trirong: "var(--font-trirong),serif", sarabun: "var(--font-sarabun),sans-serif", thsarabun: "var(--font-thsarabun),sans-serif", cordia: "'Cordia New','CordiaUPC','Cordia',var(--font-sarabun),sans-serif", maitree: "var(--font-maitree),serif", chonburi: "var(--font-chonburi),serif" })[wordFont] || "var(--font-trirong),serif";
-    const isCards = S.libView === 'cards', isList = S.libView === 'list';
+    // มือถือใช้การ์ดกะทัดรัดหลายคอลัมน์เสมอ (มุมมองรายการเป็นแถวกว้างเกินจอแคบ)
+    const isCards = S.isMobile ? true : S.libView === 'cards', isList = S.isMobile ? false : S.libView === 'list';
 
     const seg = (on) => ({ padding: '0 15px', height: '32px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1, border: 'none', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', background: on ? 'var(--surface,#fffdf6)' : 'transparent', color: on ? '#3a2f28' : '#8a7d6d', fontWeight: on ? 600 : 400, boxShadow: on ? '0 1px 3px rgba(120,90,50,.15)' : 'none' });
 
@@ -2350,6 +2439,21 @@ export default class WordBankApp extends React.Component {
       const cat = getCat(w.category);
       const dupN = isDupWord(w), isDup = dupN > 1, nBranch = branchesOf(w);
       const bar = monoMode ? '#c9b78f' : cat.c, dupB = rgba(accent, 0.55), dupBg = rgba(accent, 0.08);
+      // มือถือ: การ์ดกะทัดรัด แตะทั้งใบเพื่อดู/แก้ · จัดเป็นหลายคอลัมน์ (masonry) เพื่อคำแน่น เลื่อนน้อย
+      if (S.isMobile) {
+        return (
+          <div key={w.id} onClick={this.openEdit(w)} style={{ background: isDup ? dupBg : 'var(--surface,#fffdf6)', border: '1px solid ' + (isDup ? dupB : '#e6dabf'), borderLeft: '3px solid ' + (isDup ? dupB : bar), borderRadius: '10px', padding: '7px 9px', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ fontFamily: FF, fontSize: fsz(14.5), fontWeight: FWEIGHT, color: '#33291f', lineHeight: 1.28, wordBreak: 'break-word' }}>{w.text}</div>
+            {w.meaning && w.meaning.trim() && <div style={{ fontSize: '11px', color: '#8a7d6d', marginTop: '3px', lineHeight: 1.32, wordBreak: 'break-word' }}>{w.meaning}</div>}
+            {(isDup || nBranch > 1) && (
+              <div style={{ marginTop: '5px', display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                {isDup && <span onClick={(e) => { e.stopPropagation(); this.setState({ exactFilter: w.text, dupOnly: false, filterCat: 'all' }); }} style={{ border: '1px solid ' + rgba(accent, 0.5), background: rgba(accent, 0.1), color: 'var(--accent,#9c3b2b)', fontSize: '10px', fontWeight: 600, padding: '1px 6px', borderRadius: '5px' }}>⚠ ×{dupN}</span>}
+                {!isDup && nBranch > 1 && <span onClick={(e) => { e.stopPropagation(); this.setState({ exactFilter: w.text, dupOnly: false, filterCat: 'all' }); }} style={{ border: '1px solid #c6bcda', background: '#efe9f7', color: '#5f4c80', fontSize: '10px', fontWeight: 600, padding: '1px 6px', borderRadius: '5px' }}>↺ {WordBankApp.thNum(nBranch)} กิ่ง</span>}
+              </div>
+            )}
+          </div>
+        );
+      }
       const baseCard = { background: isDup ? dupBg : 'var(--surface,#fffdf6)', border: '1px solid ' + (isDup ? dupB : '#e6dabf'), borderRadius: '12px', position: 'relative', overflow: 'hidden' };
       const confirming = S.confirmId === w.id;
       const footer = (
@@ -2488,7 +2592,8 @@ export default class WordBankApp extends React.Component {
 
     // สารบัญฝั่งซ้าย
     // สารบัญต้องหลบใต้แถบค้นหาที่ตรึงอยู่ ไม่งั้นโดนทับ (69 = ความสูงแบนเนอร์ · +10 เว้นช่องไฟ)
-    const tocTop = navStyle === 'tabs' ? (69 + S.libStickH + 10) : 16;
+    // มือถือ: แถบกรองไม่ตรึง (สูงเกินไป จะบังครึ่งจอ) → หัวข้อหมวดเกาะใต้แบนเนอร์อย่างเดียว
+    const tocTop = navStyle !== 'tabs' ? 16 : S.isMobile ? (S.bannerH + 8) : (S.bannerH + S.libStickH + 10);
     const toc = (
       <aside style={{ width: '236px', flex: 'none', position: 'sticky', top: tocTop + 'px', alignSelf: 'flex-start', maxHeight: 'calc(100vh - ' + (tocTop + 20) + 'px)', overflow: 'auto', paddingRight: '6px' }}>
         <div style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '19px', color: 'var(--accent,#9c3b2b)', margin: '0 0 10px' }}>สารบัญ</div>
@@ -2528,7 +2633,7 @@ export default class WordBankApp extends React.Component {
         <p style={{ color: '#6f6252', margin: '0 0 24px' }}><b style={{ color: '#4a3f35' }}>{S.library.length}</b> คำ ใน {new Set(S.library.map((w) => w.category)).size} หมวด จาก {new Set(S.library.map((w) => w.novel)).size} เรื่อง</p>
 
         {/* แถบค้นหา/ตัวกรอง + ชิปหมวด = ตรึงเป็นก้อนเดียว (กดบ่อยสุด เลื่อนดูคำล่าง ๆ ก็ยังกรองได้) */}
-        <div ref={this._libStickRef} style={{ position: 'sticky', top: '69px', zIndex: 16, background: 'var(--paper,#e7dbc0)', paddingTop: '4px' }}>
+        <div ref={this._libStickRef} style={{ position: S.isMobile ? 'static' : 'sticky', top: S.bannerH + 'px', zIndex: 16, background: 'var(--paper,#e7dbc0)', paddingTop: '4px' }}>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '18px' }}>
           <div style={{ position: 'relative', flex: 1, minWidth: '220px', maxWidth: '420px' }}>
             <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#b0a184', fontSize: '16px' }}>⌕</span>
@@ -2550,16 +2655,18 @@ export default class WordBankApp extends React.Component {
           <select value={S.sort} onChange={this.onSort} style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>
             <option value="recent">ล่าสุดก่อน</option><option value="old">เก่าก่อน</option><option value="az">ก - ฮ</option>
           </select>
-          <div style={{ display: 'inline-flex', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
-            {[['cards', 'การ์ด'], ['list', 'รายการ']].map(([k, label]) => <button key={k} onClick={this.setLibView(k)} style={seg(S.libView === k)}>{label}</button>)}
-          </div>
-          {isCards && (
-            <div style={{ display: 'inline-flex', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
+          {!S.isMobile && (
+            <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
+              {[['cards', 'การ์ด'], ['list', 'รายการ']].map(([k, label]) => <button key={k} onClick={this.setLibView(k)} style={seg(S.libView === k)}>{label}</button>)}
+            </div>
+          )}
+          {isCards && !S.isMobile && (
+            <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
               {[['s', 'เล็ก'], ['m', 'กลาง'], ['l', 'ใหญ่']].map(([k, label]) => <button key={k} onClick={this.setUi('cardSize', k)} style={seg(cardSize === k)}>{label}</button>)}
             </div>
           )}
-          {isCards && (
-            <div style={{ display: 'inline-flex', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
+          {isCards && !S.isMobile && (
+            <div style={{ display: 'inline-flex', flexWrap: 'wrap', background: '#efe4cc', border: '1px solid #ddcba4', borderRadius: '10px', padding: '3px' }}>
               {[['trirong', 'ไทรรงค์', "var(--font-trirong),serif"], ['sarabun', 'สารบรรณ', "var(--font-sarabun),sans-serif"], ['thsarabun', 'สารบรรณราชการ', "var(--font-thsarabun),sans-serif"], ['cordia', 'คอร์เดีย', "'Cordia New','CordiaUPC','Cordia',var(--font-sarabun),sans-serif"], ['maitree', 'ไมตรี', "var(--font-maitree),serif"], ['chonburi', 'ชลบุรี', "var(--font-chonburi),serif"]].map(([k, label, ff]) => <button key={k} onClick={this.setUi('wordFont', k)} style={{ ...seg(wordFont === k), fontFamily: ff, fontSize: ({ trirong: 14, sarabun: 16, thsarabun: 23, cordia: 19, maitree: 14, chonburi: 15 })[k] + 'px', fontWeight: (k === 'thsarabun' || k === 'cordia') ? 700 : undefined }}>{label}</button>)}
             </div>
           )}
@@ -2582,6 +2689,14 @@ export default class WordBankApp extends React.Component {
         </div>
         </div>
 
+        {/* มือถือไม่มีสารบัญข้าง → ยกปุ่มยุบ/กางทุกหมวดมาไว้ตรงนี้แทน */}
+        {S.isMobile && anyResults && (
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+            <button onClick={this.collapseAll(allCatKeys)} style={{ flex: 1, padding: '9px 8px', border: '1px solid #ddcba4', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#6f6252', fontSize: '13px', cursor: 'pointer' }}>▸ ยุบทุกหมวด</button>
+            <button onClick={this.expandAll} style={{ flex: 1, padding: '9px 8px', border: '1px solid #ddcba4', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#6f6252', fontSize: '13px', cursor: 'pointer' }}>▾ กางทุกหมวด</button>
+          </div>
+        )}
+
         {!anyResults && (
           <div style={{ textAlign: 'center', padding: '80px 20px', color: '#a99b83' }}>
             <div style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '26px' }}>ไม่พบคำที่ค้นหา</div>
@@ -2591,27 +2706,29 @@ export default class WordBankApp extends React.Component {
 
         {anyResults && (
           <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
-            {toc}
+            {!S.isMobile && toc}
             <div style={{ flex: 1, minWidth: 0 }}>
               {visCats.map((g) => {
                 const catKey = 'g-' + g.cat.id;
                 const isCol = !!S.collapsed[catKey];
                 const cm = CATMETA[g.cat.id] || {};
-                const bigBadge = { ...badge(g.cat, monoMode), width: '36px', height: '36px', fontSize: '17px' };
+                const mob = S.isMobile;
+                const bigBadge = { ...badge(g.cat, monoMode), width: mob ? '26px' : '36px', height: mob ? '26px' : '36px', fontSize: mob ? '13px' : '17px' };
                 return (
-                  <div key={g.cat.id} id={catKey} style={{ marginBottom: '30px', scrollMarginTop: (tocTop + 6) + 'px' }}>
+                  <div key={g.cat.id} id={catKey} style={{ marginBottom: mob ? '20px' : '30px', scrollMarginTop: (tocTop + 6) + 'px' }}>
                     {/* หัวข้อหมวดตรึงไว้ระหว่างเลื่อนอ่านหมวดนั้น พอเลื่อนถึงหมวดถัดไป หัวข้อใหม่จะดันหัวข้อเก่าออกแล้วค้างแทน
-                        (sticky ทำงานในขอบเขตกล่องหมวดของตัวเอง จึงเปลี่ยนหัวตามหมวดอัตโนมัติ) · พื้นทึบกันคำด้านหลังทะลุ */}
-                    <div onClick={this.toggleCollapse(catKey)} style={{ position: 'sticky', top: tocTop + 'px', zIndex: 12, cursor: 'pointer', userSelect: 'none', padding: '13px 16px', background: monoMode ? '#f2ead7' : mix(g.cat.c, '#fffdf6', 0.88), border: '1px solid ' + (monoMode ? '#ddcba4' : rgba(g.cat.c, 0.32)), borderLeft: '5px solid ' + (monoMode ? '#c9b78f' : g.cat.c), borderRadius: '12px', marginBottom: '12px', boxShadow: '0 2px 8px rgba(120,90,50,.08)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '11px' }}>
+                        (sticky ทำงานในขอบเขตกล่องหมวดของตัวเอง จึงเปลี่ยนหัวตามหมวดอัตโนมัติ) · พื้นทึบกันคำด้านหลังทะลุ
+                        มือถือ: หัวข้อกะทัดรัด (ตัวเล็ก · ซ่อนชื่ออังกฤษ+คำบรรยาย) กันหัวข้อตรึงสูงจนบังคำ */}
+                    <div onClick={this.toggleCollapse(catKey)} style={{ position: 'sticky', top: tocTop + 'px', zIndex: 12, cursor: 'pointer', userSelect: 'none', padding: mob ? '9px 12px' : '13px 16px', background: monoMode ? '#f2ead7' : mix(g.cat.c, '#fffdf6', 0.88), border: '1px solid ' + (monoMode ? '#ddcba4' : rgba(g.cat.c, 0.32)), borderLeft: '5px solid ' + (monoMode ? '#c9b78f' : g.cat.c), borderRadius: '12px', marginBottom: '12px', boxShadow: '0 2px 8px rgba(120,90,50,.08)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: mob ? '8px' : '11px' }}>
                         {chev(isCol)}
                         <span style={bigBadge}>{g.cat.k}</span>
-                        <h2 style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 700, fontSize: '24px', margin: 0, color: '#33291f', lineHeight: 1.15 }}>{g.cat.n}</h2>
-                        {cm.en && <span style={{ fontSize: '13.5px', fontStyle: 'italic', color: monoMode ? '#8a7d6d' : shade(g.cat.c), letterSpacing: '.3px' }}>{cm.en}</span>}
+                        <h2 style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 700, fontSize: mob ? '17px' : '24px', margin: 0, color: '#33291f', lineHeight: 1.15 }}>{g.cat.n}</h2>
+                        {cm.en && !mob && <span style={{ fontSize: '13.5px', fontStyle: 'italic', color: monoMode ? '#8a7d6d' : shade(g.cat.c), letterSpacing: '.3px' }}>{cm.en}</span>}
                         <div style={{ flex: 1 }} />
-                        <span style={{ fontSize: '13px', color: '#8a7d6d', whiteSpace: 'nowrap' }}>{g.items.length} คำ</span>
+                        <span style={{ fontSize: mob ? '12px' : '13px', color: '#8a7d6d', whiteSpace: 'nowrap' }}>{g.items.length} คำ</span>
                       </div>
-                      {cm.desc && <div style={{ fontSize: '13.5px', color: '#8a7d6d', margin: '6px 0 0', paddingLeft: '31px', textWrap: 'pretty' }}>{cm.desc}</div>}
+                      {cm.desc && !mob && <div style={{ fontSize: '13.5px', color: '#8a7d6d', margin: '6px 0 0', paddingLeft: '31px', textWrap: 'pretty' }}>{cm.desc}</div>}
                     </div>
                     {!isCol && renderLevel(g.cat, g.items, SUBTREE[g.cat.id] || [], 0, catKey, 0)}
                   </div>

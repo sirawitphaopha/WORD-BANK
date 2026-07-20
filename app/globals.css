@@ -16,3 +16,6 @@ a:hover{color:#7a2c1f;text-decoration:underline}
 @keyframes wbalert{0%,100%{background:#e01e1e;box-shadow:0 0 0 0 rgba(224,30,30,0)}50%{background:#ff4242;box-shadow:0 0 13px 2px rgba(255,66,66,.8)}}
 @keyframes wbtoast{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
 @keyframes wbslide{from{transform:translateX(100%)}to{transform:none}}
+@keyframes wbdrop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+/* ซ่อนคำคมตกแต่งบนแบนเนอร์จนกว่าจอจะกว้างพอให้เมนูอยู่แถวเดียวสวย ๆ — จอกว้าง (>1320px) คำคมโผล่เหมือนเดิม */
+@media (max-width:1320px){.wb-quote{display:none}}
