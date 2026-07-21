@@ -17,10 +17,14 @@ export function renderAdd(app) {
   // นับ "คำ/วลี" = จำนวนบรรทัดที่มีข้อความ (แต่ละบรรทัด = 1 คำ/วลีที่จะส่งให้ AI) · ว่าง = 0 คำ/วลี · ย้ายไปโชว์ข้างป้าย "ข้อความที่เก็บมา"
   const countHint = lc + ' คำ/วลี';
   const novelChips = S.novels.slice(0, 5);
-  const howSteps = [
-    { n: '๑', t: 'แก้คำสะกดผิดก่อนเป็นอันดับแรก', d: 'เช่น “หายสายสูญ” → “หายสาบสูญ”, “ระแวกบ้าน” → “ละแวกบ้าน”' },
-    { n: '๒', t: 'แยกวลีย่อยที่น่าเก็บออกจากประโยคยาว', d: 'ไม่โยนทั้งประโยคเป็นก้อนเดียว แต่หยิบเฉพาะคำงาม ๆ' },
-    { n: '๓', t: 'จัดเข้าหมวด โดยยึดหมวดเดิมก่อน', d: 'ถ้าไม่มีหมวดที่เหมาะ จะเสนอหมวดใหม่ให้พิจารณา' },
+  // เส้นทางของข้อความ 6 ขั้น (flow เบื้องหลังของจริง — พี่กันสั่งใน idea.md ข้อ L · รวมเรื่องลำดับการคิดในขั้น ๓)
+  const flowSteps = [
+    { n: '๑', t: 'เตรียมของส่ง', d: 'ระบบรวมข้อความที่วาง + คำสั่ง (prompt) + เจ้า/รุ่น AI ที่เลือก แล้วส่งออกไปให้ AI ในคราวเดียว' },
+    { n: '๒', t: 'แนบแผนที่คลัง', d: 'แนบหมวดและ “กิ่ง” ที่คลังมีอยู่จริงไปด้วย เพื่อให้ AI เห็นว่ามีกิ่งอะไรแล้ว จะได้จัดเข้าของเดิม ไม่ประดิษฐ์กิ่งซ้ำ' },
+    { n: '๓', t: 'AI ตอบทีละช่อง — ลำดับการคิด', d: 'AI เขียนคำตอบเรียงทีละช่อง จงใจให้ “นิยามความหมาย + ชั่งน้ำหนักเหตุผล” มาก่อน “ตัดสินหมวด” เพราะช่องที่เขียนก่อนมีผลต่อช่องหลัง แต่ย้อนกลับไปแก้ไม่ได้', chips: ['คำ', 'ชนิด', 'ความหมาย', 'เหตุผล', 'หมวดใหญ่', 'กิ่งย่อย'], think: ['ความหมาย', 'เหตุผล'] },
+    { n: '๔', t: 'หมวดใหญ่ล็อก · กิ่งอิสระ', d: 'แต่ละคำได้หมวดใหญ่ ๑ หมวด (ล็อก) แต่ติด “กิ่งย่อย” ได้หลายกิ่ง (อิสระ) · กิ่งใหม่ที่ AI คิดเองจะติดป้าย ✦ ให้เห็นชัด' },
+    { n: '๕', t: 'เก็บกวาด', d: 'ตาข่ายกันคำหายนับบรรทัดที่พิมพ์เข้า ถ้า AI ทำหายจะเติมกลับให้ + ดักคำซ้ำกับคลังและซ้ำข้ามช่อ' },
+    { n: '๖', t: 'ขึ้นจอ + ป้าย', d: 'ผลโผล่ในหน้าตรวจทานเป็น “ช่อ” ให้แก้ ลากย้ายหมวด หรือลบได้ ก่อนกดบันทึกเข้าคลังจริง — คลังจะไม่เปลี่ยนจนกว่าจะกดบันทึก' },
   ];
   return (
     <section style={{ maxWidth: '1040px', margin: '0 auto', animation: 'wbfade .35s ease' }}>
@@ -153,12 +157,33 @@ export function renderAdd(app) {
         );
       })()}
 
-      <div style={{ marginTop: '20px', padding: '24px 26px', background: 'var(--panel,#f7f0e0)', border: '1px solid #e4d5b4', borderRadius: '14px' }}>
-        <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 600, fontSize: '18px', marginBottom: '14px' }}>AI จะทำงานให้ตามลำดับนี้</div>
-        {howSteps.map((s) => (
-          <div key={s.n} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start', padding: '9px 0' }}>
-            <span style={{ flex: 'none', width: '28px', height: '28px', borderRadius: '50%', background: 'var(--accent,#9c3b2b)', color: '#fbf3e2', display: 'grid', placeItems: 'center', fontWeight: 600, fontSize: '14px' }}>{s.n}</span>
-            <div><div style={{ fontWeight: 600, color: '#4a3f35' }}>{s.t}</div><div style={{ fontSize: '14px', color: '#8a7d6d' }}>{s.d}</div></div>
+      {/* เส้นทางของข้อความ ๖ ขั้น — flow เบื้องหลังของจริง (พี่กันสั่ง idea.md ข้อ L) */}
+      <div style={{ marginTop: '20px', padding: S.isMobile ? '22px 18px' : '26px 30px', background: 'var(--surface,#fffdf6)', border: '1px solid #e4d5b4', borderRadius: '14px' }}>
+        <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 700, fontSize: S.isMobile ? '18px' : '20px', color: 'var(--primary,#5b4a36)', marginBottom: '4px' }}>เบื้องหลัง — เส้นทางของข้อความ ๖ ขั้น</div>
+        <div style={{ fontSize: '13.5px', color: '#8a7d6d', marginBottom: '18px', lineHeight: 1.6 }}>ตั้งแต่กด “ให้ AI ช่วยจัด” จนคำขึ้นหน้าตรวจทาน ระบบทำงานให้แบบนี้</div>
+        {flowSteps.map((s, i) => (
+          <div key={s.n} style={{ display: 'flex', gap: '14px', alignItems: 'stretch' }}>
+            <div style={{ flex: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <span style={{ flex: 'none', width: '34px', height: '34px', borderRadius: '50%', background: 'var(--primary,#5b4a36)', color: '#fbf3e2', display: 'grid', placeItems: 'center', fontWeight: 700, fontSize: '15px', fontFamily: "var(--font-trirong),serif" }}>{s.n}</span>
+              {i < flowSteps.length - 1 && <span style={{ flex: 1, width: '2px', background: '#e0d3b6', minHeight: '14px' }} />}
+            </div>
+            <div style={{ paddingBottom: i < flowSteps.length - 1 ? '18px' : 0 }}>
+              <div style={{ fontWeight: 700, color: '#4a3f35', fontSize: '15.5px' }}>{s.t}</div>
+              <div style={{ fontSize: '14px', color: '#8a7d6d', lineHeight: 1.65, marginTop: '2px' }}>{s.d}</div>
+              {s.chips && (
+                <>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '5px', marginTop: '10px' }}>
+                    {s.chips.map((c, j) => (
+                      <span key={c} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                        <span style={{ fontSize: '12.5px', fontWeight: s.think.includes(c) ? 700 : 500, padding: '3px 10px', borderRadius: '999px', background: s.think.includes(c) ? 'var(--accent,#9c3b2b)' : '#f2e8d2', color: s.think.includes(c) ? '#fbf3e2' : '#6f6252', border: '1px solid ' + (s.think.includes(c) ? 'var(--accent,#9c3b2b)' : '#e0d3b6') }}>{c}</span>
+                        {j < s.chips.length - 1 && <span style={{ color: '#c3b291', fontSize: '12px' }}>▸</span>}
+                      </span>
+                    ))}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#a2937c', marginTop: '7px' }}>ช่องสีเข้ม (ความหมาย · เหตุผล) ถูกจัดให้คิดก่อนตัดสินหมวด</div>
+                </>
+              )}
+            </div>
           </div>
         ))}
       </div>
