@@ -1,0 +1,6146 @@
+{
+ "_note": "ข้อมูลดิบผลทดสอบ AI เวอร์ชัน 1 (ช่อ ๖–๑๑ · เทส 19 ก.ค. 2569 · 6 โมเดล · คำชุดมาตรฐาน 31 คำ) เซฟจาก Supabase 21 ก.ค. · V1 เทสก่อนมีฟีเจอร์ความหมาย/เหตุผล → meaning/reason เป็น null ทั้งหมด (ปกติ) · batchMeta = โทเคน/ราคา/เวลา/โมเดล รายช่อ (จับคู่จาก wb_ai_log ด้วย created_at) · v1_ai_log = log ดิบทั้งวัน 19 ก.ค. (มีรันทดลองช่วงแรก+error ปนด้วย · 6 รันจริงคือช่อ 6-11) · all_batches = ทุกช่อใน wb_review ตอนดึง (ช่อ 1-5 = ข้อมูลปลอม/ทดลอง · 6-11 = V1 · 12-25 = V2)",
+ "version": 1,
+ "test_batches": "6-11",
+ "usd_thb_rate": 35,
+ "fake_batches": [
+  {
+   "batch_no": 1,
+   "batch": "b_demo1",
+   "note": "ตัวอย่าง demo"
+  },
+  {
+   "batch_no": 2,
+   "batch": "b_demo2",
+   "note": "ตัวอย่าง demo"
+  },
+  {
+   "batch_no": 3,
+   "batch": "b_demo3",
+   "note": "ตัวอย่าง demo"
+  },
+  {
+   "batch_no": 4,
+   "batch": "b_mrrdsm37",
+   "note": "ทดลอง พื้นฐาน 2 คำ"
+  },
+  {
+   "batch_no": 5,
+   "batch": "b_mrrehptr",
+   "note": "ทดลอง Gemini 3.5 Flash 53 คำ (ก่อนเทสจริง)"
+  }
+ ],
+ "all_batches": [
+  {
+   "batch": "b_demo1",
+   "batch_no": 1,
+   "batch_ai": "Gemini · Flash",
+   "novel": "ดวงใจในมนตรา",
+   "n": 35
+  },
+  {
+   "batch": "b_demo2",
+   "batch_no": 2,
+   "batch_ai": "GPT · GPT-5.1",
+   "novel": "เล่ห์ร้ายพ่ายรัก",
+   "n": 36
+  },
+  {
+   "batch": "b_demo3",
+   "batch_no": 3,
+   "batch_ai": "GPT · GPT-4.1",
+   "novel": "เล่ห์ร้ายพ่ายรัก",
+   "n": 32
+  },
+  {
+   "batch": "b_mrrdsm37",
+   "batch_no": 4,
+   "batch_ai": "พื้นฐาน (ในเครื่อง)",
+   "novel": "ไม่ระบุเรื่อง",
+   "n": 2
+  },
+  {
+   "batch": "b_mrrehptr",
+   "batch_no": 5,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "novel": "ไม่ระบุเรื่อง",
+   "n": 53
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "novel": "ไม่ระบุเรื่อง",
+   "n": 45
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "novel": "ไม่ระบุเรื่อง",
+   "n": 42
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "novel": "ไม่ระบุเรื่อง",
+   "n": 48
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "novel": "ไม่ระบุเรื่อง",
+   "n": 33
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "novel": "ไม่ระบุเรื่อง",
+   "n": 42
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "novel": "ไม่ระบุเรื่อง",
+   "n": 45
+  },
+  {
+   "batch": "b_mrufceym",
+   "batch_no": 12,
+   "batch_ai": "Gemini 3.1 Pro · ★★★★★ 5.0 ดีที่สุด (จ่ายเงิน)",
+   "novel": "เทส version 2",
+   "n": 48
+  },
+  {
+   "batch": "b_mrufikzz",
+   "batch_no": 13,
+   "batch_ai": "Gemini 3.1 Flash Lite · 500/วัน ฟรี",
+   "novel": "เทส version 2",
+   "n": 34
+  },
+  {
+   "batch": "b_mruflsou",
+   "batch_no": 14,
+   "batch_ai": "Gemini 3.5 Flash · ★★★★☆ 4.5 คุ้มสุด · 20/วัน ฟรี",
+   "novel": "เทส version 2",
+   "n": 45
+  },
+  {
+   "batch": "b_mrufn17j",
+   "batch_no": 15,
+   "batch_ai": "Gemini 3 Flash · 20/วัน ฟรี",
+   "novel": "เทส version 2",
+   "n": 37
+  },
+  {
+   "batch": "b_mrufsyk7",
+   "batch_no": 16,
+   "batch_ai": "GPT-4.1 mini · ถูกกว่า · ยังไม่ได้เทส",
+   "novel": "เทส version 2",
+   "n": 34
+  },
+  {
+   "batch": "b_mrufwgz3",
+   "batch_no": 17,
+   "batch_ai": "GPT-4.1 · ★★☆☆☆ 2.5 สกัดดีแต่เคยทำคำหาย 3",
+   "novel": "เทส version 2",
+   "n": 40
+  },
+  {
+   "batch": "b_mrufye9z",
+   "batch_no": 18,
+   "batch_ai": "GPT-5.1 · ★★★☆☆ 3.0 ดีสุดในกลุ่ม GPT · เคยทำคำหาย 2",
+   "novel": "เทส version 2",
+   "n": 44
+  },
+  {
+   "batch": "b_mrug4p2g",
+   "batch_no": 19,
+   "batch_ai": "GPT-5.4 · ยังไม่ได้เทส",
+   "novel": "เทส version 2",
+   "n": 48
+  },
+  {
+   "batch": "b_mrug68qw",
+   "batch_no": 20,
+   "batch_ai": "GPT-5.4 mini · ถูก",
+   "novel": "เทส version 2",
+   "n": 32
+  },
+  {
+   "batch": "b_mrug739c",
+   "batch_no": 21,
+   "batch_ai": "GPT-5.4 nano · ถูกสุด",
+   "novel": "เทส version 2",
+   "n": 32
+  },
+  {
+   "batch": "b_mrug99y0",
+   "batch_no": 22,
+   "batch_ai": "GPT-5.5 · ยังไม่ได้เทส",
+   "novel": "เทส version 2",
+   "n": 51
+  },
+  {
+   "batch": "b_mrugdr8g",
+   "batch_no": 23,
+   "batch_ai": "GPT-5.6 Sol · ★☆☆☆☆ 1.5 ⛔ ไม่แนะนำ · สกัดได้ 2 คำ สร้างกิ่ง 10",
+   "novel": "เทส version 2",
+   "n": 45
+  },
+  {
+   "batch": "b_mrugh080",
+   "batch_no": 24,
+   "batch_ai": "GPT-5.6 Terra · ยังไม่ได้เทส",
+   "novel": "เทส version 2",
+   "n": 33
+  },
+  {
+   "batch": "b_mrugivfc",
+   "batch_no": 25,
+   "batch_ai": "GPT-5.6 Luna · ถูก · ยังไม่ได้เทส",
+   "novel": "เทส version 2",
+   "n": 42
+  }
+ ],
+ "batchMeta": {
+  "6": {
+   "model_name": "Gemini 3.1 Pro (prompt เก่า)",
+   "model_id": "gemini-3.1-pro-preview",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "status": "success",
+   "tokens_in": 4673,
+   "tokens_out": 4774,
+   "tokens_total": 9447,
+   "cost_usd": 0.029711,
+   "cost_baht": 1.0399,
+   "duration_ms": 101349,
+   "duration_sec": 101.3,
+   "item_count": 45,
+   "extracted_count": 14,
+   "created_at": "2026-07-19T09:11:10.430355+00:00"
+  },
+  "7": {
+   "model_name": "Gemini 3.5 Flash (ฟรี)",
+   "model_id": "gemini-3.5-flash",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "status": "success",
+   "tokens_in": 4761,
+   "tokens_out": 4338,
+   "tokens_total": 9099,
+   "cost_usd": 0.006634,
+   "cost_baht": 0.2322,
+   "duration_ms": 33618,
+   "duration_sec": 33.6,
+   "item_count": 42,
+   "extracted_count": 11,
+   "created_at": "2026-07-19T09:59:28.740305+00:00"
+  },
+  "8": {
+   "model_name": "Gemini 3.1 Pro (prompt ใหม่)",
+   "model_id": "gemini-3.1-pro-preview",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "status": "success",
+   "tokens_in": 4791,
+   "tokens_out": 4975,
+   "tokens_total": 9766,
+   "cost_usd": 0.030864,
+   "cost_baht": 1.0802,
+   "duration_ms": 62855,
+   "duration_sec": 62.9,
+   "item_count": 48,
+   "extracted_count": 17,
+   "created_at": "2026-07-19T10:04:38.552271+00:00"
+  },
+  "9": {
+   "model_name": "GPT-5.6 Sol",
+   "model_id": "gpt-5.6-sol",
+   "provider": "gpt",
+   "provider_label": "GPT (OpenAI)",
+   "status": "success",
+   "tokens_in": 5385,
+   "tokens_out": 5107,
+   "tokens_total": 10492,
+   "cost_usd": 0.180135,
+   "cost_baht": 6.3047,
+   "duration_ms": 75711,
+   "duration_sec": 75.7,
+   "item_count": 33,
+   "extracted_count": 2,
+   "created_at": "2026-07-19T12:09:35.728739+00:00"
+  },
+  "10": {
+   "model_name": "GPT-4.1",
+   "model_id": "gpt-4.1",
+   "provider": "gpt",
+   "provider_label": "GPT (OpenAI)",
+   "status": "success",
+   "tokens_in": 5390,
+   "tokens_out": 3885,
+   "tokens_total": 9275,
+   "cost_usd": 0.04186,
+   "cost_baht": 1.4651,
+   "duration_ms": 17654,
+   "duration_sec": 17.7,
+   "item_count": 42,
+   "extracted_count": 14,
+   "created_at": "2026-07-19T12:10:56.378013+00:00"
+  },
+  "11": {
+   "model_name": "GPT-5.1",
+   "model_id": "gpt-5.1",
+   "provider": "gpt",
+   "provider_label": "GPT (OpenAI)",
+   "status": "success",
+   "tokens_in": 5389,
+   "tokens_out": 3194,
+   "tokens_total": 8583,
+   "cost_usd": 0.038676,
+   "cost_baht": 1.3537,
+   "duration_ms": 29218,
+   "duration_sec": 29.2,
+   "item_count": 45,
+   "extracted_count": 16,
+   "created_at": "2026-07-19T12:12:23.35585+00:00"
+  }
+ },
+ "v1_review_words": [
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 158,
+   "text": "ขาดสติไตร่ตรอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 159,
+   "text": "อ้างตัวว่าชื่อ [ชื่อคน]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า / เจตนาและเนื้อหา",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า / เจตนาและเนื้อหา"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 160,
+   "text": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "บุคลิกภาพและลักษณะนิสัย / การวางตัว",
+   "subpaths": [
+    "บุคลิกภาพและลักษณะนิสัย / การวางตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 161,
+   "text": "สุขุม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c7",
+   "subpath": "บุคลิกภาพและลักษณะนิสัย / การวางตัว",
+   "subpaths": [
+    "บุคลิกภาพและลักษณะนิสัย / การวางตัว"
+   ],
+   "source": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 162,
+   "text": "เปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข / ความสงบ/ถ่อมตัว/วางตัว",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข / ความสงบ/ถ่อมตัว/วางตัว"
+   ],
+   "source": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 163,
+   "text": "บรรจงหยิบ [สิ่งของ]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 164,
+   "text": "บรรจง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": "บรรจงหยิบ [สิ่งของ]",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 165,
+   "text": "สาธิต",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การปฏิสัมพันธ์ทั่วไป",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การปฏิสัมพันธ์ทั่วไป"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 166,
+   "text": "เหล่าสุจริตชน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c8",
+   "subpath": null,
+   "subpaths": [],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": true,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 167,
+   "text": "ไม่คาดคิดแม้แต่น้อยว่า [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 168,
+   "text": "ชะตากรรมสุดสยอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 169,
+   "text": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 170,
+   "text": "น่าสะพรึงกลัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 171,
+   "text": "ดุจดั่ง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / คำเชื่อม",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / คำเชื่อม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 172,
+   "text": "ทรุดลงขาดใจตายทันที",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 173,
+   "text": "ขาดใจตาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": "ทรุดลงขาดใจตายทันที",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 174,
+   "text": "ทรุดลง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 175,
+   "text": "ดิ้นทุรนทุรายไปรอบ ๆ",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 176,
+   "text": "ทุรนทุราย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "กายประท้วง - อาการทางร่าง / อาการเจ็บ/ทรมาน/ผิดปกติ",
+   "subpaths": [
+    "กายประท้วง - อาการทางร่าง / อาการเจ็บ/ทรมาน/ผิดปกติ"
+   ],
+   "source": "ดิ้นทุรนทุรายไปรอบ ๆ",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 177,
+   "text": "ฉวย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 178,
+   "text": "เผ่นหนีไป",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 179,
+   "text": "เผ่น",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": "เผ่นหนีไป",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 180,
+   "text": "ชะเง้อมอง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "สายตาและการมอง / ทิศทางและการสังเกต",
+   "subpaths": [
+    "สายตาและการมอง / ทิศทางและการสังเกต",
+    "การแสดงออกทางใบหน้าและศีรษะ / การขยับศีรษะและลำคอ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 181,
+   "text": "ความสับสนอลหม่าน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c0",
+   "subpath": "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป",
+   "subpaths": [
+    "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 182,
+   "text": "อลหม่าน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c0",
+   "subpath": "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป",
+   "subpaths": [
+    "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 183,
+   "text": "[เหตุการณ์] อย่างน่าหวุดหวิด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 184,
+   "text": "หวุดหวิด",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที"
+   ],
+   "source": "[เหตุการณ์] อย่างน่าหวุดหวิด",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 185,
+   "text": "สิ้นลม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 186,
+   "text": "รุดมาถึง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 187,
+   "text": "รุด",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": "รุดมาถึง",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 188,
+   "text": "ป่าเถื่อนผิดมนุษย์",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "บุคลิกภาพและลักษณะนิสัย / ความแข็งกร้าว",
+   "subpaths": [
+    "บุคลิกภาพและลักษณะนิสัย / ความแข็งกร้าว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 189,
+   "text": "ป่าเถื่อน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c7",
+   "subpath": "บุคลิกภาพและลักษณะนิสัย / ความแข็งกร้าว",
+   "subpaths": [
+    "บุคลิกภาพและลักษณะนิสัย / ความแข็งกร้าว"
+   ],
+   "source": "ป่าเถื่อนผิดมนุษย์",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 190,
+   "text": "จนแล้วจนรอด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 191,
+   "text": "บานปลายกลายเป็น [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 192,
+   "text": "บานปลาย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "บานปลายกลายเป็น [เหตุการณ์]",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 193,
+   "text": "นิ่งนอนใจ",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 194,
+   "text": "ภาพสเกตช์",
+   "original": null,
+   "kind": "word",
+   "category_id": "c6",
+   "subpath": "คำทับศัพท์",
+   "subpaths": [
+    "คำทับศัพท์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 195,
+   "text": "ชวนหัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข / พลังงานบวก/ความรัก",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข / พลังงานบวก/ความรัก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 196,
+   "text": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 197,
+   "text": "หลั่งไหล",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 198,
+   "text": "ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 199,
+   "text": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม",
+   "subpaths": [
+    "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 200,
+   "text": "ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 201,
+   "text": "พลอยเดือดร้อน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / โกรธ/เกลียด/ไม่พอใจ",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / โกรธ/เกลียด/ไม่พอใจ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrkt4np",
+   "batch_no": 6,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784452271317,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 202,
+   "text": "หนแล้วหนเล่า",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 203,
+   "text": "ขาดสติไตร่ตรอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 204,
+   "text": "อ้างตัวว่าชื่อ [ชื่อคน]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 205,
+   "text": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "นิสัยการวางตัว",
+   "subpaths": [
+    "นิสัยการวางตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 206,
+   "text": "สุขุม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c7",
+   "subpath": "นิสัยการวางตัว",
+   "subpaths": [
+    "นิสัยการวางตัว"
+   ],
+   "source": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 207,
+   "text": "บรรจงหยิบ [สิ่งของ]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 208,
+   "text": "บรรจง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / ท่าทางและการวางมือ",
+   "subpaths": [
+    "การขยับแขนและมือ / ท่าทางและการวางมือ"
+   ],
+   "source": "บรรจงหยิบ [สิ่งของ]",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 209,
+   "text": "สาธิต",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การปฏิสัมพันธ์ทั่วไป",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การปฏิสัมพันธ์ทั่วไป"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 210,
+   "text": "เหล่าสุจริตชน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "นิสัยการวางตัว",
+   "subpaths": [
+    "นิสัยการวางตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 211,
+   "text": "ไม่คาดคิดแม้แต่น้อยว่า [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 212,
+   "text": "ชะตากรรมสุดสยอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 213,
+   "text": "สยอง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": "ชะตากรรมสุดสยอง",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 214,
+   "text": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 215,
+   "text": "สะพรึงกลัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 216,
+   "text": "ดุจดั่ง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / คำเชื่อม",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / คำเชื่อม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 217,
+   "text": "ทรุดลงขาดใจตายทันที",
+   "original": null,
+   "kind": "sentence",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 218,
+   "text": "ขาดใจตาย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": "ทรุดลงขาดใจตายทันที",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 219,
+   "text": "ทรุดลง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 220,
+   "text": "ดิ้นทุรนทุรายไปรอบๆ",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+    "กายประท้วง - อาการทางร่าง / อาการเจ็บ/ทรมาน/ผิดปกติ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 221,
+   "text": "ทุรนทุราย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "กายประท้วง - อาการทางร่าง / อาการเจ็บ/ทรมาน/ผิดปกติ",
+   "subpaths": [
+    "กายประท้วง - อาการทางร่าง / อาการเจ็บ/ทรมาน/ผิดปกติ"
+   ],
+   "source": "ดิ้นทุรนทุรายไปรอบๆ",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 222,
+   "text": "ฉวย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 223,
+   "text": "เผ่นหนีไป",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 224,
+   "text": "ชะเง้อมอง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "สายตาและการมอง / ทิศทางและการสังเกต",
+   "subpaths": [
+    "สายตาและการมอง / ทิศทางและการสังเกต"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 225,
+   "text": "ความสับสนอลหม่าน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c0",
+   "subpath": "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป",
+   "subpaths": [
+    "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป",
+    "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 226,
+   "text": "[เหตุการณ์] อย่างน่าหวุดหวิด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 227,
+   "text": "หวุดหวิด",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที"
+   ],
+   "source": "[เหตุการณ์] อย่างน่าหวุดหวิด",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 228,
+   "text": "สิ้นลม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 229,
+   "text": "รุดมาถึง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การเดิน",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การเดิน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 230,
+   "text": "ป่าเถื่อนผิดมนุษย์",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "นิสัยแข็งกร้าว/ดื้อดึง",
+   "subpaths": [
+    "นิสัยแข็งกร้าว/ดื้อดึง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 231,
+   "text": "จนแล้วจนรอด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / คำเชื่อม",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / คำเชื่อม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 232,
+   "text": "บานปลายกลายเป็น [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 233,
+   "text": "บานปลาย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "บานปลายกลายเป็น [เหตุการณ์]",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 234,
+   "text": "นิ่งนอนใจ",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข / ความสงบ/ถ่อมตัว/วางตัว",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข / ความสงบ/ถ่อมตัว/วางตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 235,
+   "text": "ภาพสเกตช์",
+   "original": null,
+   "kind": "word",
+   "category_id": "c8",
+   "subpath": null,
+   "subpaths": [],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 236,
+   "text": "ชวนหัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "เน้นน้ำหนัก / คำเน้นลักษณะ",
+   "subpaths": [
+    "เน้นน้ำหนัก / คำเน้นลักษณะ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 237,
+   "text": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความยาวนาน/ดั้งเดิม",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความยาวนาน/ดั้งเดิม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 238,
+   "text": "หลั่งไหล",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การเดิน",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การเดิน"
+   ],
+   "source": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 239,
+   "text": "ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความยาวนาน/ดั้งเดิม",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความยาวนาน/ดั้งเดิม"
+   ],
+   "source": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 240,
+   "text": "อลหม่าน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c0",
+   "subpath": "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป",
+   "subpaths": [
+    "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 241,
+   "text": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "sentence",
+   "category_id": "c1",
+   "subpath": "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม",
+   "subpaths": [
+    "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 242,
+   "text": "ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 243,
+   "text": "พลอยเดือดร้อน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmj8z3",
+   "batch_no": 7,
+   "batch_ai": "Gemini · Gemini 3.5 Flash · 20/วัน ฟรี",
+   "batch_at": 1784455169583,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 244,
+   "text": "หนแล้วหนเล่า",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 245,
+   "text": "ขาดสติไตร่ตรอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 246,
+   "text": "อ้างตัวว่าชื่อ [ชื่อคน]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 247,
+   "text": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "นิสัยการวางตัว",
+   "subpaths": [
+    "นิสัยการวางตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 248,
+   "text": "สุขุม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c7",
+   "subpath": "นิสัยการวางตัว",
+   "subpaths": [
+    "นิสัยการวางตัว"
+   ],
+   "source": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 249,
+   "text": "เปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "นิสัยการวางตัว",
+   "subpaths": [
+    "นิสัยการวางตัว"
+   ],
+   "source": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 250,
+   "text": "บรรจงหยิบ [สิ่งของ]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 251,
+   "text": "บรรจง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": "บรรจงหยิบ [สิ่งของ]",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 252,
+   "text": "สาธิต",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การปฏิสัมพันธ์ทั่วไป",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การปฏิสัมพันธ์ทั่วไป"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 253,
+   "text": "เหล่าสุจริตชน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c8",
+   "subpath": null,
+   "subpaths": [],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 254,
+   "text": "ไม่คาดคิดแม้แต่น้อยว่า [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 255,
+   "text": "ชะตากรรมสุดสยอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 256,
+   "text": "สุดสยอง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": "ชะตากรรมสุดสยอง",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 257,
+   "text": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 258,
+   "text": "น่าสะพรึงกลัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 259,
+   "text": "ดุจดั่งภาพจากนรก",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 260,
+   "text": "ดุจดั่ง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / คำเชื่อม",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / คำเชื่อม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 261,
+   "text": "ทรุดลงขาดใจตายทันที",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 262,
+   "text": "ขาดใจตาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": "ทรุดลงขาดใจตายทันที",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 263,
+   "text": "ทรุดลง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 264,
+   "text": "ดิ้นทุรนทุรายไปรอบๆ",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+    "กายประท้วง - อาการทางร่าง / อาการเจ็บ/ทรมาน/ผิดปกติ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 265,
+   "text": "ดิ้นทุรนทุราย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+    "กายประท้วง - อาการทางร่าง / อาการเจ็บ/ทรมาน/ผิดปกติ"
+   ],
+   "source": "ดิ้นทุรนทุรายไปรอบๆ",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 266,
+   "text": "ฉวย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 267,
+   "text": "เผ่นหนีไป",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 268,
+   "text": "เผ่นหนี",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": "เผ่นหนีไป",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 269,
+   "text": "ชะเง้อมอง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "สายตาและการมอง / กิริยาประกอบสายตา",
+   "subpaths": [
+    "สายตาและการมอง / กิริยาประกอบสายตา"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 270,
+   "text": "ความสับสนอลหม่าน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c0",
+   "subpath": "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป",
+   "subpaths": [
+    "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 271,
+   "text": "สับสนอลหม่าน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c0",
+   "subpath": "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป",
+   "subpaths": [
+    "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป"
+   ],
+   "source": "ความสับสนอลหม่าน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 272,
+   "text": "[เหตุการณ์] อย่างน่าหวุดหวิด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 273,
+   "text": "หวุดหวิด",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความฉุกละหุก/ทันที"
+   ],
+   "source": "[เหตุการณ์] อย่างน่าหวุดหวิด",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 274,
+   "text": "สิ้นลม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 275,
+   "text": "รุดมาถึง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 276,
+   "text": "รุด",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": "รุดมาถึง",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 277,
+   "text": "ป่าเถื่อนผิดมนุษย์",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "นิสัยแข็งกร้าว/ดื้อดึง",
+   "subpaths": [
+    "นิสัยแข็งกร้าว/ดื้อดึง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 278,
+   "text": "ป่าเถื่อน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c7",
+   "subpath": "นิสัยแข็งกร้าว/ดื้อดึง",
+   "subpaths": [
+    "นิสัยแข็งกร้าว/ดื้อดึง"
+   ],
+   "source": "ป่าเถื่อนผิดมนุษย์",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 279,
+   "text": "จนแล้วจนรอด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 280,
+   "text": "บานปลายกลายเป็น [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 281,
+   "text": "บานปลาย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "บานปลายกลายเป็น [เหตุการณ์]",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 282,
+   "text": "นิ่งนอนใจ",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข / ความสงบ/ถ่อมตัว/วางตัว",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข / ความสงบ/ถ่อมตัว/วางตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 283,
+   "text": "ภาพสเกตช์",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c8",
+   "subpath": null,
+   "subpaths": [],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 284,
+   "text": "ชวนหัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 285,
+   "text": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 286,
+   "text": "หลั่งไหล",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 287,
+   "text": "ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 288,
+   "text": "อลหม่าน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c0",
+   "subpath": "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป",
+   "subpaths": [
+    "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 289,
+   "text": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม",
+   "subpaths": [
+    "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 290,
+   "text": "ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 291,
+   "text": "พลอยเดือดร้อน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrmpw2w",
+   "batch_no": 8,
+   "batch_ai": "Gemini · Gemini 3.1 Pro · จ่ายเงิน",
+   "batch_at": 1784455479464,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 292,
+   "text": "หนแล้วหนเล่า",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 293,
+   "text": "ขาดสติไตร่ตรอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 294,
+   "text": "อ้างตัวว่าชื่อ [ชื่อคน]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า / เจตนาและเนื้อหา",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า / เจตนาและเนื้อหา"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 295,
+   "text": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "การวางตัว / สุขุมและมั่นใจ",
+   "subpaths": [
+    "การวางตัว / สุขุมและมั่นใจ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 296,
+   "text": "บรรจงหยิบ [สิ่งของ]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 297,
+   "text": "สาธิต",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การสาธิต",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การสาธิต"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 298,
+   "text": "เหล่าสุจริตชน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "คุณธรรม / ความสุจริต",
+   "subpaths": [
+    "คุณธรรม / ความสุจริต"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 299,
+   "text": "ไม่คาดคิดแม้แต่น้อยว่า [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 300,
+   "text": "ชะตากรรมสุดสยอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 301,
+   "text": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 302,
+   "text": "ดุจดั่ง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / คำเชื่อม",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / คำเชื่อม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 303,
+   "text": "ทรุดลงขาดใจตายทันที",
+   "original": null,
+   "kind": "sentence",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 304,
+   "text": "ทรุดลง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การเสียหลัก/ทุลักทุเล",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การเสียหลัก/ทุลักทุเล",
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 305,
+   "text": "ดิ้นทุรนทุรายไปรอบ ๆ",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การดิ้นรน",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การดิ้นรน",
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "แก้เว้นวรรค: รอบๆ → รอบ ๆ"
+   ]
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 306,
+   "text": "ฉวย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 307,
+   "text": "เผ่นหนีไป",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 308,
+   "text": "ชะเง้อมอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "สายตาและการมอง / ทิศทางและการสังเกต",
+   "subpaths": [
+    "สายตาและการมอง / ทิศทางและการสังเกต",
+    "การแสดงออกทางใบหน้าและศีรษะ / การขยับศีรษะและลำคอ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 309,
+   "text": "ความสับสนอลหม่าน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 310,
+   "text": "[เหตุการณ์] อย่างน่าหวุดหวิด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 311,
+   "text": "สิ้นลม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 312,
+   "text": "รุดมาถึง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การเร่งรุด",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การเร่งรุด"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 313,
+   "text": "ป่าเถื่อนผิดมนุษย์",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "ความโหดร้าย / ป่าเถื่อน",
+   "subpaths": [
+    "ความโหดร้าย / ป่าเถื่อน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 314,
+   "text": "จนแล้วจนรอด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+    "ระยะเวลา จังหวะ และความเร็ว / ความยาวนาน/ดั้งเดิม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 315,
+   "text": "บานปลายกลายเป็น [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 316,
+   "text": "นิ่งนอนใจ",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / ความประมาทชะล่าใจ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / ความประมาทชะล่าใจ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 317,
+   "text": "ภาพสเกตช์",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c8",
+   "subpath": "ศิลปะและภาพวาด",
+   "subpaths": [
+    "ศิลปะและภาพวาด"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 318,
+   "text": "ชวนหัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข / ความขบขัน",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข / ความขบขัน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 319,
+   "text": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่ของกลุ่มหรือมวล",
+   "subpaths": [
+    "การเคลื่อนที่ของกลุ่มหรือมวล"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 320,
+   "text": "อลหม่าน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c0",
+   "subpath": "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป",
+   "subpaths": [
+    "สภาพแวดล้อมและบรรยากาศ / บรรยากาศทั่วไป"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 321,
+   "text": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "sentence",
+   "category_id": "c1",
+   "subpath": "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม",
+   "subpaths": [
+    "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 322,
+   "text": "ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย"
+   ],
+   "source": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 323,
+   "text": "พิมพ์เดียวกัน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย"
+   ],
+   "source": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 324,
+   "text": "พลอยเดือดร้อน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr4xwm",
+   "batch_no": 9,
+   "batch_ai": "GPT (OpenAI) · GPT-5.6 Sol · ใหม่สุด (สกัดน้อย)",
+   "batch_at": 1784462900134,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 325,
+   "text": "หนแล้วหนเล่า",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 326,
+   "text": "ขาดสติไตร่ตรอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 327,
+   "text": "อ้างตัวว่าชื่อ [ชื่อคน]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า / การกล่าวขานและข่าวลือ",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า / การกล่าวขานและข่าวลือ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 328,
+   "text": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "ความแข็งกร้าว",
+   "subpaths": [
+    "ความแข็งกร้าว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 329,
+   "text": "สุขุม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c7",
+   "subpath": "ความแข็งกร้าว",
+   "subpaths": [
+    "ความแข็งกร้าว"
+   ],
+   "source": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 330,
+   "text": "เปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "ความแข็งกร้าว",
+   "subpaths": [
+    "ความแข็งกร้าว"
+   ],
+   "source": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 331,
+   "text": "บรรจงหยิบ [สิ่งของ]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 332,
+   "text": "บรรจง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": "บรรจงหยิบ [สิ่งของ]",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 333,
+   "text": "สาธิต",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า / การกล่าวขานและข่าวลือ",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า / การกล่าวขานและข่าวลือ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 334,
+   "text": "เหล่าสุจริตชน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "ความแข็งกร้าว",
+   "subpaths": [
+    "ความแข็งกร้าว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 335,
+   "text": "สุจริตชน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c7",
+   "subpath": "ความแข็งกร้าว",
+   "subpaths": [
+    "ความแข็งกร้าว"
+   ],
+   "source": "เหล่าสุจริตชน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 336,
+   "text": "ไม่คาดคิดแม้แต่น้อยว่า [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 337,
+   "text": "ชะตากรรมสุดสยอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 338,
+   "text": "สุดสยอง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": "ชะตากรรมสุดสยอง",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 339,
+   "text": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "original": null,
+   "kind": "sentence",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 340,
+   "text": "น่าสะพรึงกลัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 341,
+   "text": "ดุจดั่ง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / การกระทำเชิงเปรียบเทียบ",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / การกระทำเชิงเปรียบเทียบ"
+   ],
+   "source": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 342,
+   "text": "ทรุดลงขาดใจตายทันที",
+   "original": null,
+   "kind": "sentence",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 343,
+   "text": "ทรุดลง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": "ทรุดลงขาดใจตายทันที",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 344,
+   "text": "ดิ้นทุรนทุรายไปรอบๆ",
+   "original": null,
+   "kind": "sentence",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 345,
+   "text": "ดิ้นทุรนทุราย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": "ดิ้นทุรนทุรายไปรอบๆ",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 346,
+   "text": "ฉวย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 347,
+   "text": "เผ่นหนีไป",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 348,
+   "text": "ชะเง้อมอง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "สายตาและการมอง / ทิศทางและการสังเกต",
+   "subpaths": [
+    "สายตาและการมอง / ทิศทางและการสังเกต"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 349,
+   "text": "ความสับสนอลหม่าน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 350,
+   "text": "อลหม่าน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน"
+   ],
+   "source": "ความสับสนอลหม่าน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 351,
+   "text": "[...]อย่างน่าหวุดหวิด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 352,
+   "text": "น่าหวุดหวิด",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "[...]อย่างน่าหวุดหวิด",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 353,
+   "text": "สิ้นลม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 354,
+   "text": "รุดมาถึง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การเดิน",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การเดิน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 355,
+   "text": "ป่าเถื่อนผิดมนุษย์",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "ความแข็งกร้าว",
+   "subpaths": [
+    "ความแข็งกร้าว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 356,
+   "text": "ป่าเถื่อน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c7",
+   "subpath": "ความแข็งกร้าว",
+   "subpaths": [
+    "ความแข็งกร้าว"
+   ],
+   "source": "ป่าเถื่อนผิดมนุษย์",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 357,
+   "text": "จนแล้วจนรอด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 358,
+   "text": "บานปลายกลายเป็น [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 359,
+   "text": "นิ่งนอนใจ",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข / ความสงบ/ถ่อมตัว/วางตัว",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข / ความสงบ/ถ่อมตัว/วางตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 360,
+   "text": "ภาพสเกตช์",
+   "original": null,
+   "kind": "word",
+   "category_id": "c0",
+   "subpath": "สภาพแวดล้อมและบรรยากาศ / สถานที่/สิ่งปลูกสร้าง",
+   "subpaths": [
+    "สภาพแวดล้อมและบรรยากาศ / สถานที่/สิ่งปลูกสร้าง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 361,
+   "text": "ชวนหัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข / พลังงานบวก/ความรัก",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข / พลังงานบวก/ความรัก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 362,
+   "text": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 363,
+   "text": "หลั่งไหล",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 364,
+   "text": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "sentence",
+   "category_id": "c1",
+   "subpath": "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม",
+   "subpaths": [
+    "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 365,
+   "text": "ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม",
+   "subpaths": [
+    "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม"
+   ],
+   "source": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 366,
+   "text": "พลอยเดือดร้อน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr7wvk",
+   "batch_no": 10,
+   "batch_ai": "GPT (OpenAI) · GPT-4.1 · แนะนำ สกัดดี",
+   "batch_at": 1784463038768,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 367,
+   "text": "หนแล้วหนเล่า",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความถี่"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 368,
+   "text": "ขาดสติไตร่ตรอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 369,
+   "text": "อ้างตัวว่าชื่อ [ชื่อคน]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 370,
+   "text": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 371,
+   "text": "ท่าทางสุขุม",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย"
+   ],
+   "source": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 372,
+   "text": "เปี่ยมด้วยความเชื่อมั่น",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข / พลังงานบวก/ความรัก",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข / พลังงานบวก/ความรัก"
+   ],
+   "source": "ท่าทางสุขุมเปี่ยมด้วยความเชื่อมั่น",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 373,
+   "text": "บรรจงหยิบ [สิ่งของ]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 374,
+   "text": "บรรจงหยิบ",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": "บรรจงหยิบ [สิ่งของ]",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 375,
+   "text": "สาธิต",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า",
+   "subpaths": [
+    "การสื่อสารและพฤติกรรมทางสังคม / การพูดคุย/บอกเล่า"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 376,
+   "text": "เหล่าสุจริตชน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "นิสัยการวางตัว",
+   "subpaths": [
+    "นิสัยการวางตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 377,
+   "text": "ไม่คาดคิดแม้แต่น้อยว่า [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 378,
+   "text": "ชะตากรรมสุดสยอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 379,
+   "text": "สุดสยอง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": "ชะตากรรมสุดสยอง",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 380,
+   "text": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 381,
+   "text": "ความน่าสะพรึงกลัว",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / หวาดกลัว/ตื่นตระหนก"
+   ],
+   "source": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 382,
+   "text": "ดุจดั่งภาพจากนรก",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / การกระทำเชิงเปรียบเทียบ",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / การกระทำเชิงเปรียบเทียบ"
+   ],
+   "source": "ความน่าสะพรึงกลัวดุจดั่งภาพจากนรก",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 383,
+   "text": "ดุจดั่ง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / คำเชื่อม",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / คำเชื่อม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 384,
+   "text": "ทรุดลงขาดใจตายทันที",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 385,
+   "text": "ทรุดลง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว",
+   "subpaths": [
+    "ท่าทางและภาพรวมร่างกาย / การเปลี่ยนอิริยาบถ/ขยับตัว"
+   ],
+   "source": "ทรุดลงขาดใจตายทันที",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 386,
+   "text": "ขาดใจตายทันที",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": "ทรุดลงขาดใจตายทันที",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 387,
+   "text": "ดิ้นทุรนทุรายไปรอบๆ",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่านอนและการหยุดนิ่ง",
+   "subpaths": [
+    "ท่านอนและการหยุดนิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 388,
+   "text": "ดิ้นทุรนทุราย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "ท่านอนและการหยุดนิ่ง",
+   "subpaths": [
+    "ท่านอนและการหยุดนิ่ง"
+   ],
+   "source": "ดิ้นทุรนทุรายไปรอบๆ",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 389,
+   "text": "ฉวย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "การขยับแขนและมือ / สัมผัสและหยิบจับ",
+   "subpaths": [
+    "การขยับแขนและมือ / สัมผัสและหยิบจับ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 390,
+   "text": "เผ่นหนีไป",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 391,
+   "text": "ชะเง้อมอง",
+   "original": null,
+   "kind": "word",
+   "category_id": "c2",
+   "subpath": "สายตาและการมอง / ทิศทางและการสังเกต",
+   "subpaths": [
+    "สายตาและการมอง / ทิศทางและการสังเกต"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 392,
+   "text": "ความสับสนอลหม่าน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 393,
+   "text": "อลหม่าน",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน",
+   "subpaths": [
+    "ใจปั่นป่วน - ทุกข์ร้อน / ระแวง/สับสน"
+   ],
+   "source": "ความสับสนอลหม่าน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 394,
+   "text": "[เหตุการณ์] อย่างน่าหวุดหวิด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "เน้นน้ำหนัก / คำเน้นลักษณะ",
+   "subpaths": [
+    "เน้นน้ำหนัก / คำเน้นลักษณะ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 395,
+   "text": "น่าหวุดหวิด",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "เน้นน้ำหนัก / คำเน้นลักษณะ",
+   "subpaths": [
+    "เน้นน้ำหนัก / คำเน้นลักษณะ"
+   ],
+   "source": "[เหตุการณ์] อย่างน่าหวุดหวิด",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 396,
+   "text": "สิ้นลม",
+   "original": null,
+   "kind": "word",
+   "category_id": "c1",
+   "subpath": "สภาพความตายและความสยดสยอง",
+   "subpaths": [
+    "สภาพความตายและความสยดสยอง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 397,
+   "text": "รุดมาถึง",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c2",
+   "subpath": "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง",
+   "subpaths": [
+    "การเคลื่อนที่/ฝีเท้า/ขา / การวิ่ง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 398,
+   "text": "ป่าเถื่อนผิดมนุษย์",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c7",
+   "subpath": "นิสัยแข็งกร้าว/ดื้อดึง",
+   "subpaths": [
+    "นิสัยแข็งกร้าว/ดื้อดึง"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 399,
+   "text": "จนแล้วจนรอด",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความยาวนาน/ดั้งเดิม",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความยาวนาน/ดั้งเดิม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 400,
+   "text": "บานปลายกลายเป็น [เหตุการณ์]",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 401,
+   "text": "บานปลาย",
+   "original": null,
+   "kind": "word",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": "บานปลายกลายเป็น [เหตุการณ์]",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 402,
+   "text": "นิ่งนอนใจ",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ",
+   "subpaths": [
+    "สภาวะทางความคิดและสมาธิ / การคิดและจดจ่อ"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 403,
+   "text": "ภาพสเกตช์",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c8",
+   "subpath": null,
+   "subpaths": [],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 404,
+   "text": "ชวนหัว",
+   "original": null,
+   "kind": "word",
+   "category_id": "c4",
+   "subpath": "ใจเป็นปกติ - เป็นสุข",
+   "subpaths": [
+    "ใจเป็นปกติ - เป็นสุข"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 405,
+   "text": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 406,
+   "text": "หลั่งไหลมา",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 407,
+   "text": "ไม่ขาดสาย",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความยาวนาน/ดั้งเดิม",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความยาวนาน/ดั้งเดิม"
+   ],
+   "source": "หลั่งไหลมา [สิ่งของ] ไม่ขาดสาย",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 408,
+   "text": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "sentence",
+   "category_id": "c1",
+   "subpath": "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม",
+   "subpaths": [
+    "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 409,
+   "text": "หน้าตาเหมือน B",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c1",
+   "subpath": "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม",
+   "subpaths": [
+    "ใบหน้าและโครงหน้า / ใบหน้าโดยรวม"
+   ],
+   "source": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 410,
+   "text": "ราวกับพิมพ์เดียวกัน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / การกระทำเชิงเปรียบเทียบ",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / การกระทำเชิงเปรียบเทียบ"
+   ],
+   "source": "หน้าตาเหมือน B ราวกับพิมพ์เดียวกัน",
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": [
+    "✂ แยกจากประโยค"
+   ]
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 411,
+   "text": "พลอยเดือดร้อน",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์",
+   "subpaths": [
+    "สำนวนและคำเปรียบเปรย / สถานการณ์/ผลลัพธ์"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  },
+  {
+   "batch": "b_mrrr9j44",
+   "batch_no": 11,
+   "batch_ai": "GPT (OpenAI) · GPT-5.1 · สกัดคำเยอะสุด",
+   "batch_at": 1784463114244,
+   "novel": "ไม่ระบุเรื่อง",
+   "position": 412,
+   "text": "หนแล้วหนเล่า",
+   "original": null,
+   "kind": "phrase",
+   "category_id": "c5",
+   "subpath": "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่",
+   "subpaths": [
+    "ระยะเวลา จังหวะ และความเร็ว / ความเร็ว/ความถี่"
+   ],
+   "source": null,
+   "meaning": null,
+   "reason": null,
+   "proposed_new": false,
+   "notes": []
+  }
+ ],
+ "v1_ai_log": [
+  {
+   "created_at": "2026-07-19T05:12:03.487143+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.5-flash",
+   "status": "success",
+   "tokens_in": 3170,
+   "tokens_out": 701,
+   "cost_usd": 0.001792,
+   "duration_ms": 14956,
+   "input_chars": 96,
+   "item_count": 7,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T05:47:17.904824+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.5-flash",
+   "status": "success",
+   "tokens_in": 3716,
+   "tokens_out": 4650,
+   "cost_usd": 0.006695,
+   "duration_ms": 34324,
+   "input_chars": 440,
+   "item_count": 48,
+   "extracted_count": 19,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T05:54:49.198472+00:00",
+   "provider": "basic",
+   "provider_label": "พื้นฐาน (ในเครื่อง)",
+   "model": "basic",
+   "status": "success",
+   "tokens_in": 0,
+   "tokens_out": 0,
+   "cost_usd": 0,
+   "duration_ms": 3,
+   "input_chars": 29,
+   "item_count": 2,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T06:13:40.547462+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.5-flash",
+   "status": "error",
+   "tokens_in": 0,
+   "tokens_out": 0,
+   "cost_usd": 0,
+   "duration_ms": 34791,
+   "input_chars": 468,
+   "item_count": 0,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": "ตัว AI ตอบกลับมาไม่ใช่รูปแบบที่อ่านได้ ลองใหม่อีกครั้ง"
+  },
+  {
+   "created_at": "2026-07-19T06:14:20.430637+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.5-flash",
+   "status": "success",
+   "tokens_in": 3744,
+   "tokens_out": 5216,
+   "cost_usd": 0.007382,
+   "duration_ms": 35722,
+   "input_chars": 468,
+   "item_count": 53,
+   "extracted_count": 24,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T09:11:10.430355+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.1-pro-preview",
+   "status": "success",
+   "tokens_in": 4673,
+   "tokens_out": 4774,
+   "cost_usd": 0.029711,
+   "duration_ms": 101349,
+   "input_chars": 497,
+   "item_count": 45,
+   "extracted_count": 14,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T09:58:51.417721+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.5-flash",
+   "status": "error",
+   "tokens_in": 0,
+   "tokens_out": 0,
+   "cost_usd": 0,
+   "duration_ms": 24769,
+   "input_chars": 467,
+   "item_count": 0,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": "ตัว AI ตอบกลับมาไม่ใช่รูปแบบที่อ่านได้ ลองใหม่อีกครั้ง"
+  },
+  {
+   "created_at": "2026-07-19T09:59:28.740305+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.5-flash",
+   "status": "success",
+   "tokens_in": 4761,
+   "tokens_out": 4338,
+   "cost_usd": 0.006634,
+   "duration_ms": 33618,
+   "input_chars": 467,
+   "item_count": 42,
+   "extracted_count": 11,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T10:04:38.552271+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.1-pro-preview",
+   "status": "success",
+   "tokens_in": 4791,
+   "tokens_out": 4975,
+   "cost_usd": 0.030864,
+   "duration_ms": 62855,
+   "input_chars": 497,
+   "item_count": 48,
+   "extracted_count": 17,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T10:13:15.604182+00:00",
+   "provider": "gpt",
+   "provider_label": "GPT (OpenAI)",
+   "model": "gpt-5.6-sol",
+   "status": "success",
+   "tokens_in": 5385,
+   "tokens_out": 6147,
+   "cost_usd": 0.211335,
+   "duration_ms": 82115,
+   "input_chars": 467,
+   "item_count": 53,
+   "extracted_count": 22,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T10:25:37.573818+00:00",
+   "provider": "basic",
+   "provider_label": "พื้นฐาน (ในเครื่อง)",
+   "model": "basic",
+   "status": "success",
+   "tokens_in": 0,
+   "tokens_out": 0,
+   "cost_usd": 0,
+   "duration_ms": 359,
+   "input_chars": 26,
+   "item_count": 2,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T10:28:27.531566+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.1-flash-lite",
+   "status": "error",
+   "tokens_in": 0,
+   "tokens_out": 0,
+   "cost_usd": 0,
+   "duration_ms": 7623,
+   "input_chars": 467,
+   "item_count": 0,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": "ตัว AI ตอบกลับมาไม่ใช่รูปแบบที่อ่านได้ ลองใหม่อีกครั้ง"
+  },
+  {
+   "created_at": "2026-07-19T10:34:57.088336+00:00",
+   "provider": "basic",
+   "provider_label": "พื้นฐาน (ในเครื่อง)",
+   "model": "basic",
+   "status": "success",
+   "tokens_in": 0,
+   "tokens_out": 0,
+   "cost_usd": 0,
+   "duration_ms": 707,
+   "input_chars": 7,
+   "item_count": 1,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T12:03:52.467161+00:00",
+   "provider": "gpt",
+   "provider_label": "GPT (OpenAI)",
+   "model": "gpt-5.6-sol",
+   "status": "error",
+   "tokens_in": 0,
+   "tokens_out": 0,
+   "cost_usd": 0,
+   "duration_ms": 540,
+   "input_chars": 467,
+   "item_count": 0,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": "ยังไม่ได้ตั้งกุญแจของ GPT (OpenAI) — ใส่ค่า OPENAI_API_KEY ในไฟล์ .env.local ก่อน"
+  },
+  {
+   "created_at": "2026-07-19T12:09:35.728739+00:00",
+   "provider": "gpt",
+   "provider_label": "GPT (OpenAI)",
+   "model": "gpt-5.6-sol",
+   "status": "success",
+   "tokens_in": 5385,
+   "tokens_out": 5107,
+   "cost_usd": 0.180135,
+   "duration_ms": 75711,
+   "input_chars": 467,
+   "item_count": 33,
+   "extracted_count": 2,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T12:10:56.378013+00:00",
+   "provider": "gpt",
+   "provider_label": "GPT (OpenAI)",
+   "model": "gpt-4.1",
+   "status": "success",
+   "tokens_in": 5390,
+   "tokens_out": 3885,
+   "cost_usd": 0.04186,
+   "duration_ms": 17654,
+   "input_chars": 497,
+   "item_count": 42,
+   "extracted_count": 14,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T12:12:23.35585+00:00",
+   "provider": "gpt",
+   "provider_label": "GPT (OpenAI)",
+   "model": "gpt-5.1",
+   "status": "success",
+   "tokens_in": 5389,
+   "tokens_out": 3194,
+   "cost_usd": 0.038676,
+   "duration_ms": 29218,
+   "input_chars": 497,
+   "item_count": 45,
+   "extracted_count": 16,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T14:58:36.854047+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.5-flash",
+   "status": "success",
+   "tokens_in": 7929,
+   "tokens_out": 571,
+   "cost_usd": 0.003064,
+   "duration_ms": 11815,
+   "input_chars": 43,
+   "item_count": 4,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  },
+  {
+   "created_at": "2026-07-19T14:59:01.148243+00:00",
+   "provider": "gemini",
+   "provider_label": "Gemini",
+   "model": "gemini-3.5-flash",
+   "status": "success",
+   "tokens_in": 7929,
+   "tokens_out": 587,
+   "cost_usd": 0.003083,
+   "duration_ms": 8763,
+   "input_chars": 43,
+   "item_count": 4,
+   "extracted_count": 0,
+   "saved_count": 0,
+   "skipped_count": 0,
+   "error": null
+  }
+ ]
+}
