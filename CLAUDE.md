@@ -342,6 +342,8 @@ npm run build                # เช็ค error ก่อน deploy
 
 ## ☁️ Deploy
 - Next.js มี server → Cloudflare **Workers** (ไม่ใช่ Pages) · ตั้ง env vars บน host ให้ตรง .env.local
+- 🌐 **โดเมนจริง: https://worldbank.sirawitphaopha.life/** (ผูก 2026-07-20 · เดิมเข้าผ่าน `*.workers.dev`) — ยัง deploy บน Cloudflare Workers เหมือนเดิม แค่ผูกโดเมนกำหนดเอง (custom domain)
+  - ⚠️ เว็บอยู่หลัง Cloudflare → เครื่องมือ fetch อัตโนมัติ (เช่น WebFetch ของ AI) อาจโดน **403 (กันบอต)** = ปกติ ไม่ใช่เว็บพัง · เช็คจริงต้องเปิดในเบราว์เซอร์
 
 ## 🎨 การตั้งค่าแสดงผล (เก็บใน localStorage ไม่ลง DB)
 - คีย์: `wordbank:v1:ui` (สี/ฟอนต์/เลย์เอาต์) · `wordbank:v1:review` (รายการตรวจทานค้าง) · `wordbank:v1:collapsed` (สถานะยุบกลุ่ม)
