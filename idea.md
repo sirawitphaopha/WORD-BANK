@@ -162,3 +162,12 @@
   รหัสช่อ · จำนวนวลี/คำที่พิมพ์เข้า · ขาดกี่คำ (ตาข่ายเติม) · สกัดเพิ่มกี่คำ · กิ่งใหม่กี่กิ่ง · เวลา/วันที่ · เจ้า/รุ่น AI · **และทุกอย่างที่ไม่ใช่ตัวคำ/วลี**
 - ประโยชน์: รู้ว่ารันไปกี่รอบ เทียบรอบต่อรอบได้ตลอด แม้ลบคำ/ย้ายเข้าคลังแล้ว (ตอนนี้ `wb_ai_log` เก็บบางส่วน แต่ยังไม่ผูกรหัสช่อกับฝั่ง review + ไม่เก็บสถิติ typed/ขาด)
 - ต้องมี: คอลัมน์/ตารางทะเบียนช่อถาวร (ขยาย `wb_ai_log` ให้มี `batch_code` + สถิติ review หรือทำตารางใหม่ `wb_batches`) · ผูกรหัสตอนสร้างช่อ (ฝั่งเว็บตั้ง `bMeta` อยู่แล้ว เพิ่ม code ได้)
+
+**P. 🧠 กำหนด "โหมดคิด (thinking/reasoning)" ต่อโมเดลให้ชัด (พี่กันถาม 2026-07-21)**
+- **สภาพปัจจุบัน (ตรวจ `lib/ai.js` แล้ว 21 ก.ค.): โค้ดไม่ได้ตั้งโหมดคิดเลย ทุกเจ้าใช้ค่าเริ่มต้นของตัวเอง**
+  - `callGemini` → ส่งแค่ `generationConfig:{responseMimeType,temperature:0.2}` **ไม่มี `thinkingConfig`** → Gemini 3.x (Pro/Flash) เป็นรุ่นคิดได้ **คิดอัตโนมัติตาม budget เริ่มต้น** เราไม่ได้คุมว่าคิดมาก/น้อย
+  - `callOpenAICompatible` (GPT/DeepSeek/Kimi/Qwen/GLM) → **ไม่มี `reasoning_effort`** → GPT-5.x (reasoning model) **คิดเองที่ระดับ default (medium)** · GPT-4.1/4o ไม่ใช่ reasoning ไม่คิด · (มีแค่ล็อค temperature: gpt-5 ไม่ส่ง · อื่น ๆ 0.2)
+  - `callClaude` → `messages.create({model,max_tokens,system,messages})` **ไม่มีพารามิเตอร์ `thinking`** → Claude รันโหมดปกติ **ไม่เปิด extended thinking**
+- **สรุป:** ตอนนี้ "คิดแบบไหน" = แล้วแต่โมเดล default · โมเดลคิดได้ก็คิด (Gemini 3.x, GPT-5.x) แต่เราคุมความลึกไม่ได้ · Claude ยังไม่เปิดคิดลึกเลย
+- **สิ่งที่ควรทำ:** เพิ่มตัวเลือกคุมโหมดคิดต่อเจ้า → `thinkingConfig.thinkingBudget` (Gemini) · `reasoning_effort: low/medium/high` (GPT-5.x + OpenAI-compatible ที่รองรับ) · `thinking:{type:'enabled',budget_tokens}` (Claude) → ชั่ง **คุณภาพการจัดหมวด vs ราคา/เวลา** (คิดมาก = แม่นขึ้นแต่แพง/ช้า · เห็นชัดใน v2: รุ่นคิดเยอะ output token สูง ราคาสูง)
+- ต้องมี: เก็บค่าโหมดคิดใน `lib/providers.js` ต่อรุ่น (หรือให้ผู้ใช้เลือกในหน้าตั้งค่า) · ส่งต่อเข้า 3 ฟังก์ชัน call · บันทึกใน log ว่าใช้โหมดไหน
