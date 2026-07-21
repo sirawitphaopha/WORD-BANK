@@ -8,17 +8,28 @@
 -- หมายเหตุสำคัญ:
 --  • wb_ai_log (โทเคน/ราคา/เวลา/โมเดล) เป็น "ประวัติ" ไม่ถูกลบตอนล้างช่อ → V1 ส่วนนี้น่าจะยังอยู่ครบ แม้ลบช่อไปแล้ว
 --  • wb_review (คำรายตัว + ความหมาย/เหตุผล) = ส่วนที่จะหายถ้าเคยลบช่อ ๖–๑๑ ไปแล้ว → ถ้า v1_review_words ได้ [] ว่าง แปลว่าถูกลบไปแล้ว กู้ไม่ได้
---  • ท้ายผลมี review_batch_summary = รายชื่อทุกช่อที่ยังเหลือใน wb_review ตอนนี้ (ใช้ดูว่าช่อไหนจริง/ช่อไหน junk ที่อยากลบ)
+--  • ท้ายผลมี all_batches = รายชื่อทุกช่อที่ยังเหลือใน wb_review ตอนนี้ (ใช้ดูว่าช่อไหนจริง/ช่อไหน junk ที่อยากลบ)
+--
+-- ⚠️ บทเรียน (21 ก.ค.): คอลัมน์ `batch` เป็น text (id ช่อ) · เลขช่อ ๖–๑๑ อยู่ที่ `batch_no` → กรองด้วย batch_no
+--    กันพลาดชนิดข้อมูล ใช้ batch_no::text in (...) (ปลอดภัยไม่ว่าคอลัมน์เป็นเลขหรือตัวหนังสือ)
 
 select json_build_object(
+  'all_batches', (
+    select coalesce(json_agg(row_to_json(s) order by s.batch_no, s.batch), '[]'::json)
+    from (
+      select batch, batch_no, batch_ai, novel, count(*) as n
+      from wb_review
+      group by batch, batch_no, batch_ai, novel
+    ) s
+  ),
   'v1_review_words', (
-    select coalesce(json_agg(row_to_json(w) order by w.batch, w.position), '[]'::json)
+    select coalesce(json_agg(row_to_json(w) order by w.batch_no, w.position), '[]'::json)
     from (
       select batch, batch_no, batch_ai, batch_at, novel, position,
              text, original, kind, category_id, subpath, subpaths,
              source, meaning, reason, proposed_new, notes
       from wb_review
-      where batch between 6 and 11
+      where batch_no::text in ('6','7','8','9','10','11')
     ) w
   ),
   'v1_ai_log', (
@@ -30,13 +41,5 @@ select json_build_object(
       from wb_ai_log
       where created_at >= '2026-07-19' and created_at < '2026-07-20'
     ) l
-  ),
-  'review_batch_summary', (
-    select coalesce(json_agg(row_to_json(s) order by s.batch), '[]'::json)
-    from (
-      select batch, batch_ai, novel, count(*) as n
-      from wb_review
-      group by batch, batch_ai, novel
-    ) s
   )
 ) as v1_dump;
