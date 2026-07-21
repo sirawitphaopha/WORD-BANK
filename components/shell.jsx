@@ -64,7 +64,7 @@ export function renderShell(app) {
     if (active) return { ...base, background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontWeight: 600, boxShadow: side ? 'none' : '0 3px 10px rgba(111,78,55,.3)' };
     return { ...base, background: side ? 'transparent' : 'rgba(255,255,255,.35)', color: '#7a6a52' };
   };
-  const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length], ['ailog', 'ประวัติ AI', 0], ['aitest', 'ผลทดสอบ AI', 0], ['prompts', 'ประวัติคำสั่ง', 0], ['about', 'เกี่ยวกับ', 0]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
+  const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length], ['ailog', 'ประวัติ & สถิติ', 0], ['aitest', 'ผลทดสอบ AI', 0], ['prompts', 'ประวัติคำสั่ง', 0], ['about', 'เกี่ยวกับ', 0]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
   const badgeStyle = (active) => ({ marginLeft: '2px', fontSize: '12px', fontWeight: 700, minWidth: '20px', height: '20px', padding: '0 6px', borderRadius: '10px', display: 'inline-grid', placeItems: 'center', background: active ? 'rgba(255,255,255,.22)' : '#e2d3b0', color: active ? '#fbf3e2' : '#8a7159' });
 
   const isAdd = S.page === 'add', isReview = S.page === 'review', isLibrary = S.page === 'library', isAiLog = S.page === 'ailog', isAbout = S.page === 'about';

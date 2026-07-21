@@ -545,6 +545,7 @@ export function renderReview(app, getCat, monoMode, spell, effLayout) {
           ))}
         </div>
         <div style={{ flex: 1 }} />
+        <button onClick={() => { app._focusScrolled = null; app.setState({ focusLogBatch: activeId }); app.onNav('ailog')(); }} title="ดูประวัติ & สถิติของช่อนี้ (โมเดล/วันเวลา/ราคา/token/พิมพ์เข้า-สกัด-กิ่งใหม่)" aria-label="ประวัติ และ สถิติ" style={{ padding: '9px 15px', border: '1px solid #cbb8dc', borderRadius: '9px', background: '#f0eaf7', color: '#5f4c80', fontSize: '14px', cursor: 'pointer' }}>{ST.isMobile ? '📊' : '📊 ประวัติ & สถิติ'}</button>
         <button onClick={app.exportReview} title="ส่งออกผลตรวจทานเป็นไฟล์ .txt ไว้เทียบ AI แต่ละเจ้า" aria-label="ส่งออก" style={{ padding: '9px 15px', border: '1px solid #cbdcb8', borderRadius: '9px', background: '#eef3dc', color: '#5a7040', fontSize: '14px', cursor: 'pointer' }}>{ST.isMobile ? '⬇' : '⬇ ส่งออก'}</button>
         {dupCount > 0 && <button onClick={() => app.removeDuplicates(dupItems.map((r) => r.id))} title={'ลบคำที่ซ้ำกับคลัง ' + dupCount + ' คำ'} aria-label={'ลบซ้ำกับคลัง ' + dupCount + ' คำ'} style={{ padding: '9px 16px', border: '1px solid #b81414', borderRadius: '9px', background: '#e01e1e', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', animation: 'wbalert 1.05s ease-in-out infinite' }}>{ST.isMobile ? '⚠ ' + dupCount : '⚠ ลบซ้ำกับคลัง (' + dupCount + ')'}</button>}
         {(newBranchCount > 0 || ST.newBranchOnly) && (

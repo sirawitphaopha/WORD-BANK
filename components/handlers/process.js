@@ -1,7 +1,7 @@
 'use client';
 import { PROVIDERS } from '@/lib/providers';
 import { DEFAULT_PROMPT_EN } from '@/lib/prompt';
-import { thNum, aiModel, DRAFT_KEY, PAL } from '@/components/helpers';
+import { thNum, aiModel, DRAFT_KEY, PAL, pathsOf } from '@/components/helpers';
 
 export function processActions(app) {
   app.loadAiLogs = async () => {
@@ -89,6 +89,18 @@ export function processActions(app) {
         return { id: 'r_' + bAt.toString(36) + '_' + n + '_' + Math.random().toString(36).slice(2, 6), text: it.text, original: it.original, kind: it.kind || '', subpath: (it.subcategories && it.subcategories[0]) || it.subcategory || '', subpaths: Array.isArray(it.subcategories) ? it.subcategories : (it.subcategory ? [it.subcategory] : []), category: cat, proposedNew: !!it.proposed_category, meaning: it.meaning || '', reason: it.reason || '', selected: false, notes: it.notes || [], source: it.source || '', batch: bId, batchNo: bNo, batchAt: bAt, batchAi: bAi, novel: bNovel };
       });
       const review = [...prevReview, ...fresh];
+      // 📊 ผูกช่อเข้ากับ log + เก็บสถิติช่อถาวร (idea O) — คำนวณ "กิ่งใหม่" ฝั่งเว็บด้วย knownPaths
+      // ให้ตัวเลขตรงกับหน้าตรวจทานเป๊ะ (ห้ามคำนวณจาก server · คนละมาตรฐาน) · fire-and-forget
+      if (data.aiLogId) {
+        const known = app.knownPaths();
+        const nb = new Set();
+        fresh.forEach((r) => pathsOf(r).forEach((p) => { if (p && !known.has(p)) nb.add(p); }));
+        const typedCount = text.split('\n').filter((l) => l.trim()).length;
+        fetch('/api/logs', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'batchStats', id: data.aiLogId, batch_code: bMeta.id, batch_no: bMeta.no, typed_count: typedCount, restored_count: (data.restored || []).length, new_branch_count: nb.size }),
+        }).catch(() => {});
+      }
       const categories = proposedCats.length ? [...app.state.categories, ...proposedCats] : app.state.categories;
       const wait = Math.max(0, 1780 - (Date.now() - started));
       setTimeout(() => {
