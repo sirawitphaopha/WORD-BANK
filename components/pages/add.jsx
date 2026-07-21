@@ -9,7 +9,7 @@ import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_TH } from '@/lib/prompt';
 import { PROMPT_LOG } from '@/lib/promptlog';
 import { diffLines, diffStat, collapseSame } from '@/lib/promptdiff';
 import { AI_TEST } from '@/lib/aitest';
-import { VERSION, thNum, aiModel, shortDate, pathsOf } from '@/components/helpers';
+import { VERSION, thNum, aiParts, shortDate, pathsOf } from '@/components/helpers';
 
 export function renderAdd(app) {
   const S = app.state;
@@ -181,7 +181,7 @@ export function renderProcessing(app, accent) {
         {/* ตัวนับวินาที + เจ้า/รุ่นที่ใช้ */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '20px' }}>
           <span style={{ fontSize: '13px', color: '#6f6252', background: '#f2e9d6', border: '1px solid #e4d8bd', borderRadius: '20px', padding: '5px 13px' }}>⏱ ใช้เวลา {elapsed}</span>
-          {S.procProvider ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#6f6252', background: '#f2e9d6', border: '1px solid #e4d8bd', borderRadius: '20px', padding: '5px 13px' }}><BrandIcon name={S.procProviderKey} size={15} />{S.procProvider}{S.procModel ? ' · ' + S.procModel : ''}</span> : null}
+          {S.procProvider ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#6f6252', background: '#f2e9d6', border: '1px solid #e4d8bd', borderRadius: '20px', padding: '5px 13px' }}><BrandIcon name={S.procProviderKey} size={15} />{S.procProvider}{S.procModel && aiParts(S.procModel).verNote ? ' ' + aiParts(S.procModel).verNote : ''}</span> : null}
         </div>
 
         {/* เตือนห้ามปิด/รีเฟรช */}

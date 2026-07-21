@@ -35,6 +35,8 @@ export function processActions(app) {
     const model = app.eff('aiModel:' + provider, '');
     // ชื่อเจ้า/รุ่นสำหรับโชว์บนหน้าโหลด
     const base = PROVIDERS[provider] || { label: provider, models: [] };
+    // ชื่อรุ่นในทะเบียน providers.js มีคะแนนดาว/คำอธิบายต่อท้ายด้วย " · " (เช่น "GPT-5.1 · ★★★☆☆ 3.0 ...")
+    // เก็บชื่อเต็ม (มีดาว) ไว้ → จอคอม/หน้าโหลดโชว์ดาวได้ · มือถือค่อยตัดเหลือชื่อรุ่นล้วนตอนแสดง (aiModel)
     const modelName = (base.models || []).reduce((a, m) => a || (m.id === model ? m.name : ''), '') || model || '';
     // เซฟข้อความกันหาย (เผลอรีเฟรชระหว่างรอ) + เตรียมตัวยกเลิก
     try { localStorage.setItem(DRAFT_KEY, text); } catch (e) {}
@@ -47,7 +49,7 @@ export function processActions(app) {
       id: 'b_' + Date.now().toString(36),
       no: prevAll.reduce((mx, r) => Math.max(mx, r.batchNo || 1), 0) + 1,
       at: Date.now(),
-      ai: modelName || (base.label || provider), // เก็บชื่อรุ่นล้วน (ไม่ซ้ำชื่อเจ้า) · ไม่มีรุ่น (พื้นฐาน) เก็บชื่อเจ้า
+      ai: modelName || (base.label || provider), // เก็บชื่อรุ่นเต็ม (มีดาว) · จอคอมโชว์เต็ม มือถือตัดเหลือรุ่นล้วน · ไม่มีรุ่น (พื้นฐาน) เก็บชื่อเจ้า
       novel: app.state.novelInput.trim() || 'ไม่ระบุเรื่อง',
       startPos: prevAll.length,
     };

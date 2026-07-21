@@ -9,7 +9,7 @@ import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_TH } from '@/lib/prompt';
 import { PROMPT_LOG } from '@/lib/promptlog';
 import { diffLines, diffStat, collapseSame } from '@/lib/promptdiff';
 import { AI_TEST } from '@/lib/aitest';
-import { VERSION, thNum, aiModel, shortDate, pathsOf } from '@/components/helpers';
+import { VERSION, thNum, aiParts, shortDate, pathsOf } from '@/components/helpers';
 
 export function renderReview(app, getCat, monoMode, spell, effLayout) {
   const ST = app.state;
@@ -490,7 +490,12 @@ export function renderReview(app, getCat, monoMode, spell, effLayout) {
         {/* ปุ่มจัดการหมวด โผล่เฉพาะตอน AI เสนอหมวดใหม่ (ไว้รวมหมวดที่ซ้ำซ้อนเข้าหมวดเดิม) */}
         {newCatCount > 0 && <button onClick={app.openCats} title="แก้ชื่อหมวด รวมหมวดที่ซ้ำซ้อนเข้าด้วยกัน เพิ่มหรือลบหมวด" aria-label="จัดการหมวด" style={{ padding: '6px 13px', borderRadius: '20px', background: '#f7f0e0', border: '1px dashed #b8cba0', fontSize: '13px', color: '#5a7040', cursor: 'pointer' }}>{S.isMobile ? '⚙' : '⚙ จัดการหมวด'}</button>}
         {extractedCount > 0 && <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#fbeecb', border: '1px solid #ecd39a', fontSize: '13px', color: '#8a5a1e' }}>พิมพ์เข้า <b>{reviewCount - extractedCount}</b> + ✂ สกัดเพิ่ม <b>{extractedCount}</b></span>}
-        {activeMeta.ai ? <span style={{ padding: '6px 13px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #cfd4e0', fontSize: '13px', color: '#5d6478' }}>{aiModel(activeMeta.ai)}{activeMeta.at ? ' · ' + shortDate(activeMeta.at) : ''}</span> : null}
+        {activeMeta.ai ? (() => { const a = aiParts(activeMeta.ai); return (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 13px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #cfd4e0', fontSize: '13px', color: '#5d6478' }}>
+            {a.key ? <BrandIcon name={a.key} size={14} /> : null}
+            <span>{a.label}{a.verNote ? ' ' + a.verNote : ''}{activeMeta.at ? ' · ' + shortDate(activeMeta.at) : ''}</span>
+          </span>
+        ); })() : null}
       </div>
       {/* ลิสกิ่งใหม่ — แสดงชื่อกิ่งครบทุกกิ่งตรง ๆ ไม่ต้องเอาเมาส์ชี้หรือกดเข้าไปนับเอง
           สำคัญตอนเทส AI: ต้องเห็นว่าโมเดล "สร้างกี่กิ่ง" (ไม่ใช่กี่คำ) และตั้งชื่อกิ่งว่าอะไรบ้าง */}
