@@ -8,14 +8,15 @@ import { BrandIcon } from '@/lib/brandIcons';
 import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_TH } from '@/lib/prompt';
 import { PROMPT_LOG } from '@/lib/promptlog';
 import { diffLines, diffStat, collapseSame } from '@/lib/promptdiff';
-import { AI_TEST } from '@/lib/aitest';
+import { AI_TESTS } from '@/lib/aitest';
 import { VERSION, thNum, aiModel, shortDate, pathsOf } from '@/components/helpers';
 import { RP, TEST_WORDS } from '@/components/pages/reportShared';
 
 export function renderAiTest(app) {
   const R = RP;
-  const D = AI_TEST;
   const S = app.state;
+  const vers = AI_TESTS;
+  const D = vers.find((v) => v.version === S.testVer) || vers[vers.length - 1];
   const side = S.testSide === 'ext' ? 'extracted' : 'typed';
   const pane = D[side];
   const nameOf = (b) => (D.runs.find((r) => r.batch === b) || {}).ai || ('ช่อ ' + b);
@@ -26,15 +27,74 @@ export function renderAiTest(app) {
   };
   const star = (n) => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
   // คะแนนดาว: ให้จากผลจริง 2 มุม (คำครบ+สกัด / กิ่งใหม่+รูปแบบ+หลายกิ่ง) — เขียนไว้ตายตัวเพราะเป็นการตัดสินของคน ไม่ใช่สูตร
-  const SCORE = { 6: 3.5, 7: 4.5, 8: 5, 9: 1.5, 10: 2.5, 11: 3 };
-  const NOTE = { 6: 'ใช้คำสั่งฉบับเก่า จึงสร้างกิ่งซ้ำชื่อหมวดตัวเอง 2 กิ่ง', 7: 'ไม่มีจุดเสียเลย ด้อยกว่า Pro แค่จำนวนคำที่สกัดได้', 8: 'ดีที่สุดทุกมิติ — คำครบ สกัดมากสุด ไม่สร้างกิ่งใหม่', 9: '⛔ สกัดได้แค่ 2 คำ และสร้างกิ่งใหม่ 10 กิ่งสำหรับ 10 คำ', 10: '🔴 ทำคำที่พิมพ์เข้าหาย 3 คำ · ไม่ให้หลายกิ่งเลย', 11: '🔴 ทำคำที่พิมพ์เข้าหาย 2 คำ · ไม่ให้หลายกิ่งเลย' };
+  const SCORE = D.scores || {};
+  const NOTE = D.notes || {};
   // แปลงรหัสหมวด (c0-c8) เป็นชื่อไทย จากหมวดจริงในคลัง
   const catName = (id) => (S.categories.find((x) => x.id === id) || {}).n || id || '—';
   const agreeTag = { full: ['ตรงกันหมด', '#7d9a5c', '#eef3e4'], branch: ['กิ่งต่าง', '#a8791f', '#fbf1d8'], cat: ['หมวดต่าง', '#b4503a', '#f7e5e0'], single: ['มีตัวเดียว', '#8a7d6d', '#f2ece0'] };
 
+  // ── เรดาร์ 7 มิติ (แสดงเฉพาะเวอร์ชันที่มีข้อมูล cost/ความหมาย = v2) ──
+  const radarRuns = D.runs.filter((r) => r.cost != null && r.meaningScore != null);
+  const hasRadar = radarRuns.length > 0;
+  const RD_LABELS = ['คำครบ', 'สกัด', 'ความหมาย', 'เหตุผล', 'จัดกลุ่ม', 'ราคาถูก', 'เร็ว'];
+  const _costs = radarRuns.map((r) => r.cost), _secs = radarRuns.map((r) => r.sec);
+  const minC = Math.min(..._costs, 1), maxC = Math.max(..._costs, 0.001), minS = Math.min(..._secs, 1), maxS = Math.max(..._secs, 1);
+  const clamp5 = (x) => Math.max(0.4, Math.min(5, x));
+  const dimsOf = (r) => [
+    clamp5(r.typed >= 31 ? 5 : r.typed === 30 ? 3.5 : r.typed === 29 ? 2 : 5 - (31 - r.typed) * 1.5),
+    clamp5((r.extracted / 20) * 5),
+    clamp5(r.meaningScore),
+    clamp5(r.reasonScore * 2.5),
+    clamp5(5 - (r.newBranchKinds - 1) * 0.5),
+    clamp5(maxC === minC ? 5 : 5 - (Math.log(r.cost / minC) / Math.log(maxC / minC)) * 4.6),
+    clamp5(maxS === minS ? 5 : 5 - ((r.sec - minS) / (maxS - minS)) * 4.6),
+  ];
+  const brandOf = (b) => (nameOf(b).toLowerCase().includes('gpt') ? 'gpt' : 'gemini');
+  // ชื่อเต็มมีแบรนด์ (เติม "Gemini" กลับ เพราะ shortOf ตัดออก · ฝั่ง GPT มี "GPT-" อยู่แล้ว) — ใช้ในการ์ดเรดาร์
+  const fullName = (b) => (brandOf(b) === 'gemini' ? 'Gemini ' : '') + shortOf(b);
+  const radarSVG = (vals) => {
+    const N = vals.length, cx = 122, cy = 110, R0 = 62;
+    const pt = (i, rad) => { const a = -Math.PI / 2 + (i * 2 * Math.PI) / N; return [cx + rad * Math.cos(a), cy + rad * Math.sin(a)]; };
+    const rings = [1, 2, 3, 4, 5].map((k) => vals.map((_, i) => pt(i, (R0 * k) / 5).join(',')).join(' '));
+    const dataPts = vals.map((v, i) => pt(i, (R0 * v) / 5));
+    return (
+      <svg viewBox="0 0 244 232" width="100%" style={{ maxWidth: '240px', display: 'block', margin: '2px auto 0' }} role="img" aria-label="กราฟเรดาร์คะแนน 7 มิติ">
+        {rings.map((p, i) => <polygon key={'g' + i} points={p} fill="none" stroke="#e5d9bf" strokeWidth="1" />)}
+        {vals.map((_, i) => { const [x, y] = pt(i, R0); return <line key={'a' + i} x1={cx} y1={cy} x2={x} y2={y} stroke="#e5d9bf" strokeWidth="1" />; })}
+        <polygon points={dataPts.map((p) => p.join(',')).join(' ')} fill="rgba(156,59,43,.18)" stroke="#9c3b2b" strokeWidth="2" strokeLinejoin="round" />
+        {dataPts.map((p, i) => <circle key={'d' + i} cx={p[0]} cy={p[1]} r="2.6" fill="#9c3b2b" />)}
+        {vals.map((v, i) => {
+          const [lx, ly] = pt(i, R0 + 15);
+          const anchor = Math.abs(lx - cx) < 10 ? 'middle' : lx > cx ? 'start' : 'end';
+          return (
+            <text key={'t' + i} x={lx} y={ly} textAnchor={anchor} style={{ fontSize: '9.3px', fill: '#6f6252' }}>
+              <tspan x={lx} dy="-2">{RD_LABELS[i]}</tspan>
+              <tspan x={lx} dy="11" style={{ fill: '#9c3b2b', fontWeight: 700 }}>{v.toFixed(1)}</tspan>
+            </text>
+          );
+        })}
+      </svg>
+    );
+  };
+
   return (
     <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
       {app.rpTitle('🔬', 'ผลทดสอบโมเดล AI', 'รายงานการทดลอง · ชุดคำมาตรฐาน เวอร์ชัน ' + thNum(D.version) + ' · ช่อ ' + thNum(D.runFrom) + '–' + thNum(D.runTo))}
+
+      {vers.length > 1 && (
+        <div style={{ display: 'flex', gap: '8px', margin: '0 0 20px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <span style={{ fontSize: '13px', color: R.faint }}>เลือกเวอร์ชันผลทดสอบ</span>
+          {vers.map((v) => {
+            const on = v.version === D.version;
+            return (
+              <button key={v.version} onClick={() => app.setState({ testSide: 'typed', testVer: v.version })}
+                style={{ padding: '7px 16px', border: '1px solid ' + (on ? R.ink : R.line), borderRadius: '9px', background: on ? R.ink : '#fbf7ec', color: on ? '#fbf3e2' : '#6f6252', fontSize: '13.5px', fontWeight: on ? 700 : 400, cursor: 'pointer' }}>
+                เวอร์ชัน {thNum(v.version)} <span style={{ opacity: .7 }}>· ช่อ {thNum(v.runFrom)}–{thNum(v.runTo)}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* ① ทดสอบ 2 มุม — วางไว้บนสุดเพราะเป็นกรอบคิดของทั้งรายงาน */}
       <div style={app.rpCard()}>
@@ -59,10 +119,10 @@ export function renderAiTest(app) {
       <div style={app.rpCard()}>
         {app.rpHead('๒', 'สรุปผลรายรุ่น', 'เรียงตามคะแนน')}
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px', minWidth: '780px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13.5px', minWidth: '900px' }}>
             <thead>
               <tr style={{ background: '#f0e6cd', color: '#8a7d6d', fontSize: '12px' }}>
-                {['คะแนน', 'รุ่น', 'ช่อ', 'พิมพ์เข้า', '✂ สกัดเพิ่ม', 'กิ่งใหม่', 'หลายกิ่ง', 'หมายเหตุ'].map((h) => (
+                {['คะแนน', 'รุ่น', 'ช่อ', 'พิมพ์เข้า', '✂ สกัดเพิ่ม', 'กิ่งใหม่', 'หลายกิ่ง', 'ราคา', 'เวลา', 'หมายเหตุ'].map((h) => (
                   <th key={h} style={{ padding: '9px 11px', textAlign: h === 'รุ่น' || h === 'หมายเหตุ' ? 'left' : 'center', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
@@ -76,12 +136,14 @@ export function renderAiTest(app) {
                       <span style={{ color: '#c9962e', fontSize: '13px', letterSpacing: '1px' }}>{star(SCORE[r.batch] || 0)}</span>
                       <div style={{ fontSize: '12px', color: R.faint }}>{(SCORE[r.batch] || 0).toFixed(1)}</div>
                     </td>
-                    <td style={{ padding: '10px 11px', fontWeight: 600, color: R.ink }}>{shortOf(r.batch)}</td>
+                    <td style={{ padding: '10px 11px', fontWeight: 600, color: R.ink }}>{fullName(r.batch)}</td>
                     <td style={{ padding: '10px 11px', textAlign: 'center', color: R.faint }}>{thNum(r.batch)}</td>
                     <td style={{ padding: '10px 11px', textAlign: 'center', color: lost ? '#b4503a' : '#4d6136', fontWeight: 700 }}>{r.typed}/31{lost ? ' 🔴' : ''}</td>
                     <td style={{ padding: '10px 11px', textAlign: 'center', fontWeight: 700, color: R.ink }}>{r.extracted}</td>
                     <td style={{ padding: '10px 11px', textAlign: 'center' }}>{r.newBranchKinds ? <span style={{ color: '#a8791f' }}>{r.newBranchKinds} กิ่ง<span style={{ color: R.faint, fontSize: '12px' }}> / {r.newBranchWords} คำ</span></span> : <span style={{ color: '#4d6136' }}>0</span>}</td>
                     <td style={{ padding: '10px 11px', textAlign: 'center', color: r.multiBranch ? R.ink : '#b4503a', fontWeight: r.multiBranch ? 400 : 700 }}>{r.multiBranch}</td>
+                    <td style={{ padding: '10px 11px', textAlign: 'center', whiteSpace: 'nowrap', color: R.ink }}>{r.cost != null ? '฿' + (r.cost * 35).toFixed(2) : <span style={{ color: R.faint }}>—</span>}</td>
+                    <td style={{ padding: '10px 11px', textAlign: 'center', whiteSpace: 'nowrap', color: R.faint }}>{r.sec != null ? r.sec + ' วิ' : '—'}</td>
                     <td style={{ padding: '10px 11px', color: '#6f6252', fontSize: '12.5px', lineHeight: 1.6 }}>{NOTE[r.batch] || ''}</td>
                   </tr>
                 );
@@ -95,6 +157,38 @@ export function renderAiTest(app) {
           <span><b>หลายกิ่ง</b> จำนวนคำที่ได้หมวดย่อยมากกว่า 1 กิ่ง — ตระกูล GPT ได้ 0 ทั้งหมด ทั้งที่คำสั่งเดียวกับ Gemini</span>
         </div>
       </div>
+
+      {/* เรดาร์รายตัว 7 มิติ (เฉพาะ v2 ที่มีข้อมูลครบ) */}
+      {hasRadar && (
+        <div style={app.rpCard()}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '9px', marginBottom: '5px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '20px' }}>🕸️</span>
+            <b style={{ fontSize: '17px', color: '#9c3b2b' }}>คะแนนรายตัว 7 มิติ</b>
+            <span style={{ fontSize: '13px', color: R.faint }}>ดาวหลายแฉก — ยิ่งรูปกว้างเต็ม ยิ่งเก่งรอบด้าน</span>
+          </div>
+          <p style={{ fontSize: '12.5px', color: R.faint, margin: '0 0 14px', lineHeight: 1.7 }}>
+            แต่ละแกนคือ 1 ด้าน (0–5 · สูง = ดี): คำครบ · สกัด · ความหมาย · เหตุผล · จัดกลุ่ม(กิ่งสะอาด) · ราคาถูก · เร็ว · <b>ใต้ดาวแต่ละใบมีบทอภิปรายของโมเดลนั้นเลย</b> (ความเห็นแคลร์ ชม/ติ ทั้งมุมภาษาและมุมพัฒนา · แถบสีบนบอกเกรด)
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(min(100%,400px),1fr))', gap: '14px', alignItems: 'start' }}>
+            {[...radarRuns].sort((a, b) => (SCORE[b.batch] || 0) - (SCORE[a.batch] || 0)).map((r) => {
+              const sc = SCORE[r.batch] || 0;
+              const bar = sc >= 4 ? '#7d9a5c' : sc >= 3 ? '#c9962e' : '#b4503a';
+              return (
+                <div key={r.batch} style={{ padding: '14px 16px', background: '#fffdf6', border: '1px solid ' + R.line, borderTop: '4px solid ' + bar, borderRadius: '14px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                    <BrandIcon name={brandOf(r.batch)} size={17} />
+                    <b style={{ fontSize: '15.5px', color: R.ink }}>{fullName(r.batch)}</b>
+                    <span style={{ marginLeft: 'auto', color: '#c9962e', fontSize: '13px', letterSpacing: '1px' }}>{star(sc)}</span>
+                    <span style={{ fontSize: '12px', color: R.faint }}>{sc.toFixed(1)}</span>
+                  </div>
+                  {radarSVG(dimsOf(r))}
+                  <div style={{ marginTop: '10px', paddingTop: '11px', borderTop: '1px dashed ' + R.line, fontSize: '13.5px', color: '#5f5346', lineHeight: 1.85 }}>{r.discuss}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ③ กิ่งใหม่ที่แต่ละรุ่นสร้าง */}
       <div style={app.rpCard()}>
@@ -141,7 +235,7 @@ export function renderAiTest(app) {
                 <th style={{ padding: '9px 8px' }}>ผล</th>
                 {D.runs.map((r) => (
                   <th key={r.batch} style={{ padding: '9px 8px', textAlign: 'left', minWidth: '150px', fontWeight: 600 }}>
-                    ช่อ {thNum(r.batch)}<div style={{ fontWeight: 400, color: '#a1937f' }}>{shortOf(r.batch)}</div>
+                    ช่อ {thNum(r.batch)}<div style={{ fontWeight: 400, color: '#a1937f' }}>{fullName(r.batch)}</div>
                   </th>
                 ))}
               </tr>
@@ -200,13 +294,7 @@ export function renderAiTest(app) {
       <div style={app.rpCard()}>
         {app.rpHead('๖', 'สิ่งที่ค้นพบ')}
         <div style={{ display: 'grid', gap: '11px' }}>
-          {[
-            ['คำสั่งสำคัญกว่าตัวโมเดล', 'ช่อ ๖ กับ ๘ ใช้โมเดลเดียวกัน (Gemini 3.1 Pro) ต่างกันแค่คำสั่ง ผลเปลี่ยนทุกมิติ — กิ่งผิดรูปแบบ 2 → 0 · สกัดเพิ่ม 14 → 17 · ก่อนแก้คำสั่ง โมเดลราคาแพงยังแพ้โมเดลฟรี ⇒ AI จัดไม่ดีให้สงสัยคำสั่งก่อนสงสัยโมเดล', '#4d6136', '#eef3e4'],
-            ['ตระกูล GPT กลืนคำที่ผู้ใช้พิมพ์เข้า', 'คำที่หายทุกกรณีมีลักษณะเดียวกัน คือผู้ใช้พิมพ์คำเดี่ยวแยกบรรทัด และคำนั้นไปปรากฏในประโยคยาวบรรทัดอื่นด้วย (ทรุดลง · อลหม่าน · ดุจดั่ง) GPT ตีความว่าซ้ำจึงตัดทิ้ง โดยไม่แจ้งเตือน ส่วน Gemini เก็บครบ 31/31 ทุกรอบ', '#b4503a', '#f7e5e0'],
-            ['ตระกูล GPT ไม่ให้หมวดย่อยหลายกิ่งเลย', 'ได้ 0 ทั้ง 3 รุ่นที่ทดสอบ ขณะที่ Gemini ได้ 1–3 ทั้งที่ได้รับคำสั่งเดียวกัน ไม่ใช่เรื่องฉลาดกว่าหรือแย่กว่า แต่เป็นความต่างของการตีความคำสั่ง ⇒ ต้องเขียนคำสั่งแยกต่อตระกูล', '#b4503a', '#f7e5e0'],
-            ['สร้างกิ่งเยอะ ไม่เท่ากับสร้างกิ่งมั่ว', 'GPT-4.1 สร้าง 2 กิ่งแล้วใช้กับ 8 คำ = จัดหมวดอย่างมีเหตุผล · GPT-5.6 Sol สร้าง 10 กิ่งสำหรับ 10 คำ = แทบไม่ใช้กิ่งเดิมเลย ทำให้คลังงอกกิ่งซ้ำความหมาย ⇒ ตัวชี้วัดที่ถูกคืออัตราส่วนกิ่งต่อคำ', '#a8791f', '#fbf1d8'],
-            ['ความเห็นต่างคือวัตถุดิบ ไม่ใช่ข้อบกพร่อง', 'คำที่พิมพ์เข้า จัดตรงกันทุกโมเดลเพียง ' + Math.round(D.typed.tally.full / (D.typed.tally.total - D.typed.tally.single) * 100) + '% · และคำที่สกัดมา ' + D.extracted.tally.single + ' จาก ' + D.extracted.tally.total + ' คำ มีโมเดลเดียวที่มองเห็น ⇒ ใช้ AI ตัวเดียวจะพลาดคำงามที่ตัวอื่นเห็น นี่คือเหตุผลที่ควรให้ AI หลายตัวช่วยกันเสนอ แล้วเจ้าของคลังเลือกเอง', '#4d6136', '#eef3e4'],
-          ].map(([t, d, col, bg]) => (
+          {D.findings.map(([t, d, col, bg]) => (
             <div key={t} style={{ padding: '14px 16px', background: bg, borderRadius: '11px', borderLeft: '4px solid ' + col }}>
               <div style={{ fontSize: '14.5px', fontWeight: 700, color: col, marginBottom: '5px' }}>{t}</div>
               <div style={{ fontSize: '13.5px', color: '#5f5346', lineHeight: 1.85 }}>{d}</div>
@@ -219,11 +307,10 @@ export function renderAiTest(app) {
       <div style={app.rpCard()}>
         {app.rpHead('๗', 'ข้อจำกัดของการทดลองนี้', 'เขียนไว้กันตัวเองเชื่อผลมากเกินจริง')}
         <ol style={{ margin: 0, paddingLeft: '20px', fontSize: '13.5px', color: '#5f5346', lineHeight: 2 }}>
-          <li><b>ทดสอบรุ่นละครั้งเดียว</b> — AI ให้ผลไม่เหมือนเดิมทุกครั้ง ผลที่ได้อาจคลาดเคลื่อนจากความบังเอิญ ควรรันซ้ำอย่างน้อย 3 ครั้งต่อรุ่น</li>
-          <li><b>ไม่มีเฉลย</b> — วัดได้แค่ว่าโมเดลเห็นพ้องกันไหม บอกไม่ได้ว่าใครจัดถูก ต้องให้เจ้าของคลังทำเฉลยไว้ก่อน</li>
-          <li><b>ช่อ ๖ ใช้คำสั่งคนละฉบับ</b> — เทียบกับช่ออื่นตรง ๆ ไม่ได้ เทียบได้เฉพาะกับช่อ ๘ เพื่อดูผลของการแก้คำสั่ง</li>
-          <li><b>ชุดคำมีกรณีพิเศษเยอะกว่าการใช้งานจริง</b> — มีช่องเติมคำ 6 จุดจาก 31 บรรทัด (19%) สูงกว่าการเก็บคำตามปกติ</li>
-          <li><b>ยังไม่ได้วัดต้นทุนและเวลา</b> — ข้อมูลมีอยู่ในหน้าประวัติ AI แต่ยังไม่ได้นำมาเปรียบเทียบความคุ้มค่า</li>
+          {D.limits.map((x, i) => {
+            const m = x.split(' — ');
+            return <li key={i}>{m.length > 1 ? <><b>{m[0]}</b> — {m.slice(1).join(' — ')}</> : x}</li>;
+          })}
         </ol>
       </div>
     </div>

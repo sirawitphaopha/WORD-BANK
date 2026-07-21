@@ -119,6 +119,40 @@ export function renderAbout(app) {
         </p>
       </div>
 
+      {/* ศัพท์น่ารู้: ช่อ กับ กิ่ง (ย้ายมาจากหน้าผลทดสอบ) */}
+      <div style={card}>
+        {head('', 'ศัพท์น่ารู้ — “ช่อ” กับ “กิ่ง”')}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: '12px' }}>
+          <div style={{ padding: '14px 16px', background: '#fbeecb', border: '1px solid #ecd39a', borderRadius: '12px' }}>
+            <div style={{ fontSize: '15px', fontWeight: 700, color: '#8a5a1e', marginBottom: '5px' }}>🌸 ช่อ (batch)</div>
+            <div style={{ fontSize: '13.5px', color: faint, lineHeight: 1.75 }}>คำ <b>1 กลุ่ม</b> ที่ได้จากการกดจัดคำ 1 ครั้ง (AI ช่วยจัด 1 รอบ) เหมือน<b>ช่อดอกไม้ 1 ช่อ</b> · แต่ละช่อจำเจ้า/รุ่น AI + วันที่ + นิยาย ของตัวเอง · หน้าตรวจทานเปิดทีละช่อผ่านแท็บ</div>
+          </div>
+          <div style={{ padding: '14px 16px', background: '#eef3e4', border: '1px solid #cbdcb8', borderRadius: '12px' }}>
+            <div style={{ fontSize: '15px', fontWeight: 700, color: '#4d6136', marginBottom: '5px' }}>🌿 กิ่ง (หมวดย่อย)</div>
+            <div style={{ fontSize: '13.5px', color: faint, lineHeight: 1.75 }}><b>ป้ายบอกที่อยู่ของคำ</b> ในต้นไม้หมวด ลึกได้หลายชั้น คั่นด้วย <code style={{ background: '#dfe8d2', padding: '0 4px', borderRadius: '4px' }}>/</code> · <b>1 คำติดได้หลายกิ่ง</b> · กิ่งใหม่ = กิ่งที่ AI คิดขึ้นเอง (ยิ่งน้อยยิ่งดี)</div>
+          </div>
+        </div>
+        <div style={{ marginTop: '14px', padding: '15px 17px', background: 'var(--surface,#fffdf6)', border: '1px dashed ' + line, borderRadius: '12px' }}>
+          <div style={{ fontSize: '12.5px', color: faint, marginBottom: '11px' }}>ตัวอย่างจริง — คำว่า “อลหม่าน” ถูกจัดยังไง</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '13px', flexWrap: 'wrap' }}>
+            <span style={{ fontFamily: SERIF, fontSize: '19px', fontWeight: 700, color: ink }}>อลหม่าน</span>
+            <span style={{ color: faint, fontSize: '18px' }}>→</span>
+            <span style={{ fontSize: '12px', color: faint }}>อยู่ใน</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '20px', background: '#eef0f5', border: '1px solid #d6dae4', fontSize: '13px', color: '#3a4a63' }}>
+              <BrandIcon name="gemini" size={15} /> ช่อ ๑๒ · Gemini 3.1 Pro
+            </span>
+            <span style={{ color: faint, fontSize: '18px' }}>→</span>
+            <span style={{ fontSize: '12px', color: faint }}>แตกเป็น 2 กิ่ง</span>
+            <span style={{ display: 'flex', gap: '7px', flexWrap: 'wrap' }}>
+              {['บรรยากาศ / บรรยากาศทั่วไป', 'อารมณ์ / ปั่นป่วน'].map((g) => (
+                <span key={g} style={{ display: 'inline-flex', alignItems: 'center', padding: '4px 11px', borderRadius: '20px', background: '#eef3e4', border: '1px solid #cbdcb8', fontSize: '12.5px', color: '#4d6136' }}>🌿 {g}</span>
+              ))}
+            </span>
+          </div>
+          <div style={{ fontSize: '12.5px', color: faint, marginTop: '11px' }}>คำเดียว มองได้ 2 มุม (ทั้งบรรยากาศฉาก + อารมณ์คน) เลยติดได้ 2 กิ่ง</div>
+        </div>
+      </div>
+
       {/* ๔ AI ที่รองรับ */}
       <div style={card}>
         {head('๔', 'ตัวช่วยจัดคำ')}

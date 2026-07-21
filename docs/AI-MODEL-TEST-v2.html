@@ -1,0 +1,337 @@
+<style>
+  :root{
+    --paper:#f4ecda; --paper2:#efe5d0; --card:#faf4e6; --ink:#33291f; --ink2:#5f5140;
+    --muted:#8c7a5e; --line:#ddceb0; --line2:#c9b892;
+    --accent:#9c3b2b; --accent2:#7a4a2b; --gold:#9a7636;
+    --pass:#2f7d54; --passbg:#e4efe1; --warn:#b3792a; --warnbg:#f5ecd6; --fail:#b23528; --failbg:#f5e2dd;
+    --shadow:0 1px 2px rgba(60,45,25,.08),0 6px 18px rgba(60,45,25,.06);
+    --serif:"Charmonman","Trirong",Georgia,"Times New Roman",serif;
+    --body:"Sarabun","Noto Sans Thai","Leelawadee UI","Tahoma",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#1d1811; --paper2:#241d14; --card:#26200f; --ink:#ece2cd; --ink2:#c7b89b;
+      --muted:#9c8b6c; --line:#3a3021; --line2:#4b3d29;
+      --accent:#dd8368; --accent2:#d0a06a; --gold:#c7a566;
+      --pass:#6fbf8e; --passbg:#20321f; --warn:#dbb066; --warnbg:#332a15; --fail:#e08677; --failbg:#361f1b;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#1d1811; --paper2:#241d14; --card:#26200f; --ink:#ece2cd; --ink2:#c7b89b;
+    --muted:#9c8b6c; --line:#3a3021; --line2:#4b3d29;
+    --accent:#dd8368; --accent2:#d0a06a; --gold:#c7a566;
+    --pass:#6fbf8e; --passbg:#20321f; --warn:#dbb066; --warnbg:#332a15; --fail:#e08677; --failbg:#361f1b;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+  }
+  :root[data-theme="light"]{
+    --paper:#f4ecda; --paper2:#efe5d0; --card:#faf4e6; --ink:#33291f; --ink2:#5f5140;
+    --muted:#8c7a5e; --line:#ddceb0; --line2:#c9b892;
+    --accent:#9c3b2b; --accent2:#7a4a2b; --gold:#9a7636;
+    --pass:#2f7d54; --passbg:#e4efe1; --warn:#b3792a; --warnbg:#f5ecd6; --fail:#b23528; --failbg:#f5e2dd;
+    --shadow:0 1px 2px rgba(60,45,25,.08),0 6px 18px rgba(60,45,25,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.62;
+    font-size:16.5px;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle at 12% 8%,rgba(156,59,43,.04),transparent 40%),radial-gradient(circle at 88% 92%,rgba(154,118,54,.05),transparent 45%);}
+  .wrap{max-width:920px;margin:0 auto;padding:34px 20px 80px}
+  h1,h2,h3{text-wrap:balance;line-height:1.2}
+  .tnum{font-variant-numeric:tabular-nums}
+
+  /* masthead */
+  .mast{border-bottom:2px solid var(--line2);padding-bottom:22px;margin-bottom:6px}
+  .kicker{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 10px}
+  .mast h1{font-family:var(--serif);font-size:clamp(34px,6.2vw,54px);font-weight:700;color:var(--accent);margin:0 0 6px;letter-spacing:.01em}
+  .mast .sub{font-size:18px;color:var(--ink2);margin:2px 0 16px;font-weight:600}
+  .meta{display:flex;flex-wrap:wrap;gap:8px}
+  .meta span{font-size:13px;background:var(--paper2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--ink2)}
+  .meta b{color:var(--ink);font-weight:700}
+
+  section{margin-top:40px}
+  h2{font-family:var(--serif);font-size:clamp(24px,3.6vw,32px);color:var(--accent);margin:0 0 4px;font-weight:700}
+  .lead{color:var(--ink2);font-size:15px;margin:0 0 18px;max-width:66ch}
+  h3{font-size:17px;color:var(--accent2);margin:26px 0 8px;font-weight:700}
+  p{max-width:70ch}
+  .num-eyebrow{display:inline-block;font-family:var(--serif);font-size:30px;color:var(--line2);font-weight:700;margin-right:6px;vertical-align:-2px}
+
+  /* scorecard */
+  .score{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:8px 0 4px}
+  .sc{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+  .sc.pass{border-left-color:var(--pass)} .sc.fail{border-left-color:var(--fail)}
+  .sc .h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .sc .v{font-size:15px;font-weight:700;margin:5px 0 2px}
+  .sc.pass .v{color:var(--pass)} .sc.fail .v{color:var(--fail)}
+  .sc .d{font-size:13px;color:var(--ink2);line-height:1.45}
+
+  .verdict{background:linear-gradient(180deg,var(--card),var(--paper2));border:1px solid var(--line2);border-radius:16px;padding:20px 22px;margin:18px 0;box-shadow:var(--shadow)}
+  .verdict .big{font-family:var(--serif);font-size:26px;color:var(--accent);font-weight:700;margin:0 0 6px}
+  .verdict p{margin:6px 0 0;font-size:15.5px}
+
+  /* chips */
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;border-radius:999px;padding:2px 10px;white-space:nowrap;line-height:1.7}
+  .chip.pass{background:var(--passbg);color:var(--pass)} .chip.warn{background:var(--warnbg);color:var(--warn)} .chip.fail{background:var(--failbg);color:var(--fail)}
+  .chip.ghost{background:var(--paper2);color:var(--ink2);border:1px solid var(--line)}
+
+  /* tables */
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin:14px 0;background:var(--card)}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+  th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line)}
+  thead th{background:var(--paper2);color:var(--ink2);font-size:12px;letter-spacing:.03em;text-transform:uppercase;font-weight:700;position:sticky;top:0}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--paper2)}
+  td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+  td.c,th.c{text-align:center}
+  .mdl{font-weight:700;color:var(--ink);white-space:nowrap}
+  .fam-g{border-left:3px solid var(--gold)} .fam-o{border-left:3px solid var(--accent)}
+  .rowbad{opacity:.72}
+  .star{color:var(--gold);letter-spacing:-1px}
+
+  /* callouts */
+  .call{border-radius:12px;padding:15px 18px;margin:16px 0;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+  .call.bad{border-left:5px solid var(--fail);background:var(--failbg)}
+  .call.good{border-left:5px solid var(--pass);background:var(--passbg)}
+  .call.warn{border-left:5px solid var(--warn);background:var(--warnbg)}
+  .call .t{font-weight:800;margin:0 0 6px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .call p{margin:6px 0 0;font-size:14.5px}
+  .call.bad .t{color:var(--fail)} .call.good .t{color:var(--pass)} .call.warn .t{color:var(--warn)}
+
+  ul.clean{margin:10px 0;padding-left:0;list-style:none}
+  ul.clean li{position:relative;padding:5px 0 5px 26px;font-size:15px;border-bottom:1px dashed var(--line)}
+  ul.clean li:last-child{border-bottom:none}
+  ul.clean li::before{content:"";position:absolute;left:6px;top:13px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  ul.clean li b{color:var(--accent2)}
+
+  .tiers{display:grid;gap:10px;margin:14px 0}
+  .tier{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+  .tier .rank{font-family:var(--serif);font-size:30px;text-align:center;font-weight:700;color:var(--accent)}
+  .tier .who b{font-size:16px;color:var(--ink)}
+  .tier .who .why{font-size:13.5px;color:var(--ink2);margin-top:2px}
+  .tier.avoid .rank{color:var(--fail);font-size:22px}
+  .tier.avoid{opacity:.9}
+
+  .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:14px 0}
+  .kv .cell{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow)}
+  .kv .lab{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
+  .kv .big{font-size:22px;font-weight:800;color:var(--accent);margin:3px 0 2px;font-variant-numeric:tabular-nums}
+  .kv .sm{font-size:13px;color:var(--ink2)}
+
+  .foot{margin-top:56px;padding-top:20px;border-top:2px solid var(--line2);color:var(--muted);font-size:13.5px;text-align:center}
+  .foot b{color:var(--accent);font-family:var(--serif);font-size:16px}
+  code{background:var(--paper2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px;color:var(--accent2);font-family:"Sarabun",monospace}
+  .hl{background:linear-gradient(180deg,transparent 62%,rgba(154,118,54,.32) 0);padding:0 2px}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="kicker">รายงานการทดลอง · คลังคำ (Word Bank)</p>
+    <h1>ผลทดสอบ AI เวอร์ชัน ๒</h1>
+    <p class="sub">การแก้คำสั่ง (prompt) ฉบับ ๕ → ๖ ได้ผลจริงไหม</p>
+    <div class="meta">
+      <span><b>14</b> โมเดล</span>
+      <span><b>31</b> คำมาตรฐาน (ชุดเดิม)</span>
+      <span>ช่อ <b>12–25</b></span>
+      <span>รันโมเดลละ <b>1</b> ครั้ง</span>
+      <span>21 ก.ค. 2569</span>
+    </div>
+  </header>
+
+  <div class="verdict">
+    <p class="big">แก้ prompt ได้ผล 4 ใน 5 ข้อ</p>
+    <p>สมมติฐานที่ตั้งไว้ผ่าน 4 ข้อ (H1 จัดตรงกันขึ้น · H2 สกัดไม่ลด · H3 GPT ให้หลายกิ่งได้ · H5 คำทับศัพท์ถูก 14/14) เหลือ <b>H4 (ตาข่ายกันคำหาย) ที่ยังไม่ผ่าน</b> — เป็นการบ้านสำคัญของเวอร์ชันต่อไป</p>
+  </div>
+
+  <section>
+    <h2>บทสรุป — สมมติฐาน H1–H5</h2>
+    <p class="lead">เทียบกับเกณฑ์ที่ล็อกไว้ก่อนเริ่มทดลอง (ห้ามขยับ) และฐานผลรอบ ๑</p>
+    <div class="score">
+      <div class="sc pass"><div class="h">H1 · จัดตรงกัน</div><div class="v">ผ่าน · 42–45%</div><div class="d">เกณฑ์ ≥40% (เดิม 29%) — สลับความหมาย/เหตุผลมาก่อนหมวดช่วยได้จริง</div></div>
+      <div class="sc pass"><div class="h">H2 · สกัดไม่ลด</div><div class="v">ผ่าน · 17 คำ</div><div class="d">เกณฑ์ ≥15 — Gemini 3.1 Pro ยังสกัด 17 เท่าเดิม การเพิ่มเหตุผล/ความหมายไม่ทำให้สกัดน้อยลง</div></div>
+      <div class="sc pass"><div class="h">H3 · GPT หลายกิ่ง</div><div class="v">ผ่าน · ทุกรุ่น</div><div class="d">เกณฑ์ >0 ทุกรุ่น (เดิม 0) — GPT ทั้ง 10 รุ่นให้หลายกิ่งได้ 4–37 คำ</div></div>
+      <div class="sc fail"><div class="h">H4 · ตาข่ายกันคำหาย</div><div class="v">ไม่ผ่าน</div><div class="d">เกณฑ์ 31/31 ทุกรุ่น — 8/14 รุ่นกลืนคำ ตาข่ายไม่ทำงานเลย (0 ครั้ง)</div></div>
+      <div class="sc pass"><div class="h">H5 · คำทับศัพท์</div><div class="v">ผ่านเต็ม · 14/14</div><div class="d">เกณฑ์ ≥5/6 (เดิม 1/6) — <code>ภาพสเกตช์</code> เข้าหมวดคำทับศัพท์ครบทุกรุ่น</div></div>
+    </div>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>สมมติฐาน</th><th>เกณฑ์ผ่าน</th><th class="c">รอบ ๑</th><th class="c">รอบ ๒</th><th class="c">สรุป</th></tr></thead>
+        <tbody>
+          <tr><td><b>H1</b> จัดหมวดตรงกันมากขึ้น</td><td>≥ 40%</td><td class="c tnum">29%</td><td class="c tnum">42–45%</td><td class="c"><span class="chip pass">ผ่าน</span></td></tr>
+          <tr><td><b>H2</b> เขียนเหตุผล/ความหมายแล้วสกัดไม่ลด</td><td>Pro ≥ 15</td><td class="c tnum">17</td><td class="c tnum">17</td><td class="c"><span class="chip pass">ผ่าน</span></td></tr>
+          <tr><td><b>H3</b> GPT ให้หลายกิ่งต่อคำ</td><td>&gt;0 ทุกรุ่น</td><td class="c">0/3</td><td class="c">10/10</td><td class="c"><span class="chip pass">ผ่าน</span></td></tr>
+          <tr><td><b>H4</b> ตาข่ายกันคำหายทำงาน</td><td>31/31 ทุกรุ่น</td><td class="c">—</td><td class="c tnum">6/14</td><td class="c"><span class="chip fail">ไม่ผ่าน</span></td></tr>
+          <tr><td><b>H5</b> <code>ภาพสเกตช์</code> เข้าหมวดคำทับศัพท์</td><td>≥ 5/6</td><td class="c">1/6</td><td class="c">14/14</td><td class="c"><span class="chip pass">ผ่านเต็ม</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="call bad">
+      <p class="t">🔴 H4 ไม่ผ่าน — ตระกูล GPT ยังกลืนคำ และตาข่ายจับไม่ได้</p>
+      <p>8 ใน 14 รุ่นทำให้คำพิมพ์เข้าเหลือ 29–30 ไม่ครบ 31 โดยคำเดี่ยว <b>อลหม่าน · ทรุดลง · ดุจดั่ง</b> ถูกดูดหายเข้าไปเป็น "คำสกัด" ของประโยคแม่ (เช่น <code>ความสับสนอลหม่าน</code>) แทนที่จะอยู่เป็นคำของตัวเอง</p>
+      <p><b>ต้นเหตุ:</b> ตาข่ายกันคำหายเช็คแค่ว่า "ข้อความนี้โผล่ในผลลัพธ์ไหม" — พอคำโผล่เป็นคำสกัดแล้ว มันเลยคิดว่าไม่หาย จึงไม่เติมกลับ (รอบนี้ตาข่ายทำงาน <b>0 ครั้ง</b>) เป็นจุดบอดที่ต้องแก้ในเวอร์ชัน ๓</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>อันดับโมเดล</h2>
+    <p class="lead">รวมทุกมิติ: คำครบ · สกัด · หลายกิ่ง · คุณภาพความหมาย/เหตุผล · ต้นทุน · ความเร็ว (รอบนี้เทสตระกูล Gemini 4 รุ่น + GPT 10 รุ่น · ยังไม่มี Claude/DeepSeek/Kimi/Qwen/GLM)</p>
+
+    <div class="tiers">
+      <div class="tier"><div class="rank">๑</div><div class="who"><b>Gemini 3.1 Pro</b> <span class="chip pass">คุณภาพสูงสุด</span><div class="why">คำครบ 31/31 · สกัดเยอะ (17) · ความหมาย 5/5 · กิ่งใหม่แค่ 1 · <b>ข้อควรระวัง:</b> ช้า (118 วิ) เฟลรอบแรก (503 คนแน่น ต้องรันซ้ำ) · ฿1.26</div></div></div>
+      <div class="tier"><div class="rank">๒</div><div class="who"><b>Gemini 3.5 Flash</b> <span class="chip pass">คุ้มสุด</span><div class="why">คำครบ 31/31 · สกัด 14 · ความหมาย 4/5 · เขียนความหมายครบ 100% · <b>฿0.30 · 39 วิ</b> — สมดุลดีที่สุดสำหรับใช้งานจริงทุกวัน</div></div></div>
+      <div class="tier"><div class="rank">๓</div><div class="who"><b>Gemini 3.1 Flash-Lite</b> <span class="chip ghost">ฟรี/ถูกสุด</span> &nbsp; หรือ &nbsp; <b>GPT-5.5</b> <span class="chip ghost">สกัดเยอะสุด</span><div class="why">Flash-Lite: ถูกสุด ฿0.07 · เร็วสุด 12 วิ · ความหมาย 5/5 — แต่สกัดแค่ 4 + กลืน 1 คำ &nbsp;|&nbsp; GPT-5.5: สกัดมากสุด 22 คำ · เหตุผลดีสุด — แต่แพง ฿4.40 + ช้า 131 วิ + กลืน 2 คำ</div></div></div>
+    </div>
+
+    <h3>ตารางเต็ม 14 โมเดล</h3>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>โมเดล</th><th class="c">คำครบ</th><th class="r">สกัด</th><th class="r">หลายกิ่ง</th><th class="c">ความหมาย</th><th class="r">เหตุผล</th><th class="r">฿</th><th class="r">วินาที</th>
+        </tr></thead>
+        <tbody>
+          <tr class="fam-g"><td class="mdl">Gemini 3.1 Pro</td><td class="c"><span class="chip pass">31/31</span></td><td class="r">17</td><td class="r">1</td><td class="c"><b class="star">★★★★★</b></td><td class="r">1.5</td><td class="r">1.26</td><td class="r">118</td></tr>
+          <tr class="fam-g"><td class="mdl">Gemini 3.1 Flash-Lite</td><td class="c"><span class="chip warn">30/31</span></td><td class="r">4</td><td class="r">0</td><td class="c"><b class="star">★★★★★</b></td><td class="r">—</td><td class="r">0.07</td><td class="r">12</td></tr>
+          <tr class="fam-g"><td class="mdl">Gemini 3.5 Flash</td><td class="c"><span class="chip pass">31/31</span></td><td class="r">14</td><td class="r">0</td><td class="c"><b class="star">★★★★</b>☆</td><td class="r">1.5</td><td class="r">0.30</td><td class="r">39</td></tr>
+          <tr class="fam-g"><td class="mdl">Gemini 3 Flash</td><td class="c"><span class="chip pass">31/31</span></td><td class="r">6</td><td class="r">0</td><td class="c"><b class="star">★★★</b>☆☆</td><td class="r">1.1</td><td class="r">0.13</td><td class="r">82</td></tr>
+          <tr class="fam-o"><td class="mdl">GPT-4.1 mini</td><td class="c"><span class="chip fail">29/31</span></td><td class="r">5</td><td class="r">5</td><td class="c"><b class="star">★★★</b>☆☆</td><td class="r">1.2</td><td class="r">0.27</td><td class="r">42</td></tr>
+          <tr class="fam-o"><td class="mdl">GPT-4.1</td><td class="c"><span class="chip fail">29/31</span></td><td class="r">11</td><td class="r">4</td><td class="c"><b class="star">★★★★</b>☆</td><td class="r">1.6</td><td class="r">1.80</td><td class="r">47</td></tr>
+          <tr class="fam-o"><td class="mdl">GPT-5.1</td><td class="c"><span class="chip warn">30/31</span></td><td class="r">14</td><td class="r">20</td><td class="c"><b class="star">★★★★</b>☆</td><td class="r">0</td><td class="r">1.82</td><td class="r">51</td></tr>
+          <tr class="fam-o"><td class="mdl">GPT-5.4</td><td class="c"><span class="chip fail">29/31</span></td><td class="r">19</td><td class="r">22</td><td class="c"><b class="star">★★★★</b>☆</td><td class="r">1.7</td><td class="r">3.41</td><td class="r">43</td></tr>
+          <tr class="fam-o rowbad"><td class="mdl">GPT-5.4 mini</td><td class="c"><span class="chip pass">31/31</span></td><td class="r">1</td><td class="r">10</td><td class="c"><b class="star">★★★</b>☆☆</td><td class="r">1.5</td><td class="r">0.61</td><td class="r">17</td></tr>
+          <tr class="fam-o rowbad"><td class="mdl">GPT-5.4 nano</td><td class="c"><span class="chip pass">31/31</span></td><td class="r">1</td><td class="r">28</td><td class="c"><b class="star">★★</b>☆☆☆</td><td class="r">1.5</td><td class="r">0.18</td><td class="r">24</td></tr>
+          <tr class="fam-o"><td class="mdl">GPT-5.5</td><td class="c"><span class="chip fail">29/31</span></td><td class="r">22</td><td class="r">26</td><td class="c"><b class="star">★★★★</b>☆</td><td class="r">1.8</td><td class="r">4.40</td><td class="r">131</td></tr>
+          <tr class="fam-o rowbad"><td class="mdl">GPT-5.6 Sol</td><td class="c"><span class="chip warn">30/31</span></td><td class="r">15</td><td class="r">37</td><td class="c"><b class="star">★★★★</b>☆</td><td class="r">1.8</td><td class="r">9.06</td><td class="r">137</td></tr>
+          <tr class="fam-o"><td class="mdl">GPT-5.6 Terra</td><td class="c"><span class="chip warn">30/31</span></td><td class="r">3</td><td class="r">5</td><td class="c"><b class="star">★★★★</b>☆</td><td class="r">1.6</td><td class="r">3.29</td><td class="r">42</td></tr>
+          <tr class="fam-o"><td class="mdl">GPT-5.6 Luna</td><td class="c"><span class="chip pass">31/31</span></td><td class="r">11</td><td class="r">31</td><td class="c"><b class="star">★★★★</b>☆</td><td class="r">1.6</td><td class="r">1.37</td><td class="r">29</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:4px">แถบซ้าย <span style="color:var(--gold)">■</span> Gemini · <span style="color:var(--accent)">■</span> GPT · คอลัมน์ "เหตุผล" = คะแนนคุณภาพเฉลี่ย 0–2 · แถวจาง = ไม่แนะนำ</p>
+
+    <div class="tiers" style="margin-top:20px">
+      <div class="tier avoid"><div class="rank">⛔</div><div class="who"><b>ควรเลี่ยง</b><div class="why"><b>GPT-5.6 Sol</b> แพงสุด ฿9.06 (129 เท่าของ Flash-Lite) ช้าสุด สร้างกิ่งมั่ว 11 กิ่ง · <b>GPT-5.4 nano / 5.4 mini</b> สกัดได้แค่ 1 คำ + nano คุณภาพความหมายต่ำสุด (แปลผิดหลายคำ) · <b>gpt-4o-mini</b> เฟลทั้ง 2 รอบ (ตอบผิดรูปแบบ อ่านไม่ได้) = ใช้ไม่ได้จริง</div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>ต้นทุน ความเร็ว ความคุ้ม</h2>
+    <p class="lead">รวม 14 รอบสำเร็จ = ฿27.98 (อัตราอ้างอิง 35 บาท/ดอลลาร์) · token เข้ารวม 86,860 · ออกรวม 71,434</p>
+    <div class="kv">
+      <div class="cell"><div class="lab">ถูกสุด</div><div class="big">฿0.07</div><div class="sm">Flash-Lite · รองมา 3-Flash ฿0.13</div></div>
+      <div class="cell"><div class="lab">แพงสุด</div><div class="big">฿9.06</div><div class="sm">GPT-5.6 Sol · รองมา 5.5 ฿4.40</div></div>
+      <div class="cell"><div class="lab">เร็วสุด</div><div class="big">12 วิ</div><div class="sm">Flash-Lite · ช้าสุด Sol 137 วิ</div></div>
+      <div class="cell"><div class="lab">คุ้มสุด/คำสกัด</div><div class="big">฿0.02</div><div class="sm">Gemini ทุกรุ่น · แย่สุด Terra ฿1.10</div></div>
+    </div>
+    <div class="call warn">
+      <p class="t">💡 ข้อสังเกตต้นทุน</p>
+      <p>ตระกูล <b>Gemini คุ้มค่าขาดลอย</b> — ฿0.02 ต่อคำสกัด ทุกรุ่น ขณะที่ GPT รุ่นใหญ่ (Sol/5.5/5.4) แพงกว่า 6–10 เท่า และช้ากว่ามาก · <b>Gemini 3.1 Pro</b> ให้คุณภาพสูงสุดที่ ฿1.26 (คุ้มมากเทียบคุณภาพ) แต่ต้องเผื่อ retry เพราะรุ่น Pro เจอ 503 (คนแน่น) ได้</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>การเขียน "ความหมาย" ข้ามโมเดล</h2>
+    <p class="lead">พี่กันเน้นให้ดูว่าแต่ละโมเดลเขียนความหมายคล้ายกันไหม · เขียนดีแค่ไหน · ทุกโมเดลเขียนความหมายให้เกือบทุกคำ (ยกเว้น Gemini Pro ที่เขียนแค่ ~24/31 แต่คุณภาพสูงสุด)</p>
+
+    <div class="call good">
+      <p class="t">✓ ข่าวดี: ความหมายตรงกันสูงมาก (26 จาก 31 คำ)</p>
+      <p>คำเดี่ยว/กริยาชัดๆ (<code>สิ้นลม</code> <code>ฉวย</code> <code>สาธิต</code> <code>ภาพสเกตช์</code> <code>หนแล้วหนเล่า</code>) ทุกโมเดลเขียนตรงกันแทบคำต่อคำ และ<b>ทุกโมเดลทำตามกฎ "นิยามตัวคำ ไม่เล่าฉาก" ได้ดี</b> — ไม่มีใครเล่าเหตุการณ์แทนความหมาย</p>
+    </div>
+
+    <h3>คำที่โมเดลตีความ "ต่างกันจริง" (จุดที่เจ้าของคลังต้องเลือกเอง)</h3>
+    <ul class="clean">
+      <li>🔴 <b>จนแล้วจนรอด</b> — จุดแตกหนักสุด โมเดลแยกเป็น 2 ค่ายตรงข้ามกัน! ค่าย "ในที่สุดก็เป็นเช่นนั้น" (Gemini ทุกตัว + GPT-5.4/5.5/Sol/Luna) กับค่าย "พยายามเท่าไรก็ไม่สำเร็จ" (GPT-4.1/5.1/5.4mini/Terra) และ 4.1 mini ตีกลับเป็น "สุดท้ายก็สำเร็จ" — <b>ที่ถูกคือความหมายกลางๆ "ในที่สุด"</b> (ใช้ได้ทั้งดี/ร้าย) ซึ่งฝั่ง Gemini จับได้ตรงกว่า</li>
+      <li>🟡 <b>อ้างตัวว่าชื่อ…</b> — แตกที่ "นัยหลอกลวง": GPT-5.4 เติม "สวมรอย/ปลอมตัว" ขณะรุ่นอื่นมองเป็นการบอกชื่อกลางๆ</li>
+      <li>🟡 <b>…อย่างน่าหวุดหวิด</b> — สองด้าน: "เฉียดฉิวรอดมา" กับ "เกือบเกิดเรื่องร้าย"</li>
+      <li>🟡 <b>ทรุดลง</b> — GPT-5.4 nano หลุดเป็น "คว่ำลง/ยุบตัว" ตัดนัย "หมดแรง" ทิ้ง</li>
+    </ul>
+
+    <h3>คุณภาพการเขียนความหมาย รายโมเดล</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>โมเดล</th><th class="c">คะแนน</th><th>สไตล์ / ข้อสังเกต</th></tr></thead>
+        <tbody>
+          <tr><td class="mdl">Gemini 3.1 Pro</td><td class="c"><b class="star">★★★★★</b></td><td>กระชับสุด อธิบายตัวคำเป๊ะเหมือนพจนานุกรมชั้นดี (เขียนน้อยแต่ทุกอันเยี่ยม)</td></tr>
+          <tr><td class="mdl">Gemini 3.1 Flash-Lite</td><td class="c"><b class="star">★★★★★</b></td><td>สั้นแบบพจนานุกรม แม่นและครอบคลุม (~24/31) — คุณภาพเทียบชั้น Pro แต่เขียนเยอะกว่า = คุ้มสุด</td></tr>
+          <tr><td class="mdl">GPT-5.4</td><td class="c"><b class="star">★★★★</b>☆</td><td>น้ำเสียงวรรณศิลป์ จับนัยสำนวนยากๆ ได้ลึก เหมาะกับงานนักเขียน</td></tr>
+          <tr><td class="mdl">GPT-5.5 · 5.6 Sol · Terra · Luna · 5.1 · 4.1</td><td class="c"><b class="star">★★★★</b>☆</td><td>ภาษาเป็นธรรมชาติ ตรงตัวคำ อ่านรื่น (Sol ไม่มีคำแปลผิดเลย แค่ยืดกว่าเพื่อน)</td></tr>
+          <tr><td class="mdl">Gemini 3 Flash · GPT-4.1 mini · 5.4 mini</td><td class="c"><b class="star">★★★</b>☆☆</td><td>ใช้ได้แต่ต้องตรวจ — บางคำแปลเพี้ยน (3-Flash: ชะตากรรม→"วิถีชีวิต") หรือห้วนเกิน</td></tr>
+          <tr class="rowbad"><td class="mdl">GPT-5.4 nano</td><td class="c"><b class="star">★★</b>☆☆☆</td><td>อ่อนสุด — แปลผิดหลายคำ (ชะเง้อมอง→"แอบมอง") + นิยามวน (ชวนหัว→"ชวนหัว")</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>การเขียน "เหตุผล"</h2>
+    <p class="lead">เหตุผลควรเขียนเฉพาะเมื่อคุ้มค่า (คำกำกวม/หลายกิ่ง) ไม่ใช่ทุกคำ · เหตุผลที่ดี = บอกการตัดสินใจจริง ไม่ใช่ทวนความหมาย</p>
+    <ul class="clean">
+      <li><b>เขียนเหตุผลเก่งสุด:</b> GPT-5.5 · GPT-5.6 Sol (คุณภาพ ~1.8/2) — ใช้รูป <span class="hl">"เก็บที่ X มากกว่า Y เพราะ…"</span> ที่บอกการชั่งน้ำหนักจริง เช่น Sol แยก "ประมาท" ออกจาก "สงบเชิงบวก" ได้</li>
+      <li><b>สมดุลดี (เขียนพอเหมาะ):</b> GPT-5.5 (27%) · Sol (20%) · Luna (17%) — เขียนไม่มากแต่ทุกอันคุ้มค่า</li>
+      <li><b>Gemini ทุกรุ่นเขียนน้อยมาก (2–12%)</b> — ตรงกฎ "เขียนเฉพาะเมื่อคุ้มค่า" และที่เขียนมักเป็นของดี (อธิบายคำทับศัพท์)</li>
+      <li>⚠️ <b>GPT-4.1 mini เขียนเยอะเกิน (47%)</b> — หลายคำที่ชัดอยู่แล้วก็ยังเขียน = รก ควรเว้นว่าง</li>
+      <li>⚠️ <b>GPT-5.1 ไม่เขียนเหตุผลเลย (0%)</b> — ประหยัด token สุดขั้ว แต่พลาดคำกำกวมที่เหตุผลช่วยได้จริง</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>การจัดหมวดที่ "ขัดแย้งกัน"</h2>
+    <p class="lead">คำถามสำคัญ: ความเห็นต่างระหว่างโมเดล = ข้อบกพร่อง หรือ ตัวเลือกให้เจ้าของคลังเลือกเอง</p>
+
+    <div class="call good">
+      <p class="t">✓ ยืนยันกรอบคิดของพี่กัน: ความต่างเกือบทั้งหมด = "ตัวเลือก" ไม่ใช่ "ข้อผิดพลาด"</p>
+      <p>ทีมวิเคราะห์ (รวมตัวตรวจทานปรปักษ์) สรุปตรงกันว่าความเห็นต่างเกือบทั้งหมดเป็น <b>ความกำกวมที่ยอมรับได้จริง</b> — เพราะวลีไทยมีหลายมิติในตัว → เป็นฐานที่ดีของฟีเจอร์ "AI หลายตัวช่วยกันคิด แล้วเจ้าของเลือกเอง"</p>
+    </div>
+
+    <h3>5 แกนความต่างที่วนซ้ำ (สะท้อนโครงสร้างคำจริง)</h3>
+    <ul class="clean">
+      <li><b>อารมณ์ภายใน ↔ ฉาก/บรรยากาศภายนอก</b> — <code>ความสับสนอลหม่าน</code> · <code>อลหม่าน</code> · <code>ภาพจากนรก</code></li>
+      <li><b>ท่าทางที่เห็น ↔ นิสัยที่ติดตัว</b> — <code>ท่าทางสุขุม</code> · <code>นิ่งนอนใจ</code></li>
+      <li><b>กริยา ↔ ผลลัพธ์/สภาพ</b> — <code>ทรุดลงขาดใจตาย</code> · <code>หลั่งไหลไม่ขาดสาย</code></li>
+      <li><b>อารมณ์ ↔ คำเปรียบเปรย/สำนวน</b> — <code>ชะตากรรมสุดสยอง</code> · <code>ภาพจากนรก</code></li>
+    </ul>
+
+    <div class="call warn">
+      <p class="t">🔎 หลักฐานว่า "ต่างเพราะความหมาย ไม่ใช่สุ่ม"</p>
+      <p>พอเทียบ <code>ความสับสนอลหม่าน</code> (หมวดอารมณ์ชนะ 7:6 เพราะมีคำ "สับสน" ดึงเข้าใจ) กับ <code>อลหม่าน</code> เดี่ยวๆ (หมวดบรรยากาศชนะ 5:3) — โมเดลย้ายหมวด<b>ตามคำที่หายไปอย่างเป็นระบบ</b> พิสูจน์ว่าเป็นการตีความจริง ไม่ใช่เดามั่ว</p>
+    </div>
+
+    <div class="call good">
+      <p class="t">🌟 สัญญาณแรง: ควรเพิ่ม "หมวดบุคคล" (taxonomy gap)</p>
+      <p>คำว่า <code>เหล่าสุจริตชน</code> ทำให้ <b>12 ใน 14 โมเดลลงมติตรงกัน</b>ว่าควรมีหมวด "บุคคล/ประเภทบุคคล" ใหม่ (รวม Gemini Pro ที่เสนอเอง) เพราะคำนามเรียก "กลุ่มคน" ไม่มีบ้านใน 9 หมวดเดิม — การลงมติพร้อมกันขนาดนี้เป็นสัญญาณว่าควรพิจารณาเพิ่มหมวดนี้จริง</p>
+    </div>
+
+    <div class="call bad">
+      <p class="t">⚠️ ข้อผิดพลาดจริง (error) — กระจุกที่โมเดลอ่อน</p>
+      <p><b>GPT-5.4 nano</b> ผิดชัด 2 จุด: จัด "ท่าทางสุขุม" → หมวดการแต่งกาย (ไม่เกี่ยวเสื้อผ้าเลย) · จัด "เหล่าสุจริตชน" (คนดี) → นิสัย "แข็งกร้าว/ดื้อดึง" (ผิดขั้วสิ้นเชิง) · <b>ผิดระดับกิ่ง:</b> หลายรุ่นจัด "นิ่งนอนใจ" เข้ากิ่งบวก "ความสงบ" ทั้งที่คำนี้แปลว่า "ประมาท/ชะล่าใจ" (ความหมายลบ)</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>สิ่งที่ต้องแก้ต่อ — เวอร์ชัน ๓</h2>
+    <ul class="clean">
+      <li><b>1. แก้ตาข่ายกันคำหาย (H4) — เร่งด่วน</b> ให้แยกได้ว่าคำโผล่เป็น "คำพิมพ์เข้าเดี่ยวๆ" หรือแค่ "คำสกัดจากประโยคแม่" → คำที่ถูกกลืน (อลหม่าน/ทรุดลง/ดุจดั่ง) จะได้ถูกเติมกลับเป็นคำของตัวเอง</li>
+      <li><b>2. พิจารณาเพิ่มหมวด "บุคคล/ประเภทบุคคล"</b> ตามที่ 12/14 โมเดลลงมติ</li>
+      <li><b>3. ทำเฉลย (ground truth) ได้แล้ว</b> — เทสครบทุกโมเดลแล้ว พี่กันทำเฉลยคำกำกวม (จนแล้วจนรอด = กลาง · นิ่งนอนใจ = ประมาท ฯลฯ) เพื่อวัด "ถูกไหม" ไม่ใช่แค่ "ตรงกันไหม" ในรอบหน้า</li>
+      <li><b>4. รันรุ่นที่คะแนนดี 3 ครั้ง วัดความสม่ำเสมอ</b> — ผู้สมัคร: Gemini 3.1 Pro · 3.5 Flash · GPT-5.5 · 5.6 Luna</li>
+      <li><b>5. จูน GPT ไม่ให้ให้หลายกิ่งพร่ำเพรื่อ</b> — บางรุ่นตอนนี้ให้ 2 กิ่งเกือบทุกคำ (Sol 37 · nano 28 · Luna 31) = เริ่มรก ควรให้เฉพาะคำที่กำกวมจริง</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>ข้อจำกัดของรอบนี้</h2>
+    <ul class="clean">
+      <li><b>ยังไม่มีเฉลย</b> → วัดได้แค่ "ตรงกันไหม" ยังวัด "ถูกไหม" (M6) และเวลาเชิงเปรียบเทียบ (H6) ไม่ได้</li>
+      <li><b>รันโมเดลละ 1 ครั้ง</b> (เพื่อดูภาพรวมก่อน) → ยังวัดความสม่ำเสมอ (M8) ไม่ได้ ต้องรอรอบหน้าที่รันซ้ำ 3 ครั้ง</li>
+      <li><b>"กิ่งใหม่" คิดจากโครงต้นไม้ในโค้ด</b> อาจต่างจากหน้าเว็บจริงที่นับคลังคำจริงด้วย — ตัวเลขกิ่งใหม่เป็นค่าประมาณสูงสุด</li>
+      <li><b>GPT ได้คำสั่งเสริม (~267 token)</b> ที่เจ้าอื่นไม่ได้ → เทียบข้ามตระกูลไม่ยุติธรรม 100%</li>
+      <li><b>รอบนี้เทสแค่ Gemini + GPT</b> · ยังไม่มี Claude · DeepSeek · Kimi · Qwen · GLM</li>
+    </ul>
+  </section>
+
+  <div class="foot">
+    <p><b>คลังคำ · Word Bank</b></p>
+    <p>รายงานผลทดลองเวอร์ชัน ๒ · เก็บคำงาม ไว้แต่งเรื่องของเราเอง</p>
+  </div>
+
+</div>
