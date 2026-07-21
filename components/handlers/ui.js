@@ -12,7 +12,13 @@ export function uiActions(app) {
   app.closeConfirm = () => app.setState({ confirm: null });
   app.stop = (e) => { e.stopPropagation(); };
   // เปลี่ยนหน้า = เด้งขึ้นบนสุดเสมอ (ไม่ค้างตำแหน่งที่เลื่อนไว้จากหน้าก่อน)
-  app.toTop = () => { try { window.scrollTo(0, 0); } catch (e) {} };
+  app.toTop = () => {
+    // เลื่อนขึ้นบนสุด — ทำ 2 จังหวะ (ทันที + หลังเฟรมถัดไป) + เซ็ตทั้ง window/documentElement/body
+    // เพราะมือถือ (Safari) บางทีเลื่อนไม่ติดถ้าสั่งก่อน layout เสร็จ หรือใช้ scroll คนละตัวกับ window
+    const go = () => { try { window.scrollTo(0, 0); const de = document.documentElement, bd = document.body; if (de) de.scrollTop = 0; if (bd) bd.scrollTop = 0; } catch (e) {} };
+    go();
+    try { requestAnimationFrame(go); } catch (e) {}
+  };
   app.onNav = (p) => () => { app.setState({ page: p, confirmId: null }, app.toTop); if (p === 'ailog') app.loadAiLogs(); };
   // โหลดประวัติการใช้ AI (เรียกตอนเข้าหน้า + ปุ่มรีเฟรช)
   app.setUi = (key, val) => () => { const ui = { ...app.state.ui, [key]: val }; app.setState({ ui }, app.persistUi); };

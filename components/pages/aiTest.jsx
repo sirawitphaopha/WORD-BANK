@@ -226,8 +226,6 @@ export function renderAiTest(app) {
           <li><b>ยังไม่ได้วัดต้นทุนและเวลา</b> — ข้อมูลมีอยู่ในหน้าประวัติ AI แต่ยังไม่ได้นำมาเปรียบเทียบความคุ้มค่า</li>
         </ol>
       </div>
-
-      {app.renderScrollButtons()}
     </div>
   );
 }

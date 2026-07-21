@@ -105,14 +105,28 @@ export function renderAdd(app) {
         const taStyle = (locked) => ({ width: '100%', padding: '12px 13px', borderRadius: '10px', border: '1px solid #ddcba4', background: locked ? '#f4efe3' : 'var(--surface,#fffdf6)', color: locked ? '#6a6053' : '#4a4034', fontSize: '12px', lineHeight: 1.55, fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace', outline: 'none', resize: 'vertical', cursor: locked ? 'default' : 'text' });
         return (
           <div style={{ marginTop: '28px', padding: '18px 20px', background: 'var(--panel,#f7f0e0)', border: '1px solid #e4d5b4', borderRadius: '14px' }}>
-            <div onClick={() => app.setState({ promptOpen: !open })} style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', flexWrap: 'wrap' }}>
-              <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 600, fontSize: '18px' }}>คำสั่ง AI (prompt)</div>
-              <span style={{ fontSize: '12.5px', color: '#8a7d6d' }}>คำสั่งที่บอก AI ว่าให้จัดคำอย่างไร</span>
-              <div style={{ flex: 1 }} />
-              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '34px', height: '34px', borderRadius: '10px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', flex: 'none', boxShadow: '0 2px 5px rgba(90,60,30,.3)' }}>
-                <span style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform .2s', lineHeight: 1 }}>▸</span>
-              </span>
-            </div>
+            {S.isMobile ? (
+              // มือถือ: ชื่อ + ปุ่มยุบ/กาง อยู่แถวเดียวกัน (ปุ่มใหญ่ 40px ไม่ตกบรรทัด) · คำอธิบายลงบรรทัดล่าง
+              <div onClick={() => app.setState({ promptOpen: !open })} style={{ cursor: 'pointer' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 600, fontSize: '18px' }}>คำสั่ง AI (prompt)</div>
+                  <div style={{ flex: 1 }} />
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '11px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '20px', flex: 'none', boxShadow: '0 2px 5px rgba(90,60,30,.3)' }}>
+                    <span style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform .2s', lineHeight: 1 }}>▸</span>
+                  </span>
+                </div>
+                <div style={{ fontSize: '12.5px', color: '#8a7d6d', marginTop: '5px' }}>คำสั่งที่บอก AI ว่าให้จัดคำอย่างไร</div>
+              </div>
+            ) : (
+              <div onClick={() => app.setState({ promptOpen: !open })} style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', flexWrap: 'wrap' }}>
+                <div style={{ fontFamily: "var(--font-trirong),serif", fontWeight: 600, fontSize: '18px' }}>คำสั่ง AI (prompt)</div>
+                <span style={{ fontSize: '12.5px', color: '#8a7d6d' }}>คำสั่งที่บอก AI ว่าให้จัดคำอย่างไร</span>
+                <div style={{ flex: 1 }} />
+                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '34px', height: '34px', borderRadius: '10px', background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontSize: '15px', flex: 'none', boxShadow: '0 2px 5px rgba(90,60,30,.3)' }}>
+                  <span style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform .2s', lineHeight: 1 }}>▸</span>
+                </span>
+              </div>
+            )}
             {open ? (
               <div style={{ marginTop: '14px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', flexWrap: 'wrap' }}>

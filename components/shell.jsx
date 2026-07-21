@@ -84,7 +84,7 @@ export function renderShell(app) {
       {/* ===== แบนเนอร์จอคอมพิวเตอร์ (แถบแท็บ 7 หน้า) — เหมือนเดิมทุกอย่าง ===== */}
       {navStyle === 'tabs' && !S.isMobile && (
         <header ref={app._bannerRef} style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '13px clamp(20px,3vw,40px)', background: 'linear-gradient(180deg, rgba(255,255,255,.4), var(--panel,#f7f0e0))', borderBottom: '1px solid ' + rgba(primary, 0.16), boxShadow: '0 3px 16px rgba(120,90,50,.07)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 20 }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '9px' }}>
+          <div onClick={app.onNav('add')} title="กลับหน้าแรก" style={{ display: 'flex', alignItems: 'flex-end', gap: '9px', cursor: 'pointer' }}>
             <span style={{ fontFamily: "var(--font-charmonman),cursive", fontWeight: 700, fontSize: '34px', color: 'var(--accent,#9c3b2b)', lineHeight: 1, marginTop: '8px' }}>คลังคำ</span>
             <span style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '20px', color: '#b09a72', fontWeight: 400 }}>Word&nbsp;Bank</span>
           </div>
@@ -105,8 +105,10 @@ export function renderShell(app) {
       {navStyle === 'tabs' && S.isMobile && (
         <>
           <header ref={app._bannerRef} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '11px clamp(14px,4vw,20px)', background: 'linear-gradient(180deg, rgba(255,255,255,.55), var(--panel,#f7f0e0))', borderBottom: '1px solid ' + rgba(primary, 0.16), boxShadow: '0 3px 16px rgba(120,90,50,.07)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 40 }}>
-            <span style={{ fontFamily: "var(--font-charmonman),cursive", fontWeight: 700, fontSize: '27px', color: 'var(--accent,#9c3b2b)', lineHeight: 1 }}>คลังคำ</span>
-            <span style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '16px', color: '#b09a72' }}>Word&nbsp;Bank</span>
+            <div onClick={() => { app.setState({ menuOpen: false }); app.onNav('add')(); }} title="กลับหน้าแรก" style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+              <span style={{ fontFamily: "var(--font-charmonman),cursive", fontWeight: 700, fontSize: '27px', color: 'var(--accent,#9c3b2b)', lineHeight: 1 }}>คลังคำ</span>
+              <span style={{ fontFamily: "var(--font-charmonman),cursive", fontSize: '16px', color: '#b09a72' }}>Word&nbsp;Bank</span>
+            </div>
             <div style={{ flex: 1 }} />
             <button onClick={() => app.setState((s) => ({ menuOpen: !s.menuOpen }))} title="เมนู" aria-label="เมนู" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '42px', height: '42px', borderRadius: '11px', border: '1px solid #d8c7a2', background: S.menuOpen ? 'var(--primary,#6f4e37)' : 'var(--surface,#fffdf6)', color: S.menuOpen ? '#fbf3e2' : 'var(--primary,#6f4e37)', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: 0 }}>{S.menuOpen ? '✕' : '☰'}</button>
           </header>

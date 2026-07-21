@@ -126,8 +126,6 @@ export function renderPromptLog(app) {
           </div>
         );
       })}
-
-      {app.renderScrollButtons()}
     </div>
   );
 }

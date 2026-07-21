@@ -35,16 +35,20 @@ export function renderActions(app) {
     if (typeof window === 'undefined') return null;
     const canScroll = (document.documentElement.scrollHeight - window.innerHeight) > 300;
     if (!canScroll) return null;
+    // วงกลม + พื้นในโปร่งใส (ไม่มีสีทึบ) + เบลอฉากหลัง (frosted glass) → เนื้อหาข้างหลังพร่ามัวแต่ยังเห็น ไม่บัง
     const btn = {
-      width: '42px', height: '42px', borderRadius: '50%', border: '1px solid #ddcba4',
-      background: 'var(--surface,#fffdf6)', color: 'var(--primary,#6f4e37)', fontSize: '17px',
-      cursor: 'pointer', boxShadow: '0 3px 12px rgba(120,90,50,.22)', display: 'grid', placeItems: 'center',
+      width: '42px', height: '42px', borderRadius: '50%', border: '1px solid rgba(176,161,132,.5)',
+      background: 'transparent', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
+      color: 'rgba(111,78,55,.7)', fontSize: '18px',
+      cursor: 'pointer', display: 'grid', placeItems: 'center',
       lineHeight: 1, padding: 0,
     };
+    // แสดงทีละปุ่มตามตำแหน่ง: ยังไม่ถึงล่างสุด = ปุ่มลงล่างสุด · ถึงล่างสุดแล้ว = ปุ่มขึ้นบนสุด
     return (
       <div style={{ position: 'fixed', right: '18px', bottom: '22px', zIndex: 60, display: 'flex', flexDirection: 'column', gap: '9px' }}>
-        <button onClick={app.toTopSmooth} title="ขึ้นบนสุด" style={btn}>▲</button>
-        <button onClick={app.toBottom} title="ลงล่างสุด" style={btn}>▼</button>
+        {app.state.atBottom
+          ? <button onClick={app.toTopSmooth} title="ขึ้นบนสุด" style={btn}>▲</button>
+          : <button onClick={app.toBottom} title="ลงล่างสุด" style={btn}>▼</button>}
       </div>
     );
   }
@@ -63,11 +67,10 @@ export function renderActions(app) {
     </div>
   );
 
-  // หัวเรื่องใหญ่ของหน้า — ใช้ทั้ง 2 หน้าให้หน้าตาเป็นชุดเดียวกัน
+  // หัวเรื่องใหญ่ของหน้า — ใช้ทั้ง 2 หน้าให้หน้าตาเป็นชุดเดียวกัน (ไม่ใส่ emoji เหนือหัวเรื่อง กันหางตัวอักษรลายมือทับ + ให้เหมือนแท็บอื่น)
   app.rpTitle = (glyph, title, sub) => (
     <div style={{ textAlign: 'center', marginBottom: '26px' }}>
-      <div style={{ fontSize: '34px', marginBottom: '2px' }}>{glyph}</div>
-      <h2 style={{ margin: '0 0 6px', fontSize: '30px', fontFamily: RP.hand, color: RP.ink, fontWeight: 400 }}>{title}</h2>
+      <h2 style={{ margin: '0 0 6px', fontSize: 'clamp(34px,4.4vw,48px)', fontFamily: RP.hand, color: 'var(--accent,#9c3b2b)', fontWeight: 700, lineHeight: 1.1 }}>{title}</h2>
       <p style={{ margin: 0, fontSize: '14px', color: RP.faint }}>{sub}</p>
     </div>
   );

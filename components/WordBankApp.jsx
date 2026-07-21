@@ -46,6 +46,7 @@ export default class WordBankApp extends React.Component {
     isMobile: false,     // จอเล็ก (มือถือ) — ปรับเลย์เอาต์เฉพาะตอนจริง จอคอมพิวเตอร์เหมือนเดิมทุกอย่าง
     menuOpen: false,     // เมนู ☰ บนมือถือ เปิด/ปิด
     bannerH: 69,         // ความสูงจริงของแบนเนอร์บนสุด (วัดเอง) — แถบตรึงทุกอันเกาะใต้ค่านี้ (เดิม hardcode 69)
+    atBottom: false,     // เลื่อนถึงล่างสุดของหน้าหรือยัง — ปุ่มลอยมุมล่างสลับ (ยังไม่สุด=โชว์ปุ่มลงสุด · สุดแล้ว=โชว์ปุ่มขึ้นสุด)
   };
   _stickRef = React.createRef();
   _libStickRef = React.createRef();
@@ -86,9 +87,10 @@ export default class WordBankApp extends React.Component {
       this._ro3.disconnect(); this._ro3 = null;
     }
   }
-  componentDidUpdate() { this.watchStick(); }
+  componentDidUpdate() { this.watchStick(); if (this._onScrollBtn) this._onScrollBtn(); }
   componentWillUnmount() {
     if (this._onUnload && typeof window !== 'undefined') window.removeEventListener('beforeunload', this._onUnload);
+    if (this._onScrollBtn && typeof window !== 'undefined') { window.removeEventListener('scroll', this._onScrollBtn); window.removeEventListener('resize', this._onScrollBtn); }
     clearInterval(this._proc); clearInterval(this._sec); clearTimeout(this._rvPush);
     if (this._ro) { this._ro.disconnect(); this._ro = null; }
     if (this._ro2) { this._ro2.disconnect(); this._ro2 = null; }
@@ -103,6 +105,23 @@ export default class WordBankApp extends React.Component {
     // ปิด/รีเฟรชหน้า → รีบ sync คำตรวจทานที่ค้างขึ้นคลาวด์ก่อน (กันหาย)
     this._onUnload = () => this._flushReview(true);
     if (typeof window !== 'undefined') window.addEventListener('beforeunload', this._onUnload);
+    // กันเบราว์เซอร์ (โดยเฉพาะมือถือ) จำตำแหน่งเลื่อนเดิมตอนเปิด/รีเฟรชใหม่ → เปิดมาต้องอยู่บนสุดเสมอ
+    if (typeof window !== 'undefined' && window.history && 'scrollRestoration' in window.history) {
+      try { window.history.scrollRestoration = 'manual'; } catch (e) {}
+      try { window.scrollTo(0, 0); } catch (e) {}
+    }
+    // ติดตามว่าเลื่อนถึงล่างสุดหรือยัง → ปุ่มลอยมุมล่างสลับปุ่มเดียว (ยังไม่สุด=ลงสุด · สุดแล้ว=ขึ้นสุด)
+    if (typeof window !== 'undefined') {
+      this._onScrollBtn = () => {
+        try {
+          const doc = document.documentElement;
+          const atBottom = (window.innerHeight + window.scrollY) >= (doc.scrollHeight - 40);
+          if (atBottom !== this.state.atBottom) this.setState({ atBottom });
+        } catch (e) {}
+      };
+      window.addEventListener('scroll', this._onScrollBtn, { passive: true });
+      window.addEventListener('resize', this._onScrollBtn, { passive: true });
+    }
     // ตรวจว่าเปิดบนจอเล็ก (มือถือ) ไหม — ปรับ layout เฉพาะจอเล็ก จอกว้างเหมือนเดิมทุกอย่าง · อัปเดตเมื่อหมุน/ย่อจอ
     if (typeof window !== 'undefined' && window.matchMedia) {
       this._mq = window.matchMedia('(max-width: 760px)');
