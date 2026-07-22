@@ -47,7 +47,7 @@ export function aiParts(ai) {
   let version = (parts[0] || '').trim();
   if (brand) { const re = new RegExp('^' + _esc(brand) + '[\\s-]*', 'i'); const v2 = version.replace(re, '').trim(); if (v2) version = v2; }
   let star = '', note = '';
-  if (parts[1]) { const m = parts[1].match(/^([★☆]+\s*[\d.]*)\s*(.*)$/); if (m) { star = m[1].trim(); note = m[2].trim(); } else { note = parts[1].trim(); } }
+  if (parts[1]) { const m = parts[1].match(/^([★☆½]+\s*[\d.]*)\s*(.*)$/); if (m) { star = m[1].trim(); note = m[2].trim(); } else { note = parts[1].trim(); } }
   if (brand && note) note = note.replace(new RegExp('\\s*' + _esc(brand) + '\\s*', 'gi'), ' ').replace(/\s+/g, ' ').trim();
   let vn = version;
   if (star) vn += ' · ' + star;

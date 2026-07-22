@@ -25,7 +25,8 @@ export function renderAiTest(app) {
     const s = nameOf(b).split('·').map((x) => x.trim());
     return (s[1] || s[0] || '').replace(/\s*·.*$/, '').replace('Gemini ', '').replace('GPT-', 'GPT-');
   };
-  const star = (n) => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+  // ครึ่งดาว · ไม่ปัดขึ้น (พี่กันสั่ง 22 ก.ค.): เต็ม=★ · เศษ≥.5=½ · ที่เหลือ=☆ (เช่น 3.5→★★★½☆ · 4.5→★★★★½)
+  const star = (n) => { const f = Math.floor(n + 1e-9), h = (n - f) >= 0.5 ? 1 : 0; return '★'.repeat(f) + (h ? '½' : '') + '☆'.repeat(Math.max(0, 5 - f - h)); };
   // คะแนนดาว: ให้จากผลจริง 2 มุม (คำครบ+สกัด / กิ่งใหม่+รูปแบบ+หลายกิ่ง) — เขียนไว้ตายตัวเพราะเป็นการตัดสินของคน ไม่ใช่สูตร
   const SCORE = D.scores || {};
   const NOTE = D.notes || {};
