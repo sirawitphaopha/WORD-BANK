@@ -226,6 +226,30 @@ export default class WordBankApp extends React.Component {
     } catch (e) {}
   };
 
+  // 🗑 ลบเฉพาะจุดบนคลาวด์ (removeBatch/remove/clear) แทนการล้าง-เขียนใหม่ทั้งก้อน (replace)
+  //    เหตุผล (บั๊กจริง 22 ก.ค. 2569): เดิมทุกการลบยิง action 'replace' = "ลบทุกแถวทิ้ง แล้วเขียนที่เหลือกลับใหม่ทั้งก้อน"
+  //    พอลบหลายช่อรัว ๆ คำขอ replace ซ้อนกัน — อันที่ payload ใหญ่กว่า (จากตอนช่อยังเยอะ) ไปเสร็จทีหลัง
+  //    → มันเขียนช่อที่เพิ่งลบกลับเข้าไป = ช่อเด้งกลับตอนรีเฟรช (พิสูจน์ด้วยยิง replace ซ้อนกันแล้วช่อรองสุดท้ายฟื้น)
+  //    วิธีแก้: การลบใช้ remove(by ids)/removeBatch/clear = แตะเฉพาะแถวที่ลบ · ยิงซ้อนกันกี่ครั้งก็ไม่ชนกัน + เบากว่ามาก
+  pushReviewOp = (op) => {
+    try { localStorage.setItem(REVIEW_KEY, JSON.stringify(this.state.review)); } catch (e) {}
+    // ถ้ามีคำสั่ง replace ค้างรอส่ง (จากการแก้ก่อนหน้า) รีสแนปช็อตให้ตรงสถานะล่าสุด (หลังลบ)
+    // กันมันฟื้นสิ่งที่เพิ่งลบกลับขึ้นคลาวด์เมื่อ timer มันครบ
+    if (this._rvPending && this._rvPending.action === 'replace') this._rvPending.items = this.state.review;
+    this._sendReviewOp(op, false);
+  };
+  // ยิงคำสั่งลบเฉพาะจุด · ลองซ้ำ 1 ครั้งถ้าล้มเหลว (remove/removeBatch/clear เป็น idempotent ลองซ้ำได้ปลอดภัย)
+  _sendReviewOp = (op, _retry) => {
+    try {
+      fetch('/api/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(op) })
+        .then((r) => r.json().catch(() => ({})).then((d) => { if (!r.ok || d.error) throw new Error(d.error || ('HTTP ' + r.status)); }))
+        .catch(() => {
+          if (!_retry) { setTimeout(() => this._sendReviewOp(op, true), 1200); return; }
+          this.flash('ลบบนคลาวด์ไม่สำเร็จ คำยังอยู่ในเครื่องนี้ ลองใหม่อีกครั้ง');
+        });
+    } catch (e) {}
+  };
+
   // ---------- หมวดย่อยหลายกิ่งต่อคำ ----------
   // เก็บเป็นอาร์เรย์ subpaths · subpath (เดี่ยว) = กิ่งหลัก = อันแรก (ให้โค้ด/ไฟล์ส่งออกเดิมใช้ได้)
   // รายชื่อกิ่งที่ "มีอยู่แล้ว" ทั้งหมด = โครงตั้งต้น + กิ่งที่ใช้จริงในคลัง → ไว้เช็คว่ากิ่งไหนเป็นของใหม่

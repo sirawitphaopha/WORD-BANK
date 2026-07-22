@@ -8,10 +8,15 @@ export function reviewActions(app) {
     app.askConfirm({
       title: 'ลบทั้งช่อที่ ' + thNum(b.no), danger: true, okLabel: 'ลบทั้งช่อ',
       msg: 'นำคำในช่อนี้ทั้ง ' + b.count + ' คำ ออกจากรายการตรวจทาน ช่ออื่นไม่กระทบ',
-      onOk: () => app.setState((s) => {
-        const rest = s.review.filter((r) => (r.batch || 'b_legacy') !== b.id);
-        return { review: rest, activeBatch: app.activeBatchId(rest, '') };
-      }, () => { app.persistReviewNow(); app.flash('ลบช่อที่ ' + thNum(b.no) + ' แล้ว'); }),
+      onOk: () => {
+        // ลบเฉพาะแถวของช่อนี้บนคลาวด์ (remove by ids) แทน replace ทั้งก้อน — กันช่อเด้งกลับตอนลบรัว ๆ
+        // ใช้ ids (ไม่ใช่ removeBatch by batch) เพราะช่อเก่า batch อาจเป็น null ใน DB แต่ UI โชว์ b_legacy → by ids ครอบคลุมหมด
+        const ids = app.state.review.filter((r) => (r.batch || 'b_legacy') === b.id).map((r) => r.id);
+        app.setState((s) => {
+          const rest = s.review.filter((r) => (r.batch || 'b_legacy') !== b.id);
+          return { review: rest, activeBatch: app.activeBatchId(rest, '') };
+        }, () => { app.pushReviewOp({ action: 'remove', ids }); app.flash('ลบช่อที่ ' + thNum(b.no) + ' แล้ว'); });
+      },
     });
   };
 
@@ -23,11 +28,11 @@ export function reviewActions(app) {
   // เลือกทั้งหมด = เฉพาะคำในช่อที่เปิดอยู่
   app.selectAll = (e) => { const v = e.target.checked; const bid = app.activeBatchId(); app.setState((s) => ({ review: s.review.map((r) => (r.batch || 'b_legacy') === bid ? { ...r, selected: v } : r) })); };
   app.removeReview = (id) => { app.askConfirm({ title: 'ลบคำนี้', msg: 'นำคำนี้ออกจากรายการตรวจทาน', okLabel: 'ลบ', danger: true, onOk: () => app._removeReview(id) }); }
-  app._removeReview = (id) => { app.setState((s) => ({ review: s.review.filter((r) => r.id !== id) }), app.persistReviewNow); }
+  app._removeReview = (id) => { app.setState((s) => ({ review: s.review.filter((r) => r.id !== id) }), () => app.pushReviewOp({ action: 'remove', ids: [id] })); }
   app.bulkMove = (e) => { const cid = e.target.value; if (!cid) return; app.setState((s) => ({ review: s.review.map((r) => r.selected ? { ...r, category: cid, proposedNew: false, selected: false } : r) }), app.persistReviewNow); e.target.value = ''; app.flash('ย้ายหมวดแล้ว'); };
-  app.bulkDelete = () => { const n = app.state.review.filter((r) => r.selected).length; if (!n) return; app.askConfirm({ title: 'ลบที่เลือก', msg: 'นำคำที่เลือก ' + n + ' คำ ออกจากรายการตรวจทาน', okLabel: 'ลบ', danger: true, onOk: () => app.setState((s) => ({ review: s.review.filter((r) => !r.selected) }), app.persistReviewNow) }); };
+  app.bulkDelete = () => { const n = app.state.review.filter((r) => r.selected).length; if (!n) return; app.askConfirm({ title: 'ลบที่เลือก', msg: 'นำคำที่เลือก ' + n + ' คำ ออกจากรายการตรวจทาน', okLabel: 'ลบ', danger: true, onOk: () => { const ids = app.state.review.filter((r) => r.selected).map((r) => r.id); app.setState((s) => ({ review: s.review.filter((r) => !r.selected) }), () => app.pushReviewOp({ action: 'remove', ids })); } }); };
   app.clearSel = () => app.setState((s) => ({ review: s.review.map((r) => ({ ...r, selected: false })) }));
-  app.discard = () => { if (!app.state.review.length) return; app.askConfirm({ title: 'ทิ้งทั้งหมด', msg: 'ล้างรายการตรวจทานทั้งหมด คำที่ยังไม่บันทึกจะหายไป', okLabel: 'ทิ้งทั้งหมด', danger: true, onOk: () => { app.setState({ review: [], page: 'add' }, app.persistReview); app.flash('ล้างรายการตรวจทานแล้ว'); } }); };
+  app.discard = () => { if (!app.state.review.length) return; app.askConfirm({ title: 'ทิ้งทั้งหมด', msg: 'ล้างรายการตรวจทานทั้งหมด คำที่ยังไม่บันทึกจะหายไป', okLabel: 'ทิ้งทั้งหมด', danger: true, onOk: () => { app.setState({ review: [], page: 'add' }, () => app.pushReviewOp({ action: 'clear' })); app.flash('ล้างรายการตรวจทานแล้ว'); } }); };
   // ลบคำที่มีในคลังอยู่แล้ว (ซ้ำ) ออกจากหน้าตรวจทานรวดเดียว
   app.removeDuplicates = (ids) => {
     const lib = new Set(app.state.library.map((w) => (w.text || '').trim()));
@@ -35,7 +40,7 @@ export function reviewActions(app) {
     const dups = app.state.review.filter((r) => lib.has((r.text || '').trim()) && (!idSet || idSet.has(r.id)));
     if (!dups.length) { app.flash('ไม่มีคำซ้ำกับคลัง'); return; }
     const dupIds = new Set(dups.map((r) => r.id));
-    app.askConfirm({ title: 'ลบคำซ้ำ', msg: 'ลบคำที่มีในคลังแล้ว ' + dups.length + ' คำ ออกจากรายการตรวจทาน', okLabel: 'ลบคำซ้ำ', danger: true, onOk: () => { app.setState((s) => ({ review: s.review.filter((r) => !dupIds.has(r.id)) }), app.persistReviewNow); app.flash('ลบคำซ้ำออก ' + dups.length + ' คำ'); } });
+    app.askConfirm({ title: 'ลบคำซ้ำ', msg: 'ลบคำที่มีในคลังแล้ว ' + dups.length + ' คำ ออกจากรายการตรวจทาน', okLabel: 'ลบคำซ้ำ', danger: true, onOk: () => { app.setState((s) => ({ review: s.review.filter((r) => !dupIds.has(r.id)) }), () => app.pushReviewOp({ action: 'remove', ids: [...dupIds] })); app.flash('ลบคำซ้ำออก ' + dups.length + ' คำ'); } });
   };
   // ส่งออกผลตรวจทานเป็นไฟล์ .txt (ไว้เทียบผลระหว่าง AI แต่ละเจ้า/รุ่น)
   app.exportReview = () => {
@@ -116,7 +121,8 @@ export function reviewActions(app) {
         novels: nv, review: rest,
         activeBatch: app.activeBatchId(rest, ''),
         page: rest.length ? 'review' : 'library',
-      }, () => { app.toTop(); app.persistReview(); });
+        // ลบเฉพาะแถวของช่อที่บันทึกออกจากคลาวด์ (remove by ids) แทน replace ทั้งก้อน — กันช่ออื่นเด้ง/ชนกัน
+      }, () => { app.toTop(); app.pushReviewOp({ action: 'remove', ids: review.map((r) => r.id) }); });
       app.flash('บันทึกเข้าคลังแล้ว ' + saved.length + ' คำ' + (skipped ? ' (ข้ามที่มีอยู่แล้ว ' + skipped + ' คำ)' : '') + (rest.length ? ' · ยังเหลืออีก ' + rest.length + ' คำในช่ออื่น' : ''));
       // เติมจำนวนคำที่บันทึกจริง + ข้ามเพราะซ้ำ ลง log ของรอบ AI นี้
       if (app.state.lastAiLogId) {
