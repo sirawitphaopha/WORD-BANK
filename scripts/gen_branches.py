@@ -1,39 +1,60 @@
 # -*- coding: utf-8 -*-
 # gen_branches.py — สร้างไฟล์ "กิ่งที่เกลาแล้ว" 3 ไฟล์ จากไฟล์ร่าง redesign
-#   อ่าน:  docs/cat1-redesign.md · docs/cat2-redesign.md · docs/cat10-objects-redesign.md
+#   อ่าน:  docs/cat1-redesign.md · cat2-redesign.md · cat3-redesign.md · cat4-redesign.md · cat10-objects-redesign.md
 #   เขียน: docs/branches-clean.md  (โครงกิ่ง + นิยาม + อังกฤษ · ไม่มีคำ · คนอ่าน)
 #          docs/branches-data.json (กิ่ง + นิยาม + อังกฤษ + คำ + โยงข้ามหมวด + ยกออก · อัป Supabase)
 #          docs/branches-data.md   (เหมือน json แต่ฉบับอ่านทวน)
-#   กฎ: คัดชื่อกิ่ง/นิยาม/อังกฤษ verbatim จากต้นฉบับ · ตัด tag/หมายเหตุ(🗨)/อภิปราย/ป้าย(🆕⚡✳️🚚🔄) ออกหมด
-#   รหัสหมวด: หมวด 1=c0 · หมวด 2=c1 · หมวด 10=c9
+#   กฎ: คัดชื่อกิ่ง/นิยาม/อังกฤษ verbatim จากต้นฉบับ · ตัด tag/หมายเหตุ(🗨)/อภิปราย/ป้าย(🆕⚡✳️🚚🔄🌟) ออกหมด
+#   รหัสหมวด: หมวด 1=c0 · หมวด 2=c1 · หมวด 3=c2 · หมวด 4=c3 · หมวด 10=c9
 #   รัน: python3 scripts/gen_branches.py   (จาก root ของ repo)
 import re, json
 from collections import defaultdict
 
-FILES = [("docs/cat1-redesign.md",1,"c0"),("docs/cat2-redesign.md",2,"c1"),("docs/cat10-objects-redesign.md",10,"c9")]
-CAT = {1:"หมวด 1",2:"หมวด 2",10:"หมวด 10"}
-HOME = {"c0":"หมวด 1","c1":"หมวด 2","c9":"หมวด 10"}
+FILES = [("docs/cat1-redesign.md",1,"c0"),
+         ("docs/cat2-redesign.md",2,"c1"),
+         ("docs/cat3-redesign.md",3,"c2"),
+         ("docs/cat4-redesign.md",4,"c3"),
+         ("docs/cat10-objects-redesign.md",10,"c9")]
+CAT  = {1:"หมวด 1",2:"หมวด 2",3:"หมวด 3",4:"หมวด 4",10:"หมวด 10"}
+HOME = {"c0":"หมวด 1","c1":"หมวด 2","c2":"หมวด 3","c3":"หมวด 4","c9":"หมวด 10"}
+GENRE = {'แฟนตาซี','ไซไฟ','อีโรติก','ทริลเลอร์','ทั่วไป','โรแมนซ์','ดราม่า','สยอง','แอ็กชัน'}
+MARKS = ['⚡','✳️','🔗','➕','🆕','🔄','🚚','🌿','🌲','🍃','🌟']
 
 def split_name_en(s):
     m=re.match(r'^(.*?)\s*\(([^()]*)\)\s*$', s.strip())
     return (m.group(1).strip(), m.group(2).strip()) if m else (s.strip(),"")
 def strip_notes(line): return re.sub(r'_\([^)]*\)_','',line)
+def clean_def(d):
+    # กันมาร์กเกอร์/ตัวหนา/สัญลักษณ์หลุดเข้านิยาม (safety net)
+    d=d.replace('**','')
+    d=re.sub(r'[🔗⚡↔🆕🌟🌿🍃🌲✳️🚚🔄🔀]','',d)
+    return re.sub(r'\s+',' ',d).strip()
+def strip_trail_marks(s):
+    # ตัดมาร์กเกอร์/ช่องว่างท้ายชื่อกิ่งหลัก (🆕 🌟 🔄) ก่อนแยกชื่ออังกฤษ
+    return re.sub(r'[\s🆕🌟🔄]+$','',s).strip()
 def clean_word(tok):
     t=re.sub(r'_[^_]*_','',strip_notes(tok)).replace('**','')
-    for mk in ['⚡','✳️','🔗','➕','🆕','🔄','🚚','🌿','🌲','🍃']: t=t.replace(mk,'')
+    for mk in MARKS: t=t.replace(mk,'')
+    t=re.sub(r'\[(?:'+'|'.join(GENRE)+r')\]','',t)   # ตัด tag แนวนิยาย [อีโรติก] ฯลฯ
+    t=re.sub(r'\s*\([^()]*\)\s*$','',t)              # ตัดวงเล็บความหมายท้ายคำ  คำ (แปล)
     return t.strip(' ·—-\t').strip()
 def is_thai(s): return any('฀'<=ch<='๿' for ch in s)
 
 categories=[]; branches=[]; moved=[]; cross=[]
 words={}; word_order=[]
 
+# regex กิ่งย่อย/แขนง: อนุญาตมาร์กเกอร์/tag ระหว่าง **ชื่อ** กับ — และ tag ท้ายนิยาม
+RE_YOY   = re.compile(r'^-\s*(?:(?:🆕|🔄)\s*)*🌿\s*\*\*(.+?)\*\*[^—]*—\s*_(.+?)_')
+RE_KHAENG= re.compile(r'^-\s*(?:(?:🆕|🔄)\s*)*🍃\s*\*\*(.+?)\*\*[^—]*—\s*_(.+?)_')
+
 for path,no,cid in FILES:
     lines=open(path,encoding='utf-8').read().splitlines()
     for l in lines:
         m=re.match(r'^\*\*หมวด\s*\d+\s*·\s*(.+?)\s*\(([^()]*)\)\*\*\s*—\s*_(.+?)_\s*$', l.strip())
         if m:
-            categories.append({"id":cid,"no":no,"name_th":m.group(1).strip(),"name_en":m.group(2).strip(),"definition":m.group(3).strip()}); break
+            categories.append({"id":cid,"no":no,"name_th":m.group(1).strip(),"name_en":m.group(2).strip(),"definition":clean_def(m.group(3))}); break
 
+    cross_here=[]   # คำโยงข้ามหมวดแบบ inline 🔗 (หมวด 3 → หมวด 4)
     in_tree=False; expect=False; lak=yoy=khaeng=None
     for l in lines:
         s=l.strip()
@@ -42,31 +63,37 @@ for path,no,cid in FILES:
         if not in_tree or not s: continue
         m=re.match(r'^###\s*🌲\s*กิ่งหลัก\s*\d+\s*·\s*(.+)$', s)
         if m:
-            head=re.sub(r'\s*_\([^)]*\)_\s*$','',m.group(1)).strip(); nm,en=split_name_en(head)
+            head=re.sub(r'\s*_\([^)]*\)_\s*$','',m.group(1))
+            head=strip_trail_marks(head); nm,en=split_name_en(head)
             lak={"category_id":cid,"path":nm,"en":en,"definition":"","level":"lak"}; branches.append(lak); yoy=khaeng=None; expect=True; continue
         if expect and s.startswith('>'):
             d=re.match(r'^>\s*_(.+?)_\s*$',s)
-            if d: lak["definition"]=d.group(1).strip()
+            if d: lak["definition"]=clean_def(d.group(1))
             expect=False; continue
         expect=False
         if s.startswith('🗨'): continue
-        m=re.match(r'^-\s*(?:(?:🆕|🔄)\s*)*🍃\s*\*\*(.+?)\*\*\s*—\s*_(.+?)_\s*$', s)
+        m=RE_KHAENG.match(s)
         if m and l.startswith('  '):
-            nm,en=split_name_en(m.group(1)); khaeng={"category_id":cid,"path":yoy["path"]+" / "+nm,"en":en,"definition":m.group(2).strip(),"level":"khaeng"}; branches.append(khaeng); continue
-        m=re.match(r'^-\s*(?:(?:🆕|🔄)\s*)*🌿\s*\*\*(.+?)\*\*\s*—\s*_(.+?)_\s*$', s)
+            nm,en=split_name_en(m.group(1)); base=(yoy or lak)["path"]
+            khaeng={"category_id":cid,"path":base+" / "+nm,"en":en,"definition":clean_def(m.group(2)),"level":"khaeng"}; branches.append(khaeng); continue
+        m=RE_YOY.match(s)
         if m:
-            nm,en=split_name_en(m.group(1)); yoy={"category_id":cid,"path":lak["path"]+" / "+nm,"en":en,"definition":m.group(2).strip(),"level":"yoy"}; branches.append(yoy); khaeng=None; continue
+            nm,en=split_name_en(m.group(1)); yoy={"category_id":cid,"path":lak["path"]+" / "+nm,"en":en,"definition":clean_def(m.group(2)),"level":"yoy"}; branches.append(yoy); khaeng=None; continue
         if s[0] in '->|#': continue
         ab=khaeng or yoy or lak
         if not ab: continue
         for tok in strip_notes(l).split(' · '):
             w=clean_word(tok)
             if w and is_thai(w) and len(w)<=60:
+                if '🔗' in tok and w not in cross_here: cross_here.append(w)   # inline โยง ม.4
                 k=(cid,w)
                 if k not in words: words[k]=[]; word_order.append(k)
                 if ab["path"] not in words[k]: words[k].append(ab["path"])
 
-    # โยงข้ามหมวด (ตารางในไฟล์ cat2)
+    # หมวด 3 (c2): คำ inline 🔗 = โยงข้ามไปหมวด 4
+    if cid=='c2':
+        for w in cross_here: cross.append({"text":w,"home":cid,"links_to":["หมวด 4"]})
+    # หมวด 2 (c1): ตารางโยงข้ามหมวด | คำ | กิ่งหลัก ... | ม.N |
     if cid=='c1':
         intbl=False
         for l in lines:
@@ -77,7 +104,7 @@ for path,no,cid in FILES:
                 if len(cols)>=3 and cols[0]!='คำ' and not set(cols[0])<=set('-: '):
                     tg=['หมวด '+n for n in re.findall(r'ม\.(\d+)', cols[2])]
                     if tg: cross.append({"text":cols[0].strip(),"home":cid,"links_to":tg})
-    # ยกออก (ตาราง 🚚)
+    # ยกออก (ตาราง 🚚) — ถ้ามีในไฟล์
     inm=False
     for l in lines:
         if l.startswith('## 🚚'): inm=True; continue
@@ -91,20 +118,22 @@ for path,no,cid in FILES:
                         if w: moved.append({"text":w,"from":cid,"to":cols[1]})
 
 # ---------- JSON ----------
-data={"meta":{"source":[f for f,_,_ in FILES],"status":"draft — ยังไม่อัป Supabase","categories":[1,2,10],
-      "note":"category_id: หมวด1=c0 · หมวด2=c1 · หมวด10=c9 · path คั่นชั้นด้วย ' / '"},
+cat_nos=[c["no"] for c in categories]
+data={"meta":{"source":[f for f,_,_ in FILES],"status":"draft — ยังไม่อัป Supabase","categories":cat_nos,
+      "note":"category_id: หมวด1=c0 · หมวด2=c1 · หมวด3=c2 · หมวด4=c3 · หมวด10=c9 · path คั่นชั้นด้วย ' / '"},
       "categories":categories,
       "branches":[{"category_id":b["category_id"],"path":b["path"],"en":b["en"],"definition":b["definition"]} for b in branches],
       "words":[{"text":t,"category_id":c,"subpaths":words[(c,t)]} for (c,t) in word_order],
       "cross_links":cross,"moved_out":moved}
 open("docs/branches-data.json","w",encoding='utf-8').write(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
 
+CATLIST=", ".join(CAT[c['no']].replace('หมวด ','') for c in categories)
 # ---------- clean md (โครงล้วน) ----------
 bycat=defaultdict(list)
 for b in branches: bycat[b["category_id"]].append(b)
-out=["# 🌿 รายนามกิ่ง (โครงสะอาด) — หมวด 1, 2, 10","",
+out=[f"# 🌿 รายนามกิ่ง (โครงสะอาด) — หมวด {CATLIST}","",
      "> โครงกิ่งล้วน: **ชื่อไทย (English) — นิยาม** · ไม่มีคำ ไม่มีหมายเหตุ ไม่มี tag",
-     "> ที่มา: `cat1/cat2/cat10-redesign.md` · เป็นร่าง ยังไม่แตะเว็บ/database/subtree.js"]
+     "> ที่มา: ไฟล์ redesign · สร้างอัตโนมัติจาก `scripts/gen_branches.py` (อย่าแก้มือ) · เป็นร่าง ยังไม่แตะเว็บ/database/subtree.js"]
 for c in categories:
     out.append(""); out.append(f"## {CAT[c['no']]} · {c['name_th']} ({c['name_en']})"); out.append(f"_{c['definition']}_")
     for b in bycat[c["id"]]:
@@ -118,9 +147,9 @@ open("docs/branches-clean.md","w",encoding='utf-8').write("\n".join(out)+"\n")
 wbp=defaultdict(list)
 for w in data["words"]:
     for sp in w["subpaths"]: wbp[(w["category_id"],sp)].append(w["text"])
-out=["# 🌿 ข้อมูลกิ่ง + คำ ทั้งหมด (อ่านทวน) — หมวด 1, 2, 10","",
+out=[f"# 🌿 ข้อมูลกิ่ง + คำ ทั้งหมด (อ่านทวน) — หมวด {CATLIST}","",
      "> ฉบับอ่านของ `branches-data.json` · มีครบทั้งกิ่ง นิยาม อังกฤษ และ**คำ** · เป็นข้อมูลดิบ (ไม่มีความเห็น/อภิปราย)",
-     "> รหัสหมวด: หมวด 1=c0 · หมวด 2=c1 · หมวด 10=c9 · เป็นร่าง ยังไม่แตะเว็บ/database"]
+     "> รหัสหมวด: หมวด 1=c0 · หมวด 2=c1 · หมวด 3=c2 · หมวด 4=c3 · หมวด 10=c9 · เป็นร่าง ยังไม่แตะเว็บ/database"]
 for c in categories:
     out.append(""); out.append(f"## {CAT[c['no']]} · {c['name_th']} ({c['name_en']})"); out.append(f"_{c['definition']}_")
     for b in bycat[c["id"]]:
@@ -139,4 +168,7 @@ if moved:
 open("docs/branches-data.md","w",encoding='utf-8').write("\n".join(out)+"\n")
 
 nlak=sum(1 for b in branches if b['level']=='lak')
+per=defaultdict(int)
+for (c,t) in word_order: per[c]+=1
 print(f"OK · {len(categories)} หมวด · {len(branches)} กิ่ง (หลัก {nlak}) · {len(data['words'])} คำ · โยงข้ามหมวด {len(cross)} · ยกออก {len(moved)}")
+print("คำต่อหมวด:", {HOME[c]:n for c,n in sorted(per.items())})

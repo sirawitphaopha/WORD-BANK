@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ร่างเกลาหมวด 3 · กริยา ท่าทาง — คลังคำ</title>
+<style>
+:root{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --rose:#b0563a; --rose-deep:#8a3f28; --rose-soft:#d9b3a3;
+  --brick:#9c3b2b; --green:#5a7d4a; --gold:#b07d2a; --blue:#4a6d8a; --violet:#6d5a8a;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+  --shadow:0 1px 2px rgba(90,70,45,.06),0 3px 12px rgba(90,70,45,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+    --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+    --rose:#dd9070; --rose-deep:#e8a988; --rose-soft:#6b4534;
+    --brick:#d97a63; --green:#8fb079; --gold:#d3a860; --blue:#84acc8; --violet:#a794c4;
+    --line:#3f372c; --line-soft:#332c22;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 3px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --rose:#b0563a; --rose-deep:#8a3f28; --rose-soft:#d9b3a3;
+  --brick:#9c3b2b; --green:#5a7d4a; --gold:#b07d2a; --blue:#4a6d8a; --violet:#6d5a8a;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+}
+:root[data-theme="dark"]{
+  --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+  --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+  --rose:#dd9070; --rose-deep:#e8a988; --rose-soft:#6b4534;
+  --brick:#d97a63; --green:#8fb079; --gold:#d3a860; --blue:#84acc8; --violet:#a794c4;
+  --line:#3f372c; --line-soft:#332c22;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.72; -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 15% 10%,rgba(176,86,58,.06),transparent 40%),radial-gradient(circle at 85% 80%,rgba(138,63,40,.05),transparent 45%);}
+.wrap{max-width:760px; margin:0 auto; padding:22px 18px 90px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif; text-wrap:balance; line-height:1.25}
+.hero{padding:26px 22px; border-radius:16px; position:relative; overflow:hidden;
+  background:linear-gradient(150deg,var(--card),var(--paper2)); border:1px solid var(--line); box-shadow:var(--shadow)}
+.hero::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:linear-gradient(var(--rose),var(--rose-deep))}
+.eyebrow{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--rose-deep); font-weight:700; margin:0 0 6px}
+.hero h1{margin:0 0 4px; font-size:clamp(25px,6vw,36px); color:var(--ink)}
+.hero .en{font-family:Georgia,serif; font-style:italic; color:var(--muted); font-size:16px; margin:0 0 14px}
+.hero p{margin:0; color:var(--ink-soft); font-size:15px}
+.stats{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+.stat{background:var(--paper); border:1px solid var(--line); border-radius:11px; padding:8px 13px; min-width:66px}
+.stat b{display:block; font-family:Georgia,serif; font-size:22px; color:var(--rose-deep); line-height:1; font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px; color:var(--muted)}
+.note{font-size:13.5px; color:var(--ink-soft); background:var(--card); border:1px solid var(--line-soft);
+  border-left:3px solid var(--rose); border-radius:10px; padding:11px 14px; margin:16px 0}
+.note b{color:var(--rose-deep)}
+.note.rule{border-left-color:var(--brick)}
+.note.rule b{color:var(--brick)}
+.legend{display:flex; flex-wrap:wrap; gap:7px; margin:16px 0 4px}
+.tag{display:inline-flex; align-items:center; gap:5px; font-size:12.5px; padding:3px 9px; border-radius:20px; font-weight:600; border:1px solid transparent; white-space:nowrap}
+.t-new{background:color-mix(in srgb,var(--green) 15%,transparent); color:var(--green); border-color:color-mix(in srgb,var(--green) 35%,transparent)}
+.t-multi{background:color-mix(in srgb,var(--gold) 16%,transparent); color:var(--gold); border-color:color-mix(in srgb,var(--gold) 38%,transparent)}
+.t-cross{background:color-mix(in srgb,var(--blue) 16%,transparent); color:var(--blue); border-color:color-mix(in srgb,var(--blue) 38%,transparent)}
+.t-genre{background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose-deep); border-color:color-mix(in srgb,var(--rose) 34%,transparent); font-size:11px; padding:2px 7px}
+h2.sec{font-size:20px; margin:34px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--line); color:var(--ink); display:flex; align-items:center; gap:9px}
+h2.sec .n{font-family:Georgia,serif; color:var(--rose); font-size:15px; border:1.5px solid var(--rose-soft); border-radius:50%; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; flex:none}
+details.major{background:var(--card); border:1px solid var(--line); border-radius:13px; margin:11px 0; overflow:hidden; box-shadow:var(--shadow)}
+details.major>summary{cursor:pointer; list-style:none; padding:14px 16px; display:flex; align-items:center; gap:11px; font-family:Georgia,serif; font-size:16px; color:var(--ink)}
+details.major>summary::-webkit-details-marker{display:none}
+.chip-n{flex:none; width:30px; height:30px; border-radius:9px; background:linear-gradient(145deg,var(--rose),var(--rose-deep)); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-size:15px; font-weight:700; box-shadow:0 2px 5px color-mix(in srgb,var(--rose) 40%,transparent)}
+details.major>summary .ttl{flex:1; min-width:0}
+details.major>summary .ttl .en{display:block; font-size:12px; font-style:italic; color:var(--muted); font-family:Georgia,serif; font-weight:400}
+details.major>summary .cnt{font-size:12px; color:var(--muted); flex:none}
+details.major>summary .arw{flex:none; color:var(--rose); transition:transform .2s; font-size:13px}
+details.major[open]>summary .arw{transform:rotate(90deg)}
+.body{padding:2px 16px 16px}
+.def{font-size:13.5px; color:var(--ink-soft); font-style:italic; border-left:3px solid var(--rose-soft); padding:3px 0 3px 12px; margin:4px 0 12px}
+.sub{margin:12px 0 0; padding-left:14px; border-left:2px solid var(--line)}
+.sub-h{font-weight:700; font-size:14.5px; color:var(--rose-deep); display:flex; flex-wrap:wrap; align-items:baseline; gap:7px}
+.sub-h .en{font-weight:400; font-style:italic; color:var(--muted); font-size:12px; font-family:Georgia,serif}
+.sub-d{font-size:13px; color:var(--ink-soft); margin:1px 0 4px}
+.hint{font-size:11.5px; color:var(--muted); background:color-mix(in srgb,var(--rose) 6%,transparent); border-radius:6px; padding:3px 9px; margin:3px 0 5px; line-height:1.55}
+.hint::before{content:"🗨 "; opacity:.7}
+.leaf{margin:9px 0 0; padding-left:12px; border-left:2px dashed var(--line)}
+.leaf-h{font-weight:600; font-size:13.5px; color:var(--ink-soft); display:flex; flex-wrap:wrap; align-items:baseline; gap:6px}
+.leaf-h .en{font-weight:400; font-style:italic; color:var(--muted); font-size:11px; font-family:Georgia,serif}
+.leaf-d{font-size:12px; color:var(--muted); margin:0 0 5px}
+.words{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 2px}
+.w{background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:4px 10px; font-size:14px; color:var(--ink)}
+.w.m{border-color:color-mix(in srgb,var(--gold) 50%,var(--line)); box-shadow:inset 3px 0 0 var(--gold)}
+.w.x{border-color:color-mix(in srgb,var(--blue) 50%,var(--line)); box-shadow:inset 3px 0 0 var(--blue)}
+.w.nw{border-color:color-mix(in srgb,var(--green) 50%,var(--line)); box-shadow:inset 3px 0 0 var(--green)}
+.w small{color:var(--muted); font-size:11px}
+.w .hl{background:color-mix(in srgb,var(--gold) 30%,transparent); border-radius:3px; padding:0 2px; font-weight:600; box-decoration-break:clone}
+.w .ph{color:var(--brick); font-weight:700; font-size:12px}
+.empty{font-size:12.5px; color:var(--muted); font-style:italic; background:color-mix(in srgb,var(--green) 8%,transparent); border:1px dashed color-mix(in srgb,var(--green) 40%,transparent); border-radius:8px; padding:5px 10px; display:inline-block; margin-top:2px}
+.cards{display:grid; gap:9px; margin:6px 0}
+.cd{background:var(--card); border:1px solid var(--line); border-radius:11px; padding:11px 14px; box-shadow:var(--shadow)}
+.link-row{display:flex; flex-wrap:wrap; gap:6px 10px; font-size:13.5px; align-items:center}
+.link-row .word{font-weight:700; color:var(--ink)}
+.link-row .to{color:var(--ink-soft)}
+.link-row .arrow{color:var(--rose); font-weight:700}
+.link-row .why{flex-basis:100%; font-size:12px; color:var(--muted); margin-top:2px}
+.prose{font-size:14.5px; color:var(--ink-soft)}
+.prose b{color:var(--ink)}
+.disc p{margin:0 0 11px; padding:8px 12px; background:var(--paper); border-left:3px solid color-mix(in srgb,var(--rose-deep) 45%,var(--line)); border-radius:0 8px 8px 0}
+.disc p b{color:var(--rose-deep)}
+.tech{background:color-mix(in srgb,var(--brick) 7%,var(--card)); border:1px solid color-mix(in srgb,var(--brick) 22%,var(--line)); border-radius:11px; padding:13px 16px; margin:10px 0}
+.tech h3{color:var(--brick); margin-top:2px}
+.mwrap{overflow-x:auto}
+.mtable{width:100%; border-collapse:collapse; margin:8px 0; font-size:13px}
+.mtable th,.mtable td{text-align:left; padding:7px 9px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+.mtable th{color:var(--rose-deep); font-weight:700; border-bottom:2px solid var(--line)}
+.mtable td:first-child{font-weight:600; color:var(--ink)}
+ol.steps{list-style:none; counter-reset:s; padding:0; margin:8px 0}
+ol.steps li{counter-increment:s; position:relative; padding:11px 14px 11px 48px; background:var(--card); border:1px solid var(--line); border-radius:11px; margin:8px 0; font-size:14px; color:var(--ink-soft)}
+ol.steps li::before{content:counter(s); position:absolute; left:12px; top:11px; width:24px; height:24px; background:var(--rose); color:#fff; border-radius:7px; font-family:Georgia,serif; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:13px}
+ol.steps li b{color:var(--ink)}
+.foot{text-align:center; margin-top:34px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; font-style:italic; font-family:Georgia,serif}
+@media (max-width:520px){ .wrap{padding:16px 13px 80px} .hero{padding:20px 16px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">ร่างเกลาหมวด · หมวดที่สาม</p>
+    <h1>หมวด ๓ · กริยา ท่าทาง และการเคลื่อนไหว</h1>
+    <p class="en">Action &amp; Body Language</p>
+    <p>คำที่บอกว่าตัวละคร “ทำอย่างไร” — การขยับตัว ท่าทาง และภาษากาย ที่สื่อนิสัยหรืออาการในขณะนั้น</p>
+    <div class="stats">
+      <div class="stat"><b>248</b><span>คำ (ในหมวด 3)</span></div>
+      <div class="stat"><b>9</b><span>กิ่งหลัก</span></div>
+      <div class="stat"><b>36</b><span>กิ่งย่อย</span></div>
+      <div class="stat"><b>80</b><span>กิ่งแขนง</span></div>
+      <div class="stat"><b>17</b><span>คำติดหลายกิ่ง</span></div>
+    </div>
+  </header>
+
+  <div class="note rule"><b>📛 กฎชื่อกิ่ง:</b> คำธรรมดาสื่อตรง + มีคำบริบท · <b>📝 กฎนิยาม:</b> นิยาม = เขียนตรง ๆ สะอาด · <b>ตัวอย่าง/ใครเสนอ = แยกไว้ 🗨 หมายเหตุ</b> · <b>🏷 tag</b> ถอดออกก่อนขึ้นเว็บ/AI · <b>ห้ามลบ/ย่อวลีต้นฉบับ</b></div>
+
+  <div class="note"><b>🗳 พี่กันเคาะ 3 ข้อใหญ่ (23 ก.ค.):</b> ① <b>กิ่ง 5 (คำพูด) เก็บไว้ในหมวด 3 + โยง 🔗 หมวด 4</b> ไม่ย้าย (เจนเสนอย้ายทั้งกิ่ง · แคลร์ค้าน — คำต้นฉบับห้ามย้าย + กิ่ง 5.6 ไม่ใช่เสียง) · ② <b>กิ่ง 7 สัมผัส เก็บไว้ ปรับนิยามเป็น “ความใกล้ชิด”</b> (เจนเสนอยุบ) · ③ <b>เอากิ่งใหม่ทั้งหมด</b> (ปฏิกิริยาตอบสนองทางกาย 🌟 · การต่อสู้ · ท่านอน→ย่อยกิ่ง 6 · labels ใหม่)</div>
+
+  <div class="note"><b>🔬 สับลึกทั้ง 7 กิ่ง — พี่กันสั่ง “ซอยไปเลย เยอะไว้ก่อน”:</b> กิ่ง 1 สายตา → 17 แขนง · กิ่ง 2 ใบหน้า/ศีรษะ → 19 แขนง · กิ่ง 3 แขน/มือ → 8 แขนง · กิ่ง 4 ขา → 12 แขนง · กิ่ง 5 คำพูด/สังคม → 10 แขนง · กิ่ง 6 ท่าทาง → 13 แขนง · กิ่ง 7 สัมผัส → 3 กิ่งย่อย · กิ่ง 8/9 เพิ่มกิ่งใหม่ (ของเหลวจากอารมณ์ · ปฏิกิริยาเมื่อถูกโจมตี) · <b>แกน “อารมณ์/เจตนา” = สิ่งที่นักเขียนค้นจริง</b> · หลายแขนงเป็น <b>กิ่งเผื่อ</b> รอคำในอนาคต · ที่มา: เจน + จุดติ + แคลร์เสริม</div>
+
+  <div class="legend">
+    <span class="tag t-new">🆕 กิ่งใหม่ (รอคำ)</span>
+    <span class="tag t-multi">⚡ ติดหลายกิ่ง</span>
+    <span class="tag t-cross">🔗 โยงข้ามหมวด</span>
+  </div>
+
+  <h2 class="sec"><span class="n">🌳</span> โครงต้นไม้ใหม่ · 9 กิ่งหลัก</h2>
+  <p style="font-size:12.5px;color:var(--muted);margin:0 0 10px;line-height:1.7">แตะหัวกิ่งเพื่อยุบ/กาง · <span class="hl" style="padding:0 3px;border-radius:3px">ไฮไลต์</span> = คำเน้นที่พี่กันวงเล็บติดไว้ (วลีเต็มอยู่ครบ) · <b>(ความหมาย)</b> · <span class="ph" style="color:var(--brick);font-weight:700">[...]</span> = ช่องเว้นตั้งใจ (แทน “...”) · <span class="tag t-cross" style="font-size:11px;padding:1px 6px">🔗</span> = โยงหมวด 4 (เสียง)</p>
+
+  <!-- 1 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๑</span><span class="ttl">สายตาและการมอง<span class="en">Eyes &amp; Gaze</span></span><span class="cnt">39 คำ · ซอยลึก</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">กริยาที่ทำด้วยดวงตา ทั้งการมองเพื่อรับข้อมูลและการสื่ออารมณ์ผ่านสายตา</p>
+      <div class="sub"><div class="sub-h">🌿 การมองและทิศทางสายตา <span class="en">Looking &amp; Eye Direction</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การมองเพื่อรับข้อมูล และการเลื่อน/เปลี่ยนทิศทางของสายตา</div>
+        <div class="leaf"><div class="leaf-h">🍃 เพ่งจ้องและจดจ่อ <span class="en">Staring &amp; Intense Focus</span></div><div class="leaf-d">การมองอย่างจดจ่อ แน่วนิ่ง หรือเขม็งด้วยความตั้งใจสูง</div><div class="words"><span class="w">จับจ้อง</span><span class="w">เพ่งมอง</span><span class="w m">สายตาที่แหลมคม <small>+จับผิด/สงสัย</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ลอบมองและชำเลือง <span class="en">Stealthy &amp; Sidelong Glances</span></div><div class="leaf-d">การมองอย่างแอบซ่อน ชายตา หรือเหลือบดูโดยไม่ให้อีกฝ่ายรู้ตัว</div><div class="words"><span class="w">ชำเลือง</span><span class="w">ลอบมอง</span><span class="w">เล็ดลอดสายตา</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ทิศทางของสายตา ขึ้น-ลง-เบน <span class="en">Eye Direction &amp; Shifts</span></div><div class="leaf-d">การเลื่อนหรือเปลี่ยนทิศทางของสายตา ขึ้น ลง หรือเบนไปด้านข้าง</div><div class="words"><span class="w">ช้อนสายตาขึ้น</span><span class="w">หลุบตาต่ำลง</span><span class="w">เบนสายตา</span><span class="w">เบนสายตาขึ้นไป</span><span class="w">แหงนมอง <small>🔄 ย้ายจากเหลียว/กวาด</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 เหลียวและกวาดตา <span class="en">Turning &amp; Scanning Gaze</span></div><div class="leaf-d">การหันหรือกวาดสายตาไปรอบ ๆ เพื่อสำรวจหรือมองหา</div><div class="hint">“เหลียว” มีหันหัวร่วม → กิ่งนี้เน้น “มองเพื่อสำรวจ” · หันหัวเปล่า ๆ ไม่มอง = กิ่งหลัก 2</div><div class="words"><span class="w">กวาดตา</span><span class="w m">เหลียวมอง <small>+กิ่ง 2 หันหน้าและชะโงก</small></span><span class="w">เหลียวไปมองข้างหลังแวบนึง</span><span class="w">เหลียวไปดู</span><span class="w">เหลียวซ้ายแลขวา</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การสบตาและหลบตา <span class="en">Eye Contact &amp; Aversion</span> <span class="tag t-new">🆕 🌟 แคลร์เสนอ</span> <span class="tag t-genre">โรแมนซ์ · ดราม่า</span></div><div class="leaf-d">การประสานหรือหลีกเลี่ยงการสบตาระหว่างตัวละคร (แกนปฏิสัมพันธ์สองทาง)</div><div class="hint"><b>แคลร์เสนอ (เวิร์กโฟลว์ · เจนไม่มี)</b> — บีตสำคัญโรแมนซ์/ดราม่า (คู่รักสบตา · คนผิดหลบตา) · รอคำ: สบตา/ประสานสายตา · หลบสายตา/เบือนหน้าหนี/ไม่กล้าสบตา</div><div class="empty">รอเก็บคำ</div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 ปฏิกิริยาและอารมณ์ทางตา <span class="en">Emotional Eye Expression</span></div><div class="sub-d">การใช้สายตาสื่ออารมณ์</div><div class="hint">แกนอารมณ์ = คนค้นจริง → เพิ่มแขนงให้ครบทั้งขั้วบวก-ลบ (เดิมมีแต่ กลัว/โกรธ/โลภ)</div>
+        <div class="leaf"><div class="leaf-h">🍃 ตกใจ/กลัว <span class="en">Shock &amp; Fear</span></div><div class="words"><span class="w">ตาเบิกกว้าง</span><span class="w">เบิกตาโพลง</span><span class="w">เบิกตาโต</span><span class="w">เบิกตาโตด้วยความตกใจ</span><span class="w">เบิกตาอย่างหวาดๆ</span><span class="w">ยืนตาค้างด้วยความตะลึง</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 โกรธ/เกลียด/ข่มขู่ <span class="en">Anger &amp; Hostility</span></div><div class="words"><span class="w">จ้องเขม็ง</span><span class="w">จ้องตาขวาง</span><span class="w">ถลึงตาตอบ</span><span class="w m">สายตาเย็นชาแฝงแววดูถูก <small>+ดูถูก/เหยียด · +สีหน้าโกรธ</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 จับผิด/สงสัย/ประเมิน <span class="en">Scrutiny &amp; Suspicion</span></div><div class="words"><span class="w">ทำตาหยีเป็นเส้นตรง</span><span class="w">หรี่ตาตอบ</span><span class="w">สายตาคาดคั้น</span><span class="w">จ้องมองด้วยสายตาเคลือบแคลงสงสัย</span><span class="w m">สายตาที่แหลมคม <small>บ้านหลัก: เพ่งจ้องและจดจ่อ</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 สนใจ/ตื่นเต้น/โลภ <span class="en">Interest &amp; Greed</span></div><div class="words"><span class="w m">ทำตาวาว <small>+ยินดี</small></span><span class="w m">ดวงตากลมโตเป็นประกายด้วยความตื่นเต้น <small>+ยินดี</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 เหม่อลอย/ไร้สติ <span class="en">Vacancy</span></div><div class="leaf-d">สายตาที่เหม่อลอย ว่างเปล่า ไร้จุดโฟกัส (ยังตื่นแต่ไม่โฟกัส)</div><div class="words"><span class="w">ทำตาลอย</span><span class="w">นั่งตาลอยคว้าง</span><span class="w">เหม่อมอง <small>🔄 ย้ายจาก “การมอง”</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 แววตาเศร้าและน้ำตา <span class="en">Sorrow &amp; Tears</span> <span class="tag t-new">🆕 เจน+แคลร์</span> <span class="tag t-genre">ดราม่า</span></div><div class="leaf-d">ดวงตาที่เอ่อล้นด้วยความเศร้า เจ็บปวด หรือน้ำตาคลอเบ้า</div><div class="hint">คลังขาดขั้วเศร้า · รอคำ: น้ำตาคลอเบ้า · แววตาเจ็บปวด · สายตาเว้าวอน</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ยินดี/ตาเป็นประกาย <span class="en">Joy &amp; Bright Eyes</span> <span class="tag t-new">🆕 แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป · โรแมนซ์</span></div><div class="leaf-d">ดวงตาที่เปล่งประกาย สดใส หรือเบิกกว้างด้วยความสุขและยินดี</div><div class="hint"><b>แคลร์เสนอ</b> (เจนเติมแต่ขั้วเศร้า ลืมขั้วสุข) · ประกายจากสุข ≠ จากโลภ/ตื่นเต้น · รอคำ: ตาเป็นประกายด้วยความสุข · แววตาสดใส</div><div class="words"><span class="w m">ทำตาวาว <small>บ้านหลัก: สนใจ/ตื่นเต้น</small></span><span class="w m">ดวงตากลมโตเป็นประกายด้วยความตื่นเต้น <small>บ้านหลัก: สนใจ/ตื่นเต้น</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 มองอย่างรักใคร่/หลงใหล <span class="en">Loving &amp; Adoring Gaze</span> <span class="tag t-new">🆕 แคลร์เสนอ</span> <span class="tag t-genre">โรแมนซ์ · ดราม่า</span></div><div class="leaf-d">สายตาที่ทอประกายความรัก อ่อนโยน หรือหลงใหลต่อผู้อื่น</div><div class="hint"><b>แคลร์เสนอ</b> — ความรัก ≠ ราคะ (แยกจากยั่วยวน) · รอคำ: จ้องมองอย่างหลงรัก · สายตาอบอุ่นอ่อนโยน · มองอย่างเสน่หา</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ยั่วยวน/เย้ายวน <span class="en">Seductive Gaze</span> <span class="tag t-new">🆕 เจน · แคลร์แยก</span> <span class="tag t-genre">อีโรติก</span></div><div class="leaf-d">การใช้ดวงตาสื่อความหมายเชิงราคะ เย้ายวน หรือเชิญชวน</div><div class="hint"><b>เจนเสนอ · แคลร์แยกจาก “เจ้าเล่ห์”</b> (คนละแกน) · รอคำ: ช้อนตามองอย่างยั่วยวน · สายตาเชิญชวน · หลิ่วตา/ขยิบตา</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf"><div class="leaf-h">🍃 มีเลศนัย/เจ้าเล่ห์ <span class="en">Sly &amp; Knowing Looks</span> <span class="tag t-new">🆕 เจน · แคลร์แยก</span> <span class="tag t-genre">ทริลเลอร์ · ทั่วไป</span></div><div class="leaf-d">สายตาที่แฝงเลศนัย เจ้าเล่ห์ หรือส่งสัญญาณลับ</div><div class="hint"><b>เจนเสนอ · แคลร์แยกจาก “ยั่วยวน”</b> · รอคำ: ขยิบตาส่งสัญญาณลับ · หลิ่วตาอย่างมีเงื่อนงำ</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ดูถูก/เหยียดหยาม <span class="en">Contempt &amp; Disdain</span> <span class="tag t-new">🆕 แคลร์เสนอ</span> <span class="tag t-genre">ทริลเลอร์ · ดราม่า</span></div><div class="leaf-d">สายตาที่มองอย่างดูแคลน เหยียดหยาม หรือเย็นชาไม่ไยดี</div><div class="hint"><b>แคลร์เสนอ</b> — ดูถูก (เย็น มองต่ำ) ≠ โกรธ (ร้อน ปะทะ) · หลักฐาน: “สายตาเย็นชาแฝงแววดูถูก” เดิมยัดใต้โกรธ · รอคำ: ชายตามองอย่างเหยียด · มองอย่างดูแคลน</div><div class="words"><span class="w m">สายตาเย็นชาแฝงแววดูถูก <small>บ้านหลัก: โกรธ/เกลียด/ข่มขู่</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ตาปรือ/ง่วงและเลือนราง <span class="en">Drowsy &amp; Fading Eyes</span> <span class="tag t-new">🆕 แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป · ทริลเลอร์</span></div><div class="leaf-d">ดวงตาที่หรี่ปรือ ง่วงซึม หรือเลือนรางจากความอ่อนล้าหรือใกล้หมดสติ (ต่างจากเหม่อลอยที่ยังตื่น)</div><div class="hint"><b>แคลร์เสนอ</b> · รอคำ: ตาพร่า · หนังตาหนักอึ้ง · ตาปรือ</div><div class="words"><span class="w m">ปรือตา <small>บ้านหลัก: กิริยาประกอบสายตา</small></span><span class="w m">กะพริบตาช้าๆ <small>บ้านหลัก: กิริยาประกอบสายตา</small></span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 กิริยาประกอบสายตา <span class="en">Eye Movements &amp; Gestures</span> <span class="tag t-new">🔄 label ใหม่</span></div><div class="sub-d">ท่าทางของตาและรอบดวงตาที่ทำควบคู่กับการมอง แต่ไม่ใช่การมองเพื่อรับข้อมูล</div><div class="hint">เจนปรับอังกฤษ Visual Habits → Eye Movements &amp; Gestures (แคลร์รับ)</div><div class="words"><span class="w">เลิกแว่น</span><span class="w m">เหลียวหน้าเหลียวหลังอย่าง<span class="hl">ล่อกแล่ก</span> <small>+ขยับศีรษะ/ลำคอ</small></span><span class="w m">กะพริบตาช้าๆ <small>+ตาปรือ/ง่วง</small></span><span class="w m">ปรือตา <small>+ตาปรือ/ง่วง</small></span></div></div>
+    </div>
+  </details>
+
+  <!-- 2 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๒</span><span class="ttl">การแสดงออกทางใบหน้าและศีรษะ<span class="en">Facial &amp; Head Movements</span></span><span class="cnt">34 คำ · ซอยลึก</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">การขยับส่วนประกอบบนใบหน้าและศีรษะเพื่อสื่ออารมณ์หรือปฏิกิริยา</p>
+      <div class="sub"><div class="sub-h">🌿 การขยับอวัยวะบนใบหน้า <span class="en">Facial Feature Movements</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การขยับอวัยวะแต่ละส่วนบนใบหน้าเพื่อตอบสนองหรือแสดงอารมณ์</div>
+        <div class="leaf"><div class="leaf-h">🍃 ปากและริมฝีปาก <span class="en">Mouth &amp; Lips</span></div><div class="leaf-d">กริยาที่ทำด้วยปากและริมฝีปาก เม้ม อ้า หรือสัมผัส</div><div class="words"><span class="w">เม้มปากแน่น</span><span class="w">อ้าปากกว้าง</span><span class="w m">ริมฝีปากซุกไซ้ <small>+สัมผัสใกล้ชิด</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 กรามและฟัน <span class="en">Jaw &amp; Teeth</span></div><div class="leaf-d">กริยาจากการเกร็งกรามหรือขบฟัน</div><div class="words"><span class="w">กัดฟันแน่น</span></div><div class="hint">รอเพิ่ม: ขบกราม · กัดริมฝีปาก</div></div>
+        <div class="leaf"><div class="leaf-h">🍃 คิ้วและการเล่นหูเล่นตา <span class="en">Eyebrows &amp; Eye-play</span></div><div class="leaf-d">การขยับคิ้ว หรือหยอกล้อด้วยสายตา ที่ไม่ใช่การมองเพื่อรับข้อมูล</div><div class="words"><span class="w">เลิกคิ้ว</span><span class="w">เล่นหูเล่นตา</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ปฏิกิริยากล้ามเนื้อหน้า <span class="en">Facial Muscle Spasms</span></div><div class="leaf-d">การกระตุกหรือเกร็งของกล้ามเนื้อใบหน้า</div><div class="words"><span class="w m">ใบหน้ากระตุกถี่ <small>+สีหน้าเครียด</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 จมูกและการสูดดม <span class="en">Nose &amp; Sniffing</span> <span class="tag t-new">🆕 แคลร์เสนอ</span></div><div class="leaf-d">การขยับจมูกและสูดลมทางจมูกที่สื่ออารมณ์</div><div class="hint"><b>แคลร์เสนอ</b> (เจนไม่มี) · รอคำ: ย่นจมูก · เชิดจมูก · ฟุดฟิด · สูดน้ำมูก</div><div class="empty">รอเก็บคำ</div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การขยับศีรษะและลำคอ <span class="en">Head &amp; Neck</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การหัน ก้ม เงย หรือขยับศีรษะและลำคอเพื่อตอบสนองสถานการณ์</div><div class="hint">“เงี่ยหูฟัง” ในคลังมี “เน้นทิศทางของหัว” ติดหน้า (เศษ import) → คำจริง = เงี่ยหูฟัง</div>
+        <div class="leaf"><div class="leaf-h">🍃 การพยักและส่ายหน้า <span class="en">Nodding &amp; Shaking</span></div><div class="words"><span class="w">พยักหน้าหงึกๆ</span><span class="w">ผงกศีรษะ</span><span class="w">ส่ายศีรษะ</span><span class="w">ส่ายศีรษะที่หนักอึ้งช้าๆ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การหันหน้าและชะโงก <span class="en">Turning &amp; Leaning</span></div><div class="words"><span class="w">สะบัดหน้าไปทางหนึ่ง</span><span class="w m">หันขวับไป <small>+เปลี่ยนอิริยาบถ</small></span><span class="w m">ชะโงกหน้า <small>+เปลี่ยนอิริยาบถ</small></span><span class="w m">เหลียวหน้าเหลียวหลังอย่างล่อกแล่ก <small>บ้านหลัก: กิริยาประกอบสายตา</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การเอียงคอและเงี่ยฟัง <span class="en">Tilting &amp; Listening</span></div><div class="leaf-d">การเอียงคอหรือเงี่ยหูเพื่อแสดงความสงสัย ครุ่นคิด หรือตั้งใจฟัง</div><div class="words"><span class="w">เอียงคอทำหน้างง</span><span class="w">เอียงคอคิด</span><span class="w">เงี่ยหูฟัง</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การก้มและคอตก <span class="en">Bowing &amp; Dropping Head</span></div><div class="leaf-d">การทิ้งน้ำหนักศีรษะลงเพื่อแสดงความเศร้า ยอมจำนน หรือหลบเลี่ยง</div><div class="words"><span class="w">ก้มหน้างุด</span><span class="w">คอตก</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การใช้ศีรษะปะทะ <span class="en">Head-butting &amp; Impact</span></div><div class="leaf-d">การใช้ศีรษะเป็นอาวุธหรือพุ่งกระแทกกับสิ่งอื่น</div><div class="hint">ผิดแกน “สื่ออารมณ์” นิด (เป็นความรุนแรง) → โยง ⚡ กิ่งหลัก 9 (การต่อสู้)</div><div class="words"><span class="w m">โหม่งโขดหินจนศีรษะแตก <small>+กิ่ง 9 การต่อสู้</small></span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 สีหน้าและอารมณ์บนใบหน้า <span class="en">Facial Expressions</span></div><div class="sub-d">อารมณ์ที่ฉายออกมาบนใบหน้าโดยรวม</div><div class="hint">แกนอารมณ์ = คนค้นจริง → เพิ่มแขนงเยอะ (สงสัย/รอยยิ้ม/เศร้า/เยาะเย้ย/เขินอาย)</div>
+        <div class="leaf"><div class="leaf-h">🍃 นิ่งเฉย/เย็นชา <span class="en">Blank &amp; Cold</span></div><div class="words"><span class="w">ใบหน้านิ่งเฉยไร้ความรู้สึก</span><span class="w">ตีหน้าเฉยชา</span><span class="w">ตีหน้าเฉยเมย</span><span class="w">ทำหน้าขรึม</span><span class="w">นั่งฟังอย่างหน้าตาเฉย</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 เครียด/โกรธ/ไม่พอใจ <span class="en">Tense &amp; Angry</span></div><div class="words"><span class="w">ใบหน้าบึ้งตึง</span><span class="w">ปั้นหน้าเครียด</span><span class="w">ทำหน้านิ่วคิ้วขมวด</span><span class="w m">ใบหน้ากระตุกถี่ <small>บ้านหลัก: กล้ามเนื้อหน้า</small></span><span class="w">ขมวดคิ้ว</span><span class="w">นิ่วหน้าจนเห็นรอยลึก</span><span class="w m">สายตาเย็นชาแฝงแววดูถูก <small>บ้านหลัก: โกรธ/ข่มขู่ ทางตา</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ตกใจ/กลัว <span class="en">Shock &amp; Fear</span></div><div class="words"><span class="w">ใบหน้าซูบซีด</span><span class="w m">หน้าซีดตัวสั่น <small>+ปฏิกิริยาตอบสนองทางกาย</small></span><span class="w">ใบหน้ากระตุกและบิดเบี้ยวน่าเกลียดน่ากลัว</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 สงสัย/สับสน/ครุ่นคิด <span class="en">Doubt &amp; Confusion</span> <span class="tag t-new">🆕 เจนเสนอ</span></div><div class="leaf-d">สีหน้าที่แสดงความสงสัย ลังเล ไม่แน่ใจ หรือกำลังครุ่นคิด</div><div class="hint"><b>เจนเสนอ</b> ย้าย 2 คำจาก “ตกใจ/กลัว” (ผิดแกน: สงสัย ≠ กลัว) · แคลร์+เวิร์กโฟลว์รับ</div><div class="words"><span class="w">ทำหน้าฉงน <small>🔄 ย้ายจากตกใจ/กลัว</small></span><span class="w">ทำหน้าเชื่อครึ่งไม่เชื่อครึ่ง <small>🔄 ย้ายจากตกใจ/กลัว</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 รอยยิ้มและความยินดี <span class="en">Smiles &amp; Joy</span> <span class="tag t-new">🆕 เจนเสนอ</span> <span class="tag t-genre">ทั่วไป · โรแมนซ์</span></div><div class="leaf-d">การยิ้มและอารมณ์ที่สื่อผ่านรอยยิ้ม อบอุ่น อ่อนโยน หรือยินดี</div><div class="hint"><b>เจนเสนอ</b> ยกยิ้มออกจาก “อื่นๆ” · รอเพิ่ม: ยิ้มมุมปาก · ยิ้มกว้าง</div><div class="words"><span class="w">ยิ้มอย่างอ่อนโยน <small>🔄 ย้ายจากอื่นๆ</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 สีหน้าเศร้าและเจ็บปวด <span class="en">Sadness &amp; Pain</span> <span class="tag t-new">🆕 แคลร์เสนอ</span> <span class="tag t-genre">ดราม่า</span></div><div class="leaf-d">สีหน้าที่สื่อความเศร้า เสียใจ หมองหม่น หรือเจ็บปวดทรมาน (รวมอาการร้องไห้บนใบหน้า)</div><div class="hint"><b>แคลร์เสนอ · เจนเห็นตรงกัน</b> (เจนเสนอชื่อ Sadness &amp; Pain แคลร์รับ) · รอคำ: หน้าเบ้ · ปากคว่ำ · สีหน้าสลด · หน้าหมองหม่น · สีหน้าเจ็บปวด · น้ำตานอง</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf"><div class="leaf-h">🍃 สีหน้าเยาะเย้ยและดูถูก <span class="en">Contempt &amp; Mockery</span> <span class="tag t-new">🆕 แคลร์เสนอ</span> <span class="tag t-genre">ทริลเลอร์ · ดราม่า</span></div><div class="leaf-d">สีหน้าที่สื่อการดูถูก เหยียดหยาม เย้ยหยัน หรือสมเพช</div><div class="hint"><b>แคลร์เสนอ</b> · รอคำ: ยิ้มเยาะ · แสยะยิ้ม · เชิดหน้าใส่ · เหยียดริมฝีปาก</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf"><div class="leaf-h">🍃 สีหน้าเขินอาย <span class="en">Shyness &amp; Embarrassment</span> <span class="tag t-new">🆕 แคลร์เสนอ</span> <span class="tag t-genre">โรแมนซ์ · ทั่วไป</span></div><div class="leaf-d">สีหน้าที่สื่อความเขินอาย กระดาก ประหม่า หรือขวยเขิน</div><div class="hint"><b>แคลร์เสนอ</b> · รอคำ: ยิ้มเขิน · ก้มหน้าเขิน · ทำหน้ากระดาก</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf"><div class="leaf-h">🍃 คำบอกบริบทบนใบหน้า <span class="en">Facial Context Words</span> <span class="tag t-new">🔄 label ใหม่</span></div><div class="leaf-d">คำที่บอกว่าอารมณ์ปรากฏหรือฉายอยู่บนใบหน้า (ไม่ใช่ตัวอารมณ์เอง)</div><div class="hint">เจนเปลี่ยนชื่อ “อื่นๆ” → กลุ่มคำขยาย · แคลร์เกลาชื่อเป็น “คำบอกบริบทบนใบหน้า”</div><div class="words"><span class="w">ฉายชัดอยู่บนใบหน้า <small>(ใช้ขยายอารมณ์ที่ปรากฏ)</small></span></div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 3 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๓</span><span class="ttl">การขยับแขนและมือ<span class="en">Arms &amp; Hands</span></span><span class="cnt">28 คำ · ซอยลึก</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">กริยาที่ทำด้วยแขนและมือ หยิบจับ กระชาก หรือใช้กำลัง</p>
+      <div class="note rule" style="margin:6px 0 10px;font-size:12.5px">🚨 <b>แคลร์ค้านเจน 1 จุด:</b> “ลูกตาถูกควัก” คงคำเดิม <b>ไม่เปลี่ยนเป็น “ควักลูกตา”</b> ตามเจน — ผิดกฎเหล็กแตะคำต้นฉบับ (passive = ตัวละครเป็นเหยื่อ ≠ active ไปควักตาคนอื่น)</div>
+      <div class="sub"><div class="sub-h">🌿 สัมผัสและหยิบจับ <span class="en">Touch &amp; Grasp</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การใช้นิ้วมือหรือฝ่ามือสัมผัส หยิบ จับ หรือดึงสิ่งของ</div>
+        <div class="leaf"><div class="leaf-h">🍃 สัมผัสแผ่วเบา <span class="en">Gentle Touch</span></div><div class="leaf-d">การสัมผัสเบา ๆ ลูบ หรือปัดไปมาอย่างนุ่มนวล</div><div class="words"><span class="w"><span class="hl">ลูบไล้</span>แก้ม</span><span class="w"><span class="hl">ปัดป่าย</span>มือสองข้างไปมา</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 หยิบจับและถือครอง <span class="en">Holding &amp; Grasping</span></div><div class="leaf-d">การกำ จับ กระชับ หรือถือสิ่งของ/คนไว้</div><div class="words"><span class="w">กุมแขน</span><span class="w">กระชับมือ</span><span class="w">กระชับแฟ้มเอกสาร</span><span class="w">ควานหา</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ดึงรั้งและฉุดกระชาก <span class="en">Pulling &amp; Yanking</span></div><div class="leaf-d">การออกแรงดึง กระชาก หรือควักด้วยมือ</div><div class="words"><span class="w">ยื่นมือไป<span class="hl">กระชาก</span></span><span class="w"><span class="hl">ทึ้ง</span>เถากุหลาบ</span><span class="w">ลูกตาถูก<span class="hl">ควัก</span> <small>🚨 คงคำเดิม</small></span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 ท่าทางและการวางมือ <span class="en">Gestures &amp; Posture</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">ตำแหน่งของแขนและมือที่จัดวางกับตัวหรือแสดงออก</div>
+        <div class="leaf"><div class="leaf-h">🍃 จัดระเบียบและพักแขน <span class="en">Static Arm Postures</span></div><div class="leaf-d">ท่าแขน/มือที่อยู่นิ่งกับตัว</div><div class="words"><span class="w">เท้าสะเอว</span><span class="w">กอดเข่า</span><span class="w">ไขว้แขน</span><span class="w"><span class="hl">นิ้วมือห้อย</span>ลงไปเรี่ยกับพื้น <small>🔄 ปลด ⚡ ก.7</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ท่าทางสื่อสารและปฏิกิริยา <span class="en">Communicative Gestures</span></div><div class="leaf-d">การใช้แขน/มือแสดงท่าทางสื่อสารหรือตอบสนอง</div><div class="words"><span class="w">มือ<span class="hl">ยกขึ้นไขว่คว้า</span>อากาศ</span><span class="w">แขนซึ่ง<span class="hl">กางอ้าซ่า</span></span><span class="w x">ตบเข่าฉาด <small>🔗ม.4 เสียง</small></span><span class="w"><span class="hl">อ้าแขน</span>กว้างกั้นไว้</span><span class="w"><span class="hl">ดีดปลายเล็บ</span>ยาว <span class="ph">[...]</span> แปร๊ดกับขอบโต๊ะ</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การปฏิสัมพันธ์และการใช้กำลัง <span class="en">Interaction &amp; Use of Force</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การใช้แรงแขนกระทำต่อคนอื่นหรือรับน้ำหนัก ทั้งเชิงช่วยเหลือและเชิงรุนแรง</div><div class="hint">จุดติเจน (รับ): เดิมปนอ่อนโยนกับรุนแรง → แยก 2 แขนงเด็ดขาด</div>
+        <div class="leaf"><div class="leaf-h">🍃 ช่วยเหลือและสัมผัสใกล้ชิด <span class="en">Support &amp; Gentle Interaction</span></div><div class="leaf-d">การประคอง พยุง โอบ หรือดันร่างอย่างช่วยเหลือ/นำทาง</div><div class="words"><span class="w m">โอบอุ้ม <small>+สัมผัสใกล้ชิด</small></span><span class="w m"><span class="hl">คลายวงแขน</span>ที่รัดตัวเธอ <small>+สัมผัสใกล้ชิด</small></span><span class="w">พยุงให้ลุกขึ้น</span><span class="w">ดุนหลัง</span><span class="w">รุนหลัง</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ใช้กำลังและความรุนแรง <span class="en">Force &amp; Violence</span></div><div class="leaf-d">การออกแรงรุนแรง ฉุด เหวี่ยง หรือเงื้อฟาด</div><div class="words"><span class="w">ฉุดลาก</span><span class="w"><span class="hl">เงื้อ</span>สุดแขน <small>🔄 ย้ายจากท่าทาง</small></span><span class="w">เงื้อแผ่นไม้ในมือ</span><span class="w">เหวี่ยง</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 แบกหามและรับน้ำหนัก <span class="en">Carrying &amp; Bearing Weight</span></div><div class="leaf-d">การใช้แรงแขน/ไหล่แบก หาม หรือรับน้ำหนัก (ไม่ใช่ความรุนแรง)</div><div class="hint"><b>พี่กันทัก:</b> “หามศพ” แค่หาม ไม่ใช่ความรุนแรง → แยกออก · แคลร์เห็นด้วย · รอคำ: แบก · หิ้ว · ยกของหนัก</div><div class="words"><span class="w">หามศพ</span></div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 4 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๔</span><span class="ttl">การเคลื่อนที่ ฝีเท้า และขา<span class="en">Legs &amp; Locomotion</span></span><span class="cnt">40 คำ · ซอยลึก</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">การเดิน วิ่ง หรือใช้ขาเพื่อย้ายที่</p>
+      <div class="sub"><div class="sub-h">🌿 การเดินและการก้าวเท้า <span class="en">Walking &amp; Stepping</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การก้าวเดินทุกลักษณะและทิศทาง ทั้งเดินธรรมดา ช้า มุ่งมั่น หรือหลบเลี่ยง</div>
+        <div class="leaf"><div class="leaf-h">🍃 การเดินปกติและทิศทาง <span class="en">Normal Walking &amp; Direction</span></div><div class="words"><span class="w">เหยียบย่าง</span><span class="w">ย่างเท้า</span><span class="w">เดินตัดสวน</span><span class="w">เดินเฉียด</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การเดินช้าและระมัดระวัง <span class="en">Slow &amp; Cautious Walking</span></div><div class="words"><span class="w">เดินอย่างระมัดระวังทุกฝีก้าว</span><span class="w">หยั่งฝีเท้าทดสอบ</span><span class="w">ย่องอย่างเงียบกริบ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การเดินแบบมีเป้าหมาย/มุ่งมั่น <span class="en">Purposeful Walking</span></div><div class="leaf-d">การเดินอย่างมุ่งมั่น ตรงไปยังจุดหมาย</div><div class="words"><span class="w">เดินดุ่มๆ</span><span class="w">ตรงดิ่งไปยัง <small>🔄 ย้ายจากวิ่ง</small></span><span class="w">มุ่งหน้า <small>🔄 ย้ายจากวิ่ง</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การเคลื่อนที่เพื่อหลบหลีก/ซ่อนเร้น <span class="en">Evasive &amp; Sneaking Moves</span></div><div class="leaf-d">การมุด ลอด ปลีกตัว หรือสำรวจอย่างซ่อนเร้น</div><div class="words"><span class="w">ดูลาดเลา</span><span class="w">ปลีกตัว</span><span class="w">ลอด</span><span class="w">ลอดโพรง</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การเดินไร้จุดหมาย <span class="en">Wandering</span></div><div class="words"><span class="w">เที่ยวเตร่</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การวิ่งและการพุ่งตัว <span class="en">Running &amp; Dashing</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การวิ่ง พุ่ง หรือกระโจนอย่างเร็ว</div>
+        <div class="leaf"><div class="leaf-h">🍃 การวิ่งและเร่งความเร็ว <span class="en">Running &amp; Sprinting</span></div><div class="words"><span class="w">เร่งฝีเท้า</span><span class="w">วิ่งกวด</span><span class="w">วิ่งปราด</span><span class="w">วิ่งเหยาะๆ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การกระโจนและพุ่งตัว <span class="en">Leaping &amp; Dashing</span></div><div class="words"><span class="w">กระโจน</span><span class="w">กระโจนเข้าไปในห้อง</span><span class="w">กระโจนออกจากประตู</span><span class="w">ปราดเข้าไปหา</span><span class="w">ปราดไปที่ริมระเบียง</span><span class="w m">พุ่งเข้าไปกระแทกท้อง <small>+การต่อสู้</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การเคลื่อนที่กะทันหัน/รีบร้อน <span class="en">Abrupt &amp; Urgent Moves</span></div><div class="words"><span class="w">ผลุนผลันออกจากห้อง</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การเสียหลักและทุลักทุเล <span class="en">Stumbling &amp; Unsteady Movements</span> <span class="tag t-new">🔄 ซอยลึก</span></div><div class="sub-d">การเคลื่อนที่ที่เสียสมดุล เซ สะดุด หรือล้ม</div><div class="hint">เจนปรับอังกฤษ + ซอย 🍃 แยกเสียสมดุล/ล้ม/บาดเจ็บ · แคลร์รับ</div>
+        <div class="leaf"><div class="leaf-h">🍃 การเสียการทรงตัว <span class="en">Loss of Balance</span></div><div class="words"><span class="w">ลื่นไถล</span><span class="w">แข้งขาปัดเป๋</span><span class="w">เดินโซเซ</span><span class="w">วิ่งโซซัดโซเซ</span><span class="w">ยืนโอนเอน</span><span class="w">ทรงตัวอย่างหมิ่นเหม่เสียสมดุล</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การล้มและกระแทก <span class="en">Falling &amp; Crashing</span></div><div class="words"><span class="w">เซถลาเข้ามาราวกับถูกผลัก</span><span class="w">ทรุดตัวลงนั่งแหมะ</span><span class="w">ถลาล้มทับ</span><span class="w">ล้มระเนระนาด</span><span class="w">ร่างลอยละลิ่ว</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การเคลื่อนที่แบบบาดเจ็บ/หมดสภาพ <span class="en">Crawling &amp; Injured Movements</span> <span class="tag t-genre">ดราม่า</span></div><div class="leaf-d">การกระเสือกกระสน คลาน หรือซมซานอย่างหมดสภาพ</div><div class="hint">เจนเสนอ · แคลร์รับ — สายดราม่า/เอาตัวรอด</div><div class="words"><span class="w">กระเสือกกระสน</span><span class="w">ซมซานจากไป</span></div></div>
+      </div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 ยานพาหนะและการเดินทาง <span class="en">Vehicles &amp; Travel</span></div><div class="sub-d">การเคลื่อนที่ด้วยยานพาหนะ (ไม่ใช่ฝีเท้า)</div><div class="hint">🚨 จุดติเจน: “บึ่งรถมา” ใช้ยานพาหนะ · เจนเสนอดึงออก · <b>แคลร์ไม่ลบ/ไม่ย้ายข้ามหมวดเอง</b> → ตั้งกิ่งไว้ในหมวด 3 · ✅ <b>พี่กันเคาะ: เก็บในหมวด 3 ก่อน</b></div><div class="words"><span class="w">บึ่งรถมา</span></div></div>
+    </div>
+  </details>
+
+  <!-- 5 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๕</span><span class="ttl">การสื่อสารและพฤติกรรมทางสังคม<span class="en">Social Interaction</span></span><span class="cnt">57 คำ · 🔗 ม.4 · ซอยลึก</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">กริยาการสื่อสารด้วยคำพูดและพฤติกรรมที่ทำต่อผู้อื่นในสังคม</p>
+      <div class="hint" style="margin-bottom:8px">🔗🔗 <b>พี่กันเคาะ: เก็บกิ่งนี้ไว้ในหมวด 3 + โยง 🔗 หมวด 4 เฉพาะคำที่เป็นเสียง — ไม่ย้าย</b> · เจนเสนอย้ายทั้งกิ่ง · แคลร์ค้าน (คำต้นฉบับห้ามย้าย + กิ่ง 5.6/5.7 ไม่ใช่เสียง)</div>
+      <div class="sub"><div class="sub-h">🌿 การถามและค้นหาความจริง <span class="en">Inquiry &amp; Probing</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การซักถาม เค้น ล้วง หรือย้ำเพื่อเอาคำตอบหรือความจริงจากอีกฝ่าย</div>
+        <div class="leaf"><div class="leaf-h">🍃 การซักถามและล้วงข้อมูล <span class="en">Questioning &amp; Probing</span></div><div class="words"><span class="w x">ซักไซ้</span><span class="w x">ถามซักไซ้</span><span class="w x">ถามนั่นถามนี่</span><span class="w x">เลียบเคียงถาม</span><span class="w">สอดรู้สอดเห็น</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การกดดันและเค้นเอาคำตอบ <span class="en">Pressuring &amp; Interrogating</span></div><div class="words"><span class="w x">คาดคั้น</span><span class="w x">คาดคั้นเสียงแข็ง</span><span class="w x">คะยั้นคะยอ</span><span class="w">สำทับ <small>(กำชับ/บอกซ้ำ/ย้ำ)</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การตั้งคำถามกับตัวเอง <span class="en">Self-Questioning</span></div><div class="words"><span class="w x">พร่ำถามตัวเอง</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การบ่นและการพูดฉับพลัน <span class="en">Complaining &amp; Abrupt Speech</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การบ่น ระบาย หรือเผลอ/พูดฉับพลันโดยไม่ตั้งใจ</div><div class="hint">จุดติเจน (รับ): โพล่ง/หลุดปาก/พลั้งปาก = เผลอพูด ไม่ใช่บ่น · กระแอมกระไอ = ส่งสัญญาณ</div>
+        <div class="leaf"><div class="leaf-h">🍃 การพร่ำบ่นและระบาย <span class="en">Complaining &amp; Venting</span></div><div class="words"><span class="w x">บ่น <span class="ph">[...]</span> เสียยืดยาว</span><span class="w x">บ่นพึมพำ <small>⚡+ม.4 พูดเบา</small></span><span class="w x">พร่ำบ่นนั่นนี่</span><span class="w x">พร่ำพูดพร่ำบอก</span><span class="w x">พร่ำเอ่ย</span><span class="w x">พร่ำเรียก <small>เจนว่าเป็นการเรียก · แคลร์คงกลุ่มพร่ำ</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การพูดแทรกและเผลอพูด <span class="en">Abrupt &amp; Accidental Speech</span></div><div class="words"><span class="w x">โพล่งออกมา</span><span class="w x">โพล่งขึ้น</span><span class="w x">หลุดปาก</span><span class="w x">พลั้งปาก</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การส่งสัญญาณขัดจังหวะ <span class="en">Interrupting Signals</span></div><div class="words"><span class="w x">กระแอมกระไอ <small>⚡+ม.4 ลมหายใจ</small></span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การด่า/ตำหนิ/ขัดแย้ง <span class="en">Scolding &amp; Conflict</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การด่า ตำหนิ ประชด โต้แย้ง หรือขัดแย้งด้วยคำพูด</div>
+        <div class="leaf"><div class="leaf-h">🍃 การดุด่าและระเบิดอารมณ์ <span class="en">Scolding &amp; Outbursts</span></div><div class="words"><span class="w x">ด่าทอ <span class="ph">[ชื่อคน]</span> อย่างสาดเสียเทเสีย</span><span class="w x">ดุด่า</span><span class="w x">ตวาดเสียงดังกึกก้อง <small>⚡+ม.4 ตะโกน</small></span><span class="w x">ไล่ตะเพิด</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การประชดประชันและเสียดสี <span class="en">Sarcasm &amp; Spite</span></div><div class="words"><span class="w x">กระแนะกระแหน</span><span class="w x">ตัดพ้อปีนเกลียว</span><span class="w x">พูดจี้ใจดำ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การโต้แย้งและปฏิเสธ <span class="en">Arguing &amp; Rejection</span></div><div class="words"><span class="w x">โต้กลับด้วยเสียงเฉียบขาด</span><span class="w x">ปฏิเสธเสียงแข็ง</span><span class="w">คัดค้าน</span><span class="w">เธอไม่ต่อปากต่อคำอะไรด้วยทั้งนั้น</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การตำหนิและกล่าวหา <span class="en">Accusing &amp; Warning</span></div><div class="words"><span class="w">ปรักปรำ</span><span class="w x">ปรามเสียงเรียบ</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การพูดคุย/บอกเล่า <span class="en">Speaking &amp; Telling</span></div><div class="sub-d">กิริยาการพูดคุย เล่า หรือสื่อสารกับผู้อื่น</div>
+        <div class="leaf"><div class="leaf-h">🍃 ลีลาและจังหวะการพูด <span class="en">Manner &amp; Pace</span></div><div class="words"><span class="w x">พูดรัวเร็ว</span><span class="w x">เล่าเสียงเนิบๆ</span><span class="w x">พูดห้วนๆ <small>⚡+ม.4</small></span><span class="w x">อ้ำอึ้ง <small>⚡+ม.4 พูดติดขัด</small></span><span class="w">ไม่ปริปาก</span><span class="w">เอ่ยปาก</span><span class="w x">ละล่ำละลัก <small>⚡+ม.4 พูดติดขัด</small></span><span class="w">ท่าทีอึกอัก</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 เจตนาและเนื้อหา <span class="en">Intent &amp; Content</span></div><div class="hint">✅ พี่กันยืนยัน: “บอกใบ้” = คำแปลของ “บุ้ยใบ้” ไม่ใช่คำแยก (เศษ import)</div><div class="words"><span class="w x">พูดอ้อมค้อม</span><span class="w x">กลบเกลื่อน</span><span class="w x">เกลี้ยกล่อม</span><span class="w">บุ้ยใบ้ <small>(บอกใบ้)</small></span><span class="w">เออออ <small>(คล้อยตาม)</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การกล่าวขานและข่าวลือ <span class="en">Gossip &amp; Reputation</span></div><div class="words"><span class="w x">ซุบซิบนินทา</span><span class="w x">เล่าลือกัน</span><span class="w">ขนานนาม</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การหว่านล้อม/เชิงชู้สาว <span class="en">Flirting &amp; Seduction</span> <span class="tag t-genre">อีโรติก · ทั่วไป</span></div><div class="sub-d">การพูดจาหรือแสดงออกเชิงเกี้ยวพา หว่านเสน่ห์</div><div class="words"><span class="w x">พูดจาแทะโลม</span><span class="w">หว่านเสน่ห์ <small>(เชิงพฤติกรรม)</small></span></div></div>
+      <div class="sub"><div class="sub-h">🌿 การปฏิสัมพันธ์ทางสังคม <span class="en">Social Presence &amp; Gathering</span> <span class="tag t-new">🔄 ปรับ</span></div><div class="sub-d">การมีปฏิสัมพันธ์/อยู่ร่วมกับผู้อื่นในสังคม (ไม่ใช่คำพูด)</div><div class="hint">กิ่งนี้ <b>ไม่ใช่เสียงเลย</b> = หลักฐานว่าย้ายทั้งกิ่ง 5 ไปหมวด 4 ไม่ได้ · ดึง จัดแจง/จับจอง/ซุกซ่อน ออก (จัดการสิ่งของ)</div><div class="words"><span class="w">เยี่ยมเยียน</span><span class="w">ห้อมล้อม</span></div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 การจัดการสิ่งของและพื้นที่ <span class="en">Managing Objects &amp; Space</span></div><div class="sub-d">การจัดการ ครอบครอง หรือซ่อนสิ่งของ/พื้นที่ (ไม่ใช่ปฏิสัมพันธ์กับคน)</div><div class="hint">🚨 จุดติเจน: จัดแจง/จับจอง/ซุกซ่อน = จัดการสิ่งของ ไม่ใช่สังคม · <b>แคลร์ตั้งกิ่งไว้ในหมวด 3</b> (แบบบึ่งรถ) · ✅ <b>พี่กันเคาะ: เก็บในหมวด 3 ก่อน</b></div><div class="words"><span class="w">จัดแจง</span><span class="w">จับจอง</span><span class="w">ซุกซ่อน</span></div></div>
+    </div>
+  </details>
+
+  <!-- 6 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๖</span><span class="ttl">ท่าทางและภาพรวมร่างกาย<span class="en">Posture &amp; Full Body</span></span><span class="cnt">42 คำ · ซอยลึก</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">ท่าทางของร่างกายโดยรวม การจัดวางตัว การเปลี่ยนอิริยาบถ และจังหวะการเคลื่อนไหว</p>
+      <div class="note rule" style="margin:6px 0 10px;font-size:12.5px">🚨 <b>แคลร์ค้านเจน 1 จุด:</b> “แสดงอารมณ์โกรธเกรี้ยวรุนแรง” เจนเสนอลบ (คำนามธรรม) · <b>แคลร์คงไว้ตามกฎเหล็ก</b> (คำต้นฉบับ) แล้วโยง ⚡ สีหน้า/อารมณ์แทน</div>
+      <div class="sub"><div class="sub-h">🌿 ท่านั่งและท่าเฉพาะจุด <span class="en">Static Postures</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">ท่าที่อยู่กับที่ นั่ง ยอง หรือทิ้งตัว</div>
+        <div class="leaf"><div class="leaf-h">🍃 การนั่งพักและทิ้งตัว <span class="en">Relaxing &amp; Dropping Down</span></div><div class="words"><span class="w">ซุกตัวอยู่ในโซฟา</span><span class="w">ทรุดตัวลงนั่ง</span><span class="w">ทรุดตัวลงนั่งยอง</span><span class="w">ทิ้งตัวลงบนโซฟา</span><span class="w">นั่งห้อยขา</span><span class="w">นั่งปักหลัก</span><span class="w">นั่งยอง</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การห่อตัวและป้องกันตัว <span class="en">Defensive &amp; Shrinking Postures</span> <span class="tag t-genre">ทริลเลอร์ · ดราม่า</span></div><div class="leaf-d">ท่านั่งหดตัว ห่อตัว ป้องกันตัว (อารมณ์หวาดกลัว/ถูกกดดัน)</div><div class="hint"><b>เจนเสนอ</b> — สำคัญเวลาเขียนตัวละครหวาดกลัว/โดนกดดัน</div><div class="words"><span class="w">นั่งคุดคู้</span><span class="w">นั่งตัวลีบ</span><span class="w">นั่งห่อตัว</span><span class="w">ห่อไหล่</span><span class="w">ชันเข่าขึ้น</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การเปลี่ยนอิริยาบถ/ขยับตัว <span class="en">Body Transitions</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การเปลี่ยนจากท่าหนึ่งไปอีกท่า ลุก หัน หมุน</div>
+        <div class="leaf"><div class="leaf-h">🍃 การลุกและยืดตัว <span class="en">Rising &amp; Standing Up</span></div><div class="words"><span class="w"><span class="hl">ผุดลุกขึ้น</span>จากเตียง</span><span class="w">ผุดลุกขึ้นยืน</span><span class="w"><span class="hl">เด้งตัวขึ้น</span>จากเตียง</span><span class="w"><span class="hl">ยันตัวขึ้น</span>นั่ง</span><span class="w">ยืดตัวขึ้น</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การหมุนและการเปลี่ยนทิศ <span class="en">Turning &amp; Rotating</span></div><div class="words"><span class="w">หมุนตัวกลับ</span><span class="w">หมุนติ้ว</span><span class="w m">หันขวับไป <small>บ้านหลัก: หันหน้าและชะโงก ก.2</small></span><span class="w m">ชะโงกหน้า <small>บ้านหลัก: หันหน้าและชะโงก ก.2</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การย่อและขยับตัวเล็กน้อย <span class="en">Lowering &amp; Small Shifts</span></div><div class="words"><span class="w">ย่อตัวลง</span><span class="w">เขยื่อน</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 จังหวะและลีลาการเคลื่อนไหว <span class="en">Tempo, Breaks &amp; Movement Quality</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">ความเร็ว จังหวะ การหยุด และสไตล์ของการเคลื่อนไหว</div><div class="hint">เจนขยายชื่อเพิ่ม “Movement Quality” ครอบสไตล์ (คล่องแคล่ว/นุ่มนวล ≠ การหยุด) · แคลร์รับ</div>
+        <div class="leaf"><div class="leaf-h">🍃 การหยุดชะงักกะทันหัน <span class="en">Sudden Stops &amp; Freezing</span></div><div class="words"><span class="w">ชะงัก</span><span class="w">ชะงักกลางคัน</span><span class="w">หยุดกึก</span><span class="w">ยืนนิ่งขึง</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ปฏิกิริยาถอยร่น <span class="en">Recoiling</span></div><div class="words"><span class="w">ผงะถอยหลัง</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ลีลาและสไตล์การเคลื่อนไหว <span class="en">Movement Style</span></div><div class="words"><span class="w">คล่องแคล่วกระฉับกระเฉง</span><span class="w">กิริยาอันนุ่มนวล</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การใช้ร่างกายเข้าปะทะและขัดขืน <span class="en">Physical Clashes &amp; Resistance</span> <span class="tag t-new">🔄 สับลึก</span></div><div class="sub-d">การใช้ทั้งร่างเข้าปะทะ ขัดขืน หรือเกร็งต้าน</div>
+        <div class="leaf"><div class="leaf-h">🍃 การดิ้นรนและเกร็งต้าน <span class="en">Struggle &amp; Tensing</span></div><div class="words"><span class="w">ดิ้นรนขัดขืน</span><span class="w">เกร็งตัวแข็งขืน</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 การใช้ร่างกายปะทะ <span class="en">Body Strikes</span></div><div class="words"><span class="w m">กระทุ้งเข่า <small>+การต่อสู้</small></span><span class="w">แอ่นอก <small>(เชิงท้าทาย)</small></span><span class="w m">แสดงอารมณ์โกรธเกรี้ยวรุนแรง <small>🚨 เจนเสนอลบ · แคลร์คงไว้ +⚡สีหน้า</small></span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 ท่านอนและการหยุดนิ่ง <span class="en">Lying &amp; Stillness</span> <span class="tag t-new">🔄 ย้ายจากกิ่ง 8 เดิม</span></div><div class="sub-d">ท่านอนหรือสภาวะที่ร่างกายไม่เคลื่อนไหว</div>
+        <div class="leaf"><div class="leaf-h">🍃 การนอนแผ่และผ่อนคลาย <span class="en">Sprawling &amp; Relaxed Lying</span></div><div class="words"><span class="w">นอนแผ่หลา</span><span class="w">หงายหลังลงไปนอนแผ่หลา</span><span class="w">นอนเหยียดยาว</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ความแข็งทื่อและไร้การเคลื่อนไหว <span class="en">Rigidity &amp; Immobility</span></div><div class="leaf-d">ใช้กับสภาพศพ ช็อก หรือหมดสติ</div><div class="words"><span class="w">นอนตัวแข็งทื่อ</span><span class="w">นอนหงายไม่ไหวติง</span><span class="w">นอนหงายนิ่งสนิทไม่ไหวติง</span><span class="w">แน่นิ่ง</span><span class="w">แข็งทื่อ</span></div></div>
+      </div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 ตำแหน่งและระยะห่าง <span class="en">Positioning &amp; Distance</span></div><div class="sub-d">ตำแหน่งของร่างกายที่อ้างอิงกับคน/สิ่งอื่น (ไม่ใช่ท่าทางในตัวเอง)</div><div class="hint">🚨 จุดติเจน: “ขนาบข้าง” ไม่ใช่ท่านั่ง = ตำแหน่งอ้างอิง → ยกออก · แคลร์ตั้งกิ่งใหม่ในก.6</div><div class="words"><span class="w">ขนาบข้าง</span></div></div>
+    </div>
+  </details>
+
+  <!-- 7 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๗</span><span class="ttl">สัมผัสเชิงใกล้ชิด<span class="en">Intimate Touch</span></span><span class="cnt">6 คำ · ซอยลึก</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">การสัมผัสเชิงความใกล้ชิด อ่อนโยน หรือแนบเนื้อ — ต่างจาก “หยิบจับ/ใช้กำลัง” (กิ่ง 3)</p>
+      <div class="hint" style="margin-bottom:8px">🔄 <b>พี่กันเคาะ: ไม่ยุบ · ปรับนิยามเป็น “สัมผัสเชิงใกล้ชิด”</b> · 🔄 สับ 🍃 3 กิ่ง (เจนเสนอ) · 🚨 <b>ปลด ⚡ “นิ้วมือห้อยเรี่ยพื้น” ออก (เจนทัก)</b> = หมดแรง ไม่ใช่สัมผัสใกล้ชิด → อยู่กิ่ง 3 อย่างเดียว · <span class="tag t-genre">อีโรติก · ทั่วไป</span></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 การโอบกอดและแนบพิง <span class="en">Embracing &amp; Cuddling</span></div><div class="sub-d">การกอด แนบ ซบ หรือทาบกายอย่างใกล้ชิด</div><div class="words"><span class="w">แนบชิด</span><span class="w">โผเข้าซบอก</span><span class="w m">โอบอุ้ม <small>บ้านหลัก: ช่วยเหลือ ก.3</small></span><span class="w">ทาบทับ</span></div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 การเล้าโลมและสัมผัสยั่วยวน <span class="en">Sensual &amp; Seductive Touch</span> <span class="tag t-genre">อีโรติก</span></div><div class="sub-d">การสัมผัสเชิงเย้ายวน เล้าโลม</div><div class="hint">รอคำ: ปลายนิ้วไล้เบา ๆ · สัมผัสวาบหวาม</div><div class="words"><span class="w m">ริมฝีปากซุกไซ้ <small>บ้านหลัก: ปากและริมฝีปาก ก.2</small></span></div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 การคลายสัมผัสและการผละออก <span class="en">Releasing &amp; Pulling Away</span></div><div class="sub-d">การคลายอ้อมกอด ปล่อย หรือผละออก</div><div class="words"><span class="w m">คลายวงแขนที่รัดตัวเธอ <small>บ้านหลัก: ช่วยเหลือ ก.3</small></span></div></div>
+    </div>
+  </details>
+
+  <!-- 8 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๘</span><span class="ttl">ปฏิกิริยาตอบสนองทางกาย<span class="en">Involuntary Body Reactions</span></span><span class="cnt">🆕 🌟 รอเก็บคำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">กริยาที่ร่างกายแสดงออกเองโดยอัตโนมัติ ควบคุมไม่ได้ เพื่อตอบสนองอารมณ์หรือสภาพแวดล้อม (อาการชั่วขณะ ไม่ใช่ลักษณะประจำตัว)</p>
+      <div class="hint" style="margin-bottom:8px"><b>เจนเสนอ (แคลร์เห็นด้วยเต็ม · หลุมใหญ่)</b> · 🚨 นิยามกันทับหมวด 2: “อาการชั่วขณะตอบอารมณ์” (dynamic) ไม่ใช่ “ลักษณะร่างกาย” (static ของหมวด 2)</div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เหงื่อและอุณหภูมิ <span class="en">Sweat &amp; Temperature</span> <span class="tag t-genre">ทั่วไป · อีโรติก</span></div><div class="sub-d">อาการทางกายเรื่องเหงื่อ ความร้อน-เย็นของร่างกาย จากอารมณ์</div><div class="hint">ตัวอย่าง: เหงื่อแตกซั่ก · ตัวเย็นเฉียบ · หน้าแดงก่ำ · เจนเสนอ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 การสั่นและการกระตุก <span class="en">Shaking &amp; Spasms</span> <span class="tag t-genre">ทริลเลอร์ · สยอง</span></div><div class="sub-d">อาการสั่น กระตุก หรือขนลุก ที่ควบคุมไม่ได้</div><div class="hint">ตัวอย่าง: ตัวสั่นเทา · สะดุ้งโหยง · ขนลุกซู่ · ริมฝีปากสั่น · เจนเสนอ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 ระบบหายใจ <span class="en">Breathing Patterns</span> <span class="tag t-genre">ทั่วไป · อีโรติก · ทริลเลอร์</span></div><div class="sub-d">จังหวะและอาการของการหายใจที่เปลี่ยนตามอารมณ์</div><div class="hint">ตัวอย่าง: หอบหายใจฮัก · หายใจติดขัด · อกกระเพื่อมขึ้นลง · เจนเสนอ · 🔗 บางคำโยง ม.4</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 การหลั่งของเหลวจากอารมณ์ <span class="en">Tears &amp; Bodily Secretions</span> <span class="tag t-genre">ดราม่า · อีโรติก · ทั่วไป</span></div><div class="sub-d">ปฏิกิริยาของร่างกายที่ขับของเหลวออกมาเพราะอารมณ์หรือสิ่งเร้าฉับพลัน</div><div class="hint"><b>เจนเสนอ (แคลร์รับ)</b> — นักเขียนใช้บ่อย · ตัวอย่าง: น้ำตาร่วงเผาะ · เลือดกำเดาไหล · น้ำลายสอ · น้ำตาคลอเบ้า</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- 9 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๙</span><span class="ttl">การต่อสู้และการใช้กำลัง<span class="en">Combat &amp; Physical Violence</span></span><span class="cnt">🆕 3 คำ ⚡</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">กริยาการปะทะ ทำร้ายร่างกาย ต่อสู้ ป้องกัน หรือรับความเสียหายจากการปะทะ</p>
+      <div class="hint" style="margin-bottom:8px"><b>เจนเสนอ (แคลร์รับ)</b> — ดึงคำต่อสู้ต้นฉบับ 3 คำ (ฟาดฟัน · กระทุ้งเข่า · พุ่งกระแทกท้อง) มารวมแบบ ⚡ คงบ้านเดิม · <b>ชก/ต่อย/เตะ เอาออกแล้ว</b> (พี่กันสั่ง “มันคือความเห็น”) · <span class="tag t-genre">แฟนตาซี · ทริลเลอร์ · ไซไฟ</span></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 โจมตีและทำร้าย <span class="en">Attacking &amp; Striking</span></div><div class="sub-d">การชก เตะ ฟาด หรือปะทะเข้าใส่</div><div class="words"><span class="w m">ฟาดฟัน <small>บ้านหลัก: การขยับแขนและมือ</small></span><span class="w m">กระทุ้งเข่า <small>บ้านหลัก: ใช้ร่างกายเข้าปะทะ</small></span><span class="w m">พุ่งเข้าไปกระแทกท้อง <small>บ้านหลัก: การวิ่ง</small></span></div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 ป้องกันและหลบหลีก <span class="en">Defending &amp; Dodging</span></div><div class="sub-d">การรับ ปัด หลบ หรือกันการโจมตี</div><div class="hint">ตัวอย่าง: เบี่ยงตัวหลบ · ยกแขนขึ้นกัน · ปัดป้อง · เจนเสนอ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 ปฏิกิริยาเมื่อถูกโจมตี <span class="en">Impact Reactions &amp; Knockbacks</span> <span class="tag t-genre">แอ็กชัน · แฟนตาซี · ทริลเลอร์</span></div><div class="sub-d">กริยาทางกายที่เกิดจากการถูกกระแทก หรือรับความเสียหายทางกายภาพ</div><div class="hint"><b>เจนเสนอ (แคลร์รับ)</b> — ฉากสู้ต้องมี “แอ็กชันของคนที่โดนตี” · ตัวอย่าง: ผงะหงาย · ร่างกระเด็นไปตามแรง · ทรุดฮวบลงกับพื้น · สำลักเลือด</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- CROSS -->
+  <h2 class="sec"><span class="n">🔗</span> โยงข้ามหมวด (พี่กันเคาะ)</h2>
+  <div class="note"><b>กิ่ง 5 การสื่อสาร → หมวด 4 (เสียง):</b> คำพูดที่มีเสียง (ด่า/ตวาด/บ่น/ซักไซ้/พูดรัวเร็ว ฯลฯ) = <b>การกระทำอยู่หมวด 3 + ตัวเสียงโยงหมวด 4 · ไม่ย้าย</b> (schema ยังไม่รองรับ subpath ข้ามหมวด — จดไว้)</div>
+  <div class="cards">
+    <div class="cd"><div class="link-row"><span class="word">บ่นพึมพำ · กระแอมกระไอ · พูดห้วนๆ · อ้ำอึ้ง · ละล่ำละลัก · ตวาดเสียงดังกึกก้อง</span><span class="arrow">↔</span><span class="to">อยู่ทั้งหมวด 3 และ 4 ในคลังจริงแล้ว = ตัวอย่างจริงของ multi-category</span></div></div>
+    <div class="cd"><div class="link-row"><span class="word">ตบเข่าฉาด</span><span class="to">การขยับแขนและมือ (ม.3)</span><span class="arrow">→</span><span class="tag t-cross">หมวด 4 เสียง</span><span class="why">เป็นแอ็กชันที่ทำให้เกิดเสียง (คู่กับที่หมวด 4 โยงกลับมา)</span></div></div>
+  </div>
+
+  <!-- JUNK -->
+  <h2 class="sec"><span class="n">⚠</span> รอพี่กันเคาะ · เศษ import ในคลัง</h2>
+  <div class="tech">
+    <p class="prose" style="margin:0"><b>1. “เน้นทิศทางของหัว เงี่ยหูฟัง”</b> → คำจริง = <b>เงี่ยหูฟัง</b> (ตัดคำบรรยายกิ่งที่หลุดมาออก) · <b>2. “สำทับ(กำชับ, บอกซ้ำ, ย้ำ)”</b> → คำ = <b>สำทับ</b> ความหมาย = กำชับ/บอกซ้ำ/ย้ำ · <b>3. “บอกใบ้”</b> = ✅ พี่กันยืนยัน = คำแปล/ความหมายของ “บุ้ยใบ้” (ต้นฉบับ “บุ้ยใบ้(แปล:บอกใบ้)”) ไม่ใช่คำแยก · <b style="color:var(--brick)">เศษ import — เคาะแล้ว รอลงมือแก้ตอนอัปคลังจริง (กฎเหล็ก: แตะคำต้นฉบับต้องถาม)</b></p>
+  </div>
+
+  <!-- GEMINI -->
+  <h2 class="sec"><span class="n">🤝</span> ประเมินข้อเสนอเจน (Gemini)</h2>
+  <div class="prose">
+    <p><b>✅ รับ:</b> ยุบท่านอน (กิ่ง 8) → ย่อยใต้กิ่ง 6 · labels ใหม่ 3 อัน (Eye Movements &amp; Gestures · Stumbling &amp; Unsteady · Physical Clashes &amp; Resistance) · กิ่งใหม่ <b>ปฏิกิริยาตอบสนองทางกาย</b> 🌟 · กิ่งใหม่ <b>การต่อสู้</b></p>
+    <p><b>✅ รับ + สับลึกกิ่ง 1/2 (เจน + เวิร์กโฟลว์ 3 มุม · พี่กันสั่ง “ซอยไปเลย”):</b> กิ่ง 1 “ทิศทางและการสังเกต” 17 คำแบน → สับ <b>5 กิ่งแขนง</b> + แขนงอารมณ์ทางตาเพิ่มเป็น <b>12 แขนง</b> · กิ่ง 2 เครื่องหน้าสับตามอวัยวะ (5) · ศีรษะสับตามหน้าที่ (5) · สีหน้าเพิ่มแขนงอารมณ์ (9) · เหตุผล: แกน “อารมณ์” คือสิ่งที่นักเขียนค้นจริง → ซอยเผื่อ นิยามคุมให้ AI แยกถูก</p>
+    <p><b>✳️ แคลร์เสนอเองเพิ่ม (ไม่ตามเจนอย่างเดียว):</b> การสบตาและหลบตา 🌟 · ยินดี/ตาเป็นประกาย · มองอย่างรักใคร่ · ดูถูก/เหยียดหยาม · ตาปรือ/ง่วง (ทางตา) · จมูกและการสูดดม · สีหน้าเศร้า/เยาะเย้ย/เขินอาย (บนหน้า) — เติมขั้วอารมณ์ที่คลัง+เจนยังไม่มี</p>
+    <p><b>⚠️ ต่างจากเจน (พี่กันเคาะตามแคลร์):</b> 🔴 <b>กิ่ง 5</b> เจนเสนอย้ายทั้งกิ่งไปหมวด 4 · แคลร์ค้าน → เก็บไว้ + โยง 🔗 (คำต้นฉบับ ~45 คำห้ามย้าย · กิ่ง 5.6 ไม่ใช่เสียง · หมวด 4 เพิ่งปิด) · 🟡 <b>กิ่ง 7 สัมผัส</b> เจนเสนอยุบ · แคลร์ค้าน → เก็บ ปรับนิยามเป็น “ใกล้ชิด” · <b>การต่อสู้</b> เจน “ดึงคำออกมา” (ย้าย) · แคลร์ทำ ⚡ คงบ้านเดิม</p>
+  </div>
+
+  <!-- DISCUSSION -->
+  <h2 class="sec"><span class="n">💭</span> อภิปราย · เหตุผลจัดโครง</h2>
+  <div class="prose disc">
+    <p><b>๑ ทำไม 9 กิ่งหลัก:</b> โครงพี่กันดีอยู่แล้ว (จัดตาม “ส่วนของร่างกายที่ใช้”: ตา → หน้า/หัว → แขน/มือ → ขา → สังคม → ท่ารวม) · แคลร์+เจนเสริม 2 กิ่งที่ขาด (ปฏิกิริยาอัตโนมัติ · การต่อสู้) + ยุบท่านอนเข้าท่าทาง</p>
+    <p><b>๒ ทำไมเก็บกิ่ง 5 ไว้ (ไม่ย้าย):</b> “การพูด” = <b>การกระทำ</b> อย่างหนึ่ง (ม.3) ส่วน “เสียงที่ออกมา” อยู่ ม.4 — คำเดียวมี 2 มิติ → <b>โยงข้าม ไม่ใช่ย้าย</b> (ตรงหลักพี่กัน “โยงได้หมด”)</p>
+    <p><b>๓ ทำไมแยกปฏิกิริยาอัตโนมัติจากหมวด 2:</b> หมวด 2 = ลักษณะร่างกาย (static · เป็นตลอด) · กิ่งนี้ = อาการชั่วขณะที่ตอบอารมณ์ (dynamic · เกิดแล้วหาย) เช่น “หน้าแดงก่ำ” ตอนเขิน</p>
+    <p><b>๔ ทำไมตั้งกิ่งต่อสู้แยก:</b> สายแอ็กชัน/แฟนตาซีใช้คำต่อสู้เยอะ แต่เดิมกระจายใต้ “ใช้มือ/ใช้ขา” หายาก → รวมที่เดียว (⚡ ไม่ย้ายทิ้ง)</p>
+  </div>
+
+  <!-- STEPS -->
+  <h2 class="sec"><span class="n">🔜</span> ลำดับงานถัดไป</h2>
+  <ol class="steps">
+    <li><b>พี่กันอ่านทวน + เคาะ</b> — เศษ import (เงี่ยหูฟัง/สำทับ/บอกใบ้) · คำ “...” (บ่น…เสียยืดยาว · ดีดปลายเล็บยาว…แปร๊ด) แทนด้วยอะไร</li>
+    <li><b>ส่ง md ให้เจนวิเคราะห์ต่อ</b></li>
+    <li><b>เกลาหมวด 5–9 ต่อ</b> (มาตรฐานเดียวกัน) · เพิ่ม cat3 เข้า <code>gen_branches.py</code> · ลงคลังจริง (ไม่ลบวลีเดิม · ถอด tag · โยงข้ามหมวดตอน schema รองรับ)</li>
+  </ol>
+
+  <p class="foot">คลังคำ · Word Bank — ร่างเกลาหมวด ๓ กริยา ท่าทาง · 9 กิ่งหลัก · ยังไม่แตะคลังจริงจนพี่กันโอเค</p>
+</div>
+</body>
+</html>
