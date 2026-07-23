@@ -6,6 +6,7 @@
 <title>ร่างเกลาหมวด 4 · เสียง — คลังคำ</title>
 </head>
 <body>
+<title>ร่างเกลาหมวด 4 · เสียง — คลังคำ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 :root{
@@ -106,6 +107,8 @@ details.major[open]>summary .arw{transform:rotate(90deg)}
 .w.m{border-color:color-mix(in srgb,var(--gold) 50%,var(--line)); box-shadow:inset 3px 0 0 var(--gold)}
 .w.x{border-color:color-mix(in srgb,var(--blue) 50%,var(--line)); box-shadow:inset 3px 0 0 var(--blue)}
 .w small{color:var(--muted); font-size:11px}
+.w .hl{background:color-mix(in srgb,var(--gold) 30%,transparent); border-radius:3px; padding:0 2px; font-weight:600; box-decoration-break:clone}
+.w .ph{color:var(--brick); font-weight:700; font-size:12px}
 .empty{font-size:12.5px; color:var(--muted); font-style:italic; background:color-mix(in srgb,var(--green) 8%,transparent); border:1px dashed color-mix(in srgb,var(--green) 40%,transparent); border-radius:8px; padding:5px 10px; display:inline-block; margin-top:2px}
 
 .cards{display:grid; gap:9px; margin:6px 0}
@@ -124,8 +127,14 @@ details.major[open]>summary .arw{transform:rotate(90deg)}
 .disc p b{color:var(--rose-deep)}
 .tech{background:color-mix(in srgb,var(--brick) 7%,var(--card)); border:1px solid color-mix(in srgb,var(--brick) 22%,var(--line)); border-radius:11px; padding:13px 16px; margin:10px 0}
 .tech h3{color:var(--brick); margin-top:2px}
-.plus-list{display:flex; flex-wrap:wrap; gap:7px; margin:6px 0}
-.plus-list .w{font-size:14.5px}
+
+.mtable{width:100%; border-collapse:collapse; margin:8px 0; font-size:13px}
+.mtable th,.mtable td{text-align:left; padding:7px 9px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+.mtable th{color:var(--rose-deep); font-weight:700; border-bottom:2px solid var(--line)}
+.mtable td:first-child{font-weight:600; color:var(--ink)}
+.mtable .home{color:var(--muted)}
+.mtable .add{color:var(--green); font-weight:600}
+.mwrap{overflow-x:auto}
 
 ol.steps{list-style:none; counter-reset:s; padding:0; margin:8px 0}
 ol.steps li{counter-increment:s; position:relative; padding:11px 14px 11px 48px; background:var(--card); border:1px solid var(--line); border-radius:11px; margin:8px 0; font-size:14px; color:var(--ink-soft)}
@@ -145,13 +154,15 @@ ol.steps li b{color:var(--ink)}
     <p>คำที่ทำให้คนอ่าน “ได้ยิน” เสียงในฉาก — เพิ่มมิติและความสมจริงให้เรื่อง</p>
     <div class="stats">
       <div class="stat"><b>69</b><span>คำ (ในหมวด 4)</span></div>
-      <div class="stat"><b>7</b><span>กิ่งหลัก</span></div>
-      <div class="stat"><b>6</b><span>กิ่งใหม่รอคำ</span></div>
-      <div class="stat"><b>3</b><span>คำติดหลายกิ่ง</span></div>
+      <div class="stat"><b>8</b><span>กิ่งหลัก</span></div>
+      <div class="stat"><b>30</b><span>กิ่งใหม่รอคำ</span></div>
+      <div class="stat"><b>13</b><span>คำติดหลายกิ่ง</span></div>
     </div>
   </header>
 
   <div class="note rule"><b>📛 กฎชื่อกิ่ง:</b> คำธรรมดาสื่อตรง ไม่ใช้คำสวย + มีคำบริบท (เรื่องเสียงมีคำว่า “เสียง/พูด”) · <b>📝 กฎนิยาม:</b> นิยาม = เขียนตรง ๆ สะอาด (ขึ้นเว็บจริง) · <b>ความเห็น/เหตุผล/ใครเสนอ = แยกไว้บรรทัด 🗨 หมายเหตุ เก็บไว้เสมอ</b> · <b>🏷 tag แนวนิยาย</b> ใส่ในรายงานได้ แต่ถอดออกก่อนขึ้น Supabase/เว็บ/AI · <b>ห้ามลบ/ย่อ/ดัดแปลงวลีต้นฉบับ</b> — แตกคำได้แค่เพิ่มคำใหม่แยก วลีเดิมอยู่ครบ</div>
+
+  <div class="note"><b>🆕 รอบ 23 ก.ค. (พี่กันเคาะ “เอาทั้งหมด เยอะไว้ก่อน”):</b> รวม <b>เจน + แคลร์ + เวิร์กโฟลว์หลายมุม</b> · เติมกิ่งแขนงกิ่ง 5 · แตกกิ่ง 6/7 · ตั้งกิ่งหลัก 8 (ย้ายฝูงชนมา) · <b>🔁 รอบสอง (เจนติคืน):</b> +ไอ/สำลัก · ผิวปาก · เสียงบิดเบี้ยวเร้นลับ · งอกกิ่ง 8 (โกลาหล/สนามรบ · ที่กว้างเวิ้งว้าง · ธรรมชาติแวดล้อม) · <b>✅ รอบตรวจคำเดิม:</b> พบ <b>9 คำเดิมควรติดกิ่งใหม่</b> (⚡ คงบ้านเดิม) → กิ่งใหม่ 6 กิ่งมีคำจริงแล้ว ไม่ว่างเปล่า</div>
 
   <div class="legend">
     <span class="tag t-new">🆕 กิ่งใหม่ (รอคำ)</span>
@@ -159,8 +170,9 @@ ol.steps li b{color:var(--ink)}
     <span class="tag t-cross">🔗 โยงข้ามหมวด</span>
   </div>
 
-  <h2 class="sec"><span class="n">🌳</span> โครงต้นไม้ใหม่ · 7 กิ่งหลัก</h2>
-  <p style="font-size:13px;color:var(--muted);margin:0 0 4px">แตะหัวกิ่งเพื่อยุบ/กาง · <b>นิยาม</b>=สะอาด (ขึ้นเว็บ) · <b>🗨</b>=หมายเหตุ (หลังบ้าน) · กิ่งใหม่ระบุคนเสนอ (<b style="color:var(--rose-deep)">เจน</b>/<b style="color:var(--rose-deep)">แคลร์</b>)</p>
+  <h2 class="sec"><span class="n">🌳</span> โครงต้นไม้ใหม่ · 8 กิ่งหลัก</h2>
+  <p style="font-size:13px;color:var(--muted);margin:0 0 4px">แตะหัวกิ่งเพื่อยุบ/กาง · <b>นิยาม</b>=สะอาด (ขึ้นเว็บ) · <b>🗨</b>=หมายเหตุ (หลังบ้าน) · กิ่งใหม่ระบุคนเสนอ · <span class="tag t-multi" style="font-size:11px;padding:1px 7px">⚡</span> = คำเดิมที่ติดกิ่งใหม่เพิ่ม (คงบ้านเดิม)</p>
+  <p style="font-size:12.5px;color:var(--muted);margin:0 0 10px;line-height:1.7">สัญลักษณ์ในคำ: <span class="hl" style="padding:0 3px;border-radius:3px">ไฮไลต์</span> = คำเน้นที่พี่กันวงเล็บติดไว้ · <b>(ความหมาย)</b> = ช่อง meaning · <span class="ph" style="color:var(--brick);font-weight:700">[ชื่อคน]</span> = ช่องเว้นที่ตั้งใจ (แทน “...”)</p>
 
   <!-- 1 -->
   <details class="major" open>
@@ -173,6 +185,8 @@ ol.steps li b{color:var(--ink)}
       <div class="sub"><div class="sub-h">🌿 เสียงแตกหักและตกกระทบ <span class="en">Breaking &amp; Impact Sounds</span></div><div class="sub-d">เสียงของหล่น กระแทก หรือพังทลาย</div><div class="words"><span class="w">โพละ</span><span class="w">หล่นตุ้บ</span><span class="w">ครึกโครม</span></div></div>
       <div class="sub"><div class="sub-h">🌿 เสียงจากการใช้งานวัตถุ <span class="en">Object Handling Sounds</span></div><div class="sub-d">เสียงที่เกิดจากการหยิบจับ เปิด ปิด หรือใช้งานวัตถุ</div><div class="hint">เจนตั้งชื่อ “เสียงเปิดปิดวัตถุ” · ปรับให้กว้างขึ้นครอบการใช้งานทุกแบบ</div><div class="words"><span class="w">ปิดดังปัง</span></div></div>
       <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงอาวุธและการปะทะ <span class="en">Weapon &amp; Combat Sounds</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">แฟนตาซี · ทริลเลอร์</span></div><div class="sub-d">เสียงจากอาวุธ การปะทะ และการต่อสู้</div><div class="hint">ตัวอย่าง: ดาบกระทบกัน · เสียงปืน · ธนูเสียดลม · โล่ปะทะ · แคลร์เสนอ (สายแอ็กชัน/แฟนตาซี ยังไม่มีที่รับเสียงศึก) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงยานพาหนะและเครื่องยนต์ <span class="en">Vehicle &amp; Engine Sounds</span> <span class="tag t-new">เจนเสนอ</span> <span class="tag t-genre">ทริลเลอร์ · ทั่วไป</span></div><div class="sub-d">เสียงการทำงานของเครื่องยนต์ ล้อเสียดสีถนน หรือเสียงจากพาหนะทุกชนิด</div><div class="hint">ตัวอย่าง: เครื่องยนต์กระหึ่ม · ล้อเบียดถนนดังเอี๊ยด · เสียงเบรก · แตร · เจนเสนอ · เส้นแบ่งกับ “เสียงกลไก”: ยานพาหนะ = เครื่องยนต์/พาหนะขับเคลื่อน · กลไก = เฟือง/ประตู/ลากถูทั่วไป · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงสัญญาณและการเตือน <span class="en">Signal &amp; Alert Sounds</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทริลเลอร์ · ไซไฟ · ทั่วไป</span></div><div class="sub-d">เสียงที่จงใจส่งออกมาเพื่อเรียก เตือน หรือให้จังหวะ ตัดผ่านความเงียบของฉาก</div><div class="hint">ตัวอย่าง: ไซเรน · นาฬิกาปลุก · กริ่งประตู/โทรศัพท์ตัดความเงียบ · เสียงเคาะประตู · แตรศึก · นาฬิกาเดินติ๊กต่อก · ไฟฟ้าลัดวงจรเปรี๊ยะ · แคลร์เสนอ (ทีมตรวจ · ข้ามทุกแนว) · วางใต้กิ่ง 1 ก่อน (กันชนเพดาน) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
     </div>
   </details>
 
@@ -181,10 +195,11 @@ ol.steps li b{color:var(--ink)}
     <summary><span class="chip-n">๒</span><span class="ttl">เสียงธรรมชาติและของเหลว<span class="en">Nature &amp; Liquid Sounds</span></span><span class="cnt">5 คำ</span><span class="arw">▶</span></summary>
     <div class="body">
       <p class="def">เสียงบรรยากาศรอบตัวที่เกิดจากธรรมชาติ</p>
-      <div class="sub"><div class="sub-h">🌿 เสียงน้ำและของเหลว <span class="en">Water &amp; Liquid Sounds</span></div><div class="sub-d">เสียงฝน น้ำไหล หรือการกระเซ็นของของเหลว</div><div class="words"><span class="w">ส่งเสียงซู่ซ่า</span><span class="w">กระเซ็น</span><span class="w">เสียงน้ำหยดติ๋งๆ</span></div></div>
-      <div class="sub"><div class="sub-h">🌿 เสียงสภาพอากาศ <span class="en">Weather Sounds</span></div><div class="sub-d">เสียงปรากฏการณ์บนท้องฟ้าและลมฟ้าอากาศ</div><div class="words"><span class="w">ท้องฟ้าคำรามเสียงดังลั่น</span><span class="w">เสียงฟ้าคำรามกึกก้อง</span></div></div>
-      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงสัตว์และสิ่งมีชีวิต <span class="en">Animal &amp; Creature Sounds</span> <span class="tag t-new">เจนเสนอ</span> <span class="tag t-genre">ทั่วไป · แฟนตาซี</span></div><div class="sub-d">เสียงร้องหรือเสียงที่เกิดจากสัตว์และสิ่งมีชีวิต</div><div class="hint">ตัวอย่าง: หมาหอน · นกร้อง · แมลงสยายปีก · สัตว์ประหลาดคำราม · เจนเสนอ (ต้นฉบับมีเสียงน้ำ/อากาศ แต่ขาดเสียงสัตว์) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
-      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงไฟและการเผาไหม้ <span class="en">Fire &amp; Burning Sounds</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป</span></div><div class="sub-d">เสียงของไฟลุกไหม้ เปลวไฟ และการเผาไหม้</div><div class="hint">ตัวอย่าง: ไฟลุกโชน · เปลวไฟแลบเปรี๊ยะ · ฟืนแตกดังเปรี๊ยะ · แคลร์เสนอ (ไฟเป็นธาตุที่ต้นฉบับขาด แต่ฉากไฟพบบ่อยทุกแนว) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub"><div class="sub-h">🌿 เสียงน้ำและของเหลว <span class="en">Water &amp; Liquid Sounds</span></div><div class="sub-d">เสียงฝน น้ำไหล หรือการกระเซ็นของของเหลว</div><div class="hint">ส่งเสียงซู่ซ่า: บริบทเดิมพี่กันวงเล็บไว้ = ป่าไม้ (หลัก) / น้ำ / ฝน · พี่กันยืนยัน “ติดได้หมด” → ติดหลายกิ่ง (บ้านหลัก = เสียงพืชพรรณ)</div><div class="words"><span class="w m">ส่งเสียงซู่ซ่า <small>+พืชพรรณ</small></span><span class="w">กระเซ็น</span><span class="w">เสียงน้ำหยดติ๋งๆ</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 เสียงลมและสภาพอากาศ <span class="en">Wind &amp; Weather Sounds</span> <span class="tag t-new">🔀 รวมลม</span></div><div class="sub-d">เสียงของกระแสลม/อากาศที่เคลื่อนที่เอง และปรากฏการณ์ลมฟ้าอากาศ (ตัวลม/ฟ้าคะนอง — ไม่ใช่ใบไม้ที่ไหวตอบ ซึ่งอยู่กิ่งพืชพรรณ)</div><div class="hint">รวมกิ่ง “เสียงสายลม” ที่เจนเสนอ เข้ากับ “เสียงสภาพอากาศ” เดิม (พี่กันสั่งรวม)</div><div class="words"><span class="w">ท้องฟ้าคำรามเสียงดังลั่น</span><span class="w">เสียงฟ้าคำรามกึกก้อง</span></div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงไฟและการเผาไหม้ <span class="en">Fire &amp; Burning Sounds</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป</span></div><div class="sub-d">เสียงของไฟลุกไหม้ เปลวไฟ และการเผาไหม้</div><div class="hint">ตัวอย่าง: ไฟลุกโชน · เปลวไฟแลบเปรี๊ยะ · ฟืนแตกดังเปรี๊ยะ · แคลร์เสนอ (ไฟเป็นธาตุที่ต้นฉบับขาด) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงสัตว์และสิ่งมีชีวิต <span class="en">Animal &amp; Creature Sounds</span> <span class="tag t-new">เจนเสนอ</span> <span class="tag t-genre">ทั่วไป · แฟนตาซี</span></div><div class="sub-d">เสียงร้องหรือเสียงที่เกิดจากสัตว์และสิ่งมีชีวิต</div><div class="hint">ตัวอย่าง: หมาหอน · นกร้อง · สัตว์ประหลาดคำราม · เจนเสนอ (ต้นฉบับขาดเสียงสัตว์) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงพืชพรรณและใบไม้ <span class="en">Foliage &amp; Plant Sounds</span> <span class="tag t-new">เจนเสนอ</span> <span class="tag t-genre">ทั่วไป</span></div><div class="sub-d">เสียงต้นไม้ ใบไม้ หรือกิ่งไม้ที่สั่นไหว/เสียดสีตอบสนองลมหรือการสัมผัส (ตัววัตถุพืชเอง ไม่ใช่คนเดินลุย)</div><div class="hint">ตัวอย่าง: ใบไม้ร่วงกราว · กิ่งไม้ไหวสวบสาบ · เจนเสนอ (แยกจาก “เดินลุยหญ้า” กิ่ง 3)</div><div class="words"><span class="w m">ส่งเสียงซู่ซ่า <small>+เสียงน้ำ · บ้านหลัก=ป่าไม้</small></span><span class="w m">สวบสาบ <small>(เสียงเดินลุยหญ้า/ผ้าเสียดสี) · +เสียงฝีเท้า</small></span></div></div>
     </div>
   </details>
 
@@ -193,9 +208,10 @@ ol.steps li b{color:var(--ink)}
     <summary><span class="chip-n">๓</span><span class="ttl">เสียงจากการเคลื่อนไหวและร่างกาย<span class="en">Movement &amp; Body Sounds</span></span><span class="cnt">4 คำ</span><span class="arw">▶</span></summary>
     <div class="body">
       <p class="def">เสียงที่เกิดจากตัวละครขยับตัวหรือไปกระทบกับสิ่งอื่น</p>
-      <div class="hint" style="margin-bottom:8px">🔗 กิ่งนี้ควรโยงข้ามไปหมวด 3 (กริยา ท่าทาง และการเคลื่อนไหว) เพราะเป็นแอ็กชันที่ทำให้เกิดเสียง (เจนเสนอ · schema ยังไม่รองรับ subpath ข้ามหมวด)</div>
-      <div class="sub"><div class="sub-h">🌿 เสียงฝีเท้าและการเดิน <span class="en">Footstep Sounds</span></div><div class="sub-d">เสียงจากการก้าวเดินหรือเสียดสีกับพื้นผิว</div><div class="words"><span class="w">เสียงฝีเท้า</span><span class="w">สวบสาบ</span></div></div>
-      <div class="sub"><div class="sub-h">🌿 เสียงร่างกายกระทบ <span class="en">Body Impact Sounds</span></div><div class="sub-d">เสียงการปะทะกันของอวัยวะหรือร่างกายกับสิ่งอื่น</div><div class="words"><span class="w x">เผียะ <small>🔗ม.3</small></span><span class="w x">เสียงตบเข่าฉาด <small>🔗ม.3</small></span></div></div>
+      <div class="hint" style="margin-bottom:8px">🔗 กิ่งนี้ควรโยงข้ามไปหมวด 3 (กริยา ท่าทาง) เพราะเป็นแอ็กชันที่ทำให้เกิดเสียง (เจนเสนอ · schema ยังไม่รองรับ)</div>
+      <div class="sub"><div class="sub-h">🌿 เสียงฝีเท้าและการเดิน <span class="en">Footstep Sounds</span></div><div class="sub-d">เสียงจากการก้าวเดินหรือเสียดสีกับพื้นผิว</div><div class="words"><span class="w">เสียงฝีเท้า</span><span class="w m">สวบสาบ <small>(เสียงเดินลุยหญ้า/ผ้าเสียดสี) · +พืชพรรณ</small></span></div></div>
+      <div class="sub"><div class="sub-h">🌿 เสียงร่างกายกระทบ <span class="en">Body Impact Sounds</span></div><div class="sub-d">เสียงการปะทะกันของอวัยวะหรือร่างกายกับสิ่งอื่น</div><div class="words"><span class="w x">เผียะ <small>(เสียงฝ่ามือ) · 🔗ม.3</small></span><span class="w x">เสียงตบเข่าฉาด <small>🔗ม.3</small></span></div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงสรีระภายในร่างกาย <span class="en">Internal Body Sounds</span> <span class="tag t-new">แคลร์เสนอ 🌟</span> <span class="tag t-genre">อีโรติก · ทริลเลอร์ · ทั่วไป</span></div><div class="sub-d">เสียงที่เกิดจากอวัยวะภายในหรือกลไกของร่างกายเอง โดยไม่เปล่งออกทางปาก</div><div class="hint">ตัวอย่าง: หัวใจเต้นตึกตัก · ชีพจร · เลือดสูบฉีดดังในหู · ท้องร้อง · แคลร์เสนอ (ทีมตรวจชี้เป็นหลุมแรงสุด) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
     </div>
   </details>
 
@@ -204,9 +220,9 @@ ol.steps li b{color:var(--ink)}
     <summary><span class="chip-n">๔</span><span class="ttl">การรับรู้และความดังของเสียง<span class="en">Perception &amp; Volume</span></span><span class="cnt">3 คำ</span><span class="arw">▶</span></summary>
     <div class="body">
       <p class="def">มิติของเสียงที่บอกความดัง ระยะใกล้ไกล และการแผ่กระจาย</p>
-      <div class="sub"><div class="sub-h">🌿 ความดังและเสียงสะท้อน <span class="en">Loudness &amp; Echo</span></div><div class="sub-d">ระดับความดังที่กระจายไปทั่ว หรือการสะท้อนก้อง</div><div class="words"><span class="w">ดังระงม</span><span class="w">เสียงสะท้อนดังก้อง</span></div></div>
-      <div class="sub"><div class="sub-h">🌿 ระยะทางของเสียง <span class="en">Sound Distance</span></div><div class="sub-d">เสียงที่แว่วมาจากระยะไกล</div><div class="words"><span class="w">ดังแว่ว</span></div></div>
-      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 ความเงียบและการเงียบเสียง <span class="en">Silence &amp; Absence of Sound</span> <span class="tag t-new">แคลร์เสนอ 🌟</span> <span class="tag t-genre">ทั่วไป · ทริลเลอร์</span></div><div class="sub-d">สภาวะไร้เสียง หรือความเงียบที่เด่นจนกลายเป็นบรรยากาศของฉาก</div><div class="hint">ตัวอย่าง: เงียบกริบ · เงียบสงัด · เงียบจนได้ยินเสียงหัวใจตัวเอง · แคลร์เสนอ (ความเงียบคือเครื่องมือเสียงที่ทรงพลังในนิยาย เป็นของคู่กับเสียง · วางใต้กิ่งความดังเพราะความเงียบ = ความดังระดับศูนย์) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub"><div class="sub-h">🌿 ความดังและเสียงสะท้อน <span class="en">Loudness &amp; Echo</span></div><div class="sub-d">ระดับความดังที่กระจายไปทั่ว หรือการสะท้อนก้อง</div><div class="hint">“เสียง...สะท้อนดังก้อง”: ต้นฉบับมี “...” (ช่องเว้นที่ตั้งใจ) แต่คลังตัดทิ้ง → คืนตามกฎ prompt · ✅ พี่กันบอก “...” = เสียงตัวละคร → ใส่ [ชื่อคน]</div><div class="words"><span class="w m">ดังระงม <small>(ดังไปทั่ว) · +ฝูงชน ก.8</small></span><span class="w">เสียง <span class="ph">[ชื่อคน]</span> สะท้อนดังก้อง</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 ระยะทางของเสียง <span class="en">Sound Distance</span></div><div class="sub-d">เสียงที่แว่วมาจากระยะไกล</div><div class="words"><span class="w">ดังแว่ว <small>(ดังมาจากที่ไกลๆ)</small></span></div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 ความเงียบและการเงียบเสียง <span class="en">Silence &amp; Absence of Sound</span> <span class="tag t-new">แคลร์เสนอ 🌟</span> <span class="tag t-genre">ทั่วไป · ทริลเลอร์</span></div><div class="sub-d">สภาวะไร้เสียง หรือความเงียบที่เด่นจนกลายเป็นบรรยากาศของฉาก</div><div class="hint">ตัวอย่าง: เงียบกริบ · เงียบสงัด · เงียบจนได้ยินเสียงหัวใจตัวเอง · แคลร์เสนอ (ความเงียบ = ความดังระดับศูนย์) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
     </div>
   </details>
 
@@ -214,33 +230,48 @@ ol.steps li b{color:var(--ink)}
   <details class="major" open>
     <summary><span class="chip-n">๕</span><span class="ttl">เสียงที่เปล่งจากปาก<span class="en">Vocal &amp; Mouth Sounds</span></span><span class="cnt">47 คำ</span><span class="arw">▶</span></summary>
     <div class="body">
-      <p class="def">เสียงที่เกิดจากมนุษย์ ทั้งที่เป็นคำพูดและไม่ใช่คำพูด · กิ่งที่คำเยอะสุด ซอยลึก 3 ชั้น</p>
+      <p class="def">เสียงที่เกิดจากปากมนุษย์ — ทั้ง <b>การเปล่งเสียง</b> (พูด อารมณ์ ลมหายใจ) และ <b>เสียงกลไกจากปาก</b> (กิน ดื่ม จูบ) · กิ่งที่คำเยอะสุด</p>
+      <div class="hint" style="margin-bottom:8px">รอบ 23 ก.ค. เติมกิ่งแขนงเยอะ เพราะเดิมจัดตามแค่ “ความดัง” กับ “น้ำเสียง” ไม่เคยจัดตาม “หน้าที่/เจตนา” และ “อารมณ์ด้านบวก” → เติมหลุมที่ขาด</div>
       <div class="sub"><div class="sub-h">🌿 น้ำเสียงและลักษณะเสียง <span class="en">Vocal Tone &amp; Quality</span></div><div class="sub-d">ลักษณะของเนื้อเสียงและอารมณ์ที่แฝงในน้ำเสียง</div>
-        <div class="leaf"><div class="leaf-h">🍃 ลักษณะเนื้อเสียง <span class="en">Physical Quality</span></div><div class="leaf-d">สภาพทางกายภาพของเสียง โดยไม่เกี่ยวกับอารมณ์</div><div class="words"><span class="w">เสียงแหบพร่า</span><span class="w">เสียงแหบต่ำ</span><span class="w m">ขู่ด้วยเสียงแหบแห้ง <small>+โต้ตอบ</small></span><span class="w">เสียงสั่นเครือ</span><span class="w">กระซิบเสียงสั่น</span><span class="w">เสียงเฉียบคมขึ้น</span><span class="w">เสียงของเฉียบคมขึ้น</span><span class="w m">ร้องทักเสียงแหลมสูง <small>+ตะโกน</small></span></div></div>
-        <div class="leaf"><div class="leaf-h">🍃 อารมณ์และลีลาเสียง <span class="en">Emotional Tone</span></div><div class="leaf-d">ความรู้สึก เจตนา หรือมู้ดที่แฝงในน้ำเสียง</div><div class="words"><span class="w">เสียงเยียบเย็น</span><span class="w">น้ำเสียงเฉียบขาด</span><span class="w">น้ำเสียงไม่สบอารมณ์</span><span class="w">น้ำเสียงราบเรียบ</span><span class="w">ควบคุมเสียงให้ราบเรียบ</span><span class="w">สะบัดเสียงด้วยความไม่พอใจ</span><span class="w">ทำเสียงขรึม</span><span class="w m">ตอบด้วยเสียงอ่อนระโหย <small>+โต้ตอบ</small></span><span class="w">ฉะฉาน</span><span class="w">พูดห้วนๆ</span></div></div>
-        <div class="leaf"><div class="leaf-h">🍃 ลักษณะคำพูด <span class="en">Speech Style</span></div><div class="leaf-d">รูปแบบการเลือกใช้คำหรือระดับภาษา</div><div class="words"><span class="w">ถ้อยคำที่ถ่อยสถุล</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ลักษณะเนื้อเสียง <span class="en">Physical Quality</span></div><div class="leaf-d">สภาพทางกายภาพของเสียง โดยไม่เกี่ยวกับอารมณ์</div><div class="words"><span class="w">เสียงแหบพร่า</span><span class="w">เสียงแหบต่ำ</span><span class="w m">ขู่ด้วย<span class="hl">เสียงแหบแห้ง</span> <small>+คำราม</small></span><span class="w m">เสียงสั่นเครือ <small>+ความกลัว</small></span><span class="w m">กระซิบ<span class="hl">เสียงสั่น</span> <small>+ความกลัว</small></span><span class="w"><span class="hl">เสียงเฉียบคม</span>ขึ้น</span><span class="w">เสียงของ <span class="ph">[ชื่อคน]</span> เฉียบคมขึ้น</span><span class="w m">ร้องทัก<span class="hl">เสียงแหลมสูง</span> <small>+ตะโกน</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 อารมณ์และลีลาเสียง <span class="en">Emotional Tone</span></div><div class="leaf-d">ความรู้สึก เจตนา หรือมู้ดที่แฝงในน้ำเสียง</div><div class="words"><span class="w">เสียงเยียบเย็น</span><span class="w m">น้ำเสียงเฉียบขาด <small>+สั่งการ</small></span><span class="w">น้ำเสียงไม่สบอารมณ์</span><span class="w">น้ำเสียงราบเรียบ</span><span class="w">ควบคุมเสียงให้ราบเรียบ</span><span class="w">สะบัดเสียง<span class="hl">ด้วยความไม่พอใจ</span></span><span class="w">ทำเสียงขรึม</span><span class="w">ตอบด้วย<span class="hl">เสียงอ่อนระโหย</span></span><span class="w">ฉะฉาน</span><span class="w">พูดห้วนๆ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ลักษณะคำพูด <span class="en">Speech Style</span></div><div class="leaf-d">รูปแบบการเลือกใช้คำหรือระดับภาษา (สำนวน) ไม่ใช่ความลื่นไหลของการเปล่งคำ</div><div class="hint">🔗 “ถ้อยคำที่ถ่อยสถุล” โยงข้ามไปหมวด 8 (บุคลิกภาพ) ได้ด้วย · <b>บ้านหลักคงอยู่หมวด 4 ไม่ย้าย</b> (คำต้นฉบับ · พี่กันเคาะ “ตามแคลร์”) · การพูดสะดุด = คนละมิติ → กิ่ง “การพูดติดขัด”</div><div class="words"><span class="w"><span class="hl">ถ้อยคำ</span>ที่<span class="hl">ถ่อยสถุล</span></span></div></div>
       </div>
-      <div class="sub"><div class="sub-h">🌿 การสื่อสารและการแสดงออก <span class="en">Speaking &amp; Expressions</span></div><div class="sub-d">กิริยาการเปล่งเสียงเป็นคำพูด และระดับความดังของการพูด</div>
-        <div class="leaf"><div class="leaf-h">🍃 พูดเบาและพึมพำ <span class="en">Low Volume &amp; Mumbling</span></div><div class="leaf-d">การพูดด้วยเสียงเบาหรือบ่นพึมพำ</div><div class="words"><span class="w">กระซิบกระซาบ</span><span class="w">บ่นพึมพำ</span><span class="w">พึมพำ</span><span class="w">เสียงงึมงำ</span></div></div>
-        <div class="leaf"><div class="leaf-h">🍃 โต้ตอบและสนทนา <span class="en">Conversation &amp; Replying</span></div><div class="leaf-d">กิริยาเสียงที่เกิดขณะโต้ตอบหรือสนทนา</div><div class="hint">2 คำนี้ติดหลายกิ่ง (อยู่ในน้ำเสียงด้วย) · เจนวางซ้ำที่นี่</div><div class="words"><span class="w m">ขู่ด้วยเสียงแหบแห้ง <small>+เนื้อเสียง</small></span><span class="w m">ตอบด้วยเสียงอ่อนระโหย <small>+อารมณ์ลีลา</small></span></div></div>
-        <div class="leaf"><div class="leaf-h">🍃 ตะโกนและกรีดร้อง <span class="en">Shouting &amp; Screaming</span></div><div class="leaf-d">การเปล่งเสียงดังสุดขีด แผดเสียง หรือกรีดร้อง</div><div class="words"><span class="w">แผดเสียง</span><span class="w">แผดเสียงแหลมสูง</span><span class="w m">ร้องทักเสียงแหลมสูง <small>+เนื้อเสียง</small></span><span class="w">กรีดร้องโหยหวน</span><span class="w">เสียงแหลมสูงเหมือนไม่ใช่มนุษย์กรีดก้องออกมา</span><span class="w">กรีดร้องโหยหวนด้วยเสียงแหลมสูงราวกับว่าปอดถูกบีบคั้นสุดขีด</span><span class="w">ตวาดเสียงดังกึกก้อง</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 การสื่อสารและการแสดงออก <span class="en">Speaking &amp; Expressions</span></div><div class="sub-d">กิริยาการเปล่งเสียงเป็นคำพูด ทั้งระดับความดัง เจตนา และความลื่นไหลของการพูด</div>
+        <div class="leaf"><div class="leaf-h">🍃 พูดเบาและพึมพำ <span class="en">Low Volume &amp; Mumbling</span></div><div class="leaf-d">การพูดด้วยเสียงเบาหรือบ่นพึมพำ (จัดตามความเบา)</div><div class="words"><span class="w">กระซิบกระซาบ</span><span class="w m">บ่นพึมพำ <small>+พูดกับตัวเอง</small></span><span class="w m">พึมพำ <small>+พูดกับตัวเอง</small></span><span class="w m">เสียงงึมงำ <small>+พูดกับตัวเอง</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ตะโกนและกรีดร้อง <span class="en">Shouting &amp; Screaming</span></div><div class="leaf-d">การเปล่งเสียงดังสุดขีด แผดเสียง หรือกรีดร้อง</div><div class="words"><span class="w m">แผดเสียง <small>+คำราม</small></span><span class="w">แผดเสียงแหลมสูง</span><span class="w m">ร้องทัก<span class="hl">เสียงแหลมสูง</span> <small>+เนื้อเสียง</small></span><span class="w m">กรีดร้องโหยหวน <small>+ความกลัว</small></span><span class="w">เสียงแหลมสูงเหมือนไม่ใช่มนุษย์กรีดก้องออกมา</span><span class="w">กรีดร้องโหยหวนด้วยเสียงแหลมสูงราวกับว่าปอดถูกบีบคั้นสุดขีด</span><span class="w m">ตวาดเสียงดังกึกก้อง <small>+คำราม</small></span></div></div>
         <div class="leaf"><div class="leaf-h">🍃 โวยวายและเอะอะ <span class="en">Noise &amp; Ranting</span></div><div class="leaf-d">การทำเสียงดังสร้างความวุ่นวาย</div><div class="words"><span class="w">เอะอะเอ็ดตะโร</span><span class="w">เอะอะโวยวาย</span><span class="w">เอะอะเสียงดัง</span></div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 การพูดติดขัดและลังเล <span class="en">Stammering &amp; Hesitation</span> <span class="tag t-new">แคลร์เสนอ 🌟</span> <span class="tag t-genre">ทั่วไป · ทริลเลอร์ · สยอง</span></div><div class="leaf-d">เสียงพูดที่สะดุด ติดอ่าง ซ้ำคำ หรือขาดเป็นห้วง เน้นความลื่นไหลของการเปล่งคำ</div><div class="hint">ตัวอย่าง: พูดตะกุกตะกัก · ติดอ่าง · อ้ำอึ้ง · ละล่ำละลัก · แคลร์เสนอ (หลุมใหญ่) — คนละมิติกับ “ลักษณะคำพูด (สำนวน)” · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 เสียงสั่งการและประกาศ <span class="en">Commanding &amp; Announcing</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">แฟนตาซี · ทริลเลอร์ · ไซไฟ</span></div><div class="leaf-d">เสียงพูดที่ออกคำสั่ง กำชับ หรือประกาศให้รับรู้และทำตาม เน้นเจตนาสั่งการ ไม่ใช่ความดัง</div><div class="hint">ตัวอย่าง: ออกคำสั่ง · กำชับเสียงเข้ม · ประกาศก้อง · ป่าวร้อง · แคลร์เสนอ — สั่งเบาแต่เด็ดขาดก็ได้ ต่างจาก “ตะโกน” · รอเก็บคำเพิ่ม</div><div class="words"><span class="w m">น้ำเสียงเฉียบขาด <small>บ้านหลัก: อารมณ์และลีลาเสียง</small></span></div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 การพูดกับตัวเองและรำพึง <span class="en">Self-talk &amp; Soliloquy</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป · แฟนตาซี · สยอง</span></div><div class="leaf-d">เสียงพูดที่ไม่ได้สื่อสารกับผู้อื่น แต่พูด บ่น รำพึง หรือท่องกับตัวเอง จัดตาม “ไม่มีคู่สนทนา”</div><div class="hint">ตัวอย่าง: รำพึงกับตัวเอง · พูดคนเดียว · ท่องพึมพำ · ละเมอ · สวดคาถา · แคลร์เสนอ — 🚨 นิยามแยกจาก “พูดเบาและพึมพำ” · รอเก็บคำเพิ่ม</div><div class="words"><span class="w m">บ่นพึมพำ</span><span class="w m">พึมพำ</span><span class="w m">เสียงงึมงำ <small>บ้านหลัก: พูดเบาและพึมพำ</small></span></div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 การพูดเยาะเย้ยและเลียนเสียง <span class="en">Mockery &amp; Mimicry</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป · ทริลเลอร์ · แฟนตาซี</span></div><div class="leaf-d">การพูดที่จงใจล้อเลียน ประชด เสียดสี หรือเลียนแบบเสียง/สำเนียงผู้อื่นเพื่อเย้ยหยัน (เป็นถ้อยคำ)</div><div class="hint">ตัวอย่าง: พูดประชด · กระแนะกระแหน · เหน็บแนม · ล้อเลียนสำเนียง · ยียวน · แคลร์เสนอ — คู่กับ “เสียงเยาะเย้ยและสะใจ” (อันนั้นเป็นเสียงหัวเราะ/ลำคอ) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
       </div>
-      <div class="sub"><div class="sub-h">🌿 เสียงกิริยาและอารมณ์ที่ไม่ใช่คำพูด <span class="en">Non-verbal &amp; Emotional Sounds</span></div><div class="sub-d">เสียงที่เปล่งจากลำคอเพื่อแสดงปฏิกิริยา โดยไม่เป็นถ้อยคำ</div>
-        <div class="leaf"><div class="leaf-h">🍃 เสียงจากความเจ็บปวดทรมาน <span class="en">Pain &amp; Agony</span></div><div class="leaf-d">เสียงร้องหรือครวญครางจากความเจ็บปวดทางกาย</div><div class="words"><span class="w">ร้องโอดโอยเสียงลั่น</span><span class="w">นอนครวญคราง</span><span class="w">ครางเบาๆ</span><span class="w">ครางเสียงแหบแห้ง</span><span class="w">ครางเสียงเบาหวิวแทบจะขาดห้วง</span><span class="w">ครางเสียงเศร้าและอึกอักราวกับมีเส้นด้ายพันอยู่ในลำคอ</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 เสียงกิริยาและอารมณ์ที่ไม่ใช่คำพูด <span class="en">Non-verbal &amp; Emotional Sounds</span></div><div class="sub-d">เสียงที่เปล่งจากลำคอเพื่อแสดงปฏิกิริยา โดยไม่เป็นถ้อยคำ</div><div class="hint">เดิมด้านลบล้วน (เจ็บ/เศร้า/หลอน) · รอบ 23 ก.ค. เติมด้านบวก + ปฏิกิริยา ให้สมดุล</div>
+        <div class="leaf"><div class="leaf-h">🍃 เสียงจากความเจ็บปวดทรมาน <span class="en">Pain &amp; Agony</span></div><div class="leaf-d">เสียงร้องหรือครวญครางจากความเจ็บปวดทางกาย</div><div class="words"><span class="w">ร้องโอดโอยเสียงลั่น</span><span class="w">นอนครวญคราง</span><span class="w m">ครางเบาๆ <small>+ครางเร้าอารมณ์ (ตามบริบท)</small></span><span class="w">ครางเสียงแหบแห้ง</span><span class="w">ครางเสียงเบาหวิวแทบจะขาดห้วง</span><span class="w">ครางเสียงเศร้าและอึกอักราวกับมีเส้นด้ายพันอยู่ในลำคอ</span></div></div>
         <div class="leaf"><div class="leaf-h">🍃 เสียงร้องไห้และความเศร้า <span class="en">Sadness &amp; Crying</span></div><div class="leaf-d">เสียงสะอื้นหรือร้องไห้จากความเศร้าโศก</div><div class="words"><span class="w">เสียงสะอื้น</span><span class="w">สะอึกสะอื้น</span><span class="w">ร้องไห้คร่ำครวญ</span><span class="w">ร้องไห้โฮ</span></div></div>
         <div class="leaf"><div class="leaf-h">🍃 เสียงลมหายใจและลำคอ <span class="en">Breath &amp; Throat</span></div><div class="leaf-d">การขับลมหายใจ หรือขยับกล้ามเนื้อคอและปาก</div><div class="words"><span class="w">ทำเสียงจิ๊ในปาก</span><span class="w">ถอนหายใจเฮือกใหญ่</span><span class="w">ถอนใจ</span><span class="w">กระแอมกระไอ</span></div></div>
-        <div class="leaf"><div class="leaf-h">🍃 เสียงบรรยากาศจากมนุษย์ <span class="en">Ambient Human Vocal</span></div><div class="leaf-d">เสียงร้องจากมนุษย์ที่สร้างมวลบรรยากาศให้ฉาก</div><div class="words"><span class="w">เสียงโหยหวนชวนขนลุก</span></div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 อาการไอ สำลัก และขย้อน <span class="en">Coughing, Choking &amp; Gagging</span> <span class="tag t-new">เจนเสนอ</span> <span class="tag t-genre">ทริลเลอร์ · สยอง · ทั่วไป</span></div><div class="leaf-d">เสียงจากลำคอเมื่อไอ สำลัก หรือขย้อน (จากป่วย โดนบีบคอ จมน้ำ)</div><div class="hint">ตัวอย่าง: ไอโขลก · ไอครอกๆ · สำลักน้ำ · โอ๊กอ้าก · เจนเสนอ — ต่างจาก “ลมหายใจ” (ถอนใจ/กระแอม = ปกติ) ตรงที่นี่คืออาการผิดปกติ · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 เสียงผิวปากและการพ่นลม <span class="en">Whistling &amp; Blowing Sounds</span> <span class="tag t-new">เจนเสนอ</span> <span class="tag t-genre">ทั่วไป</span></div><div class="leaf-d">เสียงที่เกิดจากการผิวปากหรือพ่นลมออกจากปากเป็นปฏิกิริยาเฉพาะ</div><div class="hint">ตัวอย่าง: ผิวปากเป็นทำนอง · ผิวปากแซว · พ่นลมพรืด (รำคาญ) · ถ่มน้ำลาย · เจนเสนอ — “ผิวปากเป็นทำนอง” ติด ⚡ กิ่ง 6 ดนตรีได้ด้วย · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf"><div class="leaf-h">🍃 เสียงบรรยากาศจากมนุษย์ <span class="en">Eerie Human Sounds</span></div><div class="leaf-d">เสียงร้องจากมนุษย์คนเดียวที่สร้างมู้ดหลอน/ขนลุกให้ฉาก</div><div class="hint">🔄 เจนเสนอเปลี่ยนอังกฤษ “Ambient Human Vocal” → “Eerie Human Sounds” (แคลร์รับ)</div><div class="words"><span class="w">เสียงโหยหวนชวนขนลุก</span></div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 เสียงหัวเราะและความยินดี <span class="en">Laughter &amp; Joy</span> <span class="tag t-new">แคลร์เสนอ 🌟</span> <span class="tag t-genre">ทั่วไป</span></div><div class="leaf-d">เสียงที่เปล่งจากปากเพื่อแสดงความขบขัน สนุกสนาน หรือดีใจ</div><div class="hint">ตัวอย่าง: หัวเราะคิกคัก · หัวเราะร่า · หัวเราะลั่น · ขำก๊าก · โห่ร้องดีใจ · แคลร์เสนอ (2 มุมชี้ตรงกันว่าหลุมใหญ่สุด) — หมวดเสียงไม่มีที่รับหัวเราะเลย · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 เสียงเยาะเย้ยและสะใจ <span class="en">Sneering &amp; Gloating</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป · ทริลเลอร์ · แฟนตาซี</span></div><div class="leaf-d">เสียงหัวเราะหรือเปล่งเสียงจากลำคอที่แฝงการดูถูก เหยียดหยาม หรือสะใจในเคราะห์ของผู้อื่น (เสียงล้วน ไม่ใช่คำพูด)</div><div class="hint">ตัวอย่าง: หัวเราะเยาะ · แสยะหัวเราะ · หึ (เหยียดในลำคอ) · หัวเราะหยัน · เสียงสะใจ · เจนปรับอังกฤษ Mockery → Sneering (จับ “หึ” ตรงกว่า + ไม่ซ้ำกิ่งคำพูด) แคลร์รับ · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 เสียงอุทานและปฏิกิริยาฉับพลัน <span class="en">Exclamations &amp; Reactive Sounds</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป · ทริลเลอร์ · สยอง</span></div><div class="leaf-d">เสียงสั้นที่หลุดออกจากปากโดยไม่ตั้งใจ เป็นปฏิกิริยาต่อสิ่งเร้าฉับพลัน เช่น ตกใจ ประหลาดใจ โล่งใจ</div><div class="hint">ตัวอย่าง: สูดปากฉึด (ตกใจ) · อุทาน “ว้าย”/“เฮ้ย” · ร้องว้าว · แคลร์เสนอ — ต่างจาก “ตะโกน” (จงใจดัง) และ “ลมหายใจ” · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 เสียงจากความกลัวและขวัญเสีย <span class="en">Fear &amp; Dread</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทริลเลอร์ · สยอง · แฟนตาซี</span></div><div class="leaf-d">เสียงที่เปล่งจากความหวาดกลัวหรือขวัญเสีย เช่น เสียงสั่นเครือด้วยความกลัว ครางหวีด หายใจถี่</div><div class="hint">ตัวอย่าง: เสียงสั่นด้วยความกลัว · ครางหวีดหวาดกลัว · หายใจถี่กระชั้น · แคลร์เสนอ — ต่างจาก “เสียงโหยหวนชวนขนลุก” (บรรยากาศ) ตรงที่นี่คือปฏิกิริยากลัวของตัวละครเอง · รอเก็บคำเพิ่ม</div><div class="words"><span class="w m">กระซิบเสียงสั่น</span><span class="w m">เสียงสั่นเครือ <small>บ้านหลัก: ลักษณะเนื้อเสียง</small></span><span class="w m">กรีดร้องโหยหวน <small>บ้านหลัก: ตะโกน</small></span></div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 เสียงคำรามและขู่ด้วยโทสะ <span class="en">Growl &amp; Snarl of Rage</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">แฟนตาซี · ทริลเลอร์</span></div><div class="leaf-d">เสียงต่ำในลำคอที่เปล่งจากความโกรธเกรี้ยวโดยไม่เป็นถ้อยคำ เช่น คำราม ขู่ หรือขบฟันด้วยโทสะ</div><div class="hint">ตัวอย่าง: คำรามในลำคอ · ขู่กรรโชก · ขบเขี้ยวเคี้ยวฟันกรอด · แคลร์เสนอ — แยกจาก “ตวาด/แผดเสียง” (การพูด) และ “น้ำเสียงไม่สบอารมณ์” · รอเก็บคำเพิ่ม</div><div class="words"><span class="w m">ขู่ด้วย<span class="hl">เสียงแหบแห้ง</span> <small>บ้านหลัก: เนื้อเสียง</small></span><span class="w m">ตวาดเสียงดังกึกก้อง</span><span class="w m">แผดเสียง <small>บ้านหลัก: ตะโกน · ตวาด/แผดด้วยโทสะ</small></span></div></div>
+        <div class="leaf" style="border-left-color:color-mix(in srgb,var(--green) 45%,var(--line))"><div class="leaf-h">🆕 🍃 เสียงครางเร้าอารมณ์ <span class="en">Sensual Moans</span> <span class="tag t-new">แคลร์เสนอ 🌟</span> <span class="tag t-genre">อีโรติก</span></div><div class="leaf-d">เสียงครางหรือหอบที่เปล่งจากความเสียวซ่านหรือความสุขทางกาย ตรงข้ามกับเสียงครางด้วยความเจ็บปวด</div><div class="hint">ตัวอย่าง: ครางเบาด้วยความเสียว · เสียงหอบครวญ · ครางในลำคอ · ถอนหายใจเร่าร้อน · แคลร์เสนอ (หลุมใหญ่สายอีโรติก) — “ครวญคราง” เดิมอยู่ใต้ “เจ็บปวด” · คำกำกวมติด 2 กิ่งตามบริบท ⚡ · รอเก็บคำเพิ่ม</div><div class="words"><span class="w m">ครางเบาๆ <small>บ้านหลัก: เจ็บปวด · ติดตามบริบท</small></span></div></div>
       </div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงกิน ดื่ม และการใช้ปาก <span class="en">Eating, Drinking &amp; Oral Sounds</span> <span class="tag t-new">แคลร์เสนอ 🌟</span> <span class="tag t-genre">อีโรติก · ทั่วไป</span></div><div class="sub-d">เสียงกลไกจากปากที่ไม่ใช่การเปล่งเสียงพูดหรืออารมณ์ (กิน ดื่ม สัมผัสด้วยปาก)</div><div class="hint">ตัวอย่าง: เคี้ยวกรุบ · ซดน้ำซู้ด · กลืนเอื้อก · จูบดังจุ๊บ · เสียงดูด · เสียงแฉะเปียก · แคลร์เสนอ (ทีมตรวจ) — อีโรติกจำเป็นมาก · แยกจาก “ลมหายใจ” · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
     </div>
   </details>
 
   <!-- 6 -->
   <details class="major" open>
-    <summary><span class="chip-n">๖</span><span class="ttl">เสียงดนตรีและทำนอง<span class="en">Music &amp; Melody</span></span><span class="cnt">🆕 รอเก็บคำ</span><span class="arw">▶</span></summary>
+    <summary><span class="chip-n">๖</span><span class="ttl">เสียงดนตรีและทำนอง<span class="en">Music, Melody &amp; Instruments</span></span><span class="cnt">🆕 รอเก็บคำ</span><span class="arw">▶</span></summary>
     <div class="body">
       <p class="def">เสียงที่มีทำนอง จังหวะ หรือเกิดจากเครื่องดนตรีและการขับร้อง</p>
-      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌲 กิ่งหลักใหม่ <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป</span></div><div class="hint">ตัวอย่าง: เสียงเปียโนแว่ว · ระฆังวัด · ฮัมเพลงกล่อม · กลองศึกกระหึ่ม · แคลร์เสนอ (ฉากดนตรี/เครื่องดนตรี/ร้องเพลง ยังไม่มีบ้าน · เป็นเสียงคนละชนิดกับเสียงพูดจากปาก) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="hint" style="margin-bottom:8px">แคลร์เสนอ · เจนเสนอแตกเป็น 2 กิ่งย่อย (เครื่องดนตรี vs เสียงร้อง) แคลร์รับ</div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงเครื่องดนตรี <span class="en">Instrumental Sounds</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป · แฟนตาซี</span></div><div class="sub-d">เสียงที่เกิดจากการเล่นเครื่องดนตรีทุกชนิด</div><div class="hint">ตัวอย่าง: เปียโนแว่ว · ระฆังวัด · กลองศึกกระหึ่ม · เสียงพิณ/ขลุ่ย · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงร้องและฮัมเพลง <span class="en">Singing &amp; Vocal Melodies</span> <span class="tag t-new">เจนเสนอ</span> <span class="tag t-genre">ทั่วไป</span></div><div class="sub-d">เสียงมนุษย์ที่เปล่งเป็นทำนอง ร้องเพลง ฮัม หรือสวดเป็นจังหวะ</div><div class="hint">ตัวอย่าง: ร้องเพลง · ฮัมเพลงกล่อม · สวดทำนอง · เจนเสนอ (แยกจากเครื่องดนตรีเพราะเป็นเสียงคน) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
     </div>
   </details>
 
@@ -249,78 +280,91 @@ ol.steps li b{color:var(--ink)}
     <summary><span class="chip-n">๗</span><span class="ttl">เสียงพิเศษ เวทมนตร์ และเทคโนโลยี<span class="en">Special, Magical &amp; Sci-Fi Sounds</span></span><span class="cnt">🆕 รอเก็บคำ</span><span class="arw">▶</span></summary>
     <div class="body">
       <p class="def">เสียงเหนือธรรมชาติหรือเสียงจากเทคโนโลยีล้ำยุคที่ไม่มีในโลกจริง</p>
-      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌲 กิ่งหลักใหม่ <span class="tag t-new">เจนเสนอ · แคลร์ปรับ</span> <span class="tag t-genre">ไซไฟ · แฟนตาซี</span></div><div class="hint">ตัวอย่าง: เสียงคลื่นพลังวิ้งๆ · เสียงช็อตไฟฟ้ากระแสเวท · เสียงเลเซอร์ · เจนเสนอ (เดิมให้ซ่อนใต้กิ่งวัตถุ) · แคลร์แยกเป็นกิ่งหลัก เพราะเป็นเสียงคนละชนิดกับวัตถุจริง · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="hint" style="margin-bottom:8px">เจนเสนอ (เดิมซ่อนใต้กิ่ง 1) · แคลร์ปรับยกเป็นกิ่งหลัก · เจนเสนอแตก 2 กิ่งย่อย (เวทมนตร์ vs ไซไฟ) + รอบสองเพิ่มกิ่งที่ 3 (เร้นลับ)</div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงเวทมนตร์และพลังเหนือธรรมชาติ <span class="en">Magical &amp; Supernatural Sounds</span> <span class="tag t-new">เจนเสนอ · แคลร์รับ</span> <span class="tag t-genre">แฟนตาซี</span></div><div class="sub-d">เสียงจากเวทมนตร์ คาถา พลังวิเศษ หรือสิ่งเหนือธรรมชาติ</div><div class="hint">ตัวอย่าง: เสียงคลื่นพลังวิ้งๆ · เสียงร่ายคาถา · วิญญาณครวญ · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงเทคโนโลยีและไซไฟ <span class="en">Sci-Fi &amp; Technological Sounds</span> <span class="tag t-new">เจนเสนอแยก</span> <span class="tag t-genre">ไซไฟ</span></div><div class="sub-d">เสียงจากเครื่องจักรล้ำยุค อาวุธพลังงาน หรือเทคโนโลยีที่ไม่มีในโลกจริง</div><div class="hint">ตัวอย่าง: เสียงเลเซอร์ · เสียงช็อตไฟฟ้ากระแสเวท · ประตูยานเลื่อนฉึบ · หุ่นยนต์บี๊บบั๊บ · เจนเสนอแยก · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงบิดเบี้ยวและมิติเร้นลับ <span class="en">Otherworldly &amp; Eldritch Sounds</span> <span class="tag t-new">🔁 เจนเสนอรอบสอง</span> <span class="tag t-genre">สยอง · ทริลเลอร์ · แฟนตาซี</span></div><div class="sub-d">คลื่นเสียงความถี่ประหลาด เสียงสะท้อนไร้แหล่งกำเนิด หรือเสียงจากสิ่งลี้ลับเหนือความเข้าใจ</div><div class="hint">ตัวอย่าง: คลื่นเสียงความถี่ต่ำที่ทำให้ปวดหู · เสียงกระซิบซ้อนทับกันร้อยเสียง · เสียงมิติฉีกขาด · เจนเสนอ — ไม่ใช่เวท (มีระบบ) ไม่ใช่ไซไฟ (เทคโนโลยี) แต่เป็น cosmic horror · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- 8 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๘</span><span class="ttl">เสียงบรรยากาศแวดล้อม<span class="en">Ambient Soundscape</span></span><span class="cnt">1 คำ ⚡ + 🆕</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">เสียงมวลรวมจากสิ่งแวดล้อมหรือคนจำนวนมากที่ประกอบกันเป็นบรรยากาศของฉาก คนละมิติกับเสียงจากแหล่งเดียว</p>
+      <div class="hint" style="margin-bottom:8px">เจนทักว่า “ฝูงชน” ไม่ควรอยู่ใต้ “เสียงจากปาก” (กิ่ง 5) → ยกออก · แคลร์ตั้งกิ่งหลัก 8 · <b>พี่กันเคาะ “ย้ายเลย”</b> · 🔁 รอบสองเจนงอกกิ่งย่อยเพิ่มให้เต็ม</div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงฝูงชนและความอึกทึก <span class="en">Crowd Din &amp; Hubbub</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป · ทริลเลอร์</span></div><div class="sub-d">เสียงมวลรวมจากคนจำนวนมากพร้อมกัน คนละมิติกับเสียงคนเดียว</div><div class="hint">ตัวอย่าง: จอแจในตลาด · เซ็งแซ่ในผับ · ฝูงชนโห่ร้อง · ผู้คนแตกตื่นโกลาหล · ต่างจาก “เอะอะโวยวาย” (คนเดียว) · รอเก็บคำเพิ่ม</div><div class="words"><span class="w m">ดังระงม <small>บ้านหลัก: ความดังและเสียงสะท้อน ก.4 · “ระงม”=คนหมู่มากร้อง</small></span></div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 บรรยากาศความโกลาหลและสนามรบ <span class="en">Chaos &amp; Battlefield Din</span> <span class="tag t-new">🔁 เจนเสนอรอบสอง</span> <span class="tag t-genre">แฟนตาซี · ทริลเลอร์ · ไซไฟ</span></div><div class="sub-d">เสียงอื้ออึงมวลรวมของสถานการณ์วุ่นวายขั้นสุด การปะทะ หรือสงคราม</div><div class="hint">ตัวอย่าง: เสียงกัมปนาทของสงคราม · ระเบิดปนเสียงกรีดร้องระงม · ดาบปะทะกันนับร้อย · เจนเสนอ — สเกลมวลรวมทั้งสมรภูมิ ต่างจาก “อาวุธและการปะทะ” กิ่ง 1 (ชิ้นเดียว) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงบรรยากาศของสถานที่กว้างและเวิ้งว้าง <span class="en">Spatial Ambience &amp; Void</span> <span class="tag t-new">🔁 เจนเสนอ · แคลร์ปรับ</span> <span class="tag t-genre">ทริลเลอร์ · ไซไฟ · สยอง</span></div><div class="sub-d">มวลเสียงบรรยากาศที่ขับเน้นความกว้างใหญ่หรือความเวิ้งว้างของสถานที่</div><div class="hint">ตัวอย่าง: เสียงหริ่งหรีดเรไรขับความอ้างว้าง · ลมโหวกเหวกในโถงร้าง · เสียงแว่วก้องในถ้ำกว้าง · 🔧 แคลร์ปรับนิยามกันทับกิ่ง 4 (echo/ความเงียบ = property วัดได้อยู่กิ่ง 4 แล้ว) → อันนี้ = มวลเสียงบรรยากาศของที่กว้าง · โยง ⚡ กิ่ง 4 · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงบรรยากาศธรรมชาติแวดล้อม <span class="en">Ambient Wilderness / Nature Bed</span> <span class="tag t-new">💡 แคลร์เสนอเอง</span> <span class="tag t-genre">ทั่วไป · แฟนตาซี</span></div><div class="sub-d">มวลเสียงพื้นหลังรวมของธรรมชาติทั้งผืน ที่ประกอบเป็นเตียงเสียงของฉาก</div><div class="hint">ตัวอย่าง: ป่ากลางคืนอื้ออึงแมลง · ทุ่งยามลมพัดต่อเนื่อง · ริมทะเลคลื่นซัดไม่ขาด · แคลร์เสนอ (เจนยังไม่มี) — เติมขั้วกลางระหว่างโกลาหลกับเวิ้งว้าง · ต่างจากกิ่ง 2 (เสียงเดี่ยว) อันนี้ = เตียงเสียงรวมทั้งฉาก · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
     </div>
   </details>
 
   <!-- MULTI -->
-  <h2 class="sec"><span class="n">⚡</span> คำติดหลายกิ่ง</h2>
-  <p class="prose" style="margin-top:0"><b>⚡ ติดหลายกิ่ง (3 คำ):</b> คำเดียวมี 2 มิติในตัว → ติดทั้ง 2 กิ่งพร้อมกัน ไม่ต้องเลือกอย่างเดียว</p>
-  <div class="cards">
-    <div class="cd"><div class="link-row"><span class="word">ขู่ด้วยเสียงแหบแห้ง</span><span class="arrow">↔</span><span class="to">ลักษณะเนื้อเสียง + โต้ตอบและสนทนา</span></div></div>
-    <div class="cd"><div class="link-row"><span class="word">ตอบด้วยเสียงอ่อนระโหย</span><span class="arrow">↔</span><span class="to">อารมณ์และลีลาเสียง + โต้ตอบและสนทนา</span></div></div>
-    <div class="cd"><div class="link-row"><span class="word">ร้องทักเสียงแหลมสูง</span><span class="arrow">↔</span><span class="to">ลักษณะเนื้อเสียง + ตะโกนและกรีดร้อง</span></div></div>
-  </div>
+  <h2 class="sec"><span class="n">⚡</span> คำติดหลายกิ่ง (13)</h2>
+  <div class="note"><b>🎯 รอบตรวจคำเดิม → กิ่งใหม่ (พี่กันเอ๊ะ + agent + แคลร์):</b> พี่กันสังเกตว่ากิ่งใหม่เยอะแต่ไม่มีคำเดิมไปติด → ไล่ตรวจ 69 คำเทียบกิ่งใหม่ทั้งหมด เจอ <b>9 คำเดิมควรติดกิ่งใหม่</b> (คงบ้านเดิม ไม่ย้าย) → กิ่งใหม่ 6 กิ่งมีคำจริงแล้ว ไม่ว่างเปล่า</div>
+  <div class="mwrap"><table class="mtable">
+    <tr><th>คำ</th><th>บ้านหลัก (คงไว้)</th><th>+ ติดเพิ่ม (กิ่งใหม่)</th></tr>
+    <tr><td>ส่งเสียงซู่ซ่า</td><td class="home">พืชพรรณและใบไม้ (ป่าไม้)</td><td class="add">เสียงน้ำและของเหลว</td></tr>
+    <tr><td>สวบสาบ</td><td class="home">ฝีเท้าและการเดิน</td><td class="add">พืชพรรณและใบไม้</td></tr>
+    <tr><td>ร้องทักเสียงแหลมสูง</td><td class="home">ลักษณะเนื้อเสียง</td><td class="add">ตะโกนและกรีดร้อง</td></tr>
+    <tr><td>ตวาดเสียงดังกึกก้อง</td><td class="home">ตะโกนและกรีดร้อง</td><td class="add">เสียงคำรามและขู่ด้วยโทสะ</td></tr>
+    <tr><td>แผดเสียง</td><td class="home">ตะโกนและกรีดร้อง</td><td class="add">เสียงคำรามและขู่ด้วยโทสะ</td></tr>
+    <tr><td>ขู่ด้วยเสียงแหบแห้ง</td><td class="home">ลักษณะเนื้อเสียง</td><td class="add">เสียงคำรามและขู่ด้วยโทสะ</td></tr>
+    <tr><td>บ่นพึมพำ · พึมพำ · เสียงงึมงำ</td><td class="home">พูดเบาและพึมพำ</td><td class="add">การพูดกับตัวเองและรำพึง</td></tr>
+    <tr><td>กระซิบเสียงสั่น · เสียงสั่นเครือ</td><td class="home">ลักษณะเนื้อเสียง</td><td class="add">เสียงจากความกลัวและขวัญเสีย</td></tr>
+    <tr><td>กรีดร้องโหยหวน</td><td class="home">ตะโกนและกรีดร้อง</td><td class="add">เสียงจากความกลัวและขวัญเสีย</td></tr>
+    <tr><td>น้ำเสียงเฉียบขาด</td><td class="home">อารมณ์และลีลาเสียง</td><td class="add">เสียงสั่งการและประกาศ</td></tr>
+    <tr><td>ครางเบาๆ</td><td class="home">เสียงจากความเจ็บปวดทรมาน</td><td class="add">เสียงครางเร้าอารมณ์ (ตามบริบท)</td></tr>
+    <tr><td>ดังระงม</td><td class="home">ความดังและเสียงสะท้อน (ก.4)</td><td class="add">เสียงฝูงชนและความอึกทึก (ก.8)</td></tr>
+  </table></div>
+  <p class="prose" style="font-size:12.5px;color:var(--muted);margin-top:8px">หมายเหตุ: “ตอบด้วยเสียงอ่อนระโหย” เดิมติด 2 กิ่ง (อารมณ์ + โต้ตอบ) · พอยุบกิ่งโต้ตอบ เหลือบ้านเดียว = อารมณ์และลีลาเสียง (คำไม่หาย) · <b>กิ่งใหม่ที่ยังไม่มีคำเดิมติด</b> (หัวเราะ · เยาะเย้ย · อุทาน · พูดติดขัด · กิน ดื่ม · ไอ/สำลัก · ผิวปาก · ไฟ · สัตว์ · อาวุธ ฯลฯ) = ปกติ เพราะคลังเดิมยังไม่มีคำแนวนั้น รอเก็บตอนเจอคำจริง</p>
 
   <!-- CROSS -->
   <h2 class="sec"><span class="n">🔗</span> คำ/กิ่งโยงข้ามหมวด</h2>
-  <p class="prose" style="margin-top:0">เสียงที่เกิดจาก <b>แอ็กชัน</b> (ตบ/กระทบ) → ตัวเสียงอยู่หมวด 4 แต่ตัวการกระทำอยู่หมวด 3 · <em>schema ปัจจุบันยังไม่รองรับกิ่งข้ามหมวด — จดไว้ทำตอน implement</em></p>
+  <p class="prose" style="margin-top:0">บ้านหลักอยู่หมวด 4 แต่โยงไปให้ค้นเจอจากอีกหมวด · <em>schema ปัจจุบันยังไม่รองรับกิ่งข้ามหมวด — จดไว้ทำตอน implement</em></p>
   <div class="cards">
     <div class="cd"><div class="link-row"><span class="word">เผียะ · เสียงตบเข่าฉาด</span><span class="to">เสียงร่างกายกระทบ</span><span class="arrow">→</span><span class="tag t-cross">หมวด 3 กริยา ท่าทาง</span></div></div>
     <div class="cd"><div class="link-row"><span class="word">(ทั้งกิ่ง 3 เสียงจากการเคลื่อนไหว)</span><span class="to">—</span><span class="arrow">→</span><span class="tag t-cross">หมวด 3 กริยา ท่าทาง</span></div></div>
+    <div class="cd"><div class="link-row"><span class="word">ถ้อยคำที่ถ่อยสถุล</span><span class="to">ลักษณะคำพูด</span><span class="arrow">→</span><span class="tag t-cross">หมวด 8 บุคลิกภาพ</span><span class="why">สำนวน/ระดับภาษาบ่งบุคลิกด้วย · บ้านหลักคงอยู่หมวด 4 ไม่ย้าย (คำต้นฉบับ · พี่กันเคาะ “ตามแคลร์”)</span></div></div>
   </div>
 
   <!-- JUNK FRAGMENT -->
   <h2 class="sec"><span class="n">⚠</span> รอพี่กันเคาะ · เศษนิยามในคลัง</h2>
   <div class="tech">
     <h3>เศษนิยามที่หลุดเข้าคลังเป็น “คำ”</h3>
-    <p class="prose" style="margin:0"><b>“เน้นเสียงที่บอกสภาพแวดล้อมหรือวัสดุ”</b> — ไม่ใช่คำ เป็นคำบรรยายกิ่งหลัก 1 ที่หลุดเข้าคลังเป็น “คำ” · เสนอ <b>ยกไปเป็นนิยามกิ่งหลัก 1 แล้วเอาออกจากรายการคำ</b> → ทำให้คลังนับ 70 เหลือคำจริง 69 · <b style="color:var(--brick)">ลบคำต้นฉบับต้องถามทุกครั้ง (กฎเหล็ก) จึงยังไม่ทำจนกว่าพี่กันโอเค</b></p>
+    <p class="prose" style="margin:0"><b>“เน้นเสียงที่บอกสภาพแวดล้อมหรือวัสดุ”</b> — ไม่ใช่คำ เป็นคำบรรยายกิ่งหลัก 1 ที่หลุดเข้าคลังเป็น “คำ” · เสนอ <b>ยกไปเป็นนิยามกิ่งหลัก 1 แล้วเอาออกจากรายการคำ</b> → คลังนับ 70 เหลือคำจริง 69 · <b style="color:var(--brick)">ลบคำต้นฉบับต้องถามทุกครั้ง (กฎเหล็ก) จึงยังไม่ทำจนกว่าพี่กันโอเค</b></p>
   </div>
 
   <!-- GEMINI -->
   <h2 class="sec"><span class="n">🤝</span> ประเมินข้อเสนอเจน (Gemini)</h2>
-  <p class="prose" style="margin-top:0">เจนเกลานิยาม/อังกฤษของหมวดนี้มาให้ + เสนอกิ่งใหม่ · แคลร์ประเมินทีละข้อ (รับ/ปรับ) โดยพี่กันเคาะสุดท้าย</p>
   <div class="prose">
-    <p><b>✅ รับ:</b> โครง <b>5 กิ่งหลักจากเจน</b> เป็นระบบดี (แคลร์เพิ่มเสียงดนตรี + ยกเสียงพิเศษเป็นกิ่งหลัก → รวม <b>7 กิ่งหลัก</b>) · เติม <b>นิยาม + ชื่ออังกฤษครบทุกกิ่ง</b> (เดิมไม่มีเลย) · แยก <b>“ลักษณะเนื้อเสียง” (กายภาพ) ออกจาก “อารมณ์และลีลาเสียง”</b> ชัด ดักทางให้ AI แยกถูก · กิ่งใหม่ <b>เสียงสัตว์</b> (ต้นฉบับขาด) · กิ่งใหม่ <b>เสียงพิเศษ/เวทมนตร์</b> (เผื่อไซไฟ/แฟนตาซี) · <b>โยงเสียงร่างกายไปหมวด 3</b> (เป็นแอ็กชันที่ทำให้เกิดเสียง)</p>
-    <p><b>🔧 ปรับจากที่เจนเสนอ:</b> <b>คืนคำที่เจนย่อ</b> — เจนย่อ “สะบัดเสียงด้วยความไม่พอใจ → สะบัดเสียง” = ผิดกฎเหล็ก → คงวลีเต็มตามคลัง · <b>คงคำที่เจนแปลงรูป 3 คำ</b> ตามคลังเดิม (เสียงดัง แก๊ก · เสียงไม้หักดัง กร๊อบ · เสียงของเฉียบคมขึ้น) · <b>แยกเสียงพิเศษ/เวทมนตร์เป็นกิ่งหลัก</b> (เจนวางซ่อนใต้กิ่งวัตถุ) · ชื่อกิ่ง “เสียงเปิดปิดวัตถุ” → “เสียงจากการใช้งานวัตถุ” (กว้างกว่า) · “เสียงร่างกายเสียดสีและกระทบ” → “เสียงร่างกายกระทบ” (กระชับ)</p>
-  </div>
-
-  <!-- CLAIRE PROPOSALS -->
-  <h2 class="sec"><span class="n">💡</span> กิ่งที่แคลร์เสนอเพิ่ม</h2>
-  <div class="note"><b>🔑 กฎ (พี่กันตั้ง 23 ก.ค. 2569):</b> งานเกลาหมวดต้องการ <b>หลายความเห็น — พี่กัน + เจน (Gemini) + แคลร์</b> · แคลร์ไม่ต้องตามเจนทั้งหมด ให้เสนอตามมุมของแคลร์เองด้วยเสมอ · ระบุชัดว่าใครเสนอ เพื่อให้พี่กันเลือกได้</div>
-  <p class="prose" style="margin:0 0 8px">แคลร์ไล่ดูช่องว่างที่ทั้งต้นฉบับและเจนยังไม่มี แล้วเสนอเพิ่ม <b>4 กิ่ง</b> (ว่างเปล่ารอเก็บคำ ไม่แตะคำเดิม):</p>
-  <div class="cards">
-    <div class="cd"><div class="link-row"><span class="word">🌟 ความเงียบและการเงียบเสียง</span><span class="tag t-new">แคลร์เสนอ</span><span class="why">หมวดชื่อ “เสียง” แต่ความเงียบคือเครื่องมือเสียงที่ทรงพลังที่สุดอย่างหนึ่งในนิยาย (เงียบกริบ · เงียบสงัด · เงียบจนได้ยินเสียงหัวใจตัวเอง) · ต้นฉบับ+เจนไม่มีที่รับ → วางใต้กิ่ง 4 เพราะความเงียบ = ความดังระดับศูนย์</span></div></div>
-    <div class="cd"><div class="link-row"><span class="word">เสียงดนตรีและทำนอง</span><span class="tag t-new">แคลร์เสนอ</span><span class="why">ฉากดนตรี/เครื่องดนตรี/ร้องเพลง/ระฆัง/กลอง ยังไม่มีบ้าน · เป็นเสียงคนละชนิดกับเสียงพูดจากปาก → ตั้งเป็นกิ่งหลักใหม่ (กิ่ง 6)</span></div></div>
-    <div class="cd"><div class="link-row"><span class="word">เสียงไฟและการเผาไหม้</span><span class="tag t-new">แคลร์เสนอ</span><span class="why">ไฟเป็นธาตุที่ต้นฉบับขาด แต่ฉากไฟพบบ่อยทุกแนว → วางใต้กิ่ง 2 (ธรรมชาติ)</span></div></div>
-    <div class="cd"><div class="link-row"><span class="word">เสียงอาวุธและการปะทะ</span><span class="tag t-new">แคลร์เสนอ</span><span class="why">สายแอ็กชัน/แฟนตาซี ยังไม่มีที่รับเสียงศึก (ดาบกระทบ · เสียงปืน · ธนูเสียดลม) → วางใต้กิ่ง 1 (วัตถุ)</span></div></div>
+    <p><b>✅ รับ (รอบแรก):</b> โครง <b>5 กิ่งหลักจากเจน</b> + <b>นิยาม/อังกฤษครบทุกกิ่ง</b> · แยก <b>“เนื้อเสียง” จาก “อารมณ์”</b> ชัด · กิ่งใหม่ <b>เสียงสัตว์</b> · <b>โยงเสียงร่างกายไปหมวด 3</b> · <b>ยุบ “โต้ตอบและสนทนา”</b> (คำในนั้นติดหลายกิ่งอยู่แล้ว ไม่หาย) · <b>แตกกิ่ง 6/7</b> · <b>Ambient Human Vocal → Eerie Human Sounds</b></p>
+    <p><b>🔁 รับ (รอบสอง เจนติคืน · แคลร์วิเคราะห์ · พี่กันเคาะ “เอาเลย”):</b> (A) กิ่ง <b>อาการไอ สำลัก และขย้อน</b> · (D) label เยาะเย้ย → <b>Sneering &amp; Gloating</b> · (E) กิ่ง <b>เสียงผิวปากและการพ่นลม</b> · (F) กิ่ง <b>เสียงบิดเบี้ยวและมิติเร้นลับ</b> (กิ่งที่ 3 ของกิ่ง 7) · (G) กิ่ง <b>บรรยากาศความโกลาหลและสนามรบ</b></p>
+    <p><b>🔧 รับแบบปรับ (แคลร์ติคืน):</b> (H) “เสียงสะท้อนและความเวิ้งว้าง” ของเจน <b>ทับกิ่ง 4</b> (echo/ความเงียบเป็น property วัดได้อยู่กิ่ง 4) → ปรับนิยามเป็น “มวลเสียงบรรยากาศของที่กว้าง” + โยง ⚡ กิ่ง 4 · <b>💚 ชม:</b> (C) label Growl &amp; Snarl of Rage ดีแล้ว</p>
+    <p><b>💡 ต่างจากเจน / แคลร์เพิ่มเอง:</b> <b style="color:var(--brick)">“ถ้อยคำที่ถ่อยสถุล”</b> เจนเสนอย้ายออก · <b>แคลร์ไม่ย้าย</b> (คำต้นฉบับ + คนละมิติ) → เก็บไว้ + เพิ่มกิ่ง “การพูดติดขัด” แยก (พี่กันเคาะ “ตามแคลร์”) · <b>ฝูงชน</b> เจนเสนอไปกิ่ง 4 · แคลร์ตั้งกิ่งหลัก 8 แทน · <b>เพิ่มเอง:</b> เสียงบรรยากาศธรรมชาติแวดล้อม (ก.8)</p>
   </div>
 
   <!-- DISCUSSION -->
   <h2 class="sec"><span class="n">💭</span> อภิปราย · เหตุผลของการจัดโครง</h2>
   <div class="prose disc">
-    <p><b>๑ ทำไมโครงนี้ดี:</b> หมวดเสียงเดิมมีโครงอยู่แล้วแต่ไม่มีนิยาม/อังกฤษ · เจนเกลาให้ไล่จาก <b>เสียงภายนอกตัว → เข้าหาตัวมนุษย์</b>: วัตถุ → ธรรมชาติ → ร่างกายเคลื่อนไหว → การรับรู้/ความดัง → เสียงจากปาก (แคลร์เพิ่มกิ่ง 6 เสียงพิเศษ) · เป็นระบบที่สอนง่ายทั้งกับคนและ AI</p>
-    <p><b>๒ ทำไมกิ่ง “เสียงจากปาก” ซอยลึก 3 ชั้น:</b> เป็นกิ่งที่คำเยอะสุด (47 คำ) มีหลายมิติซ้อนกัน → ซอยเป็น น้ำเสียง · การพูด · เสียงไม่ใช่คำพูด · เส้นแบ่งสำคัญ = <b>“เนื้อเสียงกายภาพ” vs “อารมณ์ในน้ำเสียง”</b> (เสียงแหบ = กายภาพ · เสียงเยียบเย็น = อารมณ์)</p>
-    <p><b>๓ ทำไมคำเดียวติดหลายกิ่ง:</b> บางคำมี 2 มิติในตัว — “ขู่ด้วยเสียงแหบแห้ง” เป็นทั้งเนื้อเสียง (แหบแห้ง) และการโต้ตอบ (ขู่) → ติดทั้ง 2 กิ่ง ไม่ต้องเลือก</p>
-    <p><b>๔ ทำไมกิ่งเสียงร่างกายต้องโยงหมวด 3:</b> “เผียะ · เสียงตบเข่าฉาด” = เสียงที่เกิดจากแอ็กชัน (ตบ/กระทบ) → ตัวเสียงอยู่หมวด 4 แต่ตัวการกระทำอยู่หมวด 3 → โยงข้ามให้ค้นเจอจากทั้งสองทาง</p>
-    <p><b>๕ ทำไมตั้งกิ่งใหม่ 2 กิ่ง (สัตว์ · พิเศษ/เวทมนตร์):</b> หลัก “คลังต้องรับได้กับคำทุกแนวนิยาย” — ต้นฉบับมีเสียงธรรมชาติแต่ขาดเสียงสัตว์ และไม่มีที่รับเสียงเวทมนตร์/ไซไฟ (นิยายพี่กันมีแนวพวกนี้) → ตั้งกิ่งเผื่อไว้</p>
-  </div>
-
-  <div class="tech">
-    <h3>⚙️ ข้อควรระวังทางเทคนิค (ตอนลงคลังจริง)</h3>
-    <p class="prose" style="margin:0"><b>1. เศษนิยาม</b> “เน้นเสียงที่บอกฯ” ต้องเอาออกจาก words (รอพี่กันเคาะ) — ตอนนี้คลังนับ 70 แต่คำจริง 69 · <b>2. โยงข้ามหมวด (🔗)</b> schema ยังไม่รองรับ — จดไว้ทำตอน implement · <b>3. ถอด tag แนว</b> ก่อนขึ้น Supabase/เว็บ/AI (กัน bias)</p>
+    <p><b>๑ ทำไมโครงนี้ดี:</b> ไล่จาก <b>เสียงภายนอกตัว → เข้าหาตัวมนุษย์</b>: วัตถุ → ธรรมชาติ → ร่างกาย → การรับรู้/ความดัง → เสียงจากปาก · แคลร์เพิ่ม ดนตรี (6) · พิเศษ/เวทมนตร์ (7) · บรรยากาศแวดล้อม (8) = <b>8 กิ่งหลัก</b></p>
+    <p><b>๒ ทำไมกิ่ง “เสียงจากปาก” เติมกิ่งเยอะ:</b> คำเยอะสุด (47) · เดิมซอยตาม น้ำเสียง · ความดัง · อารมณ์ลบ · รอบนี้เติม <b>หน้าที่/เจตนา</b> (ติดขัด/สั่งการ/พูดกับตัวเอง) + <b>อารมณ์ด้านบวก/ปฏิกิริยา</b> (หัวเราะ/อุทาน/ครางเร้าอารมณ์)</p>
+    <p><b>๓ ทำไมคำเดิมติดกิ่งใหม่ (⚡):</b> พี่กันเอ๊ะว่ากิ่งใหม่ไม่มีคำ → ไล่ตรวจเจอ 9 คำเดิมที่สื่อถึงกิ่งใหม่ด้วย (ตวาด→คำราม · พึมพำ→พูดกับตัวเอง · ดังระงม→ฝูงชน ฯลฯ) → ติดเพิ่มโดย <b>คงบ้านเดิม ไม่ย้าย</b> ให้กิ่งใหม่มีคำจริง</p>
+    <p><b>๔ ทำไมเก็บ “ถ้อยคำที่ถ่อยสถุล” ไว้ที่เดิม:</b> การย้ายคำต้นฉบับผิดกฎเหล็ก + เป็นคนละมิติกับพูดติดขัด (สำนวน vs ความลื่นไหล) → เก็บไว้ + เพิ่มกิ่งแยก · โยง 🔗 หมวด 8 ได้</p>
+    <p><b>๕ กิ่งที่ยังว่าง = ปกติ:</b> หัวเราะ/กิน-ดื่ม/ไฟ/อาวุธ ฯลฯ ยังไม่มีคำเดิม เพราะคลังเดิมยังไม่มีคำแนวนั้น · <b>ตอนคำมาเยอะ (เป็นพันคำ) ค่อยเก็บลงกิ่งพวกนี้</b> — ตั้งเผื่อไว้ก่อนไม่เสียหาย (พี่กันกำหนด)</p>
   </div>
 
   <!-- STEPS -->
   <h2 class="sec"><span class="n">🔜</span> ลำดับงานถัดไป</h2>
   <ol class="steps">
-    <li><b>พี่กันอ่านทวน + เคาะ</b> โดยเฉพาะ 3 เรื่อง: (ก) เศษนิยาม “เน้นเสียงที่บอกฯ” เอาออกไหม (ข) คำ “เสียงของเฉียบคมขึ้น” อยากได้แบบมี “...” (ช่องเติมชื่อคน) ไหม (ค) กิ่งเสียงพิเศษแยกเป็นกิ่งหลัก โอเคไหม</li>
-    <li><b>เกลาหมวดอื่นต่อ</b> (3, 5–9) แบบเดียวกัน</li>
-    <li><b>หลังเกลาหมวดครบ</b> → เพิ่ม cat4 เข้า <code>scripts/gen_branches.py</code> แล้วสร้างไฟล์กิ่งเดี่ยว/json</li>
-    <li><b>ลงคลังจริง</b> ทุกหมวด — ไม่ลบวลีเดิม · ถอด tag</li>
+    <li><b>พี่กันอ่านทวน + เคาะ</b> · เศษนิยาม “เน้นเสียงที่บอกฯ” เอาออกไหม · คำ ⚡ ที่ติดกิ่งใหม่โอเคไหม</li>
+    <li><b>ไปเกลาหมวดอื่นต่อ</b> (3, 5–9) — หมวด 4 ปิดจ็อบรอบนี้แล้ว</li>
+    <li><b>ตอนคำมาเยอะ</b> → เก็บคำลงกิ่งใหม่ที่ตั้งเผื่อไว้ · เพิ่ม cat4 เข้า <code>gen_branches.py</code> · ลงคลังจริง (ไม่ลบวลีเดิม · ถอด tag)</li>
   </ol>
 
-  <p class="foot">คลังคำ · Word Bank — ร่างเกลาหมวด ๔ เสียง · ยังไม่แตะคลังจริงจนพี่กันโอเค</p>
+  <p class="foot">คลังคำ · Word Bank — ร่างเกลาหมวด ๔ เสียง · 8 กิ่งหลัก · ยังไม่แตะคลังจริงจนพี่กันโอเค</p>
 </div>
+
 </body>
 </html>
