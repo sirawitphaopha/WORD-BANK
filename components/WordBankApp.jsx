@@ -92,7 +92,8 @@ export default class WordBankApp extends React.Component {
   componentWillUnmount() {
     if (this._onUnload && typeof window !== 'undefined') window.removeEventListener('beforeunload', this._onUnload);
     if (this._onScrollBtn && typeof window !== 'undefined') { window.removeEventListener('scroll', this._onScrollBtn); window.removeEventListener('resize', this._onScrollBtn); }
-    clearInterval(this._proc); clearInterval(this._sec); clearTimeout(this._rvPush);
+    clearInterval(this._proc); clearInterval(this._sec); clearTimeout(this._rvPush); clearInterval(this._syncTimer);
+    if (this._onVisSync && typeof window !== 'undefined') { document.removeEventListener('visibilitychange', this._onVisSync); window.removeEventListener('focus', this._onVisSync); }
     if (this._ro) { this._ro.disconnect(); this._ro = null; }
     if (this._ro2) { this._ro2.disconnect(); this._ro2 = null; }
     if (this._ro3) { this._ro3.disconnect(); this._ro3 = null; }
@@ -106,6 +107,14 @@ export default class WordBankApp extends React.Component {
     // ปิด/รีเฟรชหน้า → รีบ sync คำตรวจทานที่ค้างขึ้นคลาวด์ก่อน (กันหาย)
     this._onUnload = () => this._flushReview(true);
     if (typeof window !== 'undefined') window.addEventListener('beforeunload', this._onUnload);
+    // 🔄 ซิงค์คำตรวจทานอัตโนมัติ: พอสลับกลับมาแท็บ/โฟกัสหน้าต่าง + เดินเครื่องทุก 7 วิ (เฉพาะตอนแท็บโชว์อยู่)
+    //    → ลบช่อบนเครื่อง/แท็บนึง อีกที่จะอัปเดตตามเอง ไม่ต้องรีเฟรช (แก้บั๊กช่อไม่ซิงค์ข้ามเครื่อง 23 ก.ค.)
+    if (typeof window !== 'undefined') {
+      this._onVisSync = () => { if (!document.hidden) this.syncReview(); };
+      document.addEventListener('visibilitychange', this._onVisSync);
+      window.addEventListener('focus', this._onVisSync);
+      this._syncTimer = setInterval(() => this.syncReview(), 7000);
+    }
     // กันเบราว์เซอร์ (โดยเฉพาะมือถือ) จำตำแหน่งเลื่อนเดิมตอนเปิด/รีเฟรชใหม่ → เปิดมาต้องอยู่บนสุดเสมอ
     if (typeof window !== 'undefined' && window.history && 'scrollRestoration' in window.history) {
       try { window.history.scrollRestoration = 'manual'; } catch (e) {}
@@ -155,31 +164,21 @@ export default class WordBankApp extends React.Component {
       let col = this.state.collapsed;
       if (!hadCollapsed) { col = {}; cats.forEach((c) => { col['g-' + c.id] = 1; }); }
       const base2 = { categories: cats, novels: data.novels || [], library: data.words || [], loading: false, collapsed: col, aiReady: data.aiReady || {} };
-      const cloudReview = this.normBatches(Array.isArray(data.review) ? data.review : [], data.reviewNovel);
-      const localReview = this.normBatches(this.state.review);
-      // 🚨 ห้ามเอาคลาวด์ทับของในเครื่องดื้อๆ — ถ้า sync รอบก่อนยังไม่ถึงคลาวด์ (ปิดหน้า/รีเฟรชแทรกกลางคัน)
-      // ช่อที่ยังอยู่แต่ในเครื่องจะหายถาวร (เคยเกิดจริง 19 ก.ค. 2569 ช่อ 29 คำหาย)
-      // → รวมกันแบบรายช่อ: คลาวด์เป็นหลัก + เติมช่อที่มีเฉพาะในเครื่องกลับเข้าไป แล้วดันขึ้นคลาวด์
-      const cloudBatches = new Set(cloudReview.map((r) => r.batch || 'b_legacy'));
-      const localOnly = localReview.filter((r) => !cloudBatches.has(r.batch || 'b_legacy'));
-      const merged = localOnly.length ? [...cloudReview, ...localOnly] : cloudReview;
-      if (merged.length) {
-        merged.sort((a, b) => (a.batchNo || 1) - (b.batchNo || 1));
-        base2.review = merged;
-        base2.activeBatch = this.activeBatchId(merged, '');
-        base2.reviewNovel = data.reviewNovel || this.state.reviewNovel || 'ไม่ระบุเรื่อง';
-        this.setState(base2, () => {
-          try { localStorage.setItem(REVIEW_KEY, JSON.stringify(merged)); } catch (e) {}
-          // มีช่อที่คลาวด์ยังไม่รู้จัก → รีบดันขึ้นทันที + บอกให้รู้ว่ากู้มาได้
-          if (localOnly.length) {
-            this.persistReviewNow();
-            const n = new Set(localOnly.map((r) => r.batch)).size;
-            this.flash('กู้คำที่ยังไม่ได้ขึ้นคลาวด์กลับมา ' + localOnly.length + ' คำ (' + n + ' ช่อ) แล้ว');
-          }
-        });
-      } else {
-        this.setState(base2);
-      }
+      // รวมคำตรวจทาน: คลาวด์เป็นหลัก + เก็บช่อที่ยังไม่ซิงค์ในเครื่อง (กันหายตอนปิดหน้ากลางคัน)
+      // 🔑 แต่ต้องเคารพ "ป้ายลบแล้ว" (deletedBatches / tombstone) — ช่อที่ตั้งใจลบจากอีกเครื่อง
+      //    จะมีป้ายนี้ → ห้ามฟื้นกลับ (บั๊กเด้งกลับ 23 ก.ค. 2569) · ดู scripts/013
+      const mg = this._mergeReview(data.review, this.state.review, data.deletedBatches, data.reviewNovel);
+      base2.review = mg.merged;
+      base2.activeBatch = this.activeBatchId(mg.merged, '');
+      base2.reviewNovel = data.reviewNovel || this.state.reviewNovel || 'ไม่ระบุเรื่อง';
+      this.setState(base2, () => {
+        try { localStorage.setItem(REVIEW_KEY, JSON.stringify(mg.merged)); } catch (e) {}
+        if (mg.localOnly.length) {
+          this.persistReviewNow();
+          const n = new Set(mg.localOnly.map((r) => r.batch || 'b_legacy')).size;
+          this.flash('กู้คำที่ยังไม่ได้ขึ้นคลาวด์กลับมา ' + mg.localOnly.length + ' คำ (' + n + ' ช่อ) แล้ว');
+        }
+      });
     } catch (e) {
       this.setState({ loading: false, loadError: e.message || 'โหลดข้อมูลไม่สำเร็จ' });
     }
@@ -248,6 +247,44 @@ export default class WordBankApp extends React.Component {
           this.flash('ลบบนคลาวด์ไม่สำเร็จ คำยังอยู่ในเครื่องนี้ ลองใหม่อีกครั้ง');
         });
     } catch (e) {}
+  };
+
+  // รวมคำตรวจทานคลาวด์+เครื่อง แบบเคารพป้าย "ลบแล้ว" (tombstone) → คืน { merged, localOnly }
+  //   localOnly = ช่อที่มีเฉพาะในเครื่อง + ยังไม่ถูกปักป้ายลบ = ของใหม่ยังไม่ซิงค์ (ต้องดันขึ้นคลาวด์)
+  _mergeReview = (cloudRaw, localRaw, deletedArr, fallbackNovel) => {
+    const cloud = this.normBatches(Array.isArray(cloudRaw) ? cloudRaw : [], fallbackNovel);
+    const local = this.normBatches(Array.isArray(localRaw) ? localRaw : []);
+    const dead = new Set(deletedArr || []);
+    const bid = (r) => r.batch || 'b_legacy';
+    const cloudBatches = new Set(cloud.map(bid));
+    const localOnly = local.filter((r) => !cloudBatches.has(bid(r)) && !dead.has(bid(r)));
+    let merged = localOnly.length ? [...cloud, ...localOnly] : cloud;
+    merged = merged.filter((r) => !dead.has(bid(r))); // กันช่อที่ถูกลบหลุดมา
+    merged.sort((a, b) => (a.batchNo || 1) - (b.batchNo || 1));
+    return { merged, localOnly };
+  };
+  // ลายเซ็นรายการตรวจทาน (เทียบว่าเปลี่ยนไหม · ไม่รวม selected ที่เป็นสถานะชั่วคราว)
+  _reviewSig = (list) => (list || []).map((r) => r.id + '|' + (r.text || '') + '|' + (r.category || '') + '|' + (r.subpaths || []).join(',') + '|' + (r.batch || '')).join(';');
+  // 🔄 ซิงค์คำตรวจทานจากคลาวด์อัตโนมัติ (สลับแท็บ/โฟกัส/ทุก 7 วิ) — ลบช่อเครื่องนึงแล้วอีกเครื่องอัปเดตตาม
+  //    กันทับงานที่กำลังทำ: ข้ามถ้ามีของค้างส่ง / กำลังจัดคำ AI / กำลังเลือกคำ / กำลังแก้คำ / ซ่อนแท็บอยู่
+  syncReview = async () => {
+    if (typeof document !== 'undefined' && document.hidden) return;
+    if (this._rvPending || this._syncing || this.state.processing || this.state.editCard) return;
+    if (this.state.review.some((r) => r.selected)) return;
+    this._syncing = true;
+    try {
+      const res = await fetch('/api/review');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.error) return;
+      // เช็คซ้ำหลังรอเน็ต — ระหว่างนั้นอาจมีการแก้/เลือก/ส่งค้าง (กันทับงาน)
+      if (this._rvPending || this.state.editCard || this.state.review.some((r) => r.selected)) return;
+      const mg = this._mergeReview(data.review, this.state.review, data.deletedBatches, data.reviewNovel);
+      if (this._reviewSig(mg.merged) === this._reviewSig(this.state.review)) return; // ไม่ต่าง = ไม่ต้องวาดใหม่
+      this.setState({ review: mg.merged, activeBatch: this.activeBatchId(mg.merged, this.state.activeBatch) }, () => {
+        try { localStorage.setItem(REVIEW_KEY, JSON.stringify(mg.merged)); } catch (e) {}
+        if (mg.localOnly.length) this.persistReviewNow();
+      });
+    } catch (e) {} finally { this._syncing = false; }
   };
 
   // ---------- หมวดย่อยหลายกิ่งต่อคำ ----------

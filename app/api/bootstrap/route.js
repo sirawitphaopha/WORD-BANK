@@ -1,6 +1,6 @@
 // โหลดข้อมูลทั้งหมดตอนเปิดแอป: หมวด + เรื่อง + คำ
 import { NextResponse } from 'next/server';
-import { getAdmin, mapCategory, mapWord, mapReview } from '@/lib/supabaseAdmin';
+import { getAdmin, mapCategory, mapWord, mapReview, deletedBatches } from '@/lib/supabaseAdmin';
 import { PROVIDERS, PROVIDER_ORDER } from '@/lib/providers';
 
 export const dynamic = 'force-dynamic';
@@ -8,11 +8,12 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const db = getAdmin();
-    const [cats, novels, words, review] = await Promise.all([
+    const [cats, novels, words, review, dead] = await Promise.all([
       db.from('wb_categories').select('*').order('position', { ascending: true }),
       db.from('wb_novels').select('title').order('created_at', { ascending: true }),
       db.from('wb_words').select('*').order('created_at', { ascending: false }),
       db.from('wb_review').select('*').order('position', { ascending: true }),
+      deletedBatches(db),
     ]);
     if (cats.error) throw cats.error;
     if (novels.error) throw novels.error;
@@ -33,6 +34,7 @@ export async function GET() {
       words: words.data.map(mapWord),
       review: review.data.map(mapReview),
       reviewNovel,
+      deletedBatches: dead,
       aiReady,
     });
   } catch (e) {

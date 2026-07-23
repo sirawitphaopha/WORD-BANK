@@ -1,6 +1,6 @@
 // ตัวช่วย/ค่าคงที่กลาง — แยกจาก WordBankApp เพื่อให้ไฟล์หน้าต่าง ๆ import ได้โดยไม่วนลูป (circular)
 import { PROVIDERS } from '@/lib/providers'; // ข้อมูลล้วนใน lib/ (ไม่ import กลับมา components → ไม่วน)
-export const VERSION = '0.0.0.0'; // ยังไม่เริ่มนับเวอร์ชัน — เลื่อนเมื่อพี่กันสั่งเท่านั้น
+export const VERSION = '0.9.0.0'; // เริ่มนับเวอร์ชัน 23 ก.ค. 2569 — พี่กันสั่งขึ้น 0.9.0.0 ไว้เช็คว่า deploy ขึ้นจริง
 export const UI_KEY = 'wordbank:v1:ui';
 export const REVIEW_KEY = 'wordbank:v1:review';
 export const DRAFT_KEY = 'wordbank:v1:draft';
