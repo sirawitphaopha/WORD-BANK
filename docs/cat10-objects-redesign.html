@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ร่างหมวด 10 · สิ่งของและข้าวของ — คลังคำ</title>
+</head>
+<body>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --bronze:#a8823d; --bronze-deep:#7d5f26; --bronze-soft:#cbab6e;
+  --brick:#9c3b2b; --green:#5a7d4a; --blue:#4a6d8a;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+  --shadow:0 1px 2px rgba(90,70,45,.06),0 3px 12px rgba(90,70,45,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+    --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+    --bronze:#cea869; --bronze-deep:#dcbd80; --bronze-soft:#6e5a34;
+    --brick:#d97a63; --green:#8fb079; --blue:#84acc8;
+    --line:#3f372c; --line-soft:#332c22;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 3px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --bronze:#a8823d; --bronze-deep:#7d5f26; --bronze-soft:#cbab6e;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+}
+:root[data-theme="dark"]{
+  --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+  --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+  --bronze:#cea869; --bronze-deep:#dcbd80; --bronze-soft:#6e5a34;
+  --line:#3f372c; --line-soft:#332c22;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",system-ui,-apple-system,sans-serif; font-size:16px; line-height:1.72; -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 15% 10%,rgba(168,130,61,.05),transparent 40%),radial-gradient(circle at 85% 80%,rgba(156,59,43,.04),transparent 45%);}
+.wrap{max-width:760px; margin:0 auto; padding:22px 18px 90px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif; text-wrap:balance; line-height:1.25}
+.hero{padding:26px 22px; border-radius:16px; position:relative; overflow:hidden; background:linear-gradient(150deg,var(--card),var(--paper2)); border:1px solid var(--line); box-shadow:var(--shadow)}
+.hero::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:linear-gradient(var(--bronze),var(--bronze-deep))}
+.eyebrow{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--bronze-deep); font-weight:700; margin:0 0 6px}
+.hero h1{margin:0 0 4px; font-size:clamp(26px,6vw,36px); color:var(--ink)}
+.hero .en{font-family:Georgia,serif; font-style:italic; color:var(--muted); font-size:16px; margin:0 0 14px}
+.hero p{margin:0; color:var(--ink-soft); font-size:15px}
+.stats{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+.stat{background:var(--paper); border:1px solid var(--line); border-radius:11px; padding:8px 13px; min-width:70px}
+.stat b{display:block; font-family:Georgia,serif; font-size:22px; color:var(--bronze-deep); line-height:1; font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px; color:var(--muted)}
+.note{font-size:13.5px; color:var(--ink-soft); background:var(--card); border:1px solid var(--line-soft); border-left:3px solid var(--bronze); border-radius:10px; padding:11px 14px; margin:16px 0}
+.note b{color:var(--bronze-deep)}
+h2.sec{font-size:20px; margin:30px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--line); color:var(--ink)}
+
+.grid{display:grid; gap:11px}
+.mj{background:var(--card); border:1px solid var(--line); border-radius:13px; overflow:hidden; box-shadow:var(--shadow)}
+.mj>.head{padding:13px 15px; display:flex; align-items:flex-start; gap:11px}
+.chip-n{flex:none; width:30px; height:30px; border-radius:9px; background:linear-gradient(145deg,var(--bronze),var(--bronze-deep)); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-size:14px; font-weight:700; box-shadow:0 2px 5px color-mix(in srgb,var(--bronze) 40%,transparent)}
+.mj .ttl{flex:1; min-width:0}
+.mj .ttl .th{font-family:Georgia,serif; font-size:16px; color:var(--ink); font-weight:700}
+.mj .ttl .en{display:block; font-size:12px; font-style:italic; color:var(--muted); font-family:Georgia,serif}
+.mj .ttl .def{font-size:13px; color:var(--ink-soft); margin-top:3px}
+.mj .hint{font-size:11.5px; color:var(--muted); background:color-mix(in srgb,var(--bronze) 7%,transparent); border-radius:6px; padding:4px 9px; margin:8px 15px 12px; line-height:1.55}
+.mj .hint::before{content:"🗨 "; opacity:.7}
+.tag{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; padding:2px 7px; border-radius:20px; font-weight:600; white-space:nowrap; margin-left:4px; background:color-mix(in srgb,var(--bronze) 13%,transparent); color:var(--bronze-deep); border:1px solid color-mix(in srgb,var(--bronze) 30%,transparent); vertical-align:middle}
+.moved{background:color-mix(in srgb,var(--green) 14%,transparent); color:var(--green); border-color:color-mix(in srgb,var(--green) 34%,transparent)}
+.sub{margin:9px 15px 0; padding-left:12px; border-left:2px solid var(--line)}
+.sub-h{font-weight:700; font-size:13.5px; color:var(--bronze-deep); display:flex; flex-wrap:wrap; align-items:baseline; gap:6px}
+.sub-h .en{font-weight:400; font-style:italic; color:var(--muted); font-size:11px; font-family:Georgia,serif}
+.sub-d{font-size:12.5px; color:var(--ink-soft); margin:1px 0 3px}
+.sub .hint{margin:2px 0 4px; padding:3px 8px}
+.words{display:flex; flex-wrap:wrap; gap:6px; margin:5px 0 10px 15px}
+.w{background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:4px 10px; font-size:14px; color:var(--ink); box-shadow:inset 3px 0 0 var(--green)}
+.wait{font-size:12px; color:var(--muted); font-style:italic; margin:0 15px 12px; display:inline-block; background:color-mix(in srgb,var(--bronze) 8%,transparent); border:1px dashed color-mix(in srgb,var(--bronze) 38%,transparent); border-radius:8px; padding:4px 10px}
+
+table{width:100%; border-collapse:collapse; margin:8px 0; font-size:13px}
+th,td{text-align:left; padding:7px 10px; border-bottom:1px solid var(--line)}
+th{color:var(--bronze-deep); font-family:Georgia,serif}
+td b{color:var(--ink)}
+.prose{font-size:14px; color:var(--ink-soft)}
+.prose b{color:var(--ink)}
+ol.steps{list-style:none; counter-reset:s; padding:0; margin:8px 0}
+ol.steps li{counter-increment:s; position:relative; padding:11px 14px 11px 46px; background:var(--card); border:1px solid var(--line); border-radius:11px; margin:8px 0; font-size:14px; color:var(--ink-soft)}
+ol.steps li::before{content:counter(s); position:absolute; left:12px; top:11px; width:24px; height:24px; background:var(--bronze); color:#fff; border-radius:7px; font-family:Georgia,serif; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:13px}
+ol.steps li b{color:var(--ink)}
+.foot{text-align:center; margin-top:34px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; font-style:italic; font-family:Georgia,serif}
+@media (max-width:520px){ .wrap{padding:16px 13px 80px} .hero{padding:20px 16px} }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">ร่างหมวดใหม่ · แยกจากหมวด 2</p>
+    <h1>หมวด ๑๐ · สิ่งของและข้าวของ</h1>
+    <p class="en">Objects &amp; Belongings</p>
+    <p>วัตถุและสิ่งของที่ไม่ใช่ตัวบุคคล สัตว์ หรือฉากธรรมชาติ — ของที่ตัวละครสวม ถือ ใช้ หรืออยู่ร่วมด้วย</p>
+    <div class="stats">
+      <div class="stat"><b>13</b><span>กิ่งหลัก</span></div>
+      <div class="stat"><b>2</b><span>คำ (ย้ายจาก ม.2)</span></div>
+      <div class="stat"><b>11</b><span>กิ่งรอเก็บคำ</span></div>
+    </div>
+  </header>
+
+  <div class="note"><b>🎯 ทำไมแยกหมวดนี้:</b> หมวด 2 = “ตัวบุคคล” (สรีระ เนื้อตัว) · แต่เสื้อผ้า/เกราะ/อาวุธ/ของ = <b>วัตถุที่คนใส่-ถือ-ใช้</b> ไม่ใช่เนื้อตัว → คนละชนิดข้อมูล · แยกแล้วหมวด 2 คลีน 100% + มีบ้านรับคำสิ่งของทุกแนว (แฟนตาซี/ไซไฟ/ทริลเลอร์)</div>
+
+  <div class="note"><b>เส้นแบ่งกับหมวดอื่น:</b> หมวด 10 = วัตถุ/ของ · หมวด 2 = เนื้อตัวคน · หมวด 1 = ฉาก/ธรรมชาติ · <b>ของที่เป็นส่วนของฉาก (เปลวเทียน/โคมไฟ) คงไว้หมวด 1 ก่อน</b> ค่อยเกลาทีหลัง (พี่กันสั่ง)</div>
+
+  <h2 class="sec">🌳 โครงกิ่ง 13 กิ่งหลัก</h2>
+  <div class="grid">
+
+    <div class="mj">
+      <div class="head"><span class="chip-n">๑</span><div class="ttl"><span class="th">เครื่องแต่งกายและเสื้อผ้า</span><span class="en">Attire &amp; Clothing</span><span class="tag moved">↩ ย้ายจากหมวด 2</span><div class="def">เสื้อผ้าและชุดที่ตัวละครสวมใส่</div></div></div>
+      <div class="sub"><div class="sub-h">🌿 ประเภทชุดและชิ้นส่วนทั่วไป <span class="en">Garments &amp; Basic Pieces</span></div><div class="sub-d">ชนิดหรือชิ้นส่วนเสื้อผ้าพื้นฐานที่สวมใส่ในชีวิตประจำวัน</div><div class="hint">เผื่อดักคำ: ชุดสูท ชุดราตรี กางเกง เสื้อเชิ้ต · เจนเสริม</div></div>
+      <div class="words"><span class="w">ชายเสื้อนอน</span></div>
+      <div class="sub"><div class="sub-h">🌿 สภาพและความเรียบร้อยของชุด <span class="en">Condition &amp; Wear of Clothing</span></div><div class="sub-d">สภาพเก่าใหม่และความเรียบร้อยของเสื้อผ้า</div></div>
+      <div class="words"><span class="w">ชุดหลุดลุ่ยไร้รูปทรง</span></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 เนื้อผ้า วัสดุ และชุดพิเศษ <span class="en">Fabrics, Materials &amp; Special Gear</span></div><div class="sub-d">ลักษณะเฉพาะของเนื้อผ้า ความประณีต หรือชุดเกราะและเครื่องแบบเฉพาะทาง</div><div class="hint">ผ้าไหมเนื้อบาง ชุดเกราะอัศวิน ชุดนักบินอวกาศ · รอเก็บคำ</div></div>
+    </div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๒</span><div class="ttl"><span class="th">เครื่องประดับและของพก</span><span class="en">Accessories &amp; Personal Items</span><div class="def">ของประดับกายและของเล็ก ๆ ที่พกติดตัว</div></div></div><div class="hint">สร้อย แหวน แว่นตา กระเป๋า นาฬิกา ของขลัง · บอกฐานะ/รสนิยม</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๓</span><div class="ttl"><span class="th">อาวุธและยุทโธปกรณ์</span><span class="en">Weapons &amp; Armaments</span><span class="tag">แฟนตาซี · ไซไฟ · ทริลเลอร์</span><div class="def">อาวุธและอุปกรณ์สำหรับต่อสู้หรือป้องกันตัว</div></div></div><div class="hint">ดาบ ปืน มีด ธนู โล่ เกราะกำบัง</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๔</span><div class="ttl"><span class="th">เครื่องมือและอุปกรณ์</span><span class="en">Tools &amp; Equipment</span><div class="def">อุปกรณ์และเครื่องมือสำหรับใช้งานหรือทำกิจกรรม</div></div></div><div class="hint">เครื่องมือช่าง อุปกรณ์การแพทย์ เครื่องเขียน อุปกรณ์เดินป่า</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๕</span><div class="ttl"><span class="th">เครื่องเรือนและของแต่งบ้าน</span><span class="en">Furniture &amp; Furnishings</span><div class="def">เฟอร์นิเจอร์และของตกแต่งภายในอาคาร</div></div></div><div class="hint">โต๊ะ เก้าอี้ เตียง ตู้ พรม ม่าน</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๖</span><div class="ttl"><span class="th">ของใช้ในชีวิตประจำวัน</span><span class="en">Household &amp; Daily Items</span><div class="def">ข้าวของเครื่องใช้ทั่วไปในชีวิตประจำวัน</div></div></div><div class="hint">ถ้วยชาม เครื่องครัว ผ้าเช็ดตัว ของกระจุกกระจิก</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๗</span><div class="ttl"><span class="th">อาหารและเครื่องดื่ม</span><span class="en">Food &amp; Drink</span><div class="def">ของกินและของดื่ม รวมถึงยา</div></div></div><div class="hint">อาหาร ขนม ผลไม้ เหล้า ชา ยา</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๘</span><div class="ttl"><span class="th">ของมีค่าและทรัพย์สิน</span><span class="en">Valuables &amp; Treasure</span><div class="def">ของมีค่า เงินตรา และสมบัติ</div></div></div><div class="hint">ทอง อัญมณี เพชร เงินตรา หีบสมบัติ</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๙</span><div class="ttl"><span class="th">เอกสารและสื่อบันทึก</span><span class="en">Documents &amp; Records</span><div class="def">สิ่งที่บันทึกข้อความ ภาพ หรือข้อมูล</div></div></div><div class="hint">จดหมาย หนังสือ แผนที่ ภาพวาด รูปถ่าย ม้วนคัมภีร์</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๑๐</span><div class="ttl"><span class="th">ยานพาหนะ</span><span class="en">Vehicles</span><span class="tag">ไซไฟ · ทั่วไป</span><div class="def">พาหนะประดิษฐ์สำหรับเดินทางหรือขนส่ง</div></div></div><div class="hint">รถ เรือ รถไฟ เครื่องบิน ยานอวกาศ เกวียน · <b>ม้า/สัตว์พาหนะ = อยู่หมวด 1 (กิ่งสัตว์)</b> เพราะมีชีวิต แต่ note ว่าใช้เป็นพาหนะได้ (พี่กันสั่ง)</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๑๑</span><div class="ttl"><span class="th">เทคโนโลยีและเครื่องจักร</span><span class="en">Technology &amp; Machinery</span><span class="tag">ไซไฟ</span><div class="def">เครื่องจักร อุปกรณ์อิเล็กทรอนิกส์ และเทคโนโลยี</div></div></div><div class="hint">หุ่นยนต์ คอมพิวเตอร์ เครื่องจักรกล อุปกรณ์ล้ำยุค จอโฮโลแกรม</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๑๒</span><div class="ttl"><span class="th">ของวิเศษและไอเทมเวทมนตร์</span><span class="en">Magic Items &amp; Artifacts</span><span class="tag">แฟนตาซี</span><div class="def">วัตถุที่มีพลังเหนือธรรมชาติหรือใช้ในพิธีกรรม</div></div></div><div class="hint">คทาเวท ยันต์ เครื่องราง ของต้องสาป แก้ววิเศษ</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๑๓</span><div class="ttl"><span class="th">แสงและเครื่องให้แสง</span><span class="en">Lights &amp; Illumination</span><span class="tag">รอเกลาทีหลัง</span><div class="def">วัตถุที่เป็นแหล่งกำเนิดแสง</div></div></div><div class="hint">เปลวเทียน โคมไฟระย้า เชิงเทียน คบเพลิง · <b>ตอนนี้อยู่หมวด 1</b> · พี่กันสั่งไว้ก่อน คลังหมวด 1 เยอะ ค่อยย้ายมาเกลาทีหลัง</div><span class="wait">รอเก็บคำ</span></div>
+
+  </div>
+
+  <h2 class="sec">🔗 เส้นแบ่งกับหมวดอื่น</h2>
+  <table>
+    <tr><th>หมวด</th><th>ครอบอะไร</th></tr>
+    <tr><td><b>หมวด 10 (นี้)</b></td><td>วัตถุ/ของที่คนใส่-ถือ-ใช้ (เสื้อผ้า อาวุธ ของใช้)</td></tr>
+    <tr><td><b>หมวด 2</b></td><td>เนื้อตัว/สรีระคน (เสื้อผ้าย้ายมาหมวด 10 แล้ว)</td></tr>
+    <tr><td><b>หมวด 1</b></td><td>ฉาก/ธรรมชาติ (แหล่งกำเนิดแสง · สัตว์/ม้า — คงไว้ก่อน)</td></tr>
+  </table>
+
+  <h2 class="sec">🚧 ยังต้องเคาะกับพี่กัน</h2>
+  <div class="prose">
+    <p>• <b>ชื่อหมวด</b> — “สิ่งของและข้าวของ” โอเคไหม หรือชอบชื่ออื่น</p>
+    <p>• <b>13 กิ่งเยอะไปไหม</b> — ตัด/รวมกิ่งไหน (เช่น “ของใช้ประจำวัน” กับ “เครื่องเรือน” รวมกันได้)</p>
+    <p>• <b>แสงและเครื่องให้แสง</b> — ย้ายจากหมวด 1 ตอนไหน (ตอนนี้ตั้งกิ่งรอไว้เฉย ๆ)</p>
+  </div>
+
+  <h2 class="sec">🔜 ลำดับงาน</h2>
+  <ol class="steps">
+    <li><b>พี่กันอ่านทวนโครง + ปรับ</b> (ตัด/รวม/เพิ่มกิ่ง · เคาะชื่อหมวด)</li>
+    <li><b>ลงคลังจริง:</b> สร้างหมวด 10 ในระบบ + ย้าย 2 คำจากหมวด 2 มา + สร้างกิ่งใหม่</li>
+    <li><b>ย้อนมาเกลา “แหล่งกำเนิดแสง”</b> จากหมวด 1 → หมวด 10 (ตอนคลังหมวด 1 พร้อม)</li>
+  </ol>
+
+  <p class="foot">คลังคำ · Word Bank — ร่างหมวด ๑๐ สิ่งของและข้าวของ · ยังไม่แตะคลังจริงจนพี่กันโอเค</p>
+</div>
+</body>
+</html>

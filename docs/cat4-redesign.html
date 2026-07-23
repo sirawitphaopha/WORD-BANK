@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ร่างเกลาหมวด 4 · เสียง — คลังคำ</title>
+</head>
+<body>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --rose:#5a63a6; --rose-deep:#454d86; --rose-soft:#aab0d8;
+  --brick:#9c3b2b; --green:#5a7d4a; --gold:#b07d2a; --blue:#4a6d8a; --violet:#6d5a8a;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+  --shadow:0 1px 2px rgba(90,70,45,.06),0 3px 12px rgba(90,70,45,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+    --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+    --rose:#9aa1dc; --rose-deep:#b2b7e8; --rose-soft:#474d7e;
+    --brick:#d97a63; --green:#8fb079; --gold:#d3a860; --blue:#84acc8; --violet:#a794c4;
+    --line:#3f372c; --line-soft:#332c22;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 3px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --rose:#5a63a6; --rose-deep:#454d86; --rose-soft:#aab0d8;
+  --brick:#9c3b2b; --green:#5a7d4a; --gold:#b07d2a; --blue:#4a6d8a; --violet:#6d5a8a;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+}
+:root[data-theme="dark"]{
+  --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+  --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+  --rose:#9aa1dc; --rose-deep:#b2b7e8; --rose-soft:#474d7e;
+  --brick:#d97a63; --green:#8fb079; --gold:#d3a860; --blue:#84acc8; --violet:#a794c4;
+  --line:#3f372c; --line-soft:#332c22;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.72; -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 15% 10%,rgba(90,99,166,.06),transparent 40%),radial-gradient(circle at 85% 80%,rgba(69,77,134,.05),transparent 45%);
+}
+.wrap{max-width:760px; margin:0 auto; padding:22px 18px 90px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif; text-wrap:balance; line-height:1.25}
+
+.hero{padding:26px 22px; border-radius:16px; position:relative; overflow:hidden;
+  background:linear-gradient(150deg,var(--card),var(--paper2)); border:1px solid var(--line); box-shadow:var(--shadow)}
+.hero::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:linear-gradient(var(--rose),var(--rose-deep))}
+.eyebrow{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--rose-deep); font-weight:700; margin:0 0 6px}
+.hero h1{margin:0 0 4px; font-size:clamp(27px,6.5vw,38px); color:var(--ink)}
+.hero .en{font-family:Georgia,serif; font-style:italic; color:var(--muted); font-size:16px; margin:0 0 14px}
+.hero p{margin:0; color:var(--ink-soft); font-size:15px}
+.stats{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+.stat{background:var(--paper); border:1px solid var(--line); border-radius:11px; padding:8px 13px; min-width:66px}
+.stat b{display:block; font-family:Georgia,serif; font-size:22px; color:var(--rose-deep); line-height:1; font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px; color:var(--muted)}
+
+.note{font-size:13.5px; color:var(--ink-soft); background:var(--card); border:1px solid var(--line-soft);
+  border-left:3px solid var(--rose); border-radius:10px; padding:11px 14px; margin:16px 0}
+.note b{color:var(--rose-deep)}
+.note.rule{border-left-color:var(--brick)}
+.note.rule b{color:var(--brick)}
+
+.legend{display:flex; flex-wrap:wrap; gap:7px; margin:16px 0 4px}
+.tag{display:inline-flex; align-items:center; gap:5px; font-size:12.5px; padding:3px 9px; border-radius:20px; font-weight:600; border:1px solid transparent; white-space:nowrap}
+.t-new{background:color-mix(in srgb,var(--green) 15%,transparent); color:var(--green); border-color:color-mix(in srgb,var(--green) 35%,transparent)}
+.t-multi{background:color-mix(in srgb,var(--gold) 16%,transparent); color:var(--gold); border-color:color-mix(in srgb,var(--gold) 38%,transparent)}
+.t-cross{background:color-mix(in srgb,var(--blue) 16%,transparent); color:var(--blue); border-color:color-mix(in srgb,var(--blue) 38%,transparent)}
+.t-genre{background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose-deep); border-color:color-mix(in srgb,var(--rose) 34%,transparent); font-size:11px; padding:2px 7px}
+
+h2.sec{font-size:20px; margin:34px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--line); color:var(--ink); display:flex; align-items:center; gap:9px}
+h2.sec .n{font-family:Georgia,serif; color:var(--rose); font-size:15px; border:1.5px solid var(--rose-soft); border-radius:50%; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; flex:none}
+
+details.major{background:var(--card); border:1px solid var(--line); border-radius:13px; margin:11px 0; overflow:hidden; box-shadow:var(--shadow)}
+details.major>summary{cursor:pointer; list-style:none; padding:14px 16px; display:flex; align-items:center; gap:11px; font-family:Georgia,serif; font-size:17px; color:var(--ink)}
+details.major>summary::-webkit-details-marker{display:none}
+.chip-n{flex:none; width:30px; height:30px; border-radius:9px; background:linear-gradient(145deg,var(--rose),var(--rose-deep)); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-size:15px; font-weight:700; box-shadow:0 2px 5px color-mix(in srgb,var(--rose) 40%,transparent)}
+details.major>summary .ttl{flex:1; min-width:0}
+details.major>summary .ttl .en{display:block; font-size:12.5px; font-style:italic; color:var(--muted); font-family:Georgia,serif; font-weight:400}
+details.major>summary .cnt{font-size:12px; color:var(--muted); flex:none}
+details.major>summary .arw{flex:none; color:var(--rose); transition:transform .2s; font-size:13px}
+details.major[open]>summary .arw{transform:rotate(90deg)}
+.body{padding:2px 16px 16px}
+.def{font-size:13.5px; color:var(--ink-soft); font-style:italic; border-left:3px solid var(--rose-soft); padding:3px 0 3px 12px; margin:4px 0 12px}
+
+.sub{margin:12px 0 0; padding-left:14px; border-left:2px solid var(--line)}
+.sub-h{font-weight:700; font-size:14.5px; color:var(--rose-deep); display:flex; flex-wrap:wrap; align-items:baseline; gap:7px}
+.sub-h .en{font-weight:400; font-style:italic; color:var(--muted); font-size:12px; font-family:Georgia,serif}
+.sub-d{font-size:13px; color:var(--ink-soft); margin:1px 0 4px}
+.hint{font-size:11.5px; color:var(--muted); background:color-mix(in srgb,var(--rose) 6%,transparent); border-radius:6px; padding:3px 9px; margin:3px 0 5px; line-height:1.55}
+.hint::before{content:"🗨 "; opacity:.7}
+.leaf{margin:9px 0 0; padding-left:12px; border-left:2px dashed var(--line)}
+.leaf-h{font-weight:600; font-size:13.5px; color:var(--ink-soft); display:flex; flex-wrap:wrap; align-items:baseline; gap:6px}
+.leaf-h .en{font-weight:400; font-style:italic; color:var(--muted); font-size:11px; font-family:Georgia,serif}
+.leaf-d{font-size:12px; color:var(--muted); margin:0 0 5px}
+
+.words{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 2px}
+.w{background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:4px 10px; font-size:14px; color:var(--ink)}
+.w.m{border-color:color-mix(in srgb,var(--gold) 50%,var(--line)); box-shadow:inset 3px 0 0 var(--gold)}
+.w.x{border-color:color-mix(in srgb,var(--blue) 50%,var(--line)); box-shadow:inset 3px 0 0 var(--blue)}
+.w small{color:var(--muted); font-size:11px}
+.empty{font-size:12.5px; color:var(--muted); font-style:italic; background:color-mix(in srgb,var(--green) 8%,transparent); border:1px dashed color-mix(in srgb,var(--green) 40%,transparent); border-radius:8px; padding:5px 10px; display:inline-block; margin-top:2px}
+
+.cards{display:grid; gap:9px; margin:6px 0}
+.cd{background:var(--card); border:1px solid var(--line); border-radius:11px; padding:11px 14px; box-shadow:var(--shadow)}
+.link-row{display:flex; flex-wrap:wrap; gap:6px 10px; font-size:13.5px; align-items:center}
+.link-row .word{font-weight:700; color:var(--ink)}
+.link-row .to{color:var(--ink-soft)}
+.link-row .arrow{color:var(--rose); font-weight:700}
+.link-row .why{flex-basis:100%; font-size:12px; color:var(--muted); margin-top:2px}
+
+.prose{font-size:14.5px; color:var(--ink-soft)}
+.prose h3{font-size:15.5px; color:var(--rose-deep); margin:18px 0 5px}
+.prose p{margin:4px 0 10px}
+.prose b{color:var(--ink)}
+.disc p{margin:0 0 11px; padding:8px 12px; background:var(--paper); border-left:3px solid color-mix(in srgb,var(--rose-deep) 45%,var(--line)); border-radius:0 8px 8px 0}
+.disc p b{color:var(--rose-deep)}
+.tech{background:color-mix(in srgb,var(--brick) 7%,var(--card)); border:1px solid color-mix(in srgb,var(--brick) 22%,var(--line)); border-radius:11px; padding:13px 16px; margin:10px 0}
+.tech h3{color:var(--brick); margin-top:2px}
+.plus-list{display:flex; flex-wrap:wrap; gap:7px; margin:6px 0}
+.plus-list .w{font-size:14.5px}
+
+ol.steps{list-style:none; counter-reset:s; padding:0; margin:8px 0}
+ol.steps li{counter-increment:s; position:relative; padding:11px 14px 11px 48px; background:var(--card); border:1px solid var(--line); border-radius:11px; margin:8px 0; font-size:14px; color:var(--ink-soft)}
+ol.steps li::before{content:counter(s); position:absolute; left:12px; top:11px; width:24px; height:24px; background:var(--rose); color:#fff; border-radius:7px; font-family:Georgia,serif; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:13px}
+ol.steps li b{color:var(--ink)}
+
+.foot{text-align:center; margin-top:34px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; font-style:italic; font-family:Georgia,serif}
+@media (max-width:520px){ .wrap{padding:16px 13px 80px} .hero{padding:20px 16px} }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">ร่างเกลาหมวด · หมวดที่สี่</p>
+    <h1>หมวด ๔ · เสียง</h1>
+    <p class="en">Sound Effects</p>
+    <p>คำที่ทำให้คนอ่าน “ได้ยิน” เสียงในฉาก — เพิ่มมิติและความสมจริงให้เรื่อง</p>
+    <div class="stats">
+      <div class="stat"><b>69</b><span>คำ (ในหมวด 4)</span></div>
+      <div class="stat"><b>7</b><span>กิ่งหลัก</span></div>
+      <div class="stat"><b>6</b><span>กิ่งใหม่รอคำ</span></div>
+      <div class="stat"><b>3</b><span>คำติดหลายกิ่ง</span></div>
+    </div>
+  </header>
+
+  <div class="note rule"><b>📛 กฎชื่อกิ่ง:</b> คำธรรมดาสื่อตรง ไม่ใช้คำสวย + มีคำบริบท (เรื่องเสียงมีคำว่า “เสียง/พูด”) · <b>📝 กฎนิยาม:</b> นิยาม = เขียนตรง ๆ สะอาด (ขึ้นเว็บจริง) · <b>ความเห็น/เหตุผล/ใครเสนอ = แยกไว้บรรทัด 🗨 หมายเหตุ เก็บไว้เสมอ</b> · <b>🏷 tag แนวนิยาย</b> ใส่ในรายงานได้ แต่ถอดออกก่อนขึ้น Supabase/เว็บ/AI · <b>ห้ามลบ/ย่อ/ดัดแปลงวลีต้นฉบับ</b> — แตกคำได้แค่เพิ่มคำใหม่แยก วลีเดิมอยู่ครบ</div>
+
+  <div class="legend">
+    <span class="tag t-new">🆕 กิ่งใหม่ (รอคำ)</span>
+    <span class="tag t-multi">⚡ ติดหลายกิ่ง</span>
+    <span class="tag t-cross">🔗 โยงข้ามหมวด</span>
+  </div>
+
+  <h2 class="sec"><span class="n">🌳</span> โครงต้นไม้ใหม่ · 7 กิ่งหลัก</h2>
+  <p style="font-size:13px;color:var(--muted);margin:0 0 4px">แตะหัวกิ่งเพื่อยุบ/กาง · <b>นิยาม</b>=สะอาด (ขึ้นเว็บ) · <b>🗨</b>=หมายเหตุ (หลังบ้าน) · กิ่งใหม่ระบุคนเสนอ (<b style="color:var(--rose-deep)">เจน</b>/<b style="color:var(--rose-deep)">แคลร์</b>)</p>
+
+  <!-- 1 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๑</span><span class="ttl">เสียงของวัตถุและสิ่งก่อสร้าง<span class="en">Object &amp; Structure Sounds</span></span><span class="cnt">10 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">เสียงที่บ่งบอกสภาพแวดล้อมหรือวัสดุ เกิดจากวัตถุหรือสิ่งก่อสร้างกระทบกัน</p>
+      <div class="hint" style="margin-bottom:8px">นิยามยกมาจาก “เน้นเสียงที่บอกสภาพแวดล้อมหรือวัสดุ” ที่หลุดเข้าคลังเป็น “คำ” → เสนอยกเป็นนิยามกิ่ง (ดูท้ายไฟล์)</div>
+      <div class="sub"><div class="sub-h">🌿 เสียงไม้และพื้น <span class="en">Wood &amp; Floor Sounds</span></div><div class="sub-d">เสียงลั่น เสียดสี หรือหักของวัสดุประเภทไม้และพื้น</div><div class="words"><span class="w">เสียงพื้นไม้ลั่นเอี๊ยดอ๊าด</span><span class="w">เสียงพื้นกระดานดังเอี๊ยดอ๊าด</span><span class="w">เสียงไม้หักดัง กร๊อบ</span><span class="w">ดังกรอบแกรบ</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 เสียงกลไกและการเสียดสี <span class="en">Mechanical &amp; Friction Sounds</span></div><div class="sub-d">เสียงการทำงานของกลไก หรือการลากถูเสียดสี</div><div class="words"><span class="w">เสียงดัง แก๊ก</span><span class="w">ส่งเสียงครืดคราด</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 เสียงแตกหักและตกกระทบ <span class="en">Breaking &amp; Impact Sounds</span></div><div class="sub-d">เสียงของหล่น กระแทก หรือพังทลาย</div><div class="words"><span class="w">โพละ</span><span class="w">หล่นตุ้บ</span><span class="w">ครึกโครม</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 เสียงจากการใช้งานวัตถุ <span class="en">Object Handling Sounds</span></div><div class="sub-d">เสียงที่เกิดจากการหยิบจับ เปิด ปิด หรือใช้งานวัตถุ</div><div class="hint">เจนตั้งชื่อ “เสียงเปิดปิดวัตถุ” · ปรับให้กว้างขึ้นครอบการใช้งานทุกแบบ</div><div class="words"><span class="w">ปิดดังปัง</span></div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงอาวุธและการปะทะ <span class="en">Weapon &amp; Combat Sounds</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">แฟนตาซี · ทริลเลอร์</span></div><div class="sub-d">เสียงจากอาวุธ การปะทะ และการต่อสู้</div><div class="hint">ตัวอย่าง: ดาบกระทบกัน · เสียงปืน · ธนูเสียดลม · โล่ปะทะ · แคลร์เสนอ (สายแอ็กชัน/แฟนตาซี ยังไม่มีที่รับเสียงศึก) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- 2 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๒</span><span class="ttl">เสียงธรรมชาติและของเหลว<span class="en">Nature &amp; Liquid Sounds</span></span><span class="cnt">5 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">เสียงบรรยากาศรอบตัวที่เกิดจากธรรมชาติ</p>
+      <div class="sub"><div class="sub-h">🌿 เสียงน้ำและของเหลว <span class="en">Water &amp; Liquid Sounds</span></div><div class="sub-d">เสียงฝน น้ำไหล หรือการกระเซ็นของของเหลว</div><div class="words"><span class="w">ส่งเสียงซู่ซ่า</span><span class="w">กระเซ็น</span><span class="w">เสียงน้ำหยดติ๋งๆ</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 เสียงสภาพอากาศ <span class="en">Weather Sounds</span></div><div class="sub-d">เสียงปรากฏการณ์บนท้องฟ้าและลมฟ้าอากาศ</div><div class="words"><span class="w">ท้องฟ้าคำรามเสียงดังลั่น</span><span class="w">เสียงฟ้าคำรามกึกก้อง</span></div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงสัตว์และสิ่งมีชีวิต <span class="en">Animal &amp; Creature Sounds</span> <span class="tag t-new">เจนเสนอ</span> <span class="tag t-genre">ทั่วไป · แฟนตาซี</span></div><div class="sub-d">เสียงร้องหรือเสียงที่เกิดจากสัตว์และสิ่งมีชีวิต</div><div class="hint">ตัวอย่าง: หมาหอน · นกร้อง · แมลงสยายปีก · สัตว์ประหลาดคำราม · เจนเสนอ (ต้นฉบับมีเสียงน้ำ/อากาศ แต่ขาดเสียงสัตว์) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 เสียงไฟและการเผาไหม้ <span class="en">Fire &amp; Burning Sounds</span> <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป</span></div><div class="sub-d">เสียงของไฟลุกไหม้ เปลวไฟ และการเผาไหม้</div><div class="hint">ตัวอย่าง: ไฟลุกโชน · เปลวไฟแลบเปรี๊ยะ · ฟืนแตกดังเปรี๊ยะ · แคลร์เสนอ (ไฟเป็นธาตุที่ต้นฉบับขาด แต่ฉากไฟพบบ่อยทุกแนว) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- 3 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๓</span><span class="ttl">เสียงจากการเคลื่อนไหวและร่างกาย<span class="en">Movement &amp; Body Sounds</span></span><span class="cnt">4 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">เสียงที่เกิดจากตัวละครขยับตัวหรือไปกระทบกับสิ่งอื่น</p>
+      <div class="hint" style="margin-bottom:8px">🔗 กิ่งนี้ควรโยงข้ามไปหมวด 3 (กริยา ท่าทาง และการเคลื่อนไหว) เพราะเป็นแอ็กชันที่ทำให้เกิดเสียง (เจนเสนอ · schema ยังไม่รองรับ subpath ข้ามหมวด)</div>
+      <div class="sub"><div class="sub-h">🌿 เสียงฝีเท้าและการเดิน <span class="en">Footstep Sounds</span></div><div class="sub-d">เสียงจากการก้าวเดินหรือเสียดสีกับพื้นผิว</div><div class="words"><span class="w">เสียงฝีเท้า</span><span class="w">สวบสาบ</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 เสียงร่างกายกระทบ <span class="en">Body Impact Sounds</span></div><div class="sub-d">เสียงการปะทะกันของอวัยวะหรือร่างกายกับสิ่งอื่น</div><div class="words"><span class="w x">เผียะ <small>🔗ม.3</small></span><span class="w x">เสียงตบเข่าฉาด <small>🔗ม.3</small></span></div></div>
+    </div>
+  </details>
+
+  <!-- 4 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๔</span><span class="ttl">การรับรู้และความดังของเสียง<span class="en">Perception &amp; Volume</span></span><span class="cnt">3 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">มิติของเสียงที่บอกความดัง ระยะใกล้ไกล และการแผ่กระจาย</p>
+      <div class="sub"><div class="sub-h">🌿 ความดังและเสียงสะท้อน <span class="en">Loudness &amp; Echo</span></div><div class="sub-d">ระดับความดังที่กระจายไปทั่ว หรือการสะท้อนก้อง</div><div class="words"><span class="w">ดังระงม</span><span class="w">เสียงสะท้อนดังก้อง</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 ระยะทางของเสียง <span class="en">Sound Distance</span></div><div class="sub-d">เสียงที่แว่วมาจากระยะไกล</div><div class="words"><span class="w">ดังแว่ว</span></div></div>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌿 ความเงียบและการเงียบเสียง <span class="en">Silence &amp; Absence of Sound</span> <span class="tag t-new">แคลร์เสนอ 🌟</span> <span class="tag t-genre">ทั่วไป · ทริลเลอร์</span></div><div class="sub-d">สภาวะไร้เสียง หรือความเงียบที่เด่นจนกลายเป็นบรรยากาศของฉาก</div><div class="hint">ตัวอย่าง: เงียบกริบ · เงียบสงัด · เงียบจนได้ยินเสียงหัวใจตัวเอง · แคลร์เสนอ (ความเงียบคือเครื่องมือเสียงที่ทรงพลังในนิยาย เป็นของคู่กับเสียง · วางใต้กิ่งความดังเพราะความเงียบ = ความดังระดับศูนย์) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- 5 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๕</span><span class="ttl">เสียงที่เปล่งจากปาก<span class="en">Vocal &amp; Mouth Sounds</span></span><span class="cnt">47 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">เสียงที่เกิดจากมนุษย์ ทั้งที่เป็นคำพูดและไม่ใช่คำพูด · กิ่งที่คำเยอะสุด ซอยลึก 3 ชั้น</p>
+      <div class="sub"><div class="sub-h">🌿 น้ำเสียงและลักษณะเสียง <span class="en">Vocal Tone &amp; Quality</span></div><div class="sub-d">ลักษณะของเนื้อเสียงและอารมณ์ที่แฝงในน้ำเสียง</div>
+        <div class="leaf"><div class="leaf-h">🍃 ลักษณะเนื้อเสียง <span class="en">Physical Quality</span></div><div class="leaf-d">สภาพทางกายภาพของเสียง โดยไม่เกี่ยวกับอารมณ์</div><div class="words"><span class="w">เสียงแหบพร่า</span><span class="w">เสียงแหบต่ำ</span><span class="w m">ขู่ด้วยเสียงแหบแห้ง <small>+โต้ตอบ</small></span><span class="w">เสียงสั่นเครือ</span><span class="w">กระซิบเสียงสั่น</span><span class="w">เสียงเฉียบคมขึ้น</span><span class="w">เสียงของเฉียบคมขึ้น</span><span class="w m">ร้องทักเสียงแหลมสูง <small>+ตะโกน</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 อารมณ์และลีลาเสียง <span class="en">Emotional Tone</span></div><div class="leaf-d">ความรู้สึก เจตนา หรือมู้ดที่แฝงในน้ำเสียง</div><div class="words"><span class="w">เสียงเยียบเย็น</span><span class="w">น้ำเสียงเฉียบขาด</span><span class="w">น้ำเสียงไม่สบอารมณ์</span><span class="w">น้ำเสียงราบเรียบ</span><span class="w">ควบคุมเสียงให้ราบเรียบ</span><span class="w">สะบัดเสียงด้วยความไม่พอใจ</span><span class="w">ทำเสียงขรึม</span><span class="w m">ตอบด้วยเสียงอ่อนระโหย <small>+โต้ตอบ</small></span><span class="w">ฉะฉาน</span><span class="w">พูดห้วนๆ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ลักษณะคำพูด <span class="en">Speech Style</span></div><div class="leaf-d">รูปแบบการเลือกใช้คำหรือระดับภาษา</div><div class="words"><span class="w">ถ้อยคำที่ถ่อยสถุล</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 การสื่อสารและการแสดงออก <span class="en">Speaking &amp; Expressions</span></div><div class="sub-d">กิริยาการเปล่งเสียงเป็นคำพูด และระดับความดังของการพูด</div>
+        <div class="leaf"><div class="leaf-h">🍃 พูดเบาและพึมพำ <span class="en">Low Volume &amp; Mumbling</span></div><div class="leaf-d">การพูดด้วยเสียงเบาหรือบ่นพึมพำ</div><div class="words"><span class="w">กระซิบกระซาบ</span><span class="w">บ่นพึมพำ</span><span class="w">พึมพำ</span><span class="w">เสียงงึมงำ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 โต้ตอบและสนทนา <span class="en">Conversation &amp; Replying</span></div><div class="leaf-d">กิริยาเสียงที่เกิดขณะโต้ตอบหรือสนทนา</div><div class="hint">2 คำนี้ติดหลายกิ่ง (อยู่ในน้ำเสียงด้วย) · เจนวางซ้ำที่นี่</div><div class="words"><span class="w m">ขู่ด้วยเสียงแหบแห้ง <small>+เนื้อเสียง</small></span><span class="w m">ตอบด้วยเสียงอ่อนระโหย <small>+อารมณ์ลีลา</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 ตะโกนและกรีดร้อง <span class="en">Shouting &amp; Screaming</span></div><div class="leaf-d">การเปล่งเสียงดังสุดขีด แผดเสียง หรือกรีดร้อง</div><div class="words"><span class="w">แผดเสียง</span><span class="w">แผดเสียงแหลมสูง</span><span class="w m">ร้องทักเสียงแหลมสูง <small>+เนื้อเสียง</small></span><span class="w">กรีดร้องโหยหวน</span><span class="w">เสียงแหลมสูงเหมือนไม่ใช่มนุษย์กรีดก้องออกมา</span><span class="w">กรีดร้องโหยหวนด้วยเสียงแหลมสูงราวกับว่าปอดถูกบีบคั้นสุดขีด</span><span class="w">ตวาดเสียงดังกึกก้อง</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 โวยวายและเอะอะ <span class="en">Noise &amp; Ranting</span></div><div class="leaf-d">การทำเสียงดังสร้างความวุ่นวาย</div><div class="words"><span class="w">เอะอะเอ็ดตะโร</span><span class="w">เอะอะโวยวาย</span><span class="w">เอะอะเสียงดัง</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 เสียงกิริยาและอารมณ์ที่ไม่ใช่คำพูด <span class="en">Non-verbal &amp; Emotional Sounds</span></div><div class="sub-d">เสียงที่เปล่งจากลำคอเพื่อแสดงปฏิกิริยา โดยไม่เป็นถ้อยคำ</div>
+        <div class="leaf"><div class="leaf-h">🍃 เสียงจากความเจ็บปวดทรมาน <span class="en">Pain &amp; Agony</span></div><div class="leaf-d">เสียงร้องหรือครวญครางจากความเจ็บปวดทางกาย</div><div class="words"><span class="w">ร้องโอดโอยเสียงลั่น</span><span class="w">นอนครวญคราง</span><span class="w">ครางเบาๆ</span><span class="w">ครางเสียงแหบแห้ง</span><span class="w">ครางเสียงเบาหวิวแทบจะขาดห้วง</span><span class="w">ครางเสียงเศร้าและอึกอักราวกับมีเส้นด้ายพันอยู่ในลำคอ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 เสียงร้องไห้และความเศร้า <span class="en">Sadness &amp; Crying</span></div><div class="leaf-d">เสียงสะอื้นหรือร้องไห้จากความเศร้าโศก</div><div class="words"><span class="w">เสียงสะอื้น</span><span class="w">สะอึกสะอื้น</span><span class="w">ร้องไห้คร่ำครวญ</span><span class="w">ร้องไห้โฮ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 เสียงลมหายใจและลำคอ <span class="en">Breath &amp; Throat</span></div><div class="leaf-d">การขับลมหายใจ หรือขยับกล้ามเนื้อคอและปาก</div><div class="words"><span class="w">ทำเสียงจิ๊ในปาก</span><span class="w">ถอนหายใจเฮือกใหญ่</span><span class="w">ถอนใจ</span><span class="w">กระแอมกระไอ</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 เสียงบรรยากาศจากมนุษย์ <span class="en">Ambient Human Vocal</span></div><div class="leaf-d">เสียงร้องจากมนุษย์ที่สร้างมวลบรรยากาศให้ฉาก</div><div class="words"><span class="w">เสียงโหยหวนชวนขนลุก</span></div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 6 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๖</span><span class="ttl">เสียงดนตรีและทำนอง<span class="en">Music &amp; Melody</span></span><span class="cnt">🆕 รอเก็บคำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">เสียงที่มีทำนอง จังหวะ หรือเกิดจากเครื่องดนตรีและการขับร้อง</p>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌲 กิ่งหลักใหม่ <span class="tag t-new">แคลร์เสนอ</span> <span class="tag t-genre">ทั่วไป</span></div><div class="hint">ตัวอย่าง: เสียงเปียโนแว่ว · ระฆังวัด · ฮัมเพลงกล่อม · กลองศึกกระหึ่ม · แคลร์เสนอ (ฉากดนตรี/เครื่องดนตรี/ร้องเพลง ยังไม่มีบ้าน · เป็นเสียงคนละชนิดกับเสียงพูดจากปาก) · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- 7 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๗</span><span class="ttl">เสียงพิเศษ เวทมนตร์ และเทคโนโลยี<span class="en">Special, Magical &amp; Sci-Fi Sounds</span></span><span class="cnt">🆕 รอเก็บคำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">เสียงเหนือธรรมชาติหรือเสียงจากเทคโนโลยีล้ำยุคที่ไม่มีในโลกจริง</p>
+      <div class="sub" style="border-left-color:color-mix(in srgb,var(--green) 40%,var(--line))"><div class="sub-h">🆕 🌲 กิ่งหลักใหม่ <span class="tag t-new">เจนเสนอ · แคลร์ปรับ</span> <span class="tag t-genre">ไซไฟ · แฟนตาซี</span></div><div class="hint">ตัวอย่าง: เสียงคลื่นพลังวิ้งๆ · เสียงช็อตไฟฟ้ากระแสเวท · เสียงเลเซอร์ · เจนเสนอ (เดิมให้ซ่อนใต้กิ่งวัตถุ) · แคลร์แยกเป็นกิ่งหลัก เพราะเป็นเสียงคนละชนิดกับวัตถุจริง · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- MULTI -->
+  <h2 class="sec"><span class="n">⚡</span> คำติดหลายกิ่ง</h2>
+  <p class="prose" style="margin-top:0"><b>⚡ ติดหลายกิ่ง (3 คำ):</b> คำเดียวมี 2 มิติในตัว → ติดทั้ง 2 กิ่งพร้อมกัน ไม่ต้องเลือกอย่างเดียว</p>
+  <div class="cards">
+    <div class="cd"><div class="link-row"><span class="word">ขู่ด้วยเสียงแหบแห้ง</span><span class="arrow">↔</span><span class="to">ลักษณะเนื้อเสียง + โต้ตอบและสนทนา</span></div></div>
+    <div class="cd"><div class="link-row"><span class="word">ตอบด้วยเสียงอ่อนระโหย</span><span class="arrow">↔</span><span class="to">อารมณ์และลีลาเสียง + โต้ตอบและสนทนา</span></div></div>
+    <div class="cd"><div class="link-row"><span class="word">ร้องทักเสียงแหลมสูง</span><span class="arrow">↔</span><span class="to">ลักษณะเนื้อเสียง + ตะโกนและกรีดร้อง</span></div></div>
+  </div>
+
+  <!-- CROSS -->
+  <h2 class="sec"><span class="n">🔗</span> คำ/กิ่งโยงข้ามหมวด</h2>
+  <p class="prose" style="margin-top:0">เสียงที่เกิดจาก <b>แอ็กชัน</b> (ตบ/กระทบ) → ตัวเสียงอยู่หมวด 4 แต่ตัวการกระทำอยู่หมวด 3 · <em>schema ปัจจุบันยังไม่รองรับกิ่งข้ามหมวด — จดไว้ทำตอน implement</em></p>
+  <div class="cards">
+    <div class="cd"><div class="link-row"><span class="word">เผียะ · เสียงตบเข่าฉาด</span><span class="to">เสียงร่างกายกระทบ</span><span class="arrow">→</span><span class="tag t-cross">หมวด 3 กริยา ท่าทาง</span></div></div>
+    <div class="cd"><div class="link-row"><span class="word">(ทั้งกิ่ง 3 เสียงจากการเคลื่อนไหว)</span><span class="to">—</span><span class="arrow">→</span><span class="tag t-cross">หมวด 3 กริยา ท่าทาง</span></div></div>
+  </div>
+
+  <!-- JUNK FRAGMENT -->
+  <h2 class="sec"><span class="n">⚠</span> รอพี่กันเคาะ · เศษนิยามในคลัง</h2>
+  <div class="tech">
+    <h3>เศษนิยามที่หลุดเข้าคลังเป็น “คำ”</h3>
+    <p class="prose" style="margin:0"><b>“เน้นเสียงที่บอกสภาพแวดล้อมหรือวัสดุ”</b> — ไม่ใช่คำ เป็นคำบรรยายกิ่งหลัก 1 ที่หลุดเข้าคลังเป็น “คำ” · เสนอ <b>ยกไปเป็นนิยามกิ่งหลัก 1 แล้วเอาออกจากรายการคำ</b> → ทำให้คลังนับ 70 เหลือคำจริง 69 · <b style="color:var(--brick)">ลบคำต้นฉบับต้องถามทุกครั้ง (กฎเหล็ก) จึงยังไม่ทำจนกว่าพี่กันโอเค</b></p>
+  </div>
+
+  <!-- GEMINI -->
+  <h2 class="sec"><span class="n">🤝</span> ประเมินข้อเสนอเจน (Gemini)</h2>
+  <p class="prose" style="margin-top:0">เจนเกลานิยาม/อังกฤษของหมวดนี้มาให้ + เสนอกิ่งใหม่ · แคลร์ประเมินทีละข้อ (รับ/ปรับ) โดยพี่กันเคาะสุดท้าย</p>
+  <div class="prose">
+    <p><b>✅ รับ:</b> โครง <b>5 กิ่งหลักจากเจน</b> เป็นระบบดี (แคลร์เพิ่มเสียงดนตรี + ยกเสียงพิเศษเป็นกิ่งหลัก → รวม <b>7 กิ่งหลัก</b>) · เติม <b>นิยาม + ชื่ออังกฤษครบทุกกิ่ง</b> (เดิมไม่มีเลย) · แยก <b>“ลักษณะเนื้อเสียง” (กายภาพ) ออกจาก “อารมณ์และลีลาเสียง”</b> ชัด ดักทางให้ AI แยกถูก · กิ่งใหม่ <b>เสียงสัตว์</b> (ต้นฉบับขาด) · กิ่งใหม่ <b>เสียงพิเศษ/เวทมนตร์</b> (เผื่อไซไฟ/แฟนตาซี) · <b>โยงเสียงร่างกายไปหมวด 3</b> (เป็นแอ็กชันที่ทำให้เกิดเสียง)</p>
+    <p><b>🔧 ปรับจากที่เจนเสนอ:</b> <b>คืนคำที่เจนย่อ</b> — เจนย่อ “สะบัดเสียงด้วยความไม่พอใจ → สะบัดเสียง” = ผิดกฎเหล็ก → คงวลีเต็มตามคลัง · <b>คงคำที่เจนแปลงรูป 3 คำ</b> ตามคลังเดิม (เสียงดัง แก๊ก · เสียงไม้หักดัง กร๊อบ · เสียงของเฉียบคมขึ้น) · <b>แยกเสียงพิเศษ/เวทมนตร์เป็นกิ่งหลัก</b> (เจนวางซ่อนใต้กิ่งวัตถุ) · ชื่อกิ่ง “เสียงเปิดปิดวัตถุ” → “เสียงจากการใช้งานวัตถุ” (กว้างกว่า) · “เสียงร่างกายเสียดสีและกระทบ” → “เสียงร่างกายกระทบ” (กระชับ)</p>
+  </div>
+
+  <!-- CLAIRE PROPOSALS -->
+  <h2 class="sec"><span class="n">💡</span> กิ่งที่แคลร์เสนอเพิ่ม</h2>
+  <div class="note"><b>🔑 กฎ (พี่กันตั้ง 23 ก.ค. 2569):</b> งานเกลาหมวดต้องการ <b>หลายความเห็น — พี่กัน + เจน (Gemini) + แคลร์</b> · แคลร์ไม่ต้องตามเจนทั้งหมด ให้เสนอตามมุมของแคลร์เองด้วยเสมอ · ระบุชัดว่าใครเสนอ เพื่อให้พี่กันเลือกได้</div>
+  <p class="prose" style="margin:0 0 8px">แคลร์ไล่ดูช่องว่างที่ทั้งต้นฉบับและเจนยังไม่มี แล้วเสนอเพิ่ม <b>4 กิ่ง</b> (ว่างเปล่ารอเก็บคำ ไม่แตะคำเดิม):</p>
+  <div class="cards">
+    <div class="cd"><div class="link-row"><span class="word">🌟 ความเงียบและการเงียบเสียง</span><span class="tag t-new">แคลร์เสนอ</span><span class="why">หมวดชื่อ “เสียง” แต่ความเงียบคือเครื่องมือเสียงที่ทรงพลังที่สุดอย่างหนึ่งในนิยาย (เงียบกริบ · เงียบสงัด · เงียบจนได้ยินเสียงหัวใจตัวเอง) · ต้นฉบับ+เจนไม่มีที่รับ → วางใต้กิ่ง 4 เพราะความเงียบ = ความดังระดับศูนย์</span></div></div>
+    <div class="cd"><div class="link-row"><span class="word">เสียงดนตรีและทำนอง</span><span class="tag t-new">แคลร์เสนอ</span><span class="why">ฉากดนตรี/เครื่องดนตรี/ร้องเพลง/ระฆัง/กลอง ยังไม่มีบ้าน · เป็นเสียงคนละชนิดกับเสียงพูดจากปาก → ตั้งเป็นกิ่งหลักใหม่ (กิ่ง 6)</span></div></div>
+    <div class="cd"><div class="link-row"><span class="word">เสียงไฟและการเผาไหม้</span><span class="tag t-new">แคลร์เสนอ</span><span class="why">ไฟเป็นธาตุที่ต้นฉบับขาด แต่ฉากไฟพบบ่อยทุกแนว → วางใต้กิ่ง 2 (ธรรมชาติ)</span></div></div>
+    <div class="cd"><div class="link-row"><span class="word">เสียงอาวุธและการปะทะ</span><span class="tag t-new">แคลร์เสนอ</span><span class="why">สายแอ็กชัน/แฟนตาซี ยังไม่มีที่รับเสียงศึก (ดาบกระทบ · เสียงปืน · ธนูเสียดลม) → วางใต้กิ่ง 1 (วัตถุ)</span></div></div>
+  </div>
+
+  <!-- DISCUSSION -->
+  <h2 class="sec"><span class="n">💭</span> อภิปราย · เหตุผลของการจัดโครง</h2>
+  <div class="prose disc">
+    <p><b>๑ ทำไมโครงนี้ดี:</b> หมวดเสียงเดิมมีโครงอยู่แล้วแต่ไม่มีนิยาม/อังกฤษ · เจนเกลาให้ไล่จาก <b>เสียงภายนอกตัว → เข้าหาตัวมนุษย์</b>: วัตถุ → ธรรมชาติ → ร่างกายเคลื่อนไหว → การรับรู้/ความดัง → เสียงจากปาก (แคลร์เพิ่มกิ่ง 6 เสียงพิเศษ) · เป็นระบบที่สอนง่ายทั้งกับคนและ AI</p>
+    <p><b>๒ ทำไมกิ่ง “เสียงจากปาก” ซอยลึก 3 ชั้น:</b> เป็นกิ่งที่คำเยอะสุด (47 คำ) มีหลายมิติซ้อนกัน → ซอยเป็น น้ำเสียง · การพูด · เสียงไม่ใช่คำพูด · เส้นแบ่งสำคัญ = <b>“เนื้อเสียงกายภาพ” vs “อารมณ์ในน้ำเสียง”</b> (เสียงแหบ = กายภาพ · เสียงเยียบเย็น = อารมณ์)</p>
+    <p><b>๓ ทำไมคำเดียวติดหลายกิ่ง:</b> บางคำมี 2 มิติในตัว — “ขู่ด้วยเสียงแหบแห้ง” เป็นทั้งเนื้อเสียง (แหบแห้ง) และการโต้ตอบ (ขู่) → ติดทั้ง 2 กิ่ง ไม่ต้องเลือก</p>
+    <p><b>๔ ทำไมกิ่งเสียงร่างกายต้องโยงหมวด 3:</b> “เผียะ · เสียงตบเข่าฉาด” = เสียงที่เกิดจากแอ็กชัน (ตบ/กระทบ) → ตัวเสียงอยู่หมวด 4 แต่ตัวการกระทำอยู่หมวด 3 → โยงข้ามให้ค้นเจอจากทั้งสองทาง</p>
+    <p><b>๕ ทำไมตั้งกิ่งใหม่ 2 กิ่ง (สัตว์ · พิเศษ/เวทมนตร์):</b> หลัก “คลังต้องรับได้กับคำทุกแนวนิยาย” — ต้นฉบับมีเสียงธรรมชาติแต่ขาดเสียงสัตว์ และไม่มีที่รับเสียงเวทมนตร์/ไซไฟ (นิยายพี่กันมีแนวพวกนี้) → ตั้งกิ่งเผื่อไว้</p>
+  </div>
+
+  <div class="tech">
+    <h3>⚙️ ข้อควรระวังทางเทคนิค (ตอนลงคลังจริง)</h3>
+    <p class="prose" style="margin:0"><b>1. เศษนิยาม</b> “เน้นเสียงที่บอกฯ” ต้องเอาออกจาก words (รอพี่กันเคาะ) — ตอนนี้คลังนับ 70 แต่คำจริง 69 · <b>2. โยงข้ามหมวด (🔗)</b> schema ยังไม่รองรับ — จดไว้ทำตอน implement · <b>3. ถอด tag แนว</b> ก่อนขึ้น Supabase/เว็บ/AI (กัน bias)</p>
+  </div>
+
+  <!-- STEPS -->
+  <h2 class="sec"><span class="n">🔜</span> ลำดับงานถัดไป</h2>
+  <ol class="steps">
+    <li><b>พี่กันอ่านทวน + เคาะ</b> โดยเฉพาะ 3 เรื่อง: (ก) เศษนิยาม “เน้นเสียงที่บอกฯ” เอาออกไหม (ข) คำ “เสียงของเฉียบคมขึ้น” อยากได้แบบมี “...” (ช่องเติมชื่อคน) ไหม (ค) กิ่งเสียงพิเศษแยกเป็นกิ่งหลัก โอเคไหม</li>
+    <li><b>เกลาหมวดอื่นต่อ</b> (3, 5–9) แบบเดียวกัน</li>
+    <li><b>หลังเกลาหมวดครบ</b> → เพิ่ม cat4 เข้า <code>scripts/gen_branches.py</code> แล้วสร้างไฟล์กิ่งเดี่ยว/json</li>
+    <li><b>ลงคลังจริง</b> ทุกหมวด — ไม่ลบวลีเดิม · ถอด tag</li>
+  </ol>
+
+  <p class="foot">คลังคำ · Word Bank — ร่างเกลาหมวด ๔ เสียง · ยังไม่แตะคลังจริงจนพี่กันโอเค</p>
+</div>
+</body>
+</html>

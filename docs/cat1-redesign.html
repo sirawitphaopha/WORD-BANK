@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ร่างเกลาหมวด 1 · บรรยากาศ แสง สี และสถานที่ — คลังคำ</title>
+</head>
+<body>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --rose:#3f7f8a; --rose-deep:#2d6470; --rose-soft:#93bcc4;
+  --brick:#9c3b2b; --green:#5a7d4a; --gold:#b07d2a; --blue:#4a6d8a; --violet:#6d5a8a;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+  --shadow:0 1px 2px rgba(90,70,45,.06),0 3px 12px rgba(90,70,45,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+    --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+    --rose:#6fb6c2; --rose-deep:#8ecdd7; --rose-soft:#436068;
+    --brick:#d97a63; --green:#8fb079; --gold:#d3a860; --blue:#84acc8; --violet:#a794c4;
+    --line:#3f372c; --line-soft:#332c22;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 3px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --rose:#3f7f8a; --rose-deep:#2d6470; --rose-soft:#93bcc4;
+  --brick:#9c3b2b; --green:#5a7d4a; --gold:#b07d2a; --blue:#4a6d8a; --violet:#6d5a8a;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+}
+:root[data-theme="dark"]{
+  --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+  --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+  --rose:#6fb6c2; --rose-deep:#8ecdd7; --rose-soft:#436068;
+  --brick:#d97a63; --green:#8fb079; --gold:#d3a860; --blue:#84acc8; --violet:#a794c4;
+  --line:#3f372c; --line-soft:#332c22;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.72; -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 15% 10%,rgba(63,127,138,.06),transparent 40%),radial-gradient(circle at 85% 80%,rgba(74,109,138,.05),transparent 45%);
+}
+.wrap{max-width:760px; margin:0 auto; padding:22px 18px 90px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif; text-wrap:balance; line-height:1.25}
+
+.hero{padding:26px 22px; border-radius:16px; position:relative; overflow:hidden;
+  background:linear-gradient(150deg,var(--card),var(--paper2)); border:1px solid var(--line); box-shadow:var(--shadow)}
+.hero::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:linear-gradient(var(--rose),var(--rose-deep))}
+.eyebrow{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--rose-deep); font-weight:700; margin:0 0 6px}
+.hero h1{margin:0 0 4px; font-size:clamp(27px,6.5vw,38px); color:var(--ink)}
+.hero .en{font-family:Georgia,serif; font-style:italic; color:var(--muted); font-size:16px; margin:0 0 14px}
+.hero p{margin:0; color:var(--ink-soft); font-size:15px}
+.stats{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+.stat{background:var(--paper); border:1px solid var(--line); border-radius:11px; padding:8px 13px; min-width:66px}
+.stat b{display:block; font-family:Georgia,serif; font-size:22px; color:var(--rose-deep); line-height:1; font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px; color:var(--muted)}
+
+.note{font-size:13.5px; color:var(--ink-soft); background:var(--card); border:1px solid var(--line-soft);
+  border-left:3px solid var(--rose); border-radius:10px; padding:11px 14px; margin:16px 0}
+.note b{color:var(--rose-deep)}
+.note.rule{border-left-color:var(--brick)}
+.note.rule b{color:var(--brick)}
+
+.legend{display:flex; flex-wrap:wrap; gap:7px; margin:16px 0 4px}
+.tag{display:inline-flex; align-items:center; gap:5px; font-size:12.5px; padding:3px 9px; border-radius:20px; font-weight:600; border:1px solid transparent; white-space:nowrap}
+.t-new{background:color-mix(in srgb,var(--green) 15%,transparent); color:var(--green); border-color:color-mix(in srgb,var(--green) 35%,transparent)}
+.t-multi{background:color-mix(in srgb,var(--gold) 16%,transparent); color:var(--gold); border-color:color-mix(in srgb,var(--gold) 38%,transparent)}
+.t-split{background:color-mix(in srgb,var(--violet) 16%,transparent); color:var(--violet); border-color:color-mix(in srgb,var(--violet) 38%,transparent)}
+.t-move{background:color-mix(in srgb,var(--brick) 14%,transparent); color:var(--brick); border-color:color-mix(in srgb,var(--brick) 36%,transparent)}
+.t-genre{background:color-mix(in srgb,var(--rose) 15%,transparent); color:var(--rose-deep); border-color:color-mix(in srgb,var(--rose) 36%,transparent); font-size:11px; padding:2px 7px}
+
+h2.sec{font-size:20px; margin:34px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--line); color:var(--ink); display:flex; align-items:center; gap:9px}
+h2.sec .n{font-family:Georgia,serif; color:var(--rose); font-size:15px; border:1.5px solid var(--rose-soft); border-radius:50%; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; flex:none}
+
+details.major{background:var(--card); border:1px solid var(--line); border-radius:13px; margin:11px 0; overflow:hidden; box-shadow:var(--shadow)}
+details.major>summary{cursor:pointer; list-style:none; padding:14px 16px; display:flex; align-items:center; gap:11px; font-family:Georgia,serif; font-size:17px; color:var(--ink)}
+details.major>summary::-webkit-details-marker{display:none}
+.chip-n{flex:none; width:30px; height:30px; border-radius:9px; background:linear-gradient(145deg,var(--rose),var(--rose-deep)); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-size:15px; font-weight:700; box-shadow:0 2px 5px color-mix(in srgb,var(--rose) 40%,transparent)}
+details.major>summary .ttl{flex:1; min-width:0}
+details.major>summary .ttl .en{display:block; font-size:12.5px; font-style:italic; color:var(--muted); font-family:Georgia,serif; font-weight:400}
+details.major>summary .cnt{font-size:12px; color:var(--muted); flex:none}
+details.major>summary .arw{flex:none; color:var(--rose); transition:transform .2s; font-size:13px}
+details.major[open]>summary .arw{transform:rotate(90deg)}
+.body{padding:2px 16px 16px}
+.def{font-size:13.5px; color:var(--ink-soft); font-style:italic; border-left:3px solid var(--rose-soft); padding:3px 0 3px 12px; margin:4px 0 12px}
+
+.sub{margin:12px 0 0; padding-left:14px; border-left:2px solid var(--line)}
+.sub-h{font-weight:700; font-size:14.5px; color:var(--rose-deep); display:flex; flex-wrap:wrap; align-items:baseline; gap:7px}
+.sub-h .en{font-weight:400; font-style:italic; color:var(--muted); font-size:12px; font-family:Georgia,serif}
+.sub-d{font-size:13px; color:var(--ink-soft); margin:1px 0 4px}
+.hint{font-size:11.5px; color:var(--muted); background:color-mix(in srgb,var(--rose) 6%,transparent); border-radius:6px; padding:3px 9px; margin:3px 0 5px; line-height:1.55}
+.hint::before{content:"🗨 "; opacity:.7}
+.leaf{margin:9px 0 0; padding-left:12px; border-left:2px dashed var(--line)}
+.leaf-h{font-weight:600; font-size:13.5px; color:var(--ink-soft); display:flex; flex-wrap:wrap; align-items:baseline; gap:6px}
+.leaf-h .en{font-weight:400; font-style:italic; color:var(--muted); font-size:11px; font-family:Georgia,serif}
+.leaf-d{font-size:12px; color:var(--muted); margin:0 0 5px}
+
+.words{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 2px}
+.w{background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:4px 10px; font-size:14px; color:var(--ink)}
+.w.m{border-color:color-mix(in srgb,var(--gold) 50%,var(--line)); box-shadow:inset 3px 0 0 var(--gold)}
+.w.s{border-color:color-mix(in srgb,var(--violet) 45%,var(--line)); box-shadow:inset 3px 0 0 var(--violet); border-style:dashed}
+.w small{color:var(--muted); font-size:11px}
+.w .fix{color:var(--brick); font-size:11px; font-weight:600}
+.empty{font-size:12.5px; color:var(--muted); font-style:italic; background:color-mix(in srgb,var(--green) 8%,transparent); border:1px dashed color-mix(in srgb,var(--green) 40%,transparent); border-radius:8px; padding:5px 10px; display:inline-block; margin-top:2px}
+
+.cards{display:grid; gap:9px; margin:6px 0}
+.cd{background:var(--card); border:1px solid var(--line); border-radius:11px; padding:11px 14px; box-shadow:var(--shadow)}
+.link-row{display:flex; flex-wrap:wrap; gap:6px 10px; font-size:13.5px; align-items:center}
+.link-row .word{font-weight:700; color:var(--ink)}
+.link-row .to{color:var(--ink-soft)}
+.link-row .arrow{color:var(--brick); font-weight:700}
+.link-row .why{flex-basis:100%; font-size:12px; color:var(--muted); margin-top:2px}
+
+.prose{font-size:14.5px; color:var(--ink-soft)}
+.prose h3{font-size:15.5px; color:var(--rose-deep); margin:18px 0 5px}
+.prose p{margin:4px 0 10px}
+.prose b{color:var(--ink)}
+.disc p{margin:0 0 11px; padding:8px 12px; background:var(--paper); border-left:3px solid color-mix(in srgb,var(--rose-deep) 45%,var(--line)); border-radius:0 8px 8px 0}
+.disc p b{color:var(--rose-deep)}
+.tech{background:color-mix(in srgb,var(--brick) 7%,var(--card)); border:1px solid color-mix(in srgb,var(--brick) 22%,var(--line)); border-radius:11px; padding:13px 16px; margin:10px 0}
+.tech h3{color:var(--brick); margin-top:2px}
+.plus-list{display:flex; flex-wrap:wrap; gap:7px; margin:6px 0}
+.plus-list .w{font-size:14.5px}
+
+ol.steps{list-style:none; counter-reset:s; padding:0; margin:8px 0}
+ol.steps li{counter-increment:s; position:relative; padding:11px 14px 11px 48px; background:var(--card); border:1px solid var(--line); border-radius:11px; margin:8px 0; font-size:14px; color:var(--ink-soft)}
+ol.steps li::before{content:counter(s); position:absolute; left:12px; top:11px; width:24px; height:24px; background:var(--rose); color:#fff; border-radius:7px; font-family:Georgia,serif; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:13px}
+ol.steps li b{color:var(--ink)}
+
+.foot{text-align:center; margin-top:34px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; font-style:italic; font-family:Georgia,serif}
+@media (max-width:520px){ .wrap{padding:16px 13px 80px} .hero{padding:20px 16px} }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">ร่างเกลาหมวด · ไฟล์แรก</p>
+    <h1>หมวด ๑ · บรรยากาศ แสง สี และสถานที่</h1>
+    <p class="en">Setting &amp; Atmosphere</p>
+    <p>คำวาดฉาก — บรรยายสิ่งที่ตาเห็นและสัมผัสได้รอบตัว เพื่อปั้นภาพและกดอารมณ์ของฉาก</p>
+    <div class="stats">
+      <div class="stat"><b>85</b><span>คำ (คงในหมวด 1)</span></div>
+      <div class="stat"><b>7</b><span>กิ่งหลัก</span></div>
+      <div class="stat"><b>11</b><span>กิ่งใหม่รอคำ</span></div>
+      <div class="stat"><b>3</b><span>คำแตก</span></div>
+      <div class="stat"><b>3</b><span>ยกออก</span></div>
+    </div>
+  </header>
+
+  <div class="note rule"><b>📛 กฎชื่อกิ่ง:</b> คำธรรมดาสื่อตรง ไม่ใช้คำสวย + มีคำบริบท · <b>📝 กฎนิยาม:</b> นิยาม = เขียนตรง ๆ สะอาด (ขึ้นเว็บจริง) · <b>ความเห็น/เหตุผล/ใครเสนอ = แยกไว้บรรทัด 🗨 หมายเหตุ เก็บไว้เสมอ</b> (บอกว่ามีกิ่งนี้เพราะอะไร) · <b>🏷 tag แนวนิยาย</b> ใส่ในรายงานได้ แต่ถอดออกก่อนขึ้น Supabase/เว็บ/AI · <b>เกลารอบนี้ = เข้ามาตรฐานหมวด 2</b> (แยกนิยาม/หมายเหตุ)</div>
+
+  <div class="legend">
+    <span class="tag t-new">🆕 กิ่งใหม่ (รอคำ)</span>
+    <span class="tag t-multi">⚡ ติดหลายกิ่ง</span>
+    <span class="tag t-split">✳️ คำแตกจากวลี</span>
+    <span class="tag t-move">🚚 ยกออกไปหมวดอื่น</span>
+    <span class="tag t-genre">🔄 เปลี่ยนชื่อกิ่ง</span>
+  </div>
+
+  <h2 class="sec"><span class="n">🌳</span> โครงต้นไม้ใหม่ · 7 กิ่งหลัก</h2>
+  <p style="font-size:13px;color:var(--muted);margin:0 0 4px">แตะหัวกิ่งเพื่อยุบ/กาง · <b>นิยาม</b>=สะอาด (ขึ้นเว็บ) · <b>🗨</b>=หมายเหตุ (หลังบ้าน)</p>
+
+  <!-- 1 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๑</span><span class="ttl">แสงและเงา<span class="en">Light &amp; Shadow</span></span><span class="cnt">19 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">แสง เงา และการส่องสว่างที่ปรากฏในฉาก</p>
+      <div class="sub"><div class="sub-h">🌿 เงา <span class="en">Shadow</span></div><div class="sub-d">บริเวณที่แสงส่องไม่ถึง หรือความมืดที่บดบังการมองเห็น</div><div class="words"><span class="w">เงาดำทะมึน</span><span class="w">เงาตะคุ่ม</span><span class="w">หลืบเงา</span><span class="w">ความมืดครึ้ม</span><span class="w">ความมืดสลัว</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 แสง <span class="en">Light</span></div><div class="sub-d">ระดับความสว่าง ลักษณะการส่องประกาย และทิศทางของแสง</div>
+        <div class="leaf"><div class="leaf-h">🍃 แสงสว่าง <span class="en">Bright Light</span></div><div class="leaf-d">แสงที่สว่างจ้าและนิ่ง</div><div class="words"><span class="w">เปลวไฟสว่างวาบ</span><span class="w">ภายใต้แสงสว่างไสว</span><span class="w m">แสงสว่างยามรุ่งสางส่องผ่านผ้าม่านเบาบางเข้ามา <small>+รุ่งเช้า</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 แสงสลัว <span class="en">Dim Light</span></div><div class="leaf-d">แสงที่อ่อน มัว ริบหรี่</div><div class="words"><span class="w">สลัวราง</span><span class="w">แสงไฟริบหรี่</span><span class="w">แสงดาวที่สาดส่องสลัว</span><span class="w">สว่างเรืองด้วยแสงอ่อน ๆ จากเปลวเทียนที่ไหววูบ</span><span class="w">ส่องสว่างวอมแวม</span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 แสงวูบวาบ <span class="en">Flash &amp; Flicker</span></div><div class="leaf-d">แสงที่วูบ กะพริบ แลบ ไม่นิ่ง</div><div class="hint">พี่กันถามว่า “จ้า vs วาบ” ต่างกันยังไง = ต่างที่ “ความนิ่ง” ไม่ใช่ความสว่าง</div><div class="words"><span class="w">ฟ้าแลบแปลบปลาบ</span><span class="w">เปลวไฟที่ไหววูบวาบขจัดความมืด</span><span class="w">ลำแสงสีขาววาววับราวดาบคมกริบฟาดฟันลงมาในความมืด</span></div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🌿 แหล่งกำเนิดแสง <span class="en">Light Source</span></div><div class="sub-d">วัตถุที่เป็นต้นกำเนิดของแสงในฉาก</div><div class="hint">วางแผนย้ายไปหมวด 10 (สิ่งของ) ตอนคลังคำเยอะ — พี่กันบอก “ไว้คลังคำมันเยอะ ค่อยมาเกลากันอีกที”</div><div class="words"><span class="w">เปลวเทียน</span><span class="w">เชิงเทียน</span><span class="w">โคมไฟระย้า</span></div></div>
+    </div>
+  </details>
+
+  <!-- 2 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๒</span><span class="ttl">สี<span class="en">Color</span></span><span class="cnt">8 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">สีสันที่สะท้อนบรรยากาศ สภาพแวดล้อม หรือมวลอารมณ์ของฉาก</p>
+      <div class="sub"><div class="sub-h">🌿 สีสด/เข้ม <span class="en">Vivid &amp; Bold</span></div><div class="sub-d">สีที่จัด คมชัด</div><div class="words"><span class="w">สีดำปี๋</span><span class="w">ขาวโพลน</span><span class="w">สีแดงแปร๊ด</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 สีจาง/หม่น <span class="en">Muted &amp; Pale</span></div><div class="sub-d">สีที่นวล ซีด อ่อน</div><div class="words"><span class="w">แดงเรื่อ</span><span class="w">สีชมพูเรื่อๆ</span><span class="w">สีซีด</span><span class="w">สีทึมๆ</span><span class="w">สีดอกเลา</span></div></div>
+    </div>
+  </details>
+
+  <!-- 3 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๓</span><span class="ttl">บรรยากาศ<span class="en">Atmosphere &amp; Mood</span></span><span class="cnt">9 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">มวลอากาศ ความรู้สึก กลิ่น อุณหภูมิ และสัมผัสที่ปกคลุมฉาก</p>
+      <div class="sub"><div class="sub-h">🌿 อารมณ์และความรู้สึกของสถานที่ <span class="en">Mood &amp; Vibe</span></div><div class="sub-d">มวลอารมณ์และรัศมี (ออร่า) ที่ปกคลุมพื้นที่ ส่งผลต่อความรู้สึกเมื่อก้าวเข้ามา</div><div class="hint">คนละอย่างกับอารมณ์ของตัวละคร · นิยามเกลาตาม gem (เน้นออร่าของ “ที่”) · เลี่ยงคำทับศัพท์ “ฟีล” ใช้ “ความรู้สึก” (พี่กันขอ)</div><div class="words"><span class="w">โอ่อ่าอลังการ</span><span class="w">อับทึบ</span><span class="w">ความเวิ้งว้างว่างเปล่า</span><span class="w">ละลานตา <small>ก้ำกึ่งการรับรู้ทางสายตา</small></span><span class="w">ทั่วสารทิศ</span><span class="w">ท้องฟ้าขมุกขมัว</span><span class="w">ฝุ่นจับขะมุกขะมอม</span><span class="w m">ม่านหมอก <small>+ท้องฟ้า</small></span></div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 พิศวงและเหนือจริง <span class="en">Surreal &amp; Uncanny</span> <span class="tag t-genre">แฟนตาซี · ทริลเลอร์</span></div><div class="sub-d">ความรู้สึกแปลกประหลาด คลุมเครือ หลุดจากความจริง</div><div class="hint">กิ่งใหม่ · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 ใกล้ชิดและเป็นส่วนตัว <span class="en">Intimate &amp; Private</span> <span class="tag t-genre">อีโรติก · ทั่วไป</span></div><div class="sub-d">พื้นที่ที่ลดระยะห่าง ให้ความปลอดภัยหรือความโรแมนติก</div><div class="hint">กิ่งใหม่ · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub"><div class="sub-h">🌿 กลิ่น <span class="en">Smell</span></div><div class="sub-d">กลิ่นที่ปรากฏในฉาก</div><div class="words"><span class="w m">อากาศเย็นชื้นและเหม็นอับ <small>+อุณหภูมิ</small></span><span class="w s">เหม็นอับ <small>✳️</small></span></div></div>
+      <div class="sub"><div class="sub-h">🌿 อุณหภูมิและสัมผัสอากาศ <span class="en">Temperature &amp; Air</span></div><div class="sub-d">ความร้อน เย็น ชื้น อบอ้าวของอากาศ</div><div class="words"><span class="w m">อากาศเย็นชื้นและเหม็นอับ <small>+กลิ่น</small></span></div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 พื้นผิวและสัมผัส <span class="en">Texture &amp; Touch</span> <span class="tag t-genre">ทั่วไป</span></div><div class="sub-d">ผิวสัมผัสของสิ่งรอบตัวในฉาก</div><div class="hint">ตัวอย่าง: ขรุขระ · เรียบ · เปียก · แห้ง · แคลร์เสนอเพิ่ม · เติมประสาท “สัมผัส” ที่เดิมมีแค่ “ตาเห็น” · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- 4 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๔</span><span class="ttl">สถานที่<span class="en">Place &amp; Structures</span></span><span class="cnt">11 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">โครงสร้างทางกายภาพ ทำเล และลักษณะของพื้นที่</p>
+      <div class="hint" style="margin-bottom:8px">แยกออกจาก “บรรยากาศ” เป็นกิ่งหลักเอง เพราะชื่อหมวดคือ “บรรยากาศ แสง สี และสถานที่” — สถานที่เป็นเสาหลัก</div>
+      <div class="sub"><div class="sub-h">🌿 ทำเล <span class="en">Locations · Macro/ภาพกว้าง</span></div><div class="sub-d">ทำเลและสถานที่ระดับภาพกว้าง</div><div class="hint">ตัวอย่าง: เมือง · ย่าน · ภูเขา · Macro/Micro = ไม้บรรทัดวัดสเกลให้ AI แยกชัด (gem เสนอ)</div><div class="words"><span class="w">คฤหาสน์ที่ใหญ่โตโก้หรู</span><span class="w">ละแวกบ้าน</span><span class="w">ตึกรามบ้านช่อง</span><span class="w m">ห้องกว้างมืดทึบ <small>+ส่วนอาคาร</small></span></div></div>
+      <div class="sub"><div class="sub-h">🌿 ส่วนอาคารและสิ่งปลูกสร้าง <span class="en">Buildings · Micro/จุดย่อย</span></div><div class="sub-d">โครงสร้างและจุดย่อยของอาคาร</div><div class="hint">ตัวอย่าง: บันได · หน้าต่าง · ขื่อ</div><div class="words"><span class="w">โถงทางเดินที่ทอดยาว</span><span class="w">บันไดแคบชัน</span><span class="w">บันไดแคบๆทอดขึ้น</span><span class="w">เชิงบันได</span><span class="w">ประตูที่แง้มอยู่</span><span class="w">กรุกระจก</span><span class="w">ลอดโพรง <small>“ลอด”=กริยา อยู่หมวดกริยาแล้ว</small></span><span class="w s">ช่องโพรง <small>✳️</small></span><span class="w m">ห้องกว้างมืดทึบ <small>+ทำเล</small></span></div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 ปิดทึบและคับแคบ <span class="en">Enclosed &amp; Cramped</span> <span class="tag t-genre">ทริลเลอร์</span></div><div class="sub-d">พื้นที่จำกัด อึดอัด ไร้ทางออก</div><div class="hint">กิ่งใหม่ · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 กลไกและโลหะ <span class="en">Machinery &amp; Metal</span> <span class="tag t-genre">ไซไฟ</span></div><div class="sub-d">สภาพแวดล้อมเครื่องจักร โลหะ เทคโนโลยี และวัตถุสังเคราะห์</div><div class="hint">กิ่งใหม่ · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 พื้นที่ศักดิ์สิทธิ์และลี้ลับ <span class="en">Sacred &amp; Occult</span> <span class="tag t-genre">แฟนตาซี · ทริลเลอร์</span></div><div class="sub-d">สถานที่ประกอบพิธี โบราณสถาน หรือพื้นที่ต้องห้าม/อาถรรพ์</div><div class="hint">ตัวอย่าง: แท่นบูชา · ซากวิหาร · ศาลเจ้าร้าง · สุสานต้องห้าม · ลานบูชายัญ · gem เสนอ · เปลี่ยนจาก Religious→Occult ให้เข้ามู้ดนิยาย · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 ทางสัญจรและจุดเชื่อมต่อ <span class="en">Paths &amp; Thresholds</span> <span class="tag t-genre">ทริลเลอร์</span></div><div class="sub-d">เส้นทางผ่านหรือรอยต่อระหว่างพื้นที่</div><div class="hint">ตัวอย่าง: ตรอกซอกซอย · ชานชาลา · ท่าเรือ · สี่แยก · ทางแยก · gem เสนอ · ฉากไล่ล่า/เปลี่ยนผ่านอารมณ์เกิดตรงนี้บ่อย · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- 5 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๕</span><span class="ttl">ความเก่า ความเสียหาย และร่องรอย<span class="en">Decay &amp; Damage</span></span><span class="cnt">12 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">ความทรุดโทรมของสิ่งปลูกสร้าง และร่องรอยที่หลงเหลืออยู่</p>
+      <div class="sub"><div class="sub-h">🌿 สภาพความพัง <span class="en">Ruin &amp; Decay</span></div><div class="sub-d">ความทรุดโทรม การพังทลาย และโครงสร้างที่เสื่อมสภาพ</div><div class="words"><span class="w">จะพังมิพังแหล่</span><span class="w">รูโหว่</span><span class="w">ขื่อเปลือย</span><span class="w">หยากไย่</span><span class="w">พื้นกระดานที่ทรุดยวบ</span><span class="w">อาคารโย้เย้จวนถล่ม</span><span class="w">หักโค่น</span><span class="w">ราวไม้ที่หักสะบั้น</span><span class="w">ล้มระเนระนาด</span><span class="w">ซากปรักหักพังกลืนร่าง</span></div></div>
+      <div class="sub"><div class="sub-h">🌿 ร่องรอย <span class="en">Traces &amp; Marks</span></div><div class="sub-d">ร่องรอยที่ถูกทิ้งไว้จากการกระทำหรือเหตุการณ์ที่ผ่านไป</div><div class="hint">ตัวอย่าง: รอยต่อสู้ · รอยเลือด · รอยเท้า · คราบ</div><div class="words"><span class="w">ถูกเหยียบย่ำยับเยิน</span><span class="w">รอยเท้าทับซ้อนพลวันกันไปมา</span></div></div>
+    </div>
+  </details>
+
+  <!-- 6 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๖</span><span class="ttl">ธรรมชาติและสภาพอากาศ<span class="en">Nature &amp; Weather</span></span><span class="cnt">18 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">องค์ประกอบทางธรรมชาติและสภาพอากาศทั้งหมดที่ปรากฏรอบตัวในฉาก</p>
+      <div class="sub"><div class="sub-h">🌿 พืชพรรณ <span class="en">Flora</span></div><div class="sub-d">ต้นไม้ ใบหญ้า และความหนาแน่นของป่าเขา</div><div class="words"><span class="w">แมกไม้ที่แกว่งไกว</span><span class="w">แมกไม้เบียดเสียด</span><span class="w">พงหญ้า</span><span class="w">ป่ามืดทึบ</span><span class="w">หมู่ไม้หนาทึบ</span><span class="w">ทึ้งเถากุหลาบ</span><span class="w">แมกไม้เขียวชอุ่ม</span><span class="w">ป่าเขาลำเนาไพร</span></div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 สัตว์ <span class="en">Fauna</span></div><div class="sub-d">สัตว์ที่ปรากฏในฉาก</div><div class="hint">กิ่งใหม่ · มีแล้ว 1 คำ · รอเก็บคำเพิ่ม</div><div class="words"><span class="w m">แมลงบินว่อน <small>+ความเคลื่อนไหว</small></span></div></div>
+      <div class="sub"><div class="sub-h">🌿 ภูมิประเทศ <span class="en">Terrain</span></div><div class="sub-d">ลักษณะพื้นที่และภูมิทัศน์</div><div class="hint">1 คำ · คงกิ่งไว้รอโต</div><div class="words"><span class="w">เชิงผา</span></div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 น้ำและแหล่งน้ำ <span class="en">Water</span></div><div class="sub-d">แหล่งน้ำและผืนน้ำที่ปรากฏในฉาก</div><div class="hint">ตัวอย่าง: ทะเล · แม่น้ำ · ลำธาร · สระ · น้ำขัง · แคลร์เสนอเพิ่ม (ธรรมชาติที่เดิมขาด)</div><div class="words"><span class="w s">ระลอกคลื่น <small>✳️</small></span><span class="w m">ไหวสะเทือนเป็นระลอกคลื่น <small>+ความเคลื่อนไหว</small></span><span class="w m">กระเพื่อมขึ้นลงตามระลอกคลื่น <small>+ความเคลื่อนไหว</small></span></div></div>
+      <div class="sub"><div class="sub-h">🔄 🌿 ความเคลื่อนไหวในฉาก <span class="en">Natural Movement</span></div><div class="sub-d">การไหว พัด และกระเพื่อมของธรรมชาติ</div><div class="hint">เดิมชื่อ “ภูมิประเทศ/การเคลื่อนไหว” · แยก “ภูมิประเทศ” ออกเป็นกิ่งเดี่ยว เหลือชื่อสื่อ “การเคลื่อนไหว” ตรง ๆ</div><div class="words"><span class="w">สายลมพัดพรูเข้ามา</span><span class="w">สายลมที่พัดมาลูบไล้แก้ม</span><span class="w m">ไหวสะเทือนเป็นระลอกคลื่น <small>+น้ำ</small></span><span class="w m">กระเพื่อมขึ้นลงตามระลอกคลื่น <small>+น้ำ</small></span><span class="w m">แมลงบินว่อน <small>+สัตว์</small></span></div></div>
+      <div class="sub"><div class="sub-h">🔄 🌿 ท้องฟ้าและภูมิอากาศ <span class="en">Sky &amp; Weather</span></div><div class="sub-d">สภาพอากาศ ปรากฏการณ์บนท้องฟ้า และอุตุนิยมวิทยา</div><div class="hint">แก้ชื่อกลับให้มีคำว่า “ภูมิ” (แคลร์เผลอตัดออกจากต้นฉบับ พี่กันทัก)</div><div class="words"><span class="w m">ดวงจันทร์สีซีดคล้อยต่ำอยู่บนท้องฟ้า <small>+ช่วงเวลา</small></span><span class="w">ท้องฟ้าคำรามเสียงดังลั่น</span><span class="w">ฝนกระหน่ำ</span><span class="w">เสียงฟ้าคำรามกึกก้อง</span><span class="w m">ม่านหมอก <small>+บรรยากาศ</small></span></div></div>
+      <div class="sub"><div class="sub-h">🆕 🌿 ภัยพิบัติและความแปรปรวน <span class="en">Disasters &amp; Extremes</span> <span class="tag t-genre">แฟนตาซี · ทริลเลอร์</span></div><div class="sub-d">ธรรมชาติที่รุนแรง เกินควบคุม หรือเป็นอันตราย</div><div class="hint">ตัวอย่าง: พายุคลั่ง · ท้องฟ้าสีเลือด · แผ่นดินแยก · โคลนถล่ม · gem เสนอ · พี่กันเอา · แยกจากอากาศปกติ · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- 7 -->
+  <details class="major" open>
+    <summary><span class="chip-n">๗</span><span class="ttl">ช่วงเวลา<span class="en">Time</span></span><span class="cnt">8 คำ</span><span class="arw">▶</span></summary>
+    <div class="body">
+      <p class="def">การอ้างอิงเวลาในเรื่อง ทั้งช่วงเวลาในวันและฤดูกาล</p>
+      <div class="sub"><div class="sub-h">🌿 ยามในวัน <span class="en">Time of Day</span></div><div class="sub-d">ช่วงเวลาต่าง ๆ ของวัน</div><div class="hint">แบ่งย่อยเป็นกิ่งแขนง</div>
+        <div class="leaf"><div class="leaf-h">🍃 หัวค่ำ-กลางคืน <span class="en">Evening &amp; Night</span></div><div class="leaf-d">ตั้งแต่ย่ำค่ำถึงดึก</div><div class="words"><span class="w">ยามวิกาล</span><span class="w">ดึก ๆ ดื่น ๆ</span><span class="w">ความมืดมิดในยามราตรี</span><span class="w">ทุ่มเศษ</span><span class="w">ราวทุ่มครึ่ง</span><span class="w">ดวงอาทิตย์ลับขอบฟ้า</span><span class="w m">ดวงจันทร์สีซีดคล้อยต่ำอยู่บนท้องฟ้า <small>+ท้องฟ้า</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🍃 รุ่งเช้า-เช้า <span class="en">Dawn &amp; Morning</span></div><div class="leaf-d">ตั้งแต่ฟ้าสางถึงเช้า</div><div class="words"><span class="w">รุ่งเช้า</span><span class="w">แสงสว่างยามรุ่งสาง</span><span class="w m">แสงสว่างยามรุ่งสางส่องผ่านผ้าม่านเบาบางเข้ามา <small>+แสงสว่าง</small></span></div></div>
+        <div class="leaf"><div class="leaf-h">🆕 🍃 กลางวัน-บ่าย <span class="en">Daytime</span></div><div class="leaf-d">ช่วงกลางวันถึงบ่าย</div><div class="hint">กิ่งใหม่ · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+      </div>
+      <div class="sub"><div class="sub-h">🆕 🌿 ฤดูกาล <span class="en">Seasons</span> <span class="tag t-genre">ทั่วไป</span></div><div class="sub-d">ฤดูและช่วงต่าง ๆ ของปี</div><div class="hint">แคลร์เสนอเพิ่ม · รอเก็บคำ</div><div class="empty">รอเก็บคำ</div></div>
+    </div>
+  </details>
+
+  <!-- MOVED OUT -->
+  <h2 class="sec"><span class="n">🚚</span> ยกออกจากหมวด 1</h2>
+  <p class="prose" style="margin-top:0">คำที่ “หน้าตาเหมือนบรรยากาศ แต่จริง ๆ เป็นอย่างอื่น” — ย้ายไปหมวดปลายทาง <b>ยังไม่ลบ</b> (รอทำตอนถึงหมวดนั้น)</p>
+  <div class="cards">
+    <div class="cd"><div class="link-row"><span class="word">พลัดหลง [ในฉาก]</span><span class="arrow">→</span><span class="to">หมวดกริยาท่าทาง / คำปรุงแต่ง</span><span class="why">เป็นสถานการณ์/การกระทำของตัวละคร ไม่ใช่บรรยากาศของที่ · gem เสนอ · พี่กันเห็นด้วย</span></div></div>
+    <div class="cd"><div class="link-row"><span class="word">ปาไปหนึ่งวัน · ไม่ทันกาล</span><span class="arrow">→</span><span class="to">คำปรุงแต่ง/อเนกประสงค์ (Pacing)</span><span class="why">เป็นจังหวะความเร็วคุมสปีดการเล่าเรื่อง ไม่ใช่การวาดฉาก · gem + พี่กัน เห็นตรงกัน</span></div></div>
+  </div>
+
+  <!-- MULTI + SPLIT -->
+  <h2 class="sec"><span class="n">⚡</span> คำติดหลายกิ่ง · คำแตกจากวลี</h2>
+  <p class="prose" style="margin-top:0"><b>⚡ ติดหลายกิ่ง (8):</b> คำเดียวสื่อได้หลายอย่าง → ติดหลายกิ่งพร้อมกัน ไม่ต้องเลือกอย่างเดียว</p>
+  <div class="plus-list"><span class="w m">ดวงจันทร์สีซีดคล้อยต่ำฯ</span><span class="w m">ม่านหมอก</span><span class="w m">แมลงบินว่อน</span><span class="w m">ไหวสะเทือนเป็นระลอกคลื่น</span><span class="w m">กระเพื่อมขึ้นลงตามระลอกคลื่น</span><span class="w m">อากาศเย็นชื้นและเหม็นอับ</span><span class="w m">ห้องกว้างมืดทึบ</span><span class="w m">แสงสว่างยามรุ่งสางส่องผ่านผ้าม่านฯ</span></div>
+  <p class="prose" style="margin:12px 0 0"><b>✳️ คำแตกจากวลี (วลีเดิมอยู่ครบ):</b></p>
+  <div class="plus-list"><span class="w s">เหม็นอับ</span><span class="w s">ระลอกคลื่น</span><span class="w s">ช่องโพรง</span></div>
+
+  <!-- GEMINI -->
+  <h2 class="sec"><span class="n">🤝</span> ประเมินข้อเสนอเจน (Gemini)</h2>
+  <p class="prose" style="margin-top:0">เจน (Gemini) ช่วยเสนอเสริมหมวด 1 — พี่กัน <b>เลือกรับเป็นอัน ๆ ไม่เหมาทั้งหมด</b></p>
+  <div class="prose">
+    <p><b>✅ รับ:</b> พื้นที่ศักดิ์สิทธิ์และลี้ลับ (Religious→Occult ให้เข้ามู้ดนิยาย) · ทางสัญจรและจุดเชื่อมต่อ · ภัยพิบัติและความแปรปรวน · ไม้บรรทัด Macro/Micro ที่กิ่งทำเล/ส่วนอาคาร · นิยาม Mood เน้นออร่า · ยกออก “พลัดหลง / ปาไปหนึ่งวัน / ไม่ทันกาล”</p>
+    <p><b>💡 ต่างจากเจน:</b> กิ่ง “สี” ใช้โครงของแคลร์ (สด-เข้ม/จาง-หม่น) ไม่เอาของ gem · เพิ่มกิ่งประสาทสัมผัส (พื้นผิว) + ธรรมชาติ (น้ำ · ฤดูกาล) เอง</p>
+  </div>
+
+  <!-- DISCUSSION -->
+  <h2 class="sec"><span class="n">💭</span> อภิปราย · เปลี่ยนอะไร ทำไม</h2>
+  <div class="prose disc">
+    <p><b>🆕 เกลารอบนี้ (เข้ามาตรฐานหมวด 2):</b> แยก “นิยาม” ออกจาก “หมายเหตุ” ทุกกิ่ง — เดิมเอาตัวอย่างคำ + ใครเสนอ + สถานะ ไปปนในวงเล็บนิยามเดียวกัน (เช่น กิ่งศักดิ์สิทธิ์ เอา “แท่นบูชา·ซากวิหาร·ลานบูชายัญ” ไปปนในนิยาม) → ตอนนี้ <b>นิยาม = ความหมายจริงของกิ่งล้วน ๆ</b> · ตัวอย่าง/ความเห็น/ใครเสนอ = ย้ายไป 🗨 หมายเหตุ เก็บครบ ไม่ลบ</p>
+    <p><b>🎯 หลักคิด 2 ข้อ:</b> (1) ยึดต้นฉบับเป็นหลัก เกลาแค่การจัดกลุ่ม ไม่แต่ง/ไม่ลบคำ (2) แต่ละกิ่งต้องบริสุทธิ์เชิงความหมาย (1 กิ่ง = 1 แนวคิด) กัน AI ยัดคำผิดประเภท</p>
+    <p><b>🌲 ทำไมแยก “สถานที่” เป็นกิ่งหลักเอง:</b> ชื่อหมวดคือ “บรรยากาศ แสง สี <b>และสถานที่</b>” → สถานที่เป็นเสาหลัก ไม่ควรซ่อนใต้บรรยากาศ · แยกแล้วบรรยากาศ (มวลอารมณ์/กลิ่น/อุณหภูมิ/สัมผัส) กับสถานที่ (ทำเล/อาคาร) ชัดคนละเรื่อง</p>
+    <p><b>🔍 ทำไมแตก แสง (3 กิ่งแขนง) และ สี (2 กิ่งย่อย):</b> คำเยอะและมี “ระดับ” ในตัว · แสง = สว่าง/สลัว/วูบวาบ (ต่างที่ <b>ความนิ่ง</b> ไม่ใช่ความสว่าง) · สี = สด-เข้ม vs จาง-หม่น (เลือกโทนตามอารมณ์ฉากได้)</p>
+    <p><b>🌱 ทำไมเพิ่มกิ่งใหม่ 11 กิ่ง (ทั้งที่ยังไม่มีคำ):</b> ตั้งกิ่งรอไว้ = มีที่รับคำอนาคต + เป็นแผนที่บอก AI ว่าคลังครอบคลุมอะไร · เติมประสาทสัมผัสที่ขาด (กลิ่น/อุณหภูมิ/พื้นผิว) · เติมธรรมชาติที่ขาด (สัตว์/น้ำ/ฤดูกาล/ภัยพิบัติ) · เติมประเภทฉากตามแนวนิยาย (พิศวง/ใกล้ชิด/ปิดทึบ/กลไก/ศักดิ์สิทธิ์/ทางสัญจร)</p>
+    <p><b>🏷 ทำไมเกลาชื่อกิ่ง:</b> ให้สื่อตรง + เลี่ยงคำทับศัพท์ — บรรยากาศทั่วไป→อารมณ์และความรู้สึกของสถานที่ (เลี่ยง “ฟีล”) · ภูมิประเทศ/การเคลื่อนไหว→ความเคลื่อนไหวในฉาก · ท้องฟ้าและอากาศ→ท้องฟ้าและภูมิอากาศ (แก้กลับ เผลอตัด “ภูมิ” พี่กันทัก) · Sacred Religious→Occult</p>
+    <p><b>🚚 ทำไมยกคำออก:</b> บางคำหน้าตาเหมือนบรรยากาศ แต่จริง ๆ เป็นสถานการณ์ (พลัดหลง) หรือจังหวะเล่าเรื่อง (ปาไปหนึ่งวัน · ไม่ทันกาล) → ถ้าปล่อยไว้กิ่งจะไม่บริสุทธิ์ AI สับสน · <b>ทั้งคู่ไม่ลบ</b> ยกออกตอนถึงหมวดปลายทาง</p>
+    <p><b>✳️ ทำไม “แตกคำ” ได้ แต่ห้ามลบคำเดิม:</b> คำต้นฉบับคือของที่พี่กันเก็บมาเอง = ห้ามแตะ · แต่บางวลีมีคำสวยซ่อน (เหม็นอับ · ระลอกคลื่น · ช่องโพรง) → เพิ่มคำใหม่แยกออกมา <b>วลีเต็มยังอยู่ครบ</b></p>
+    <p><b>🔤 ทำไมมีอังกฤษทุกกิ่ง + 🔗 ทำไมสำคัญ:</b> อังกฤษ+ไทย+นิยาม = context หลายภาษาให้ระบบเข้าใจลึกขึ้น · โครง+นิยามทุกชั้น = ฐานรากของ idea N (นิยาม→AI จัดคำแม่นขึ้น) + idea R (Semantic Search ค้นด้วยความหมาย)</p>
+  </div>
+
+  <div class="tech">
+    <h3>⚙️ ข้อควรระวังทางเทคนิค (ตอนลงคลังจริง)</h3>
+    <p class="prose" style="margin:0"><b>1. tag แนวนิยาย</b> ถอดออกก่อนขึ้น Supabase/เว็บ/AI (กัน bias) · <b>2. ชื่อกิ่ง + นิยาม</b> ต้องเข้ากฎ (คำธรรมดา + นิยาม=ความหมาย) · <b>3. ยกคำออก = ไม่ลบ</b> รอย้ายตอนถึงหมวดปลายทาง · <b>4. แหล่งกำเนิดแสง</b> รอย้ายไปหมวด 10 ตอนคำเยอะ</p>
+  </div>
+
+  <!-- STEPS -->
+  <h2 class="sec"><span class="n">🔜</span> ลำดับงานถัดไป</h2>
+  <ol class="steps">
+    <li><b>พี่กันอ่านทวน + ปรับเอง</b> (ค่อย ๆ ทีละกิ่ง)</li>
+    <li><b>ลงมือแตกคำ ✳️ เข้าคลัง</b> (วลีเดิมอยู่ครบ) — หลังร่างนิ่ง</li>
+    <li><b>ลงคลังจริงหมวด 1</b> — เปลี่ยนชื่อกิ่ง · ติดหลายกิ่ง · สร้างกิ่งใหม่ · ยกคำออก (ไม่ลบ) · ถอด tag · <b>ไม่ลบวลีเดิม</b></li>
+    <li><b>ย้ายแหล่งกำเนิดแสง → หมวด 10</b> ตอนคลังคำเยอะ</li>
+    <li><b>เพิ่มกฎ (ชื่อกิ่ง + นิยาม) ลง CLAUDE.md + prompt</b></li>
+  </ol>
+
+  <p class="foot">คลังคำ · Word Bank — ร่างเกลาหมวด ๑ · ยังไม่แตะคลังจริงจนพี่กันโอเค</p>
+</div>
+</body>
+</html>
