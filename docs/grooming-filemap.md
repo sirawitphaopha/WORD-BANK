@@ -15,7 +15,7 @@
 | 4 | เสียง | cat4-redesign.md | cat4-redesign.html | **แก้มือ** |
 | 5 | สภาวะภายใน | cat5-redesign.md | cat5-redesign.html | `gen_cat5_html.py` |
 | 6 | คำปรุงแต่งและคำอเนกประสงค์ | cat6-redesign.md | cat6-redesign.html | `gen_cat6_html.py` |
-| 7 | คำทับศัพท์ที่มักสะกดผิด | — *(ยังไม่เกลา)* | — | — |
+| 7 | คำทับศัพท์ที่มักสะกดผิด | cat7-loanwords-redesign.md | cat7-loanwords-redesign.html | **แก้มือ** (พี่กันสั่งทำ HTML 25 ก.ค. แม้คำยังน้อย) |
 | 8 | นิสัยและบุคลิกภาพ | cat8-redesign.md | cat8-redesign.html | `gen_cat8_html.py` |
 | 9 | อื่น ๆ | — *(ยังไม่เกลา)* | — | — |
 | 10 | สิ่งของและข้าวของ | cat10-objects-redesign.md | cat10-objects-redesign.html | **แก้มือ** |

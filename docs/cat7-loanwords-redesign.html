@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ร่างหมวด 7 · คำทับศัพท์ที่มักสะกดผิด — คลังคำ</title>
+</head>
+<body>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --slate:#4a6d7d; --slate-deep:#33505e; --slate-soft:#8bacba;
+  --brick:#9c3b2b; --green:#5a7d4a; --gold:#b07d2a;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+  --shadow:0 1px 2px rgba(90,70,45,.06),0 3px 12px rgba(90,70,45,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+    --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+    --slate:#8bb4c4; --slate-deep:#a8cdda; --slate-soft:#3e5a68;
+    --brick:#d97a63; --green:#8fb079; --gold:#d3a860;
+    --line:#3f372c; --line-soft:#332c22;
+    --shadow:0 1px 2px rgba(0,0,0,.25),0 3px 14px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#f5efe1; --paper2:#efe6d3; --card:#fbf6ea;
+  --ink:#3a2f26; --ink-soft:#6b5d4d; --muted:#948573;
+  --slate:#4a6d7d; --slate-deep:#33505e; --slate-soft:#8bacba;
+  --line:#d9cdb4; --line-soft:#e6dcc7;
+}
+:root[data-theme="dark"]{
+  --paper:#211c17; --paper2:#1a1611; --card:#2a241d;
+  --ink:#ece3d5; --ink-soft:#c3b6a2; --muted:#9a8b76;
+  --slate:#8bb4c4; --slate-deep:#a8cdda; --slate-soft:#3e5a68;
+  --line:#3f372c; --line-soft:#332c22;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",system-ui,-apple-system,sans-serif; font-size:16px; line-height:1.72; -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 15% 10%,rgba(74,109,125,.05),transparent 40%),radial-gradient(circle at 85% 80%,rgba(156,59,43,.04),transparent 45%);}
+.wrap{max-width:760px; margin:0 auto; padding:22px 18px 90px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif; text-wrap:balance; line-height:1.25}
+.hero{padding:26px 22px; border-radius:16px; position:relative; overflow:hidden; background:linear-gradient(150deg,var(--card),var(--paper2)); border:1px solid var(--line); box-shadow:var(--shadow)}
+.hero::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:linear-gradient(var(--slate),var(--slate-deep))}
+.eyebrow{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--slate-deep); font-weight:700; margin:0 0 6px}
+.hero h1{margin:0 0 4px; font-size:clamp(26px,6vw,36px); color:var(--ink)}
+.hero .en{font-family:Georgia,serif; font-style:italic; color:var(--muted); font-size:16px; margin:0 0 14px}
+.hero p{margin:0; color:var(--ink-soft); font-size:15px}
+.stats{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+.stat{background:var(--paper); border:1px solid var(--line); border-radius:11px; padding:8px 13px; min-width:70px}
+.stat b{display:block; font-family:Georgia,serif; font-size:22px; color:var(--slate-deep); line-height:1; font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px; color:var(--muted)}
+.note{font-size:13.5px; color:var(--ink-soft); background:var(--card); border:1px solid var(--line-soft); border-left:3px solid var(--slate); border-radius:10px; padding:11px 14px; margin:16px 0}
+.note b{color:var(--slate-deep)}
+h2.sec{font-size:20px; margin:30px 0 12px; padding-bottom:7px; border-bottom:2px solid var(--line); color:var(--ink)}
+
+.grid{display:grid; gap:11px}
+.mj{background:var(--card); border:1px solid var(--line); border-radius:13px; overflow:hidden; box-shadow:var(--shadow)}
+.mj>.head{padding:13px 15px; display:flex; align-items:flex-start; gap:11px}
+.chip-n{flex:none; width:30px; height:30px; border-radius:9px; background:linear-gradient(145deg,var(--slate),var(--slate-deep)); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-size:14px; font-weight:700; box-shadow:0 2px 5px color-mix(in srgb,var(--slate) 40%,transparent)}
+.mj .ttl{flex:1; min-width:0}
+.mj .ttl .th{font-family:Georgia,serif; font-size:16px; color:var(--ink); font-weight:700}
+.mj .ttl .en{display:block; font-size:12px; font-style:italic; color:var(--muted); font-family:Georgia,serif}
+.mj .ttl .def{font-size:13px; color:var(--ink-soft); margin-top:3px}
+.mj .hint{font-size:11.5px; color:var(--muted); background:color-mix(in srgb,var(--slate) 7%,transparent); border-radius:6px; padding:6px 9px; margin:0 15px 12px; line-height:1.6}
+.mj .hint::before{content:"🗨 "; opacity:.7}
+.tag{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; padding:2px 7px; border-radius:20px; font-weight:600; white-space:nowrap; margin-left:4px; background:color-mix(in srgb,var(--slate) 13%,transparent); color:var(--slate-deep); border:1px solid color-mix(in srgb,var(--slate) 30%,transparent); vertical-align:middle}
+.tag.jen{background:color-mix(in srgb,var(--gold) 15%,transparent); color:var(--gold); border-color:color-mix(in srgb,var(--gold) 36%,transparent)}
+.words{display:flex; flex-wrap:wrap; gap:6px; margin:0 15px 13px}
+.w{background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:4px 10px; font-size:14px; color:var(--ink); box-shadow:inset 3px 0 0 var(--green)}
+.w small{color:var(--muted); font-size:11.5px; font-style:italic; margin-left:3px}
+.wait{font-size:12px; color:var(--muted); font-style:italic; margin:0 15px 13px; display:inline-block; background:color-mix(in srgb,var(--slate) 8%,transparent); border:1px dashed color-mix(in srgb,var(--slate) 38%,transparent); border-radius:8px; padding:4px 10px}
+
+.prose{font-size:14px; color:var(--ink-soft)}
+.prose b{color:var(--ink)}
+.foot{text-align:center; margin-top:34px; padding-top:18px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; font-style:italic; font-family:Georgia,serif}
+@media (max-width:520px){ .wrap{padding:16px 13px 80px} .hero{padding:20px 16px} }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">ร่างเกลาหมวด · ไฟล์ที่เจ็ด</p>
+    <h1>หมวด ๗ · คำทับศัพท์ที่มักสะกดผิด</h1>
+    <p class="en">Loanwords &amp; Spelling</p>
+    <p>คำที่ยืมมาจากภาษาต่างประเทศแล้วเขียนด้วยอักษรไทย ซึ่งมักเขียนหรือสะกดผิด — เก็บไว้อ้างอิงรูปเขียนที่ถูกต้อง</p>
+    <div class="stats">
+      <div class="stat"><b>11</b><span>กิ่งหลัก</span></div>
+      <div class="stat"><b>5</b><span>คำจริง</span></div>
+      <div class="stat"><b>10</b><span>กิ่งรอเก็บคำ</span></div>
+    </div>
+  </header>
+
+  <div class="note"><b>🎯 หมวดนี้ต่างจากหมวดอื่น:</b> จัดตาม <b>“รูปเขียนที่ถูกต้อง”</b> ไม่ใช่มู้ด/ความรู้สึก · แบ่งกิ่งหลักตาม <b>“คำนี้ใช้เรียกอะไร”</b> (คน/สัตว์/สิ่งของ/สถานที่ ฯลฯ) เพื่อให้ AI หาที่ลงง่าย</div>
+  <div class="note"><b>📝 ทุกคำตัวอย่างเขียนกำกับด้วยคำต้นแบบภาษาอังกฤษเสมอ</b> รูปแบบ “คำไทย = English” (พี่กันสั่ง 25 ก.ค.) เพราะหมวดนี้มีไว้อ้างอิงรูปเขียนที่ถูกต้อง ต้องรู้ว่าคำไทยมาจากคำอังกฤษคำไหน</div>
+
+  <h2 class="sec">🌳 โครงกิ่ง 11 กิ่งหลัก</h2>
+  <div class="grid">
+
+    <div class="mj"><div class="head"><span class="chip-n">๑</span><div class="ttl"><span class="th">คน</span><span class="en">People</span><div class="def">คำทับศัพท์ที่ใช้เรียกคน อาชีพ ตำแหน่ง หรือคำนำหน้าชื่อ</div></div></div><div class="hint">มาดาม = Madame · เชฟ = Chef · การ์ด = Guard · บอส = Boss · ไกด์ = Guide · โค้ช = Coach</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๒</span><div class="ttl"><span class="th">สัตว์</span><span class="en">Animals</span><div class="def">คำทับศัพท์ที่ใช้เรียกชื่อสัตว์</div></div></div><div class="hint">พบน้อยในภาษาไทยทั่วไป แต่เผื่อไว้ (เช่นชื่อสัตว์ต่างถิ่นในนิยายแฟนตาซี/ไซไฟ)</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๓</span><div class="ttl"><span class="th">พืช</span><span class="en">Plants</span><div class="def">คำทับศัพท์ที่ใช้เรียกชื่อพืช ดอกไม้ หรือต้นไม้</div></div></div><div class="hint">คอสมอส = Cosmos · ทิวลิป = Tulip · เบซิล = Basil · แคคตัส = Cactus</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๔</span><div class="ttl"><span class="th">สิ่งของและอุปกรณ์</span><span class="en">Objects &amp; Equipment</span><div class="def">คำทับศัพท์ที่ใช้เรียกวัตถุ เครื่องมือ หรืออุปกรณ์ทั่วไป</div></div></div><div class="hint">ไมค์ = Mic (Microphone) · เลนส์ = Lens · แล็ปท็อป = Laptop · โน้ตบุ๊ก = Notebook · กราฟิก = Graphic</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๕</span><div class="ttl"><span class="th">แฟชั่น เครื่องแต่งกาย และความงาม</span><span class="en">Fashion &amp; Beauty</span><span class="tag jen">🆕 เจนเสนอ</span><div class="def">คำทับศัพท์ที่ใช้เรียกเสื้อผ้า เครื่องแต่งกาย และเครื่องสำอาง</div></div></div><div class="hint">แยกออกจากสิ่งของทั่วไปเพราะพบบ่อยมากในทุกแนวนิยาย เทียบเท่าเหตุผลที่แยก “อาหารและเครื่องดื่ม” ออกมาต่างหาก · เสื้อเชิ้ต = Shirt · สเวตเตอร์ = Sweater · ลิปสติก = Lipstick · เมกอัป = Makeup · โลชัน = Lotion · เนกไท = Necktie</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๖</span><div class="ttl"><span class="th">สถานที่</span><span class="en">Places</span><div class="def">คำทับศัพท์ที่ใช้เรียกสถานที่หรือประเภทของสถานที่</div></div></div><div class="hint">บาร์ = Bar · คลับ = Club · ล็อบบี้ = Lobby · ออฟฟิศ = Office · แกลเลอรี = Gallery</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๗</span><div class="ttl"><span class="th">อาหารและเครื่องดื่ม</span><span class="en">Food &amp; Drink</span><div class="def">คำทับศัพท์ที่ใช้เรียกอาหาร เครื่องดื่ม หรือของกิน</div></div></div><div class="hint">กาแฟ = Coffee · เค้ก = Cake · ไวน์ = Wine · ช็อกโกแลต = Chocolate</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๘</span><div class="ttl"><span class="th">เทคโนโลยีและดิจิทัล</span><span class="en">Technology &amp; Digital</span><span class="tag jen">🆕 เจนเสนอ</span><div class="def">คำทับศัพท์เกี่ยวกับอุปกรณ์ดิจิทัล อินเทอร์เน็ต และการสื่อสารออนไลน์</div></div></div><div class="hint">แยกจาก “สิ่งของและอุปกรณ์” เพราะส่วนใหญ่ไม่ใช่วัตถุจับต้องได้ (เป็นการกระทำ/แนวคิดดิจิทัล) และเป็นกลุ่มที่สะกดผิดบ่อยที่สุดในยุคนี้ (แอป ↔ แอพ · ลิงก์ ↔ ลิ้งค์) · แอปพลิเคชัน = Application · ลิงก์ = Link · แชต = Chat · โพสต์ = Post · อัปเดต = Update · โปรไฟล์ = Profile · อินเทอร์เน็ต = Internet</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๙</span><div class="ttl"><span class="th">วิทยาศาสตร์ การแพทย์ และหน่วยวัด</span><span class="en">Science, Medicine &amp; Units</span><span class="tag jen">🆕 เจนเสนอ</span><div class="def">คำทับศัพท์ทางวิทยาศาสตร์ การแพทย์ หรือหน่วยวัดต่าง ๆ</div></div></div><div class="hint">ช่องว่างจริงที่ไม่มีกิ่งไหนข้างบนรับได้ มีประโยชน์เวลาบรรยายฉากเฉพาะทาง (โรงพยาบาล ห้องแล็บ) · คลินิก = Clinic · แบคทีเรีย = Bacteria · ไวรัส = Virus · แคปซูล = Capsule · โดส = Dose · เซนติเมตร = Centimetre · เปอร์เซ็นต์ = Percent · แคลอรี = Calorie</div><span class="wait">รอเก็บคำ</span></div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๑๐</span><div class="ttl"><span class="th">กริยาและอาการ</span><span class="en">Actions &amp; States</span><div class="def">คำทับศัพท์ที่ใช้เป็นกริยาหรือบอกอาการ/สภาวะ ไม่ใช่ชื่อของสิ่งใด</div></div></div><div class="hint">รับคำต้นฉบับทั้ง 5 คำที่มีอยู่จริง — เป็นคำกริยา/อาการทั้งหมด ไม่ใช่คำนามเรียกคน/สัตว์/สิ่งของ/สถานที่ · ช็อก = Shock (อาการช็อก) · ล็อก = Lock (การล็อก) · เวอร์ = Over (เกินจริง เว่อร์วัง) · สตาร์ตรถ = Start (สตาร์ตเครื่องยนต์) · โทร. = คำย่อ (โทรศัพท์/การโทร มีจุดหลังคำย่อ)</div>
+      <div class="words"><span class="w">ช็อก <small>Shock</small></span><span class="w">ล็อก <small>Lock</small></span><span class="w">เวอร์ <small>Over</small></span><span class="w">สตาร์ตรถ <small>Start</small></span><span class="w">โทร. <small>Telephone</small></span></div>
+    </div>
+
+    <div class="mj"><div class="head"><span class="chip-n">๑๑</span><div class="ttl"><span class="th">อื่น ๆ</span><span class="en">Miscellaneous</span><div class="def">คำทับศัพท์ที่ไม่เข้ากิ่งไหนข้างบนจริง ๆ (คำนามธรรม แนวคิด ฯลฯ)</div></div></div><div class="hint">กิ่งกันตกหล่น · เทรนด์ = Trend · คอนเซปต์ = Concept · ไอเดีย = Idea</div><span class="wait">รอเก็บคำ</span></div>
+
+  </div>
+
+  <h2 class="sec">🗣 ประเมินข้อเสนอเจน (Gemini)</h2>
+  <div class="prose">
+    <p>เจนเสนอเพิ่ม 3 กิ่งหลัก (แฟชั่นฯ · เทคโนโลยีฯ · วิทยาศาสตร์ฯ) แคลร์ประเมินแล้ว <b>รับทั้งหมด</b> — เป็นกลุ่มคำทับศัพท์ที่พบบ่อยจริงในนิยาย + เป็นกลุ่มที่สะกดผิดบ่อยจริง (ตรงจุดประสงค์หมวดนี้) + ไม่ทับซ้อนกับกิ่งเดิม</p>
+  </div>
+
+  <p class="foot">คลังคำ · Word Bank — ร่างหมวด ๗ คำทับศัพท์ที่มักสะกดผิด · ยังไม่แตะคลังจริงจนพี่กันโอเค</p>
+</div>
+</body>
+</html>
