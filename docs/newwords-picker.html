@@ -73,6 +73,7 @@ h1,h2{font-family:Georgia,"Noto Serif Thai","Times New Roman",serif; text-wrap:b
   border-radius:10px; padding:12px 15px; font-size:13.8px; color:var(--ink-soft)}
 .howto b{color:var(--ink)}
 .howto ol{margin:7px 0 0; padding-left:20px} .howto li{margin:3px 0}
+.howto.safe{border-left-color:var(--own); margin-top:10px} .howto.safe b{color:var(--own-deep); display:block; margin-bottom:3px}
 
 /* ---------- แถบเครื่องมือตรึง ---------- */
 .bar{position:sticky; top:0; z-index:20; margin:16px -16px 0; padding:11px 16px 12px;
@@ -107,8 +108,29 @@ select{flex:0 1 auto; max-width:100%}
 .row.picked{border-color:color-mix(in srgb,var(--mark) 45%,transparent); background:color-mix(in srgb,var(--mark-soft) 30%,var(--card))}
 .rowhead{display:flex; gap:9px; align-items:baseline}
 .num{font-family:Georgia,serif; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; flex:none; padding-top:2px}
-.src{font-size:16.5px; line-height:1.5; color:var(--ink); word-break:break-word}
-.row.plain .src{color:var(--ink-soft); font-size:15.5px}
+.src{font-size:18px; line-height:2; color:var(--ink); word-break:break-word;
+  user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; touch-action:pan-y; cursor:text}
+.row.plain .src{color:var(--ink-soft)}
+.tok{border-radius:5px; padding:3px 0}
+.tok.on{background:var(--mark); color:var(--paper); box-shadow:0 0 0 2px var(--mark)}
+.row.selecting{border-color:var(--mark); background:color-mix(in srgb,var(--mark-soft) 22%,var(--card))}
+
+/* แถบยืนยันคำที่ลากไว้ */
+.selbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:9px 11px; border-radius:10px;
+  background:var(--paper2); border:1px dashed var(--mark)}
+.selbar[hidden]{display:none}                    /* ต้องมี ไม่งั้น display:flex ทับ hidden แล้วแถบโผล่ทุกแถว */
+.addrow{display:flex; gap:7px; align-items:center; flex:1 1 100%}
+.addrow[hidden]{display:none}
+.selword{font-size:16.5px; font-weight:700; color:var(--mark-deep); flex:1 1 120px; word-break:break-word}
+.selword::before{content:"👆 "}
+.okbtn{font:inherit; font-size:15px; font-weight:700; cursor:pointer; flex:none; border-radius:9px; padding:8px 18px;
+  background:var(--mark); border:1px solid var(--mark); color:var(--paper); transition:.13s}
+.okbtn:hover{background:var(--mark-deep); border-color:var(--mark-deep)}
+.nobtn{font:inherit; font-size:14px; cursor:pointer; flex:none; border-radius:9px; padding:8px 13px;
+  background:transparent; border:1px solid var(--line); color:var(--ink-soft)}
+.kbbtn{font:inherit; font-size:12.5px; cursor:pointer; background:none; border:none; color:var(--muted);
+  padding:2px 0; text-decoration:underline; text-underline-offset:3px}
+.kbbtn:hover{color:var(--mark-deep)}
 .chips{display:flex; flex-wrap:wrap; gap:6px; padding-left:30px}
 .chip{font:inherit; font-size:15px; cursor:pointer; padding:4px 12px; border-radius:8px; transition:.13s;
   border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); position:relative}
@@ -122,12 +144,17 @@ body.showcat .chip .cat{display:inline}
   display:inline-flex; align-items:center; gap:7px}
 .own .ochip.warn{background:var(--gold)}
 .own .ochip button{font:inherit; background:none; border:none; color:inherit; cursor:pointer; padding:0; font-size:14px; opacity:.85; line-height:1}
-.own input{flex:1 1 170px; font-size:14.5px; padding:5px 10px; border-style:dashed}
-.own input::placeholder{color:var(--muted)}
+.own input{flex:1 1 150px; font-size:15px; padding:7px 11px; border-style:dashed}
+.own input::placeholder{color:var(--muted); font-size:13.5px}
+.addbtn{font:inherit; font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none;
+  background:var(--own); border:1px solid var(--own); color:var(--paper); border-radius:8px; padding:7px 14px; transition:.13s}
+.addbtn:hover{background:var(--own-deep); border-color:var(--own-deep)}
+.saved{font-size:12.5px; color:var(--own-deep); font-weight:600; padding-left:30px; display:flex; align-items:center; gap:5px}
 .warnnote{font-size:12px; color:var(--gold); padding-left:30px}
 
 /* ---------- ท้าย / ส่งออก ---------- */
 .more{display:block; width:100%; margin-top:12px; padding:11px}
+.more[hidden]{display:none}                      /* กันปัญหาเดียวกับ .selbar */
 .empty{text-align:center; color:var(--muted); padding:34px 10px; font-size:14.5px}
 dialog{border:1px solid var(--line); border-radius:14px; background:var(--card); color:var(--ink); padding:0;
   max-width:min(720px,94vw); width:100%; box-shadow:0 10px 40px rgba(40,30,15,.28)}
@@ -169,11 +196,17 @@ textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12
   <section class="howto">
     <b>วิธีใช้</b>
     <ol>
-      <li>กดที่คำเพื่อเลือก กดซ้ำเพื่อยกเลิก</li>
-      <li>ช่อง “สกัดเอง” พิมพ์คำแล้วกด Enter · หนึ่งวลีเพิ่มได้หลายคำ</li>
-      <li>ระบบจำที่เลือกไว้ในเครื่องอัตโนมัติ ปิดหน้าแล้วเปิดใหม่ยังอยู่</li>
+      <li><b>ลากนิ้วคลุมคำในวลี</b> → กด <b>ตกลง</b> → คำจะไปกองอยู่ข้างล่าง → <b>ลากใหม่ได้เรื่อย ๆ</b> วลีเดียวแบ่งได้ไม่จำกัด (ไม่ต้องพิมพ์)</li>
+      <li>ลากแล้วมันหนึบเข้าขอบคำไทยให้เอง ไม่ต้องเล็งทีละตัวอักษร · เลื่อนหน้าจอขึ้นลงได้ตามปกติ</li>
+      <li>คำที่ระบบเสนอไว้แล้ว (กรอบสี่เหลี่ยม) แตะเพื่อเลือก แตะซ้ำเพื่อยกเลิก</li>
       <li>เลือกเสร็จกดปุ่ม <b>ส่งออก</b> แล้วคัดลอกผลไปวางในแชท</li>
     </ol>
+  </section>
+
+  <section class="howto safe">
+    <b>ของไม่หายแน่นอน</b>
+    ทุกครั้งที่ลากหรือพิมพ์ ระบบเก็บลงเครื่องทันที ไม่ต้องกดอะไรเลย · ปิดหน้า สลับแอป แบตหมด หรือรีเฟรช เปิดกลับมายังอยู่ครบ แม้แต่คำที่ลากค้างไว้ยังไม่ได้กดตกลง
+    <br>ก่อนกดแสดงเพิ่ม ค้นหา เปลี่ยนตัวกรอง หรือส่งออก ระบบจะเก็บของที่ค้างอยู่ให้เองก่อนเสมอ
   </section>
 
   <div class="bar">
@@ -239,16 +272,18 @@ const CATFULL={1:"หมวด ๑ บรรยากาศ แสง สี แ
 13:"หมวด ๑๓ ภาษา ถ้อยคำ และการประพันธ์",14:"หมวด ๑๔ กฎหมาย คดีความ และสิทธิ"};
 const KEY='wordbank:extract-pick:v1', PAGE=150;
 const $=s=>document.querySelector(s), listEl=$('#list');
-let state={pick:{},own:{}};
+let state={pick:{},own:{},draft:{},sel:{}};
 try{const r=localStorage.getItem(KEY); if(r) state=Object.assign(state,JSON.parse(r));}catch(e){}
-if(!state.pick) state.pick={}; if(!state.own) state.own={};
+if(!state.pick) state.pick={}; if(!state.own) state.own={}; if(!state.draft) state.draft={}; if(!state.sel) state.sel={};
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}};
+let saveT=0; const saveSoon=()=>{clearTimeout(saveT); saveT=setTimeout(()=>{saveT=0; save();},140);};
 
 /* ---------- เตรียมข้อมูลแถว ---------- */
 const ROWS=DATA.lines.map(L=>{
   const p=DATA.props[L.n];
   return {n:L.n, t:L.t, words:p?p.words:[]};
 });
+const BYN={}; ROWS.forEach(r=>{BYN[r.n]=r;});
 const totalProp=ROWS.reduce((a,r)=>a+r.words.length,0);
 $('#s-lines').textContent=DATA.lines.length.toLocaleString('th-TH');
 $('#s-prop').textContent=totalProp.toLocaleString('th-TH');
@@ -277,14 +312,44 @@ function match(r){
     const q=query;
     if(!(r.t.includes(q) || r.words.some(w=>w.w.includes(q)) || ownOf(r).some(w=>w.includes(q)))) return false;
   }
-  const np=pickedOf(r).length, no=ownOf(r).length;
+  const np=pickedOf(r).length, no=ownOf(r).length, nd=(state.draft[r.n]||state.sel[r.n])?1:0;
   if(filter==='prop') return r.words.length>0;
-  if(filter==='picked') return np>0||no>0;
-  if(filter==='todo') return r.words.length>0 && np===0 && no===0;
-  if(filter==='own') return no>0;
+  if(filter==='picked') return np>0||no>0||nd>0;
+  if(filter==='todo') return r.words.length>0 && np===0 && no===0 && nd===0;
+  if(filter==='own') return no>0||nd>0;
   return true;
 }
 const visible=()=>ROWS.filter(match);
+
+/* ---------- 👆 ลากนิ้วเลือกคำจากวลี ----------
+   หัวใจของเครื่องมือ: ไม่ต้องพิมพ์ · ลากนิ้วคลุมคำในวลี → กดตกลง → คำไปกองข้างล่าง → ลากใหม่ได้เรื่อย ๆ
+   วลีถูกซอยเป็น "คำไทย" ด้วย Intl.Segmenter ของเบราว์เซอร์ ลากแล้วจึงหนึบเข้าขอบคำเอง ไม่ต้องเล็งทีละตัวอักษร */
+const SEG = (()=>{ try{ return new Intl.Segmenter('th',{granularity:'word'}); }catch(e){ return null; } })();
+const TOK={};
+function tokensOf(r){
+  if(TOK[r.n]) return TOK[r.n];
+  let t;
+  try{ t = SEG ? [...SEG.segment(r.t)].map(x=>x.segment) : Array.from(r.t); }
+  catch(e){ t = Array.from(r.t); }
+  return TOK[r.n]=t;
+}
+const selOf=r=>state.sel[r.n];
+const selText=(r,s)=>{ if(!s) return ''; const t=tokensOf(r); return t.slice(Math.min(s[0],s[1]),Math.max(s[0],s[1])+1).join('').trim(); };
+let drag=null;
+function paintSel(r,el){
+  const s=selOf(r), lo=s?Math.min(s[0],s[1]):-1, hi=s?Math.max(s[0],s[1]):-2;
+  el.querySelectorAll('.tok').forEach(t=>{
+    const i=+t.dataset.i;
+    t.classList.toggle('on', i>=lo && i<=hi);
+  });
+  const bar=el.querySelector('.selbar'), txt=selText(r,s);
+  if(txt){ bar.hidden=false; bar.querySelector('.selword').textContent=txt; el.classList.add('selecting'); }
+  else { bar.hidden=true; el.classList.remove('selecting'); }
+}
+function setSel(r,a,b,el){ state.sel[r.n]=[a,b]; saveSoon(); paintSel(r,el); }
+function clearSel(r,el){ delete state.sel[r.n]; saveSoon(); if(el) paintSel(r,el); }
+addEventListener('pointerup',()=>{drag=null;});
+addEventListener('pointercancel',()=>{drag=null;});
 
 /* ---------- วาดแถว ---------- */
 function rowEl(r){
@@ -294,8 +359,42 @@ function rowEl(r){
   el.dataset.n=r.n;
   const head=document.createElement('div'); head.className='rowhead';
   const num=document.createElement('span'); num.className='num'; num.textContent=r.n;
-  const src=document.createElement('div'); src.className='src'; src.textContent=r.t;
+  const src=document.createElement('div'); src.className='src';
+  tokensOf(r).forEach((s,i)=>{
+    const sp=document.createElement('span');
+    sp.className='tok'+(/^\s+$/.test(s)?' ws':''); sp.dataset.i=i; sp.textContent=s;
+    src.append(sp);
+  });
+  src.addEventListener('pointerdown',ev=>{
+    const t=ev.target.closest('.tok'); if(!t) return;
+    const i=+t.dataset.i;
+    drag={n:r.n, a:i};
+    setSel(r,i,i,el);
+  });
+  src.addEventListener('pointermove',ev=>{
+    if(!drag || drag.n!==r.n) return;
+    const under=document.elementFromPoint(ev.clientX,ev.clientY);
+    const t=under && under.closest ? under.closest('.tok') : null;
+    if(!t || !src.contains(t)) return;
+    ev.preventDefault();
+    setSel(r,drag.a,+t.dataset.i,el);
+  });
   head.append(num,src); el.append(head);
+
+  // แถบยืนยันคำที่ลากไว้
+  const bar=document.createElement('div'); bar.className='selbar'; bar.hidden=true;
+  const pv=document.createElement('span'); pv.className='selword';
+  const ok=document.createElement('button'); ok.type='button'; ok.className='okbtn'; ok.textContent='✓ ตกลง';
+  const no2=document.createElement('button'); no2.type='button'; no2.className='nobtn'; no2.textContent='ยกเลิก';
+  ok.addEventListener('click',()=>{
+    const txt=selText(r,selOf(r)); if(!txt) return;
+    const own=el.querySelector('.own');
+    const added=addOwn(r,[txt],el,own);
+    clearSel(r,el);
+    toast(added? 'เก็บ “'+txt+'” แล้ว' : 'คำนี้เก็บไว้แล้ว');
+  });
+  no2.addEventListener('click',()=>clearSel(r,el));
+  bar.append(pv,ok,no2); el.append(bar);
 
   if(r.words.length){
     const chips=document.createElement('div'); chips.className='chips';
@@ -312,22 +411,100 @@ function rowEl(r){
 
   const own=document.createElement('div'); own.className='own';
   no.forEach(w=>own.append(ownChip(r,w,el)));
+
+  // ช่องพิมพ์ = ตัวสำรอง ซ่อนไว้ก่อน (เปิดเองเมื่อมีข้อความค้าง)
   const inp=document.createElement('input'); inp.type='text';
-  inp.placeholder=r.words.length?'สกัดเอง แล้วกด Enter':'สกัดคำจากวลีนี้ แล้วกด Enter';
-  inp.setAttribute('aria-label','สกัดคำเองจากวลีบรรทัดที่ '+r.n);
+  inp.className='owninp';
+  inp.placeholder='พิมพ์คำ คั่นหลายคำด้วย ,';
+  inp.setAttribute('aria-label','พิมพ์คำเองจากวลีบรรทัดที่ '+r.n);
+  inp.autocomplete='off'; inp.autocapitalize='off'; inp.spellcheck=false;
+  inp.enterKeyHint='done';
+  inp.value=draftOf(r);                       // 🛟 คืนข้อความที่พิมพ์ค้างไว้
+  const addrow=document.createElement('div'); addrow.className='addrow';
+  addrow.hidden=!draftOf(r);
+  const add=document.createElement('button');
+  add.type='button'; add.className='addbtn'; add.textContent='＋ เพิ่ม';
+  add.setAttribute('aria-label','เพิ่มคำที่พิมพ์ในวลีบรรทัดที่ '+r.n);
+  // พิมพ์ปุ๊บเก็บปั๊บ · เจอ , หรือขึ้นบรรทัดใหม่ = ตัดเป็นคำทันที
+  inp.addEventListener('input',()=>{
+    if(/[,\n]/.test(inp.value)) commitInput(r,inp,el,own,true);
+    else setDraft(r.n,inp.value);
+  });
   inp.addEventListener('keydown',ev=>{
     if(ev.key!=='Enter') return;
-    ev.preventDefault();
-    const v=inp.value.trim(); if(!v) return;
-    const arr=state.own[r.n]||(state.own[r.n]=[]);
-    if(arr.includes(v)){ inp.value=''; toast('คำนี้เพิ่มไว้แล้ว'); return; }
-    arr.push(v); save(); refreshCounts();
-    own.insertBefore(ownChip(r,v,el),inp);
-    el.classList.add('picked'); inp.value='';
+    ev.preventDefault(); commitInput(r,inp,el,own,false);
   });
-  own.append(inp); el.append(own);
-  if(r.words.length===0 && no.length===0) el.classList.add('plain');
+  inp.addEventListener('blur',()=>commitInput(r,inp,el,own,false));
+  add.addEventListener('click',()=>{ commitInput(r,inp,el,own,false); inp.focus(); });
+  const kb=document.createElement('button');
+  kb.type='button'; kb.className='kbbtn'; kb.textContent='⌨ พิมพ์เอง';
+  kb.hidden=!addrow.hidden;
+  kb.addEventListener('click',()=>{ addrow.hidden=false; kb.hidden=true; inp.focus(); });
+  addrow.append(inp,add); own.append(kb,addrow); el.append(own);
+  if(r.words.length===0 && no.length===0 && !draftOf(r)) el.classList.add('plain');
+  if(selOf(r)) paintSel(r,el);                // 🛟 คืนคำที่ลากค้างไว้
   return el;
+}
+
+/* ---------- 🛟 ระบบกันข้อความหาย ----------
+   บทเรียน 25 ก.ค. 2569: เดิมต้องกด Enter เท่านั้นถึงจะเก็บคำ และตอนวาดรายการใหม่
+   (กดแสดงเพิ่ม / ค้นหา / เปลี่ยนตัวกรอง) โค้ดล้าง DOM ทิ้งทั้งหมด = ข้อความที่พิมพ์ค้าง
+   ในช่องหายเกลี้ยงเป็นร้อยคำ · ตอนนี้ทุกตัวอักษรถูกเก็บลงเครื่องทันทีที่พิมพ์
+   และก่อนวาดใหม่/ปิดหน้า/ส่งออก จะกวาดเก็บทุกช่องให้กลายเป็นคำก่อนเสมอ */
+const draftOf=r=>(state.draft[r.n]||'');
+function setDraft(n,v){
+  v=(v||'').replace(/\s+$/,'');
+  if(v) state.draft[n]=v; else delete state.draft[n];
+  saveSoon();
+}
+function addOwn(r,words,el,own){
+  const arr=state.own[r.n]||(state.own[r.n]=[]);
+  const anchor=own? own.querySelector('.addrow') : null;   // ชิปใหม่แทรกก่อนแถวช่องพิมพ์เสมอ
+  let added=0;
+  words.forEach(w=>{
+    w=String(w).trim();
+    if(!w || arr.includes(w)) return;
+    arr.push(w); added++;
+    if(own) own.insertBefore(ownChip(r,w,el),anchor);
+  });
+  if(!arr.length) delete state.own[r.n];
+  if(added){ if(el) el.classList.remove('plain'), el.classList.add('picked'); save(); refreshCounts(); }
+  return added;
+}
+// keepTail = true ตอนกำลังพิมพ์ (เก็บท่อนหลัง , ไว้ในช่องต่อ) · false = เก็บทั้งหมด
+function commitInput(r,inp,el,own,keepTail){
+  const parts=inp.value.split(/[,\n]/);
+  const tail=keepTail? parts.pop() : '';
+  const added=addOwn(r,parts,el,own);
+  inp.value=keepTail? tail.replace(/^\s+/,'') : '';
+  setDraft(r.n,inp.value);
+  return added;
+}
+function commitAll(){
+  let added=0;
+  listEl.querySelectorAll('.row').forEach(el=>{
+    const inp=el.querySelector('.owninp');
+    if(!inp || !inp.value.trim()) return;
+    const r=BYN[+el.dataset.n]; if(!r) return;
+    added+=commitInput(r,inp,el,el.querySelector('.own'),false);
+  });
+  if(added) save();
+  return added;
+}
+// คำที่ลากค้างไว้แต่ยังไม่ได้กดตกลง — เก็บให้ตอนส่งออก จะได้ไม่มีอะไรตกหล่น
+function commitPending(){
+  let added=0;
+  Object.keys(state.sel).forEach(n=>{
+    const r=BYN[n]; if(!r) return;
+    const txt=selText(r,state.sel[n]);
+    if(!txt) { delete state.sel[n]; return; }
+    const el=listEl.querySelector('.row[data-n="'+n+'"]');
+    added+=addOwn(r,[txt],el,el?el.querySelector('.own'):null);
+    delete state.sel[n];
+    if(el) paintSel(r,el);
+  });
+  if(added) save();
+  return added;
 }
 function ownChip(r,w,el){
   const s=document.createElement('span');
@@ -355,6 +532,7 @@ function toggle(r,w,btn,el){
 }
 
 function render(reset){
+  commitAll();                 // 🛟 กวาดเก็บทุกช่องก่อนล้าง DOM — ห้ามลบบรรทัดนี้เด็ดขาด
   if(reset) shown=PAGE;
   const vis=visible();
   listEl.textContent='';
@@ -404,12 +582,20 @@ $('#b-all').addEventListener('click',()=>{
   });
 });
 $('#b-clr').addEventListener('click',()=>{
+  commitAll();
   const p=countPick(), o=countOwn();
   if(!p&&!o){toast('ยังไม่ได้เลือกคำใด'); return;}
   ask('ล้างที่เลือกทั้งหมด','จะล้างคำที่เลือกไว้ '+p.toLocaleString('th-TH')+' คำ และคำที่สกัดเอง '+o.toLocaleString('th-TH')+' คำ การกระทำนี้ย้อนกลับไม่ได้','ล้างทั้งหมด',()=>{
-    state={pick:{},own:{}}; save(); refreshCounts(); render(true); toast('ล้างเรียบร้อย');
+    state={pick:{},own:{},draft:{},sel:{}}; save(); refreshCounts(); render(true); toast('ล้างเรียบร้อย');
   });
 });
+
+/* 🛟 ปิดหน้า / สลับแอป / มือถือพักหน้าจอ = กวาดเก็บทุกช่องแล้วบันทึกทันที
+   เขียนทับเฉพาะตอนแท็บนี้มีของค้างจริง (กันแท็บที่ไม่ได้แตะอะไรเลยไปทับของแท็บอื่น) */
+const flush=()=>{ const n=commitAll(); if(n||saveT){ clearTimeout(saveT); saveT=0; save(); } };
+addEventListener('pagehide',flush);
+addEventListener('beforeunload',flush);
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) flush(); });
 
 /* ---------- ส่งออก ---------- */
 function result(){
@@ -431,6 +617,7 @@ function textOut(rows){
 }
 const outDlg=$('#dlg-out');
 $('#b-export').addEventListener('click',()=>{
+  commitAll(); commitPending();   // 🛟 ทั้งคำที่พิมพ์ค้าง และคำที่ลากค้างไว้ ต้องติดไปด้วย
   const rows=result();
   if(!rows.length){toast('ยังไม่ได้เลือกคำใด'); return;}
   const own=rows.filter(r=>r['ที่มา']==='สกัดเอง').length;
