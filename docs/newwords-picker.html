@@ -140,6 +140,17 @@ select{flex:0 1 auto; max-width:100%}
 .okbtn:hover{background:var(--mark-deep); border-color:var(--mark-deep)}
 .nobtn{font:inherit; font-size:14px; cursor:pointer; flex:none; border-radius:9px; padding:8px 13px;
   background:transparent; border:1px solid var(--line); color:var(--ink-soft)}
+.notebtn{font:inherit; font-size:12.5px; cursor:pointer; background:none; border:none; color:var(--muted);
+  padding:2px 0; text-decoration:underline; text-underline-offset:3px; align-self:flex-start}
+.notebtn:hover{color:var(--gold)}
+.notewrap{display:flex; gap:7px; align-items:flex-start}
+.noteicon{font-size:15px; padding-top:8px; flex:none; opacity:.8}
+.notewrap[hidden]{display:none}
+.noteinp{font:inherit; font-size:14.5px; line-height:1.6; width:100%; resize:vertical; min-height:52px;
+  color:var(--ink); background:color-mix(in srgb,var(--gold) 8%,var(--paper)); border:1px dashed var(--gold);
+  border-radius:9px; padding:8px 11px}
+.noteinp::placeholder{color:var(--muted); font-size:13.5px}
+.row.hasnote{border-color:color-mix(in srgb,var(--gold) 45%,transparent)}
 .kbbtn{font:inherit; font-size:12.5px; cursor:pointer; background:none; border:none; color:var(--muted);
   padding:2px 0; text-decoration:underline; text-underline-offset:3px}
 .kbbtn:hover{color:var(--mark-deep)}
@@ -212,6 +223,7 @@ textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12
       <li>ลากแล้วหนึบเข้าขอบคำไทยให้เอง ไม่ต้องเล็งทีละตัวอักษร · ระหว่างลาก <b>คำที่เลือกจะเด้งขึ้นเหนือนิ้ว</b> จะได้ไม่ถูกนิ้วบัง</li>
       <li>ลากบนตัววลี หน้าจอจะไม่เลื่อนตาม · <b>เลื่อนหน้าจอให้ปัดตรงที่ว่างนอกวลี</b> (ช่องไฟระหว่างการ์ด หรือแถวคำข้างล่าง)</li>
       <li>คำที่ระบบเสนอไว้แล้ว (กรอบสี่เหลี่ยม) แตะเพื่อเลือก แตะซ้ำเพื่อยกเลิก</li>
+      <li>อยากอธิบายว่าทำไมถึงแยกคำแบบนี้ กดปุ่ม <b>📝 หมายเหตุ</b> ใต้วลี แล้วพิมพ์ได้เลย · หมายเหตุจะติดไปกับทุกคำของวลีนั้นตอนส่งออก</li>
       <li>เลือกเสร็จกดปุ่ม <b>ส่งออก</b> แล้วคัดลอกผลไปวางในแชท</li>
     </ol>
   </section>
@@ -286,9 +298,9 @@ const CATFULL={1:"หมวด ๑ บรรยากาศ แสง สี แ
 13:"หมวด ๑๓ ภาษา ถ้อยคำ และการประพันธ์",14:"หมวด ๑๔ กฎหมาย คดีความ และสิทธิ"};
 const KEY='wordbank:extract-pick:v1', PAGE=150;
 const $=s=>document.querySelector(s), listEl=$('#list');
-let state={pick:{},own:{},draft:{},sel:{}};
+let state={pick:{},own:{},draft:{},sel:{},note:{}};
 try{const r=localStorage.getItem(KEY); if(r) state=Object.assign(state,JSON.parse(r));}catch(e){}
-if(!state.pick) state.pick={}; if(!state.own) state.own={}; if(!state.draft) state.draft={}; if(!state.sel) state.sel={};
+if(!state.pick) state.pick={}; if(!state.own) state.own={}; if(!state.draft) state.draft={}; if(!state.sel) state.sel={}; if(!state.note) state.note={};
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}};
 let saveT=0; const saveSoon=()=>{clearTimeout(saveT); saveT=setTimeout(()=>{saveT=0; save();},140);};
 
@@ -324,9 +336,9 @@ function match(r){
   if(catFilter && !r.words.some(w=>String(w.cat)===catFilter)) return false;
   if(query){
     const q=query;
-    if(!(r.t.includes(q) || r.words.some(w=>w.w.includes(q)) || ownOf(r).some(w=>w.includes(q)))) return false;
+    if(!(r.t.includes(q) || r.words.some(w=>w.w.includes(q)) || ownOf(r).some(w=>w.includes(q)) || noteOf(r).includes(q))) return false;
   }
-  const np=pickedOf(r).length, no=ownOf(r).length, nd=(state.draft[r.n]||state.sel[r.n])?1:0;
+  const np=pickedOf(r).length, no=ownOf(r).length, nd=(state.draft[r.n]||state.sel[r.n]||state.note[r.n])?1:0;
   if(filter==='prop') return r.words.length>0;
   if(filter==='picked') return np>0||no>0||nd>0;
   if(filter==='todo') return r.words.length>0 && np===0 && no===0 && nd===0;
@@ -471,6 +483,21 @@ function rowEl(r){
   kb.hidden=!addrow.hidden;
   kb.addEventListener('click',()=>{ addrow.hidden=false; kb.hidden=true; inp.focus(); });
   addrow.append(inp,add); own.append(kb,addrow); el.append(own);
+
+  // 📝 ช่องหมายเหตุ — ไว้เขียนบอกว่าทำไมแยกคำแบบนี้ (เจ้าของสั่ง 25 ก.ค.)
+  const noteWrap=document.createElement('div'); noteWrap.className='notewrap';
+  const nt=document.createElement('textarea'); nt.className='noteinp'; nt.rows=2;
+  nt.placeholder='หมายเหตุ เช่น ทำไมถึงแยกคำนี้';
+  nt.setAttribute('aria-label','หมายเหตุของวลีบรรทัดที่ '+r.n);
+  nt.value=noteOf(r);
+  nt.addEventListener('input',()=>{ setNote(r.n,nt.value); el.classList.toggle('hasnote',!!nt.value.trim()); });
+  const nb=document.createElement('button');
+  nb.type='button'; nb.className='notebtn'; nb.textContent='📝 หมายเหตุ';
+  noteWrap.hidden=!noteOf(r); nb.hidden=!noteWrap.hidden;
+  nb.addEventListener('click',()=>{ noteWrap.hidden=false; nb.hidden=true; nt.focus(); });
+  const nicon=document.createElement('span'); nicon.className='noteicon'; nicon.textContent='📝';
+  noteWrap.append(nicon,nt); el.append(nb,noteWrap);
+  if(noteOf(r)) el.classList.add('hasnote');
   if(r.words.length===0 && no.length===0 && !draftOf(r)) el.classList.add('plain');
   if(selOf(r)) paintSel(r,el);                // 🛟 คืนคำที่ลากค้างไว้
   return el;
@@ -482,6 +509,12 @@ function rowEl(r){
    ในช่องหายเกลี้ยงเป็นร้อยคำ · ตอนนี้ทุกตัวอักษรถูกเก็บลงเครื่องทันทีที่พิมพ์
    และก่อนวาดใหม่/ปิดหน้า/ส่งออก จะกวาดเก็บทุกช่องให้กลายเป็นคำก่อนเสมอ */
 const draftOf=r=>(state.draft[r.n]||'');
+const noteOf=r=>(state.note[r.n]||'');
+function setNote(n,v){                      // เก็บทุกตัวอักษรทันที ไม่ต้องกดอะไร
+  v=(v||'');
+  if(v.trim()) state.note[n]=v; else delete state.note[n];
+  saveSoon();
+}
 function setDraft(n,v){
   v=(v||'').replace(/\s+$/,'');
   if(v) state.draft[n]=v; else delete state.draft[n];
@@ -615,8 +648,9 @@ $('#b-clr').addEventListener('click',()=>{
   commitAll();
   const p=countPick(), o=countOwn();
   if(!p&&!o){toast('ยังไม่ได้เลือกคำใด'); return;}
-  ask('ล้างที่เลือกทั้งหมด','จะล้างคำที่เลือกไว้ '+p.toLocaleString('th-TH')+' คำ และคำที่สกัดเอง '+o.toLocaleString('th-TH')+' คำ การกระทำนี้ย้อนกลับไม่ได้','ล้างทั้งหมด',()=>{
-    state={pick:{},own:{},draft:{},sel:{}}; save(); refreshCounts(); render(true); toast('ล้างเรียบร้อย');
+  const nn=Object.keys(state.note).length;
+  ask('ล้างที่เลือกทั้งหมด','จะล้างคำที่เลือกไว้ '+p.toLocaleString('th-TH')+' คำ · คำที่สกัดเอง '+o.toLocaleString('th-TH')+' คำ'+(nn?' · หมายเหตุ '+nn.toLocaleString('th-TH')+' อัน':'')+' การกระทำนี้ย้อนกลับไม่ได้','ล้างทั้งหมด',()=>{
+    state={pick:{},own:{},draft:{},sel:{},note:{}}; save(); refreshCounts(); render(true); toast('ล้างเรียบร้อย');
   });
 });
 
@@ -633,16 +667,16 @@ function result(){
   ROWS.forEach(r=>{
     pickedOf(r).forEach(w=>{
       const meta=r.words.find(x=>x.w===w);
-      out.push({คำ:w, วลีตั้งต้น:r.t, บรรทัด:r.n, หมวดที่เสนอ:meta?CATFULL[meta.cat]:'', ที่มา:'ระบบเสนอ'});
+      out.push({คำ:w, วลีตั้งต้น:r.t, บรรทัด:r.n, หมวดที่เสนอ:meta?CATFULL[meta.cat]:'', ที่มา:'ระบบเสนอ', หมายเหตุ:noteOf(r)});
     });
-    ownOf(r).forEach(w=>out.push({คำ:w, วลีตั้งต้น:r.t, บรรทัด:r.n, หมวดที่เสนอ:'', ที่มา:'สกัดเอง'}));
+    ownOf(r).forEach(w=>out.push({คำ:w, วลีตั้งต้น:r.t, บรรทัด:r.n, หมวดที่เสนอ:'', ที่มา:'สกัดเอง', หมายเหตุ:noteOf(r)}));
   });
   return out;
 }
 function textOut(rows){
   const L=['# คำที่เลือกเก็บเข้าคลัง — '+rows.length.toLocaleString('th-TH')+' คำ',
-           '# รูปแบบ: คำ <แท็บ> วลีตั้งต้น <แท็บ> บรรทัด <แท็บ> ที่มา',''];
-  rows.forEach(r=>L.push([r['คำ'],r['วลีตั้งต้น'],r['บรรทัด'],r['ที่มา']].join('\t')));
+           '# รูปแบบ: คำ <แท็บ> วลีตั้งต้น <แท็บ> บรรทัด <แท็บ> ที่มา <แท็บ> หมายเหตุ',''];
+  rows.forEach(r=>L.push([r['คำ'],r['วลีตั้งต้น'],r['บรรทัด'],r['ที่มา'],(r['หมายเหตุ']||'').replace(/[\t\n]+/g,' ')].join('\t')));
   return L.join('\n');
 }
 const outDlg=$('#dlg-out');
@@ -651,7 +685,8 @@ $('#b-export').addEventListener('click',()=>{
   const rows=result();
   if(!rows.length){toast('ยังไม่ได้เลือกคำใด'); return;}
   const own=rows.filter(r=>r['ที่มา']==='สกัดเอง').length;
-  $('#out-sum').textContent='รวม '+rows.length.toLocaleString('th-TH')+' คำ (ระบบเสนอ '+(rows.length-own).toLocaleString('th-TH')+' · สกัดเอง '+own.toLocaleString('th-TH')+') · ทุกคำมีวลีตั้งต้นกำกับไว้แล้ว';
+  const noteN=rows.filter(r=>r['หมายเหตุ']).length;
+  $('#out-sum').textContent='รวม '+rows.length.toLocaleString('th-TH')+' คำ (ระบบเสนอ '+(rows.length-own).toLocaleString('th-TH')+' · สกัดเอง '+own.toLocaleString('th-TH')+') · ทุกคำมีวลีตั้งต้นกำกับไว้แล้ว'+(noteN? ' · มีหมายเหตุ '+noteN.toLocaleString('th-TH')+' คำ':'');
   $('#out').value=textOut(rows);
   outDlg.showModal();
 });
