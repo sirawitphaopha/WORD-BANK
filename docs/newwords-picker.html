@@ -101,18 +101,30 @@ select{flex:0 1 auto; max-width:100%}
 .tools{margin-top:11px}
 
 /* ---------- แถวคำ ---------- */
-.list{margin-top:14px; display:flex; flex-direction:column; gap:9px}
-.row{background:var(--card); border:1px solid var(--line-soft); border-radius:12px; padding:11px 13px 12px;
-  display:flex; flex-direction:column; gap:8px}
+.list{margin-top:14px; display:flex; flex-direction:column; gap:13px}
+.row{background:var(--card); border:1px solid var(--line-soft); border-radius:12px; padding:13px 13px 14px;
+  display:flex; flex-direction:column; gap:9px}
 .row.has{border-color:var(--line)}
 .row.picked{border-color:color-mix(in srgb,var(--mark) 45%,transparent); background:color-mix(in srgb,var(--mark-soft) 30%,var(--card))}
 .rowhead{display:flex; gap:9px; align-items:baseline}
 .num{font-family:Georgia,serif; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; flex:none; padding-top:2px}
-.src{font-size:18px; line-height:2; color:var(--ink); word-break:break-word;
-  user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; touch-action:pan-y; cursor:text}
+/* วลีหลักตัวใหญ่ "เท่านิ้ว" — ลากง่าย ไม่ต้องเล็ง
+   touch-action:none = ลากบนวลีแล้วหน้าจอห้ามเลื่อนตาม (เจ้าของสั่ง) · เลื่อนหน้าจอใช้พื้นที่นอกวลี */
+.src{font-size:clamp(22px,6vw,27px); line-height:1.95; font-weight:600; color:var(--ink); word-break:break-word;
+  user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; touch-action:none; cursor:text}
 .row.plain .src{color:var(--ink-soft)}
-.tok{border-radius:5px; padding:3px 0}
-.tok.on{background:var(--mark); color:var(--paper); box-shadow:0 0 0 2px var(--mark)}
+.tok{border-radius:6px; padding:4px 0}
+.tok.on{background:var(--mark); color:var(--paper); box-shadow:0 0 0 3px var(--mark)}
+
+/* ป๊อปโชว์คำที่กำลังลาก — เด้งเหนือนิ้ว เพราะนิ้วบังตัวหนังสือ */
+.magnify{position:fixed; z-index:70; transform:translate(-50%,-100%); padding:11px 18px; border-radius:14px;
+  background:var(--mark-deep); color:var(--paper); font-size:clamp(21px,5.6vw,26px); font-weight:700;
+  max-width:88vw; text-align:center; word-break:break-word; pointer-events:none;
+  box-shadow:0 8px 26px rgba(40,28,12,.4); border:2px solid var(--paper)}
+.magnify[hidden]{display:none}
+.magnify::after{content:""; position:absolute; left:50%; margin-left:-9px; bottom:-9px;
+  border:9px solid transparent; border-top-color:var(--mark-deep); border-bottom:0}
+.magnify em{font-style:normal; opacity:.65; font-size:14px; display:block; font-weight:600}
 .row.selecting{border-color:var(--mark); background:color-mix(in srgb,var(--mark-soft) 22%,var(--card))}
 
 /* แถบยืนยันคำที่ลากไว้ */
@@ -175,8 +187,8 @@ textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12
 @media (max-width:520px){
   .wrap{padding:16px 12px 120px}
   .bar{margin:14px -12px 0; padding:10px 12px}
-  .chips,.own,.warnnote{padding-left:0}
-  .src{font-size:16px}
+  .chips,.own,.warnnote,.selbar{padding-left:0}
+  .rowhead{gap:7px}
 }
 </style>
 
@@ -197,7 +209,8 @@ textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12
     <b>วิธีใช้</b>
     <ol>
       <li><b>ลากนิ้วคลุมคำในวลี</b> → กด <b>ตกลง</b> → คำจะไปกองอยู่ข้างล่าง → <b>ลากใหม่ได้เรื่อย ๆ</b> วลีเดียวแบ่งได้ไม่จำกัด (ไม่ต้องพิมพ์)</li>
-      <li>ลากแล้วมันหนึบเข้าขอบคำไทยให้เอง ไม่ต้องเล็งทีละตัวอักษร · เลื่อนหน้าจอขึ้นลงได้ตามปกติ</li>
+      <li>ลากแล้วหนึบเข้าขอบคำไทยให้เอง ไม่ต้องเล็งทีละตัวอักษร · ระหว่างลาก <b>คำที่เลือกจะเด้งขึ้นเหนือนิ้ว</b> จะได้ไม่ถูกนิ้วบัง</li>
+      <li>ลากบนตัววลี หน้าจอจะไม่เลื่อนตาม · <b>เลื่อนหน้าจอให้ปัดตรงที่ว่างนอกวลี</b> (ช่องไฟระหว่างการ์ด หรือแถวคำข้างล่าง)</li>
       <li>คำที่ระบบเสนอไว้แล้ว (กรอบสี่เหลี่ยม) แตะเพื่อเลือก แตะซ้ำเพื่อยกเลิก</li>
       <li>เลือกเสร็จกดปุ่ม <b>ส่งออก</b> แล้วคัดลอกผลไปวางในแชท</li>
     </ol>
@@ -259,6 +272,7 @@ textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12
   </div>
 </form></dialog>
 
+<div class="magnify" id="mag" hidden aria-hidden="true"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -348,8 +362,22 @@ function paintSel(r,el){
 }
 function setSel(r,a,b,el){ state.sel[r.n]=[a,b]; saveSoon(); paintSel(r,el); }
 function clearSel(r,el){ delete state.sel[r.n]; saveSoon(); if(el) paintSel(r,el); }
-addEventListener('pointerup',()=>{drag=null;});
-addEventListener('pointercancel',()=>{drag=null;});
+
+/* ป๊อปเหนือนิ้ว — ตอนลาก นิ้วบังตัวหนังสือ ต้องเด้งคำที่กำลังเลือกให้เห็น */
+function showMag(txt,x,y){
+  const m=$('#mag');
+  if(!txt){ m.hidden=true; return; }
+  m.textContent=txt;
+  m.hidden=false;
+  const pad=10, w=m.offsetWidth, h=m.offsetHeight;
+  let left=Math.min(Math.max(x, w/2+pad), innerWidth-w/2-pad);
+  let top=y-26;
+  if(top-h<pad){ top=y+h+34; m.style.transform='translate(-50%,-100%)'; }  // ชนขอบบน → ย้ายลงใต้นิ้ว
+  m.style.left=left+'px'; m.style.top=top+'px';
+}
+const hideMag=()=>{ $('#mag').hidden=true; };
+addEventListener('pointerup',()=>{drag=null; hideMag();});
+addEventListener('pointercancel',()=>{drag=null; hideMag();});
 
 /* ---------- วาดแถว ---------- */
 function rowEl(r){
@@ -367,17 +395,19 @@ function rowEl(r){
   });
   src.addEventListener('pointerdown',ev=>{
     const t=ev.target.closest('.tok'); if(!t) return;
+    ev.preventDefault();                       // กันหน้าจอเลื่อนตามนิ้วระหว่างลาก
     const i=+t.dataset.i;
     drag={n:r.n, a:i};
     setSel(r,i,i,el);
+    showMag(selText(r,selOf(r)),ev.clientX,ev.clientY);
   });
   src.addEventListener('pointermove',ev=>{
     if(!drag || drag.n!==r.n) return;
+    ev.preventDefault();
     const under=document.elementFromPoint(ev.clientX,ev.clientY);
     const t=under && under.closest ? under.closest('.tok') : null;
-    if(!t || !src.contains(t)) return;
-    ev.preventDefault();
-    setSel(r,drag.a,+t.dataset.i,el);
+    if(t && src.contains(t)) setSel(r,drag.a,+t.dataset.i,el);
+    showMag(selText(r,selOf(r)),ev.clientX,ev.clientY);
   });
   head.append(num,src); el.append(head);
 
@@ -459,7 +489,7 @@ function setDraft(n,v){
 }
 function addOwn(r,words,el,own){
   const arr=state.own[r.n]||(state.own[r.n]=[]);
-  const anchor=own? own.querySelector('.addrow') : null;   // ชิปใหม่แทรกก่อนแถวช่องพิมพ์เสมอ
+  const anchor=own? (own.querySelector('.kbbtn')||own.querySelector('.addrow')) : null;  // ชิปใหม่ต่อท้ายชิปเดิม อยู่ก่อนปุ่มพิมพ์เอง
   let added=0;
   words.forEach(w=>{
     w=String(w).trim();
