@@ -82,6 +82,14 @@ h1,h2{font-family:Georgia,"Noto Serif Thai","Times New Roman",serif; text-wrap:b
 .barrow{display:flex; gap:7px; align-items:center; flex-wrap:wrap}
 .count{font-size:13px; color:var(--ink-soft); font-variant-numeric:tabular-nums; margin-right:auto}
 .count b{color:var(--mark-deep); font-size:15px} .count i{font-style:normal; color:var(--own-deep); font-weight:700}
+.savest{font-size:12px; font-variant-numeric:tabular-nums; padding:3px 9px; border-radius:999px;
+  border:1px solid rgba(150,132,96,.34); color:var(--ink-soft); white-space:nowrap}
+.savest.ok{color:#2f6d43; border-color:rgba(47,109,67,.42); background:rgba(47,109,67,.09)}
+.savest.bad{color:#9c2b23; border-color:rgba(156,43,35,.5); background:rgba(156,43,35,.12); font-weight:700}
+.warnbox{margin:14px 0 0; padding:12px 14px; border-radius:12px; line-height:1.7; font-size:14px;
+  background:rgba(156,43,35,.1); border:1px solid rgba(156,43,35,.45); color:#7d241d}
+.warnbox[hidden]{display:none}
+.warnbox b{color:#9c2b23}
 input[type=search],input[type=text],select{font:inherit; font-size:14.5px; color:var(--ink); background:var(--card);
   border:1px solid var(--line); border-radius:9px; padding:7px 11px; min-width:0}
 input[type=search]{flex:1 1 190px}
@@ -253,9 +261,12 @@ textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12
     <br>ก่อนกดแสดงเพิ่ม ค้นหา เปลี่ยนตัวกรอง หรือส่งออก ระบบจะเก็บของที่ค้างอยู่ให้เองก่อนเสมอ
   </section>
 
+  <div class="warnbox" id="storewarn" hidden></div>
+
   <div class="bar">
     <div class="barrow">
       <span class="count">เลือกแล้ว <b id="c-pick">0</b> คำ · สกัดเอง <i id="c-own">0</i> คำ</span>
+      <span class="savest" id="savest"></span>
       <button class="btn primary" id="b-export" type="button">ส่งออก</button>
     </div>
     <div class="barrow">
@@ -318,9 +329,47 @@ const CATFULL={1:"หมวด ๑ บรรยากาศ แสง สี แ
 const KEY='wordbank:extract-pick:v1', PAGE=150;
 const $=s=>document.querySelector(s), listEl=$('#list');
 let state={pick:{},own:{},draft:{},sel:{},note:{},wnote:{}};
-try{const r=localStorage.getItem(KEY); if(r) state=Object.assign(state,JSON.parse(r));}catch(e){}
+
+/* ---------- ที่เก็บข้อมูล 3 ชั้น (กันงานหายตอนรีเฟรช) ----------
+   🔴 บทเรียน 25 ก.ค. 2569: พี่กันทำงานไปหลายร้อยคำ พอรีเฟรชแล้วหายหมด
+   ต้นเหตุ: เดิมพึ่ง localStorage อย่างเดียว แล้วครอบด้วย try/catch เงียบ ๆ
+   ถ้าเบราว์เซอร์ห้ามใช้ (โหมดส่วนตัว / หน้าเว็บถูกฝังในกรอบแบบจำกัดสิทธิ์ / พื้นที่เต็ม)
+   มันจะ "ล้มเหลวแบบไม่มีใครรู้" — หน้าจอยังทำงานปกติเพราะข้อมูลอยู่ในหน่วยความจำ
+   แต่พอรีเฟรชก็หายเกลี้ยง
+
+   แก้ 3 ชั้น:
+   1. ทดสอบจริงว่าเขียนแล้วอ่านกลับได้ไหม (ไม่ใช่แค่ไม่ throw)
+   2. ถ้าใช้ไม่ได้ ตกไปที่ sessionStorage แล้วตกไปที่ window.name
+      (window.name อยู่รอดข้ามการรีเฟรชในแท็บเดิม ใช้ได้แม้ที่เก็บอื่นถูกห้าม)
+   3. โชว์สถานะให้เห็นด้วยตา + เตือนตัวแดงถ้าเก็บถาวรไม่ได้ จะได้กดส่งออกเก็บเอง */
+const STORE=(()=>{
+  const probe=(o)=>{ try{ const k=KEY+':probe'; o.setItem(k,'1'); const ok=o.getItem(k)==='1'; o.removeItem(k); return ok; }catch(e){ return false; } };
+  try{ if(typeof localStorage!=='undefined' && probe(localStorage))
+    return {tier:'local', label:'เครื่องนี้', durable:true,
+            get:()=>localStorage.getItem(KEY), set:v=>localStorage.setItem(KEY,v)}; }catch(e){}
+  try{ if(typeof sessionStorage!=='undefined' && probe(sessionStorage))
+    return {tier:'session', label:'ชั่วคราว (แท็บนี้)', durable:false,
+            get:()=>sessionStorage.getItem(KEY), set:v=>sessionStorage.setItem(KEY,v)}; }catch(e){}
+  return {tier:'winname', label:'ชั่วคราว (แท็บนี้)', durable:false,
+          get:()=>{ try{ const m=/^__wbpick__(\{[\s\S]*\})$/.exec(window.name||''); return m?m[1]:null; }catch(e){ return null; } },
+          set:v=>{ window.name='__wbpick__'+v; }};
+})();
+
+try{const r=STORE.get(); if(r) state=Object.assign(state,JSON.parse(r));}catch(e){}
 if(!state.pick) state.pick={}; if(!state.own) state.own={}; if(!state.draft) state.draft={}; if(!state.sel) state.sel={}; if(!state.note) state.note={}; if(!state.wnote) state.wnote={};
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}};
+
+let saveOK=null, savedAt='';
+const save=()=>{
+  try{
+    const v=JSON.stringify(state);
+    STORE.set(v);
+    let back=null; try{ back=STORE.get(); }catch(e){}
+    saveOK = (back===v);            // ✅ อ่านกลับมาเทียบจริง ไม่ใช่แค่ไม่พัง
+  }catch(e){ saveOK=false; }
+  const d=new Date();
+  savedAt=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);
+  paintSaveState();
+};
 let saveT=0; const saveSoon=()=>{clearTimeout(saveT); saveT=setTimeout(()=>{saveT=0; save();},140);};
 
 /* ---------- เตรียมข้อมูลแถว ---------- */
@@ -859,6 +908,33 @@ $('#b-dl').addEventListener('click',async()=>{
   t.removeAttribute('readonly'); t.focus(); t.select(); t.setAttribute('readonly','');
   toast('เครื่องนี้บันทึกไฟล์ไม่ได้ — เลือกข้อความให้แล้ว กดปุ่มคัดลอกได้เลย');
 });
+
+/* ---------- โชว์สถานะการบันทึกให้เห็นด้วยตา ----------
+   เดิมบันทึกแบบเงียบ ๆ พังก็ไม่มีใครรู้จนกระทั่งรีเฟรชแล้วหาย
+   ตอนนี้มีป้ายบอกทุกครั้งว่าบันทึกสำเร็จหรือไม่ + เวลาล่าสุด */
+function paintSaveState(){
+  const el=$('#savest'); if(!el) return;
+  const n=countPicked();
+  if(saveOK===false){
+    el.className='savest bad';
+    el.textContent='⚠ บันทึกไม่ได้ — กดส่งออกเก็บไว้ทันที';
+  }else if(saveOK===true){
+    el.className='savest '+(STORE.durable?'ok':'bad');
+    el.textContent=(STORE.durable?'💾 บันทึกแล้ว ':'⚠ เก็บชั่วคราว ')+savedAt+' · '+n.toLocaleString('th-TH')+' คำ';
+  }else{
+    el.className='savest'; el.textContent='';
+  }
+}
+function countPicked(){ try{ return countPick()+countOwn(); }catch(e){ return 0; } }
+(function storeBanner(){
+  const w=$('#storewarn'); if(!w) return;
+  if(STORE.durable){ w.hidden=true; return; }
+  w.hidden=false;
+  w.innerHTML='<b>⚠ เครื่องนี้เก็บข้อมูลถาวรไม่ได้</b><br>'
+    +'เบราว์เซอร์ไม่อนุญาตให้หน้านี้เก็บข้อมูลไว้ในเครื่อง (อาจเป็นโหมดส่วนตัว หรือหน้านี้ถูกเปิดอยู่ในกรอบที่ถูกจำกัดสิทธิ์)<br>'
+    +'ตอนนี้เก็บไว้ได้แค่ <b>ในแท็บนี้เท่านั้น</b> — รีเฟรชได้ แต่ถ้าปิดแท็บจะหาย<br>'
+    +'👉 <b>กดปุ่ม “ส่งออก” เก็บไว้บ่อย ๆ</b> หรือเปิดไฟล์นี้จากเครื่องตัวเองโดยตรงแทน';
+})();
 
 let tt; function toast(m){
   const t=$('#toast'); t.textContent=m; t.classList.add('on');
