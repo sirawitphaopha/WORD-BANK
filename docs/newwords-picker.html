@@ -242,6 +242,7 @@ textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12
       <li>ลากบนตัววลี หน้าจอจะไม่เลื่อนตาม · <b>เลื่อนหน้าจอให้ปัดตรงที่ว่างนอกวลี</b> (ช่องไฟระหว่างการ์ด หรือแถวคำข้างล่าง)</li>
       <li>คำที่ระบบเสนอไว้แล้ว (กรอบสี่เหลี่ยม) แตะเพื่อเลือก แตะซ้ำเพื่อยกเลิก</li>
       <li>อยากอธิบายว่าทำไมถึงแยกคำแบบนี้ กดปุ่ม <b>📝 หมายเหตุ</b> ใต้วลี แล้วพิมพ์ได้เลย · หมายเหตุจะติดไปกับทุกคำของวลีนั้นตอนส่งออก</li>
+      <li>ช่องค้นหา <b>พิมพ์เลขบรรทัดได้</b> เช่นพิมพ์ <b>670</b> แล้วกระโดดไปที่วลีบรรทัดนั้นเลย ไม่ต้องไล่หา</li>
       <li>เลือกเสร็จกดปุ่ม <b>ส่งออก</b> แล้วคัดลอกผลไปวางในแชท</li>
     </ol>
   </section>
@@ -258,7 +259,7 @@ textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12
       <button class="btn primary" id="b-export" type="button">ส่งออก</button>
     </div>
     <div class="barrow">
-      <input type="search" id="q" placeholder="ค้นหาคำหรือวลี" aria-label="ค้นหาคำหรือวลี">
+      <input type="search" id="q" placeholder="ค้นหาคำ วลี หรือพิมพ์เลขบรรทัด" aria-label="ค้นหาคำ วลี หรือเลขบรรทัด">
       <select id="fcat" aria-label="กรองตามหมวด"><option value="">ทุกหมวด</option></select>
     </div>
     <div class="barrow segs" id="filters" role="group" aria-label="ตัวกรอง">
@@ -354,6 +355,8 @@ function match(r){
   if(catFilter && !r.words.some(w=>String(w.cat)===catFilter)) return false;
   if(query){
     const q=query;
+    // พิมพ์ตัวเลขล้วน = ค้นด้วยเลขบรรทัด (กระโดดไปตรงข้อนั้นเลย ไม่ต้องไล่หาเป็นพัน)
+    if(/^\d+$/.test(q)) return String(r.n)===q;
     if(!(r.t.includes(q) || r.words.some(w=>w.w.includes(q)) || ownOf(r).some(w=>w.includes(q)) || noteOf(r).includes(q) || ownOf(r).some(w=>wnoteOf(r.n,w).includes(q)))) return false;
   }
   const np=pickedOf(r).length, no=ownOf(r).length, nd=(state.draft[r.n]||state.sel[r.n]||state.note[r.n]||ownOf(r).some(w=>wnoteOf(r.n,w)))?1:0;
@@ -789,9 +792,10 @@ function result(){
    เช็คแล้วว่าคำและวลีในคลังไม่มีตัว / ปนอยู่เลย จึงใช้เป็นตัวคั่นได้ปลอดภัย */
 function textOut(rows){
   const L=['# คำที่เลือกเก็บเข้าคลัง — '+rows.length.toLocaleString('th-TH')+' คำ',
-           '# รูปแบบ: ลำดับ. คำ / วลีตั้งต้น / บรรทัด / ที่มา / หมายเหตุ',''];
+           '# รูปแบบ: ข้อที่. คำ / วลีตั้งต้น / บรรทัดที่ / ที่มา / หมายเหตุ',
+           '# เลขบรรทัด = พิมพ์เลขนี้ในช่องค้นหาของเครื่องมือ แล้วมันจะกระโดดไปที่วลีนั้นให้เลย',''];
   rows.forEach((r,i)=>{
-    const cells=[r['คำ'], r['วลีตั้งต้น'], 'บรรทัด '+r['บรรทัด'], r['ที่มา']];
+    const cells=[r['คำ'], r['วลีตั้งต้น'], 'บรรทัดที่ '+r['บรรทัด'], r['ที่มา']];
     const note=(r['หมายเหตุ']||'').replace(/[\t\n\/]+/g,' ').trim();
     if(note) cells.push('หมายเหตุ: '+note);
     L.push((i+1)+'. '+cells.join(' / '));
@@ -829,14 +833,31 @@ $('#b-dl').addEventListener('click',async()=>{
       toast('ส่งไฟล์แล้ว'); return;
     }
   }catch(e){ if(e && e.name==='AbortError') return; }
+  // ทาง 2: ดาวน์โหลดตรง ๆ (จอคอมได้ · มือถือในกรอบ artifact มักถูกบล็อก)
+  let ok=false;
   try{
     const a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain;charset=utf-8'}));
     a.download=name; a.style.display='none';
     document.body.appendChild(a); a.click();
     setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000);
-    toast('บันทึกไฟล์แล้ว');
-  }catch(e){ toast('เครื่องนี้บันทึกไฟล์ไม่ได้ ใช้ปุ่มคัดลอกแทน'); }
+    ok=true; toast('บันทึกไฟล์แล้ว');
+  }catch(e){}
+  if(ok) return;
+  // ทาง 3: เปิดเป็นหน้าใหม่ ให้กดบันทึก/แชร์จากเบราว์เซอร์เอง
+  try{
+    const w=window.open('','_blank');
+    if(w){
+      w.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+        '<title>'+name+'</title><pre style="white-space:pre-wrap;word-break:break-word;font-size:15px;padding:14px">'+
+        txt.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</pre>');
+      w.document.close(); toast('เปิดหน้าใหม่แล้ว กดแชร์หรือบันทึกจากเบราว์เซอร์ได้เลย'); return;
+    }
+  }catch(e){}
+  // ทาง 4: เลือกข้อความให้พร้อม กดค้างแล้วคัดลอกได้เลย
+  const t=$('#out');
+  t.removeAttribute('readonly'); t.focus(); t.select(); t.setAttribute('readonly','');
+  toast('เครื่องนี้บันทึกไฟล์ไม่ได้ — เลือกข้อความให้แล้ว กดปุ่มคัดลอกได้เลย');
 });
 
 let tt; function toast(m){
