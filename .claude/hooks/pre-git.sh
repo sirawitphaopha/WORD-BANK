@@ -1,14 +1,47 @@
 #!/usr/bin/env bash
-# PreToolUse hook (กรองด้วย if: Bash(git *)) — เด้งเช็คลิสต์ก่อน git commit / git push
-# เตือนตรงจังหวะอันตราย: push ก่อนได้อนุญาต / ลืมอัปเดตเอกสาร / commit สั้นเกิน / ไม่ขึ้น main
+# PreToolUse hook (กรองด้วย if: Bash(git *))
+#
+# 🛑 git push = "บล็อกจริง" ไม่ใช่แค่เตือน (พี่กันสั่ง 25 ก.ค. 2569)
+#    เหตุผล: กฎเรื่องห้าม push เขียนไว้ทุกที่แล้ว (CLAUDE.md · SKILL · hook เตือน) แต่แคลร์ยังพลาด
+#    พลาดจริง 25 ก.ค.: พี่กันพิมพ์ "พุช" ครั้งเดียว แคลร์ push ไป 7 ครั้ง (เกินมา 6 ครั้ง)
+#    เพราะตีความว่าคำสั่งครั้งเดียว = ใบผ่านถาวร
+#    → เขียนกฎเพิ่มอีกกี่บรรทัดก็ไม่ช่วย ต้องบล็อกด้วยเครื่องแทน
+#
+# 🔑 กลไก: ต้องมีตั๋ว .git/PUSH-OK ถึงจะ push ได้ · ตั๋วใช้ได้ครั้งเดียวแล้วถูกลบทันที
+#    สร้างตั๋วด้วย: bash .claude/hooks/allow-push.sh
+#    สร้างได้เฉพาะตอนพี่กันพิมพ์คำว่า "push / พุช" ตรง ๆ เท่านั้น
+#    (1 ครั้งที่พี่กันสั่ง = push ได้ 1 ครั้ง · จะ push อีกต้องให้พี่กันสั่งใหม่)
 set -euo pipefail
 cmd="$(cat | jq -r '.tool_input.command // ""' 2>/dev/null || echo '')"
 note=""
-case "$cmd" in
-  *"git push"*)
-    note="🛑 ก่อน git push เช็คให้ครบ: (1) พี่กันพิมพ์คำว่า \"push/พุช\" ตรง ๆ จริงหรือยัง — ถ้ายัง อย่า push (\"เอาขึ้น main\" ไม่นับ) (2) เอาขึ้น main เท่านั้น ทีเดียวจบ ห้าม push ค้างบน branch อื่น (3) อัปเดต CLAUDE.md + README ก่อน commit แล้วหรือยัง (4) push เสร็จต้องเขียน docs/SESSION-วันที่ แล้ว push ตามทันที" ;;
-  *"git commit"*)
-    note="📝 ก่อน git commit เช็ค: (1) อัปเดต CLAUDE.md + README ให้ตรงงานก่อนแล้วหรือยัง (แก้เอกสารก่อน commit เสมอ) (2) commit message ละเอียดที่สุด file-by-file + เหตุผลรายฟังก์ชัน ไทย+อังกฤษ ไม่จำกัดคำ (ยาว A4 ได้) มีหัวข้อ เป้าหมาย/ที่ทำ/ไฟล์/ต่อไป จบด้วย Co-Authored-By:" ;;
+
+# 🔍 แยกให้ออกว่า "สั่ง push จริง" กับ "ข้อความที่พูดถึง push เฉย ๆ"
+#    เทียบเฉพาะคำสั่งที่อยู่ต้นบรรทัด/หลังตัวคั่น ( ; && || | ( ) เท่านั้น
+#    🔴 เคยพลาด 25 ก.ค. 2569: ใช้ case *"git push"* แล้วมันไปโดน commit message
+#       ที่มีคำว่า "git push" อยู่ในเนื้อความ → commit ถูกบล็อกทั้งที่ไม่ได้ push
+is_push=0; is_commit=0
+[[ "$cmd" =~ (^|[\;\&\|\(]|&&|\|\|)[[:space:]]*git([[:space:]]+-[^[:space:]]+)*[[:space:]]+push([[:space:]]|$) ]] && is_push=1
+[[ "$cmd" =~ (^|[\;\&\|\(]|&&|\|\|)[[:space:]]*git([[:space:]]+-[^[:space:]]+)*[[:space:]]+commit([[:space:]]|$) ]] && is_commit=1
+
+case "1" in
+  "$is_push")
+    root="$(git rev-parse --git-dir 2>/dev/null || echo .git)"
+    ticket="$root/PUSH-OK"
+    if [ -f "$ticket" ]; then
+      rm -f "$ticket"
+      note="✅ ใช้ตั๋ว push ไปแล้ว 1 ใบ (ตั๋วถูกลบแล้ว) · ถ้าจะ push อีกครั้ง ต้องรอพี่กันพิมพ์ \"push/พุช\" ใหม่ แล้วสร้างตั๋วใหม่ · เช็คด้วย: (1) ขึ้น main เท่านั้น (2) อัปเดต CLAUDE.md + README แล้ว (3) push เสร็จเขียน docs/SESSION-วันที่ แล้ว push ตาม (ต้องขอตั๋วใบใหม่)"
+    else
+      jq -n '{
+        hookSpecificOutput:{
+          hookEventName:"PreToolUse",
+          permissionDecision:"deny",
+          permissionDecisionReason:"🛑 ห้าม push — ไม่มีตั๋วอนุญาต\n\nกฎ: push ได้เฉพาะตอนพี่กันพิมพ์คำว่า \"push / พุช\" ตรง ๆ เท่านั้น\n\"เอาขึ้น main / ทำต่อ / ทำเลย\" หรือคำสั่ง push ของรอบก่อน ไม่นับ\n\nถ้าพี่กันเพิ่งสั่ง push ในข้อความล่าสุดจริง ๆ ให้รัน:\n  bash .claude/hooks/allow-push.sh\nแล้วค่อย git push (ตั๋วใช้ได้ครั้งเดียว)\n\nถ้าพี่กันยังไม่ได้สั่ง = หยุด commit ไว้เฉย ๆ แล้วบอกพี่กันว่ารออนุญาต"
+        }
+      }'
+      exit 0
+    fi ;;
+  "$is_commit")
+    note="📝 ก่อน git commit เช็ค: (1) อัปเดต CLAUDE.md + README ให้ตรงงานก่อนแล้วหรือยัง (แก้เอกสารก่อน commit เสมอ) (2) commit message ละเอียดที่สุด file-by-file + เหตุผลรายฟังก์ชัน ไทย+อังกฤษ ไม่จำกัดคำ (ยาว A4 ได้) มีหัวข้อ เป้าหมาย/ที่ทำ/ไฟล์/ต่อไป จบด้วย Co-Authored-By: · 🛑 commit ไม่ใช่ push — commit เสร็จห้าม push ต่อเอง" ;;
   *)
     exit 0 ;;
 esac
