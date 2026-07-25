@@ -135,7 +135,14 @@ select{flex:0 1 auto; max-width:100%}
 .selbar[hidden]{display:none}                    /* ต้องมี ไม่งั้น display:flex ทับ hidden แล้วแถบโผล่ทุกแถว */
 .addrow{display:flex; gap:7px; align-items:center; flex:1 1 100%}
 .addrow[hidden]{display:none}
-.selword{font-size:16.5px; font-weight:700; color:var(--mark-deep); flex:1 1 120px; word-break:break-word}
+.selword{font-size:16.5px; font-weight:700; color:var(--mark-deep); flex:1 1 100%; word-break:break-word}
+.fine{display:flex; align-items:center; gap:4px; flex-wrap:wrap; flex:1 1 100%}
+.selact{display:flex; gap:8px; flex:1 1 100%; justify-content:flex-end}
+.finelbl{font-size:11.5px; color:var(--muted); margin-left:6px}
+.finelbl:first-child{margin-left:0}
+.finebtn{font:inherit; font-size:14px; line-height:1; cursor:pointer; width:38px; height:34px; flex:none;
+  background:var(--card); border:1px solid var(--line); border-radius:8px; color:var(--mark-deep)}
+.finebtn:hover{border-color:var(--mark); background:var(--paper2)}
 .selword::before{content:"👆 "}
 .okbtn{font:inherit; font-size:15px; font-weight:700; cursor:pointer; flex:none; border-radius:9px; padding:8px 18px;
   background:var(--mark); border:1px solid var(--mark); color:var(--paper); transition:.13s}
@@ -362,16 +369,43 @@ const visible=()=>ROWS.filter(match);
    หัวใจของเครื่องมือ: ไม่ต้องพิมพ์ · ลากนิ้วคลุมคำในวลี → กดตกลง → คำไปกองข้างล่าง → ลากใหม่ได้เรื่อย ๆ
    วลีถูกซอยเป็น "คำไทย" ด้วย Intl.Segmenter ของเบราว์เซอร์ ลากแล้วจึงหนึบเข้าขอบคำเอง ไม่ต้องเล็งทีละตัวอักษร */
 const SEG = (()=>{ try{ return new Intl.Segmenter('th',{granularity:'word'}); }catch(e){ return null; } })();
+const GSEG = (()=>{ try{ return new Intl.Segmenter('th',{granularity:'grapheme'}); }catch(e){ return null; } })();
 const TOK={};
+/* 🔤 หน่วยการเลือก = "ตัวอักษร" (grapheme) ไม่ใช่ "คำ"
+   เหตุผล: ตัวซอยคำของเบราว์เซอร์ซอยพลาดได้ (ปล่อยก๊าก → ก๊า|ก · หลุบตาลง|อย่าง)
+   ถ้าล็อกให้เลือกได้แค่ตามขอบคำ = เลือกคำที่ต้องการไม่ได้เลย ต้องไปพิมพ์เอง
+   ตอนนี้: "ลาก" ยังหนึบเข้าขอบคำให้เหมือนเดิม (ลากง่าย) แต่ปรับหัว-ท้ายทีละตัวอักษรได้ */
 function tokensOf(r){
   if(TOK[r.n]) return TOK[r.n];
-  let t;
-  try{ t = SEG ? [...SEG.segment(r.t)].map(x=>x.segment) : Array.from(r.t); }
-  catch(e){ t = Array.from(r.t); }
-  return TOK[r.n]=t;
+  let g,words;
+  try{ g = GSEG ? [...GSEG.segment(r.t)].map(x=>x.segment) : Array.from(r.t); }
+  catch(e){ g = Array.from(r.t); }
+  // ตำแหน่งเริ่มต้นของแต่ละ "คำ" เทียบเป็นลำดับตัวอักษร ไว้ให้การลากหนึบเข้าขอบคำ
+  const startAt=new Array(g.length).fill(0), endAt=new Array(g.length).fill(g.length-1);
+  let bounds=[0];
+  try{
+    if(SEG){
+      // แผนที่ "ตำแหน่งอักขระดิบ → ลำดับตัวอักษร(grapheme)" ต้องใช้แบบนี้
+      // เพราะขอบคำอาจตกกลางกลุ่มสระ/วรรณยุกต์ ใช้ indexOf ตรง ๆ จะพลาดเป็น -1
+      const unitToG=new Array(r.t.length).fill(0);
+      let ci=0;
+      g.forEach((ch,gi)=>{ for(let k=0;k<ch.length;k++) unitToG[ci+k]=gi; ci+=ch.length; });
+      [...SEG.segment(r.t)].forEach(seg=>{
+        const gi=unitToG[seg.index];
+        if(gi>0) bounds.push(gi);
+      });
+    }
+  }catch(e){}
+  bounds.push(g.length);
+  bounds=[...new Set(bounds)].sort((a,b)=>a-b);
+  for(let k=0;k<bounds.length-1;k++){
+    for(let i=bounds[k]; i<bounds[k+1]; i++){ startAt[i]=bounds[k]; endAt[i]=bounds[k+1]-1; }
+  }
+  return TOK[r.n]={g,startAt,endAt};
 }
+const graphsOf=r=>tokensOf(r).g;
 const selOf=r=>state.sel[r.n];
-const selText=(r,s)=>{ if(!s) return ''; const t=tokensOf(r); return t.slice(Math.min(s[0],s[1]),Math.max(s[0],s[1])+1).join('').trim(); };
+const selText=(r,s)=>{ if(!s) return ''; const g=graphsOf(r); return g.slice(Math.min(s[0],s[1]),Math.max(s[0],s[1])+1).join('').trim(); };
 let drag=null;
 function paintSel(r,el){
   const s=selOf(r), lo=s?Math.min(s[0],s[1]):-1, hi=s?Math.max(s[0],s[1]):-2;
@@ -394,7 +428,7 @@ function showMag(r,el){
   if(!s){ m.hidden=true; return; }
   const lo=Math.min(s[0],s[1]), hi=Math.max(s[0],s[1]);
   m.textContent='';
-  tokensOf(r).forEach((t,i)=>{
+  graphsOf(r).forEach((t,i)=>{
     const sp=document.createElement('span');
     sp.className=(i>=lo&&i<=hi)?'mon':'mdim';
     sp.textContent=t;
@@ -425,7 +459,7 @@ function rowEl(r){
   const head=document.createElement('div'); head.className='rowhead';
   const num=document.createElement('span'); num.className='num'; num.textContent=r.n;
   const src=document.createElement('div'); src.className='src';
-  tokensOf(r).forEach((s,i)=>{
+  graphsOf(r).forEach((s,i)=>{
     const sp=document.createElement('span');
     sp.className='tok'+(/^\s+$/.test(s)?' ws':''); sp.dataset.i=i; sp.textContent=s;
     src.append(sp);
@@ -433,9 +467,9 @@ function rowEl(r){
   src.addEventListener('pointerdown',ev=>{
     const t=ev.target.closest('.tok'); if(!t) return;
     ev.preventDefault();                       // กันหน้าจอเลื่อนตามนิ้วระหว่างลาก
-    const i=+t.dataset.i;
+    const i=+t.dataset.i, T=tokensOf(r);
     drag={n:r.n, a:i};
-    setSel(r,i,i,el);
+    setSel(r,T.startAt[i],T.endAt[i],el);      // แตะครั้งแรก = ได้ทั้งคำ (ลากง่าย)
     showMag(r,el);
   });
   src.addEventListener('pointermove',ev=>{
@@ -443,7 +477,11 @@ function rowEl(r){
     ev.preventDefault();
     const under=document.elementFromPoint(ev.clientX,ev.clientY);
     const t=under && under.closest ? under.closest('.tok') : null;
-    if(t && src.contains(t)) setSel(r,drag.a,+t.dataset.i,el);
+    if(t && src.contains(t)){
+      const T=tokensOf(r), j=+t.dataset.i;
+      const lo=Math.min(drag.a,j), hi=Math.max(drag.a,j);
+      setSel(r,T.startAt[lo],T.endAt[hi],el);  // ลากคลุมกี่คำก็ได้ทั้งคำ
+    }
     showMag(r,el);
   });
   head.append(num,src); el.append(head);
@@ -453,6 +491,26 @@ function rowEl(r){
   const pv=document.createElement('span'); pv.className='selword';
   const ok=document.createElement('button'); ok.type='button'; ok.className='okbtn'; ok.textContent='✓ ตกลง';
   const no2=document.createElement('button'); no2.type='button'; no2.className='nobtn'; no2.textContent='ยกเลิก';
+  /* ✂ ปรับทีละตัวอักษร — ตัวซอยคำพลาดได้ ต้องมีทางแก้ในตัว ไม่ใช่ให้ไปพิมพ์เอง */
+  const fine=document.createElement('div'); fine.className='fine';
+  function nudge(which,step){
+    const s=selOf(r); if(!s) return;
+    const g=graphsOf(r); let lo=Math.min(s[0],s[1]), hi=Math.max(s[0],s[1]);
+    if(which==='head') lo=Math.max(0,Math.min(hi,lo+step));
+    else               hi=Math.min(g.length-1,Math.max(lo,hi+step));
+    setSel(r,lo,hi,el);
+  }
+  [['head',-1,'◀','ขยายหัวคำไปทางซ้าย 1 ตัวอักษร'],
+   ['head', 1,'▶','หดหัวคำเข้ามา 1 ตัวอักษร'],
+   ['tail',-1,'◀','หดท้ายคำเข้ามา 1 ตัวอักษร'],
+   ['tail', 1,'▶','ขยายท้ายคำไปทางขวา 1 ตัวอักษร']].forEach(([w,st,gl,lab],k)=>{
+    if(k===0){ const t=document.createElement('span'); t.className='finelbl'; t.textContent='หัวคำ'; fine.append(t); }
+    if(k===2){ const t=document.createElement('span'); t.className='finelbl'; t.textContent='ท้ายคำ'; fine.append(t); }
+    const b=document.createElement('button'); b.type='button'; b.className='finebtn'; b.textContent=gl;
+    b.title=lab; b.setAttribute('aria-label',lab);
+    b.addEventListener('click',()=>nudge(w,st));
+    fine.append(b);
+  });
   ok.addEventListener('click',()=>{
     const txt=selText(r,selOf(r)); if(!txt) return;
     const own=el.querySelector('.own');
@@ -461,7 +519,9 @@ function rowEl(r){
     toast(added? 'เก็บ “'+txt+'” แล้ว' : 'คำนี้เก็บไว้แล้ว');
   });
   no2.addEventListener('click',()=>clearSel(r,el));
-  bar.append(pv,no2,ok); el.append(bar);   // ยกเลิกซ้าย · ตกลงขวาสุด (เจ้าของสั่ง)
+  const act=document.createElement('div'); act.className='selact';
+  act.append(no2,ok);                              // ยกเลิกซ้าย · ตกลงขวาสุด (เจ้าของสั่ง)
+  bar.append(pv,fine,act); el.append(bar);
 
   if(r.words.length){
     const chips=document.createElement('div'); chips.className='chips';
