@@ -164,18 +164,19 @@ select{flex:0 1 auto; max-width:100%}
 .chip[aria-pressed=true]::after{content:"✓"; margin-left:6px; font-size:12px}
 .chip .cat{display:none; font-size:10.5px; opacity:.72; margin-left:5px; font-family:Georgia,serif}
 body.showcat .chip .cat{display:inline}
-.own{display:flex; flex-wrap:wrap; gap:6px; padding-left:30px; align-items:center}
+/* คำที่เก็บได้เรียงลงมาแถวละคำ (เจ้าของสั่ง) — ช่องพิมพ์เอง/หมายเหตุวลี ต่อท้ายข้างล่าง */
+.own{display:flex; flex-direction:column; gap:7px; padding-left:30px; align-items:stretch}
+.wrow{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.wnoteinp{flex:1 1 130px; min-width:0; font:inherit; font-size:14.5px; color:var(--ink);
+  background:color-mix(in srgb,var(--gold) 8%,var(--paper)); border:1px dashed var(--gold);
+  border-radius:9px; padding:8px 11px}
+.wnoteinp::placeholder{color:var(--muted); font-size:13.5px}
+.kbbtn,.notebtn{align-self:flex-start}
 .own .ochip{font-size:15px; border-radius:8px; background:var(--own); color:var(--paper); font-weight:600;
-  display:inline-flex; align-items:center; overflow:hidden}
+  display:inline-flex; align-items:center; overflow:hidden; flex:none; max-width:100%}
 .own .ochip.noted{box-shadow:0 0 0 2px var(--gold)}
-.own .ochip.noted .ochiplbl::after{content:" 📝"; font-size:11px}
-.ochiplbl{font:inherit; font-weight:inherit; color:inherit; background:none; border:none; cursor:pointer; padding:5px 4px 5px 11px}
-.ochipx{font:inherit; background:none; border:none; color:inherit; cursor:pointer; padding:5px 10px 5px 6px; font-size:14px; opacity:.85; line-height:1}
-.wnotewrap{display:flex; gap:6px; align-items:flex-start; flex:1 1 100%; margin:-1px 0 3px 18px}
-.wnotewrap .noteicon{color:var(--own-deep); font-size:16px; padding-top:7px}
-.wnotewrap .noteinp{border-color:var(--own); border-style:dashed;
-  background:color-mix(in srgb,var(--own) 9%,var(--paper))}
-.wnotewrap[hidden]{display:none}
+.ochiplbl{padding:7px 4px 7px 12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.ochipx{font:inherit; background:none; border:none; color:inherit; cursor:pointer; padding:7px 11px 7px 6px; font-size:14px; opacity:.85; line-height:1; flex:none}
 .own .ochip.warn{background:var(--gold)}
 .own input{flex:1 1 150px; font-size:15px; padding:7px 11px; border-style:dashed}
 .own input::placeholder{color:var(--muted); font-size:13.5px}
@@ -460,7 +461,7 @@ function rowEl(r){
     toast(added? 'เก็บ “'+txt+'” แล้ว' : 'คำนี้เก็บไว้แล้ว');
   });
   no2.addEventListener('click',()=>clearSel(r,el));
-  bar.append(pv,ok,no2); el.append(bar);
+  bar.append(pv,no2,ok); el.append(bar);   // ยกเลิกซ้าย · ตกลงขวาสุด (เจ้าของสั่ง)
 
   if(r.words.length){
     const chips=document.createElement('div'); chips.className='chips';
@@ -476,7 +477,7 @@ function rowEl(r){
   }
 
   const own=document.createElement('div'); own.className='own';
-  no.forEach(w=>{ const c=ownChip(r,w,el); own.append(c,c._noteBox); });
+  no.forEach(w=>own.append(ownChip(r,w,el)));
 
   // ช่องพิมพ์ = ตัวสำรอง ซ่อนไว้ก่อน (เปิดเองเมื่อมีข้อความค้าง)
   const inp=document.createElement('input'); inp.type='text';
@@ -559,7 +560,7 @@ function addOwn(r,words,el,own){
     w=String(w).trim();
     if(!w || arr.includes(w)) return;
     arr.push(w); added++;
-    if(own){ const c=ownChip(r,w,el); own.insertBefore(c,anchor); own.insertBefore(c._noteBox,anchor); }
+    if(own) own.insertBefore(ownChip(r,w,el),anchor);
   });
   if(!arr.length) delete state.own[r.n];
   if(added){ if(el) el.classList.remove('plain'), el.classList.add('picked'); save(); refreshCounts(); }
@@ -600,38 +601,38 @@ function commitPending(){
   if(added) save();
   return added;
 }
+/* คำที่เก็บได้ = 1 คำ 1 แถว · ช่องหมายเหตุอยู่ข้าง ๆ คำนั้นเลย (เจ้าของสั่ง)
+   [คำสกัด1][หมายเหตุ]
+   [คำสกัด2][หมายเหตุ]
+   พิมพ์เอง                                                        */
 function ownChip(r,w,el){
+  const row=document.createElement('div'); row.className='wrow';
   const s=document.createElement('span');
   s.className='ochip'+(r.t.includes(w)?'':' warn')+(wnoteOf(r.n,w)?' noted':'');
-  s.title=r.t.includes(w)?'สกัดเอง · แตะที่คำเพื่อเขียนหมายเหตุ':'คำนี้ไม่ตรงกับข้อความในวลีตั้งต้น';
-  const lbl=document.createElement('button'); lbl.type='button'; lbl.className='ochiplbl';
-  lbl.textContent=w; lbl.setAttribute('aria-label','เขียนหมายเหตุให้คำ '+w);
+  s.title=r.t.includes(w)?'คำที่เก็บไว้':'คำนี้ไม่ตรงกับข้อความในวลีตั้งต้น';
+  const lbl=document.createElement('span'); lbl.className='ochiplbl'; lbl.textContent=w;
   const x=document.createElement('button'); x.type='button'; x.className='ochipx'; x.textContent='✕';
   x.setAttribute('aria-label','เอาคำ '+w+' ออก');
+  s.append(lbl,x);
 
-  // 📝 ช่องหมายเหตุของคำนี้ — แทรกต่อท้ายคำทันที (เจ้าของสั่ง "ให้หมายเหตุอยู่หลังคำที่เลือกเพิ่ม")
-  const box=document.createElement('div'); box.className='wnotewrap';
-  const ic=document.createElement('span'); ic.className='noteicon'; ic.textContent='↳';
-  const ta=document.createElement('textarea'); ta.className='noteinp'; ta.rows=2;
-  ta.placeholder='หมายเหตุของคำ “'+w+'” เช่น ทำไมถึงแยกคำนี้';
-  ta.setAttribute('aria-label','หมายเหตุของคำ '+w);
-  ta.value=wnoteOf(r.n,w);
-  ta.addEventListener('input',()=>{
-    setWnote(r.n,w,ta.value);
-    s.classList.toggle('noted',!!ta.value.trim());
+  const nt=document.createElement('input'); nt.type='text'; nt.className='wnoteinp';
+  nt.placeholder='หมายเหตุ';
+  nt.setAttribute('aria-label','หมายเหตุของคำ '+w);
+  nt.autocomplete='off'; nt.value=wnoteOf(r.n,w);
+  nt.addEventListener('input',()=>{
+    setWnote(r.n,w,nt.value);
+    s.classList.toggle('noted',!!nt.value.trim());
     el.classList.toggle('hasnote',!!(noteOf(r)||ownOf(r).some(z=>wnoteOf(r.n,z))));
   });
-  box.append(ic,ta); box.hidden=!wnoteOf(r.n,w);
-  lbl.addEventListener('click',()=>{ box.hidden=!box.hidden; if(!box.hidden) ta.focus(); });
   x.addEventListener('click',()=>{
     const arr=state.own[r.n]||[]; const i=arr.indexOf(w); if(i>=0) arr.splice(i,1);
     if(!arr.length) delete state.own[r.n];
     delete state.wnote[wkey(r.n,w)];
-    save(); refreshCounts(); s.remove(); box.remove();
+    save(); refreshCounts(); row.remove();
     if(!pickedOf(r).length && !ownOf(r).length) el.classList.remove('picked');
     el.classList.toggle('hasnote',!!(noteOf(r)||ownOf(r).some(z=>wnoteOf(r.n,z))));
   });
-  s.append(lbl,x); s._noteBox=box; return s;
+  row.append(s,nt); return row;
 }
 function toggle(r,w,btn,el){
   const arr=state.pick[r.n]||(state.pick[r.n]=[]);
