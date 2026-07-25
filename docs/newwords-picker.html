@@ -117,10 +117,12 @@ select{flex:0 1 auto; max-width:100%}
 .tok.on{background:var(--mark); color:var(--paper); box-shadow:0 0 0 3px var(--mark)}
 
 /* ป๊อปโชว์คำที่กำลังลาก — เด้งเหนือนิ้ว เพราะนิ้วบังตัวหนังสือ */
-.magnify{position:fixed; z-index:70; transform:translate(-50%,-100%); padding:11px 18px; border-radius:14px;
-  background:var(--mark-deep); color:var(--paper); font-size:clamp(21px,5.6vw,26px); font-weight:700;
-  max-width:88vw; text-align:center; word-break:break-word; pointer-events:none;
+.magnify{position:fixed; z-index:70; transform:translate(-50%,-100%); padding:12px 16px; border-radius:14px;
+  background:var(--mark-deep); color:var(--paper); font-size:clamp(20px,5.2vw,25px); font-weight:700;
+  max-width:92vw; text-align:center; word-break:break-word; line-height:1.75; pointer-events:none;
   box-shadow:0 8px 26px rgba(40,28,12,.4); border:2px solid var(--paper)}
+.magnify .mdim{opacity:.34; font-weight:600}
+.magnify .mon{opacity:1; background:color-mix(in srgb,var(--paper) 24%,transparent); border-radius:5px; padding:2px 0}
 .magnify[hidden]{display:none}
 .magnify::after{content:""; position:absolute; left:50%; margin-left:-9px; bottom:-9px;
   border:9px solid transparent; border-top-color:var(--mark-deep); border-bottom:0}
@@ -375,17 +377,31 @@ function paintSel(r,el){
 function setSel(r,a,b,el){ state.sel[r.n]=[a,b]; saveSoon(); paintSel(r,el); }
 function clearSel(r,el){ delete state.sel[r.n]; saveSoon(); if(el) paintSel(r,el); }
 
-/* ป๊อปเหนือนิ้ว — ตอนลาก นิ้วบังตัวหนังสือ ต้องเด้งคำที่กำลังเลือกให้เห็น */
-function showMag(txt,x,y){
-  const m=$('#mag');
-  if(!txt){ m.hidden=true; return; }
-  m.textContent=txt;
+/* ป๊อปกระจกเงาของวลี — ตอนลาก นิ้วบังตัวหนังสือ ป๊อปนี้จึงโชว์ "วลีเต็ม" ซ้ำให้ดู
+   ส่วนที่ลากอยู่ = สว่างเน้น · ส่วนที่ยังไม่ลาก = จาง → เห็นได้ทันทีว่าลากมาถึงไหนแล้ว
+   🚫 ป๊อป "ไม่ตามนิ้ว" — เกาะอยู่เหนือตัววลีนั้นตลอด (เจ้าของสั่ง: ป๊อปตามนิ้วแล้วหลุดไปคนละที่) */
+function showMag(r,el){
+  const m=$('#mag'), s=selOf(r);
+  if(!s){ m.hidden=true; return; }
+  const lo=Math.min(s[0],s[1]), hi=Math.max(s[0],s[1]);
+  m.textContent='';
+  tokensOf(r).forEach((t,i)=>{
+    const sp=document.createElement('span');
+    sp.className=(i>=lo&&i<=hi)?'mon':'mdim';
+    sp.textContent=t;
+    m.append(sp);
+  });
   m.hidden=false;
-  const pad=10, w=m.offsetWidth, h=m.offsetHeight;
-  let left=Math.min(Math.max(x, w/2+pad), innerWidth-w/2-pad);
-  let top=y-26;
-  if(top-h<pad){ top=y+h+34; m.style.transform='translate(-50%,-100%)'; }  // ชนขอบบน → ย้ายลงใต้นิ้ว
+  if(drag && drag.n===r.n && drag.mag){   // ล็อกตำแหน่งไว้ตั้งแต่จังหวะแรก ป๊อปจะได้นิ่งสนิท ไม่ขยับตามนิ้ว
+    m.style.left=drag.mag.left+'px'; m.style.top=drag.mag.top+'px'; return;
+  }
+  const src=el.querySelector('.src'); if(!src) return;
+  const b=src.getBoundingClientRect(), pad=8, w=m.offsetWidth, h=m.offsetHeight;
+  const left=Math.min(Math.max(b.left+b.width/2, w/2+pad), innerWidth-w/2-pad);
+  let top=b.top-12;                       // ลอยเหนือตัววลี
+  if(top-h<pad) top=h+pad;                // ไม่มีที่เหนือวลี → ดันไปชิดขอบบนจอ
   m.style.left=left+'px'; m.style.top=top+'px';
+  if(drag && drag.n===r.n) drag.mag={left,top};
 }
 const hideMag=()=>{ $('#mag').hidden=true; };
 addEventListener('pointerup',()=>{drag=null; hideMag();});
@@ -411,7 +427,7 @@ function rowEl(r){
     const i=+t.dataset.i;
     drag={n:r.n, a:i};
     setSel(r,i,i,el);
-    showMag(selText(r,selOf(r)),ev.clientX,ev.clientY);
+    showMag(r,el);
   });
   src.addEventListener('pointermove',ev=>{
     if(!drag || drag.n!==r.n) return;
@@ -419,7 +435,7 @@ function rowEl(r){
     const under=document.elementFromPoint(ev.clientX,ev.clientY);
     const t=under && under.closest ? under.closest('.tok') : null;
     if(t && src.contains(t)) setSel(r,drag.a,+t.dataset.i,el);
-    showMag(selText(r,selOf(r)),ev.clientX,ev.clientY);
+    showMag(r,el);
   });
   head.append(num,src); el.append(head);
 
