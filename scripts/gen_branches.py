@@ -17,11 +17,12 @@ FILES = [("docs/cat1-redesign.md",1,"c0"),
          ("docs/cat4-redesign.md",4,"c3"),
          ("docs/cat5-redesign.md",5,"c4"),
          ("docs/cat6-redesign.md",6,"c5"),
+         ("docs/cat7-loanwords-redesign.md",7,"c6"),
          ("docs/cat8-redesign.md",8,"c7"),
          ("docs/cat10-objects-redesign.md",10,"c9"),
          ("docs/cat11-status-redesign.md",11,"c10")]
-CAT  = {1:"หมวด 1",2:"หมวด 2",3:"หมวด 3",4:"หมวด 4",5:"หมวด 5",6:"หมวด 6",8:"หมวด 8",10:"หมวด 10",11:"หมวด 11"}
-HOME = {"c0":"หมวด 1","c1":"หมวด 2","c2":"หมวด 3","c3":"หมวด 4","c4":"หมวด 5",
+CAT  = {1:"หมวด 1",2:"หมวด 2",3:"หมวด 3",4:"หมวด 4",5:"หมวด 5",6:"หมวด 6",7:"หมวด 7",8:"หมวด 8",10:"หมวด 10",11:"หมวด 11"}
+HOME = {"c0":"หมวด 1","c1":"หมวด 2","c2":"หมวด 3","c3":"หมวด 4","c4":"หมวด 5","c6":"หมวด 7",
         "c5":"หมวด 6","c7":"หมวด 8","c9":"หมวด 10","c10":"หมวด 11"}
 NUM2CODE = {1:'c0',2:'c1',3:'c2',4:'c3',5:'c4',6:'c5',7:'c6',8:'c7',9:'c8',10:'c9',11:'c10'}
 GENRE = {'แฟนตาซี','ไซไฟ','อีโรติก','ทริลเลอร์','ทั่วไป','โรแมนซ์','ดราม่า','สยอง','แอ็กชัน'}
@@ -51,16 +52,24 @@ def clean_def(d):
     return re.sub(r'\s+',' ',d).strip()
 def strip_trail_marks(s):
     return re.sub(r'[\s🆕🌟🔄🚩]+$','',s).strip()
-def clean_word(tok):
+def clean_word_meaning(tok):
+    # คืน (คำ, ความหมาย) — ความหมาย = วงเล็บท้ายคำที่ "เว้นวรรค" ก่อนวงเล็บ (ตามกฎ "คำ (X)" เว้นวรรค = ความหมาย)
+    # ต่างจาก _(...)_ (หมายเหตุ/โยงกิ่ง ตัวเอียง ถูกตัดทิ้งไปแล้วก่อนหน้านี้) และ "คำ(X)" ไม่เว้นวรรค (ไฮไลต์ ไม่ใช่ความหมาย)
     t=re.sub(r'_[^_]*_','',strip_notes(tok)).replace('**','')
     for mk in MARKS: t=t.replace(mk,'')
     t=re.sub(r'\[(?:'+'|'.join(GENRE)+r')\]','',t)
-    t=re.sub(r'\s*\([^()]*\)\s*$','',t)
-    return t.strip(' ·—-\t').strip()
+    meaning=None
+    m=re.search(r'\s+\(([^()]*)\)\s*$', t)
+    if m:
+        meaning=m.group(1).strip()
+        t=t[:m.start()]
+    w=t.strip(' ·—-\t').strip()
+    return w, (meaning or None)
+def clean_word(tok): return clean_word_meaning(tok)[0]
 def is_thai(s): return any('฀'<=ch<='๿' for ch in s)
 
 categories=[]; branches=[]; moved=[]; cross=[]
-words={}; word_order=[]
+words={}; word_order=[]; word_meaning={}
 
 RE_YOY   = re.compile(r'^-\s*(?:(?:🆕|🔄)\s*)*🌿\s*\*\*(.+?)\*\*[^—]*—\s*_(.+?)_')
 RE_KHAENG= re.compile(r'^-\s*(?:(?:🆕|🔄)\s*)*🍃\s*\*\*(.+?)\*\*[^—]*—\s*_(.+?)_')
@@ -125,8 +134,9 @@ for path,no,cid in FILES:
         for raw in prot.split(' · '):
             tok=raw.replace(' ⋄ ',' · ')
             mn=re.search(r'_\(([^)]*)\)_', tok); note=mn.group(1) if mn else ''
-            w=clean_word(tok)
+            w,meaning=clean_word_meaning(tok)
             if not (w and is_thai(w) and len(w)<=60): continue
+            if w=='รอเก็บคำ': continue   # กันหลุด: ป้ายบอกกิ่งว่าง ไม่ใช่คำจริง (เผื่อไฟล์ไหนพิมพ์เป็นบรรทัดแยกแทนที่จะอยู่ใน 🗨)
             hc=home_code_from_note(note)
             if hc and hc!=cid:                       # คำโยงเข้า (บ้านหลักหมวดอื่น) → ไม่นับเป็นคำบ้านหลักหมวดนี้
                 key=(w,hc)
@@ -136,6 +146,7 @@ for path,no,cid in FILES:
             k=(cid,w)
             if k not in words: words[k]=[]; word_order.append(k)
             if ab["path"] not in words[k]: words[k].append(ab["path"])
+            if meaning and not word_meaning.get(k): word_meaning[k]=meaning   # กันความหมาย "คำ (X)" หายตอนสร้างไฟล์รวม
             # คำบ้านหลักที่ยัง 🔗 โยงออก (หมายเหตุมี "หมวด N"/"โยงหมวด N" แต่ไม่ใช่ "บ้านหลัก") → บันทึกปลายทาง
             if '🔗' in tok:
                 tg=['หมวด '+str(thai2int(x)) for x in re.findall(r'หมวด\s*([๐-๙\d]+)', note)]
@@ -183,7 +194,7 @@ data={"meta":{"source":[f for f,_,_ in FILES],"status":"draft — ยังไ�
       "note":"category_id: หมวด N = c(N-1) · หมวด10=c9 · หมวด11(สถานะ)=c10 · path คั่นชั้นด้วย ' / ' · คำโยงเข้าไม่นับเป็นคำบ้านหลัก"},
       "categories":categories,
       "branches":[{"category_id":b["category_id"],"path":b["path"],"en":b["en"],"definition":b["definition"]} for b in branches],
-      "words":[{"text":t,"category_id":c,"subpaths":words[(c,t)]} for (c,t) in word_order],
+      "words":[{"text":t,"category_id":c,"subpaths":words[(c,t)],"meaning":word_meaning.get((c,t))} for (c,t) in word_order],
       "cross_links":cross,"moved_out":moved}
 open("docs/branches-data.json","w",encoding='utf-8').write(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
 
@@ -205,11 +216,15 @@ open("docs/branches-clean.md","w",encoding='utf-8').write("\n".join(out)+"\n")
 
 # ---------- data md (อ่านทวน · มีคำ) ----------
 wbp=defaultdict(list)
+wtext={}   # (category_id,text) -> "text" หรือ "text=ความหมาย" ถ้ามี
 for w in data["words"]:
+    disp = w["text"]+"="+w["meaning"] if w.get("meaning") else w["text"]
+    wtext[(w["category_id"],w["text"])]=disp
     for sp in w["subpaths"]: wbp[(w["category_id"],sp)].append(w["text"])
 out=[f"# 🌿 ข้อมูลกิ่ง + คำ ทั้งหมด (อ่านทวน) — หมวด {CATLIST}","",
      "> ฉบับอ่านของ `branches-data.json` · มีครบทั้งกิ่ง นิยาม อังกฤษ และ**คำ** · เป็นข้อมูลดิบ (ไม่มีความเห็น/อภิปราย)",
-     "> รหัสหมวด: หมวด N = c(N-1) · หมวด10=c9 · หมวด11(สถานะ)=c10 · เป็นร่าง ยังไม่แตะเว็บ/database"]
+     "> รหัสหมวด: หมวด N = c(N-1) · หมวด10=c9 · หมวด11(สถานะ)=c10 · เป็นร่าง ยังไม่แตะเว็บ/database",
+     "> คำที่มีความหมายกำกับ (จาก \"คำ (X)\" ในไฟล์ redesign) แสดงเป็น `คำ=ความหมาย`"]
 for c in categories:
     out.append(""); out.append(f"## {CAT[c['no']]} · {c['name_th']} ({c['name_en']})"); out.append(f"_{c['definition']}_")
     for b in bycat[c["id"]]:
@@ -218,7 +233,7 @@ for c in categories:
         elif depth==1: out.append(f"- {nm} ({b['en']}) — {b['definition']}")
         else: out.append(f"  - {nm} ({b['en']}) — {b['definition']}")
         ws=wbp.get((c["id"],b["path"]),[])
-        if ws: out.append(("    " if depth>=1 else "  ")+f"คำ ({len(ws)}): "+" · ".join(ws))
+        if ws: out.append(("    " if depth>=1 else "  ")+f"คำ ({len(ws)}): "+" · ".join(wtext.get((c["id"],w),w) for w in ws))
 if cross:
     out.append(""); out.append("## 🔗 คำโยงข้ามหมวด (คงในหมวดบ้าน + โยงไปหมวดอื่น)")
     for x in cross: out.append(f"- {x['text']} ({HOME.get(x['home'],x['home'])}) → "+" · ".join(x["links_to"]))
