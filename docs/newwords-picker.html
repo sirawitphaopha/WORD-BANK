@@ -724,10 +724,17 @@ function result(){
   });
   return out;
 }
+/* คั่นด้วย " | " ไม่ใช้แท็บ — เพราะเวลาเอาไปวางในแชท แท็บถูกบีบจนอ่านไม่ออก
+   เรียงเลขด้วย จะได้อ้างอิงเป็นข้อได้ */
 function textOut(rows){
   const L=['# คำที่เลือกเก็บเข้าคลัง — '+rows.length.toLocaleString('th-TH')+' คำ',
-           '# รูปแบบ: คำ <แท็บ> วลีตั้งต้น <แท็บ> บรรทัด <แท็บ> ที่มา <แท็บ> หมายเหตุ',''];
-  rows.forEach(r=>L.push([r['คำ'],r['วลีตั้งต้น'],r['บรรทัด'],r['ที่มา'],(r['หมายเหตุ']||'').replace(/[\t\n]+/g,' ')].join('\t')));
+           '# รูปแบบ: ลำดับ. คำ | วลีตั้งต้น | บรรทัด | ที่มา | หมายเหตุ',''];
+  rows.forEach((r,i)=>{
+    const cells=[r['คำ'], r['วลีตั้งต้น'], 'บรรทัด '+r['บรรทัด'], r['ที่มา']];
+    const note=(r['หมายเหตุ']||'').replace(/[\t\n|]+/g,' ').trim();
+    if(note) cells.push('หมายเหตุ: '+note);
+    L.push((i+1)+'. '+cells.join(' | '));
+  });
   return L.join('\n');
 }
 const outDlg=$('#dlg-out');
@@ -746,11 +753,29 @@ $('#b-copy').addEventListener('click',async()=>{
   try{ await navigator.clipboard.writeText(t.value); toast('คัดลอกแล้ว'); }
   catch(e){ t.removeAttribute('readonly'); t.select(); t.setAttribute('readonly',''); toast('กดค้างเพื่อคัดลอกข้อความ'); }
 });
-$('#b-dl').addEventListener('click',()=>{
-  const blob=new Blob([JSON.stringify(result(),null,1)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download='คำที่เลือก.json';
-  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500); toast('บันทึกไฟล์แล้ว');
+/* 🐛 เดิมกดแล้วไม่มีอะไรโหลดเลยบนมือถือ — 2 สาเหตุ:
+   (1) <a> ไม่ได้ใส่ลง DOM ก่อนกด (บางเบราว์เซอร์ไม่ทำงานถ้า element ลอยอยู่)
+   (2) iOS ในกรอบ artifact บล็อกการดาวน์โหลดของ iframe → ต้องใช้ "แชร์ไฟล์" แทน */
+$('#b-dl').addEventListener('click',async()=>{
+  commitAll(); commitPending();
+  const rows=result();
+  if(!rows.length){ toast('ยังไม่ได้เลือกคำใด'); return; }
+  const txt=textOut(rows), name='คำที่เลือก.txt';
+  try{
+    const file=new File([txt],name,{type:'text/plain'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title:'คำที่เลือกเก็บเข้าคลัง'});
+      toast('ส่งไฟล์แล้ว'); return;
+    }
+  }catch(e){ if(e && e.name==='AbortError') return; }
+  try{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain;charset=utf-8'}));
+    a.download=name; a.style.display='none';
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000);
+    toast('บันทึกไฟล์แล้ว');
+  }catch(e){ toast('เครื่องนี้บันทึกไฟล์ไม่ได้ ใช้ปุ่มคัดลอกแทน'); }
 });
 
 let tt; function toast(m){
