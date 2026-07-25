@@ -165,10 +165,18 @@ select{flex:0 1 auto; max-width:100%}
 .chip .cat{display:none; font-size:10.5px; opacity:.72; margin-left:5px; font-family:Georgia,serif}
 body.showcat .chip .cat{display:inline}
 .own{display:flex; flex-wrap:wrap; gap:6px; padding-left:30px; align-items:center}
-.own .ochip{font-size:15px; padding:4px 10px; border-radius:8px; background:var(--own); color:var(--paper); font-weight:600;
-  display:inline-flex; align-items:center; gap:7px}
+.own .ochip{font-size:15px; border-radius:8px; background:var(--own); color:var(--paper); font-weight:600;
+  display:inline-flex; align-items:center; overflow:hidden}
+.own .ochip.noted{box-shadow:0 0 0 2px var(--gold)}
+.own .ochip.noted .ochiplbl::after{content:" 📝"; font-size:11px}
+.ochiplbl{font:inherit; font-weight:inherit; color:inherit; background:none; border:none; cursor:pointer; padding:5px 4px 5px 11px}
+.ochipx{font:inherit; background:none; border:none; color:inherit; cursor:pointer; padding:5px 10px 5px 6px; font-size:14px; opacity:.85; line-height:1}
+.wnotewrap{display:flex; gap:6px; align-items:flex-start; flex:1 1 100%; margin:-1px 0 3px 18px}
+.wnotewrap .noteicon{color:var(--own-deep); font-size:16px; padding-top:7px}
+.wnotewrap .noteinp{border-color:var(--own); border-style:dashed;
+  background:color-mix(in srgb,var(--own) 9%,var(--paper))}
+.wnotewrap[hidden]{display:none}
 .own .ochip.warn{background:var(--gold)}
-.own .ochip button{font:inherit; background:none; border:none; color:inherit; cursor:pointer; padding:0; font-size:14px; opacity:.85; line-height:1}
 .own input{flex:1 1 150px; font-size:15px; padding:7px 11px; border-style:dashed}
 .own input::placeholder{color:var(--muted); font-size:13.5px}
 .addbtn{font:inherit; font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none;
@@ -300,9 +308,9 @@ const CATFULL={1:"หมวด ๑ บรรยากาศ แสง สี แ
 13:"หมวด ๑๓ ภาษา ถ้อยคำ และการประพันธ์",14:"หมวด ๑๔ กฎหมาย คดีความ และสิทธิ"};
 const KEY='wordbank:extract-pick:v1', PAGE=150;
 const $=s=>document.querySelector(s), listEl=$('#list');
-let state={pick:{},own:{},draft:{},sel:{},note:{}};
+let state={pick:{},own:{},draft:{},sel:{},note:{},wnote:{}};
 try{const r=localStorage.getItem(KEY); if(r) state=Object.assign(state,JSON.parse(r));}catch(e){}
-if(!state.pick) state.pick={}; if(!state.own) state.own={}; if(!state.draft) state.draft={}; if(!state.sel) state.sel={}; if(!state.note) state.note={};
+if(!state.pick) state.pick={}; if(!state.own) state.own={}; if(!state.draft) state.draft={}; if(!state.sel) state.sel={}; if(!state.note) state.note={}; if(!state.wnote) state.wnote={};
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}};
 let saveT=0; const saveSoon=()=>{clearTimeout(saveT); saveT=setTimeout(()=>{saveT=0; save();},140);};
 
@@ -338,9 +346,9 @@ function match(r){
   if(catFilter && !r.words.some(w=>String(w.cat)===catFilter)) return false;
   if(query){
     const q=query;
-    if(!(r.t.includes(q) || r.words.some(w=>w.w.includes(q)) || ownOf(r).some(w=>w.includes(q)) || noteOf(r).includes(q))) return false;
+    if(!(r.t.includes(q) || r.words.some(w=>w.w.includes(q)) || ownOf(r).some(w=>w.includes(q)) || noteOf(r).includes(q) || ownOf(r).some(w=>wnoteOf(r.n,w).includes(q)))) return false;
   }
-  const np=pickedOf(r).length, no=ownOf(r).length, nd=(state.draft[r.n]||state.sel[r.n]||state.note[r.n])?1:0;
+  const np=pickedOf(r).length, no=ownOf(r).length, nd=(state.draft[r.n]||state.sel[r.n]||state.note[r.n]||ownOf(r).some(w=>wnoteOf(r.n,w)))?1:0;
   if(filter==='prop') return r.words.length>0;
   if(filter==='picked') return np>0||no>0||nd>0;
   if(filter==='todo') return r.words.length>0 && np===0 && no===0 && nd===0;
@@ -468,7 +476,7 @@ function rowEl(r){
   }
 
   const own=document.createElement('div'); own.className='own';
-  no.forEach(w=>own.append(ownChip(r,w,el)));
+  no.forEach(w=>{ const c=ownChip(r,w,el); own.append(c,c._noteBox); });
 
   // ช่องพิมพ์ = ตัวสำรอง ซ่อนไว้ก่อน (เปิดเองเมื่อมีข้อความค้าง)
   const inp=document.createElement('input'); inp.type='text';
@@ -503,17 +511,17 @@ function rowEl(r){
   // 📝 ช่องหมายเหตุ — ไว้เขียนบอกว่าทำไมแยกคำแบบนี้ (เจ้าของสั่ง 25 ก.ค.)
   const noteWrap=document.createElement('div'); noteWrap.className='notewrap';
   const nt=document.createElement('textarea'); nt.className='noteinp'; nt.rows=2;
-  nt.placeholder='หมายเหตุ เช่น ทำไมถึงแยกคำนี้';
+  nt.placeholder='หมายเหตุของทั้งวลี (อยากเขียนเจาะจงรายคำ ให้แตะที่ตัวคำข้างบน)';
   nt.setAttribute('aria-label','หมายเหตุของวลีบรรทัดที่ '+r.n);
   nt.value=noteOf(r);
   nt.addEventListener('input',()=>{ setNote(r.n,nt.value); el.classList.toggle('hasnote',!!nt.value.trim()); });
   const nb=document.createElement('button');
-  nb.type='button'; nb.className='notebtn'; nb.textContent='📝 หมายเหตุ';
+  nb.type='button'; nb.className='notebtn'; nb.textContent='📝 หมายเหตุของทั้งวลี';
   noteWrap.hidden=!noteOf(r); nb.hidden=!noteWrap.hidden;
   nb.addEventListener('click',()=>{ noteWrap.hidden=false; nb.hidden=true; nt.focus(); });
   const nicon=document.createElement('span'); nicon.className='noteicon'; nicon.textContent='📝';
   noteWrap.append(nicon,nt); el.append(nb,noteWrap);
-  if(noteOf(r)) el.classList.add('hasnote');
+  if(noteOf(r)||no.some(z=>wnoteOf(r.n,z))) el.classList.add('hasnote');
   if(r.words.length===0 && no.length===0 && !draftOf(r)) el.classList.add('plain');
   if(selOf(r)) paintSel(r,el);                // 🛟 คืนคำที่ลากค้างไว้
   return el;
@@ -526,6 +534,13 @@ function rowEl(r){
    และก่อนวาดใหม่/ปิดหน้า/ส่งออก จะกวาดเก็บทุกช่องให้กลายเป็นคำก่อนเสมอ */
 const draftOf=r=>(state.draft[r.n]||'');
 const noteOf=r=>(state.note[r.n]||'');
+const wkey=(n,w)=>n+'|'+w;                      // หมายเหตุรายคำ ผูกกับ บรรทัด+ตัวคำ
+const wnoteOf=(n,w)=>(state.wnote[wkey(n,w)]||'');
+function setWnote(n,w,v){
+  const k=wkey(n,w);
+  if((v||'').trim()) state.wnote[k]=v; else delete state.wnote[k];
+  saveSoon();
+}
 function setNote(n,v){                      // เก็บทุกตัวอักษรทันที ไม่ต้องกดอะไร
   v=(v||'');
   if(v.trim()) state.note[n]=v; else delete state.note[n];
@@ -544,7 +559,7 @@ function addOwn(r,words,el,own){
     w=String(w).trim();
     if(!w || arr.includes(w)) return;
     arr.push(w); added++;
-    if(own) own.insertBefore(ownChip(r,w,el),anchor);
+    if(own){ const c=ownChip(r,w,el); own.insertBefore(c,anchor); own.insertBefore(c._noteBox,anchor); }
   });
   if(!arr.length) delete state.own[r.n];
   if(added){ if(el) el.classList.remove('plain'), el.classList.add('picked'); save(); refreshCounts(); }
@@ -587,18 +602,36 @@ function commitPending(){
 }
 function ownChip(r,w,el){
   const s=document.createElement('span');
-  s.className='ochip'+(r.t.includes(w)?'':' warn');
-  s.title=r.t.includes(w)?'สกัดเอง':'คำนี้ไม่ตรงกับข้อความในวลีตั้งต้น';
-  s.append(document.createTextNode(w));
-  const x=document.createElement('button'); x.type='button'; x.textContent='✕';
+  s.className='ochip'+(r.t.includes(w)?'':' warn')+(wnoteOf(r.n,w)?' noted':'');
+  s.title=r.t.includes(w)?'สกัดเอง · แตะที่คำเพื่อเขียนหมายเหตุ':'คำนี้ไม่ตรงกับข้อความในวลีตั้งต้น';
+  const lbl=document.createElement('button'); lbl.type='button'; lbl.className='ochiplbl';
+  lbl.textContent=w; lbl.setAttribute('aria-label','เขียนหมายเหตุให้คำ '+w);
+  const x=document.createElement('button'); x.type='button'; x.className='ochipx'; x.textContent='✕';
   x.setAttribute('aria-label','เอาคำ '+w+' ออก');
+
+  // 📝 ช่องหมายเหตุของคำนี้ — แทรกต่อท้ายคำทันที (เจ้าของสั่ง "ให้หมายเหตุอยู่หลังคำที่เลือกเพิ่ม")
+  const box=document.createElement('div'); box.className='wnotewrap';
+  const ic=document.createElement('span'); ic.className='noteicon'; ic.textContent='↳';
+  const ta=document.createElement('textarea'); ta.className='noteinp'; ta.rows=2;
+  ta.placeholder='หมายเหตุของคำ “'+w+'” เช่น ทำไมถึงแยกคำนี้';
+  ta.setAttribute('aria-label','หมายเหตุของคำ '+w);
+  ta.value=wnoteOf(r.n,w);
+  ta.addEventListener('input',()=>{
+    setWnote(r.n,w,ta.value);
+    s.classList.toggle('noted',!!ta.value.trim());
+    el.classList.toggle('hasnote',!!(noteOf(r)||ownOf(r).some(z=>wnoteOf(r.n,z))));
+  });
+  box.append(ic,ta); box.hidden=!wnoteOf(r.n,w);
+  lbl.addEventListener('click',()=>{ box.hidden=!box.hidden; if(!box.hidden) ta.focus(); });
   x.addEventListener('click',()=>{
     const arr=state.own[r.n]||[]; const i=arr.indexOf(w); if(i>=0) arr.splice(i,1);
     if(!arr.length) delete state.own[r.n];
-    save(); refreshCounts(); s.remove();
+    delete state.wnote[wkey(r.n,w)];
+    save(); refreshCounts(); s.remove(); box.remove();
     if(!pickedOf(r).length && !ownOf(r).length) el.classList.remove('picked');
+    el.classList.toggle('hasnote',!!(noteOf(r)||ownOf(r).some(z=>wnoteOf(r.n,z))));
   });
-  s.append(x); return s;
+  s.append(lbl,x); s._noteBox=box; return s;
 }
 function toggle(r,w,btn,el){
   const arr=state.pick[r.n]||(state.pick[r.n]=[]);
@@ -664,9 +697,9 @@ $('#b-clr').addEventListener('click',()=>{
   commitAll();
   const p=countPick(), o=countOwn();
   if(!p&&!o){toast('ยังไม่ได้เลือกคำใด'); return;}
-  const nn=Object.keys(state.note).length;
+  const nn=Object.keys(state.note).length+Object.keys(state.wnote).length;
   ask('ล้างที่เลือกทั้งหมด','จะล้างคำที่เลือกไว้ '+p.toLocaleString('th-TH')+' คำ · คำที่สกัดเอง '+o.toLocaleString('th-TH')+' คำ'+(nn?' · หมายเหตุ '+nn.toLocaleString('th-TH')+' อัน':'')+' การกระทำนี้ย้อนกลับไม่ได้','ล้างทั้งหมด',()=>{
-    state={pick:{},own:{},draft:{},sel:{},note:{}}; save(); refreshCounts(); render(true); toast('ล้างเรียบร้อย');
+    state={pick:{},own:{},draft:{},sel:{},note:{},wnote:{}}; save(); refreshCounts(); render(true); toast('ล้างเรียบร้อย');
   });
 });
 
@@ -685,7 +718,8 @@ function result(){
       const meta=r.words.find(x=>x.w===w);
       out.push({คำ:w, วลีตั้งต้น:r.t, บรรทัด:r.n, หมวดที่เสนอ:meta?CATFULL[meta.cat]:'', ที่มา:'ระบบเสนอ', หมายเหตุ:noteOf(r)});
     });
-    ownOf(r).forEach(w=>out.push({คำ:w, วลีตั้งต้น:r.t, บรรทัด:r.n, หมวดที่เสนอ:'', ที่มา:'สกัดเอง', หมายเหตุ:noteOf(r)}));
+    ownOf(r).forEach(w=>out.push({คำ:w, วลีตั้งต้น:r.t, บรรทัด:r.n, หมวดที่เสนอ:'', ที่มา:'สกัดเอง',
+      หมายเหตุ:[wnoteOf(r.n,w),noteOf(r)].filter(Boolean).join(' · ')}));
   });
   return out;
 }
