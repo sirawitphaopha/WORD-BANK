@@ -682,7 +682,7 @@ function draw() {
     svg.innerHTML = P.map(([d, c, w, o, dash, lk, grp], i) => {
       return `<path id="ln${i}" d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${o}"`
         + (lk != null ? ` data-leaf="${lk}"` : '') + (grp != null ? ` data-cat="${grp}"` : '')
-        + `${dash ? ' stroke-dasharray="4 5"' : ' data-anim="1"'} style="animation-delay:${seq(i).toFixed(2)}s"/>`;
+        + `${dash ? ' stroke-dasharray="4 5"' : ''} data-anim="1" style="animation-delay:${seq(i).toFixed(2)}s"/>`;
     }).join('')
       /* จุดต่อของแต่ละเส้นผุดขึ้นตรงจังหวะที่เส้นนั้นงอกมาถึงพอดี
          (จุดต้นทางผุดตอนเส้นเริ่มออก · จุดปลายทางผุดตอนเส้นงอกจนสุด) ไม่ใช่ผุดพร้อมกันหมด */
@@ -703,6 +703,12 @@ function draw() {
       q.getBoundingClientRect();
       q.style.transition = `stroke-dashoffset 1.1s cubic-bezier(.22,.9,.28,1) ${d}`;
       q.style.strokeDashoffset = '0';
+      /* เส้นประก็งอกด้วย แต่ระหว่างงอกเป็นเส้นทึบ (ยืดเส้นเดียวยาวออกมา) พองอกสุดแล้วค่อยแตกเป็นเส้นประ
+         ทำได้เพราะรูปเส้นประอยู่ที่ attribute ส่วนตอนงอกเราเขียนทับด้วย style — พอลบ style ทิ้ง
+         มันจึงตกกลับไปเป็นเส้นประเองโดยไม่ต้องตั้งค่าใหม่ */
+      if (q.getAttribute('stroke-dasharray')) q.addEventListener('transitionend', () => {
+        q.style.strokeDasharray = ''; q.style.strokeDashoffset = ''; q.style.transition = '';
+      }, { once: true });
     });
   }
 
