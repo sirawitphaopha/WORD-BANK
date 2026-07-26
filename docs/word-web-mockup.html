@@ -553,16 +553,33 @@ function draw() {
     drawSig = sig;
     svg.setAttribute('viewBox', `0 0 ${map.clientWidth} ${map.clientHeight}`);
     const seq = i => 0.3 + i * .055;
-    svg.innerHTML = P.map(([d, c, w, o, dash, lk, grp], i) => {
+    /* 🪡 เส้นประต้องงอก "เป็นเส้นประตั้งแต่แรก" ไม่ใช่งอกทึบแล้วแวบเป็นประตอนจบ (พี่กันสั่ง)
+       ทำด้วยหน้ากาก (mask): เส้นประวาดเต็มเส้นไว้ตั้งแต่ต้น แต่ถูกหน้ากากบังไว้หมด
+       แล้วค่อยเปิดหน้ากากไล่จากต้นเส้นไปปลายเส้น → ตาเห็นขีดประโผล่ทีละขีดตามแนวเส้น
+       (ใช้กลไกงอกเดิมกับ "เส้นในหน้ากาก" แทนตัวเส้นจริง)
+       ⚠️ ต้องตั้ง maskUnits="userSpaceOnUse" พร้อมกรอบเต็มผัง — ค่าตั้งต้นอิงกรอบของรูป
+       ซึ่งเส้นตรงมีความสูงเป็นศูนย์ หน้ากากจะแบนจนบังหมดทั้งเส้น */
+    let defs = '';
+    const MW = map.clientWidth, MH = map.clientHeight;
+    const body = P.map(([d, c, w, o, dash, lk, grp], i) => {
+      let extra = ' data-anim="1"';
+      if (dash) {
+        defs += `<mask id="mk${i}" maskUnits="userSpaceOnUse" x="0" y="0" width="${MW}" height="${MH}">`
+          + `<path d="${d}" fill="none" stroke="#fff" stroke-width="${w + 6}" stroke-linejoin="round" stroke-linecap="round"`
+          + ` data-anim="1" style="animation-delay:${seq(i).toFixed(2)}s"/></mask>`;
+        extra = ` stroke-dasharray="4 5" mask="url(#mk${i})"`;
+      }
       return `<path id="ln${i}" d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${o}"`
         + (lk != null ? ` data-leaf="${lk}"` : '') + (grp != null ? ` data-cat="${grp}"` : '')
-        + `${dash ? ' stroke-dasharray="4 5"' : ''} data-anim="1" style="animation-delay:${seq(i).toFixed(2)}s"/>`;
+        + `${extra} style="animation-delay:${seq(i).toFixed(2)}s"/>`;
     }).join('')
       /* จุดต่อของแต่ละเส้นผุดขึ้นตรงจังหวะที่เส้นนั้นงอกมาถึงพอดี
          (จุดต้นทางผุดตอนเส้นเริ่มออก · จุดปลายทางผุดตอนเส้นงอกจนสุด) ไม่ใช่ผุดพร้อมกันหมด */
       + dots.map(([x, y, c, r, o, pi, end]) => `<circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}" opacity="${o}"`
         + ` style="transform-box:fill-box;transform-origin:center;animation:dotIn .34s cubic-bezier(.2,.9,.3,1) ${(seq(pi || 0) + (end ? 1 : .1)).toFixed(2)}s both"/>`).join('');
-    /* เก็บกวาดเส้นยาวศูนย์ — เกิดตอนกิ่งชั้นนั้นมีลูกตัวเดียวและอยู่ระดับเดียวกับราง วาดไปก็มองไม่เห็น */
+    svg.innerHTML = (defs ? `<defs>${defs}</defs>` : '') + body;
+    /* เก็บกวาดเส้นยาวศูนย์ — เกิดตอนกิ่งชั้นนั้นมีลูกตัวเดียวและอยู่ระดับเดียวกับราง วาดไปก็มองไม่เห็น
+       (เส้นในหน้ากากมีรูปเดียวกับเส้นจริง จึงถูกเก็บกวาดไปพร้อมกัน ไม่มีหน้ากากค้างเปล่า) */
     svg.querySelectorAll('path').forEach(q => { if (q.getTotalLength() < 2) q.remove(); });
     /* วาดเส้นแบบไล่ทีละเส้นเฉพาะตอนเปลี่ยนคำ — ถ้าวาดใหม่เพราะเลย์เอาต์ขยับ ให้ขึ้นเต็มเส้นทันที
        ใช้ transition ไม่ใช่ animation เพื่อให้จบที่ dashoffset 0 เสมอ แม้ถูกขัดกลางทาง */
@@ -577,12 +594,6 @@ function draw() {
       q.getBoundingClientRect();
       q.style.transition = `stroke-dashoffset 1.1s cubic-bezier(.22,.9,.28,1) ${d}`;
       q.style.strokeDashoffset = '0';
-      /* เส้นประก็งอกด้วย แต่ระหว่างงอกเป็นเส้นทึบ (ยืดเส้นเดียวยาวออกมา) พองอกสุดแล้วค่อยแตกเป็นเส้นประ
-         ทำได้เพราะรูปเส้นประอยู่ที่ attribute ส่วนตอนงอกเราเขียนทับด้วย style — พอลบ style ทิ้ง
-         มันจึงตกกลับไปเป็นเส้นประเองโดยไม่ต้องตั้งค่าใหม่ */
-      if (q.getAttribute('stroke-dasharray')) q.addEventListener('transitionend', () => {
-        q.style.strokeDasharray = ''; q.style.strokeDashoffset = ''; q.style.transition = '';
-      }, { once: true });
     });
   }
 
@@ -634,8 +645,24 @@ function draw() {
 const seedStyle = active => 'border:none;background:none;font-family:inherit;font-size:14.5px;cursor:pointer;'
   + 'padding:3px 2px;line-height:1.6;border-bottom:1.5px solid '
   + (active ? 'var(--accent);color:var(--accent)' : 'transparent;color:var(--ink2)');
-document.getElementById('seeds').innerHTML = D.seeds.map(s =>
-  `<button data-sp="${esc(s)}" style="${seedStyle(false)}">${esc(s.length > 26 ? s.slice(0, 24) + '…' : s)}</button>`).join('');
+/* ป้ายกำกับใต้ชื่อตัวอย่าง บอกว่าตัวอย่างนั้นมีไว้โชว์อะไร
+   เดิมมีแต่ชื่อคำเปล่า ๆ ทำให้ตัวอย่าง "เจอในหลายเรื่อง" ถูกมองข้ามเพราะต้องกดเข้าไปถึงจะเห็น */
+const seedNote = s => {
+  const n = N[s]; if (!n) return '';
+  const nv = (n.novels || []).length, pa = (n.parents || []).length, kids = (n.kids || []).length;
+  const cats = new Set((n.paths || []).map(b => b.no)).size;
+  if (nv > 2) return nv + ' เรื่อง';
+  if (kids > 2) return 'แตก ' + kids + ' คำ';
+  if (pa > 1) return 'มาจาก ' + pa + ' วลี';
+  if (cats > 1) return cats + ' หมวด';
+  return '';
+};
+document.getElementById('seeds').innerHTML = D.seeds.map(s => {
+  const note = seedNote(s);
+  return `<button data-sp="${esc(s)}" style="${seedStyle(false)}">${esc(s.length > 26 ? s.slice(0, 24) + '…' : s)}`
+    + (note ? `<span style="display:block;font-size:11px;color:var(--ink3);letter-spacing:.02em;margin-top:1px">${esc(note)}</span>` : '')
+    + `</button>`;
+}).join('');
 
 /* เปลี่ยนคำ: ให้ผังเดิมจางออกก่อนสั้น ๆ แล้วผังใหม่ค่อยไล่จังหวะเข้า ตาจะตามทัน ไม่กระตุก */
 function swap(t) {
