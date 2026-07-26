@@ -32,7 +32,10 @@ for f in sorted(glob.glob(P('docs/oldwords/extract/newbr*.json'))):
     except Exception: pass
 
 red=[];yellow=[];seen=collections.Counter();stat=collections.Counter()
-for f in sorted(glob.glob(P('docs/oldwords/extract/out*.jsonl'))):
+# ถ้ารวมผลแล้ว (merge_extract.py) ให้ตรวจฉบับรวม — วลีที่หลายฝ่ายทำซ้อนกันถูกยุบเป็นแถวเดียวแล้ว
+FILES=[P('docs/oldwords/extract/merged.jsonl')] if os.path.exists(P('docs/oldwords/extract/merged.jsonl')) \
+      else sorted(glob.glob(P('docs/oldwords/extract/out*.jsonl')))
+for f in FILES:
     who=os.path.basename(f)
     for ln,line in enumerate(open(f,encoding='utf-8'),1):
         if not line.strip(): continue

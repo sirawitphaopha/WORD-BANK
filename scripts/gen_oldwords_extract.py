@@ -31,9 +31,17 @@ def build():
     seen = {r['t']: r.get('cat', []) for r in rows}
 
     # คำที่ผู้ช่วยเสนอไว้ เอามาเป็นชิปให้กดเลือก
-    # รับ 2 รูปแบบ: รอบเกลาหมวด (text/extract) และรอบสกัดคำ (t/ex)
-    prop = {}
-    for f in sorted(glob.glob(P('docs/oldwords/*/out*.jsonl'))):
+    # ถ้ารวมผลแล้ว (merge_extract.py) ใช้ฉบับรวม — วลีที่หลายฝ่ายทำซ้อนกันถูกยุบเป็นแถวเดียวแล้ว
+    merged = P('docs/oldwords/extract/merged.jsonl')
+    files = [merged] if os.path.exists(merged) else sorted(glob.glob(P('docs/oldwords/*/out*.jsonl')))
+
+    # 🔑 คำที่มีในคลังเดิมอยู่แล้ว ไม่เอามาเป็นชิปให้พี่กันสกัดซ้ำ
+    #    (เช่น `กรีดร้องโหยหวน` ที่ซ้อนอยู่ใน `กรีดร้องโหยหวนด้วยเสียงแหลมสูงราวกับ…`)
+    #    ของพวกนี้เป็น "เส้นเชื่อมย้อนหลัง" ไม่ใช่คำใหม่ — เก็บไว้ใน merged.jsonl ให้ตัวเขียนกลับใช้
+    have = {w['text'] for w in json.load(open(P('docs/branches-data.json'), encoding='utf-8'))['words']}
+
+    prop, dropped = {}, 0
+    for f in files:
         for line in open(f, encoding='utf-8'):
             if not line.strip():
                 continue
@@ -42,6 +50,9 @@ def build():
             for e in (r.get('extract') or r.get('ex') or []):
                 w = (e.get('w') or '').strip()
                 if not w:
+                    continue
+                if w in have:
+                    dropped += 1
                     continue
                 cat = None
                 for p in (e.get('paths') or []):
@@ -59,11 +70,11 @@ def build():
         if ws:
             props[str(i)] = {'line': i, 'src': t,
                              'words': [{'w': w, 'cat': c} for w, c in ws.items()]}
-    return {'total_lines': len(L), 'lines': L, 'props': props}, seen
+    return {'total_lines': len(L), 'lines': L, 'props': props}, seen, dropped
 
 
 def main():
-    D, seen = build()
+    D, seen, dropped = build()
     src = open(BASE, encoding='utf-8').read()
 
     # ① เปลี่ยนก้อนข้อมูล — หาบรรทัด const DATA = {...}; แล้วแทนทั้งบรรทัด
@@ -117,6 +128,7 @@ def main():
     print('  ยาวสุด %d ตัวอักษร · เกิน 20 = %d · เกิน 15 = %d'
           % (max(ln), sum(1 for x in ln if x > 20), sum(1 for x in ln if x > 15)))
     print('  วลีที่มีคำเสนอไว้แล้ว %d บรรทัด' % len(D['props']))
+    print('  คำที่ไม่เอามาเป็นชิปเพราะมีในคลังเดิมอยู่แล้ว %d (เก็บเป็นเส้นเชื่อมใน merged.jsonl)' % dropped)
 
 
 if __name__ == '__main__':
