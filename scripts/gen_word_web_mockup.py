@@ -108,186 +108,117 @@ FONTCSS = '\n'.join(FACE)
 TITLE = 'ม็อคอัพ · หน้าต่างคำ'
 BODY = r'''<style>
 __FONTS__
-/* สีชุดเดียวกับเว็บจริง (components/pages/modals.jsx) + จานสีไฮไลต์ชุดเดียวกับหน้าตรวจทาน */
 :root{
-  --panel:#f7f0e0; --surface:#fffdf6; --line:#e0d0ac; --line2:#e6dabf; --page:#e9dfc7;
-  --ink:#2f251c; --ink2:#5c5044; --dim:#8a7d6d; --faint:#b0a184;
-  --accent:#9c3b2b; --primary:#6f4e37;
-  --chip:#f0e8d4; --chipb:#e4d8bd;
+  --panel:#f8f2e4; --surface:#fffdf7; --line:#e2d3b0; --line2:#eadfc6;
+  --page:#e9dec6; --ink:#2f251c; --ink2:#5b4f43; --dim:#8a7d6d; --faint:#b3a488;
+  --accent:#9c3b2b; --primary:#6f4e37; --chip:#f1e9d6; --chipb:#e4d8bd;
+  --danger-bg:#faf1ee; --danger-line:#e6c3b7;
 }
 @media (prefers-color-scheme:dark){:root{
-  --panel:#241d16; --surface:#2c241b; --line:#463a2a; --line2:#3d3325; --page:#161109;
+  --panel:#241d16; --surface:#2c241b; --line:#463a2a; --line2:#3d3325; --page:#15100a;
   --ink:#f3e8d2; --ink2:#cdbfa6; --dim:#9d8e77; --faint:#6f6353;
   --accent:#e8907a; --primary:#c69a6d; --chip:#332b21; --chipb:#453a2c;
+  --danger-bg:#3a2620; --danger-line:#6b4034;
 }}
 :root[data-theme=dark]{
-  --panel:#241d16; --surface:#2c241b; --line:#463a2a; --line2:#3d3325; --page:#161109;
+  --panel:#241d16; --surface:#2c241b; --line:#463a2a; --line2:#3d3325; --page:#15100a;
   --ink:#f3e8d2; --ink2:#cdbfa6; --dim:#9d8e77; --faint:#6f6353;
   --accent:#e8907a; --primary:#c69a6d; --chip:#332b21; --chipb:#453a2c;
+  --danger-bg:#3a2620; --danger-line:#6b4034;
 }
 :root[data-theme=light]{
-  --panel:#f7f0e0; --surface:#fffdf6; --line:#e0d0ac; --line2:#e6dabf; --page:#e9dfc7;
-  --ink:#2f251c; --ink2:#5c5044; --dim:#8a7d6d; --faint:#b0a184;
-  --accent:#9c3b2b; --primary:#6f4e37; --chip:#f0e8d4; --chipb:#e4d8bd;
+  --panel:#f8f2e4; --surface:#fffdf7; --line:#e2d3b0; --line2:#eadfc6;
+  --page:#e9dec6; --ink:#2f251c; --ink2:#5b4f43; --dim:#8a7d6d; --faint:#b3a488;
+  --accent:#9c3b2b; --primary:#6f4e37; --chip:#f1e9d6; --chipb:#e4d8bd;
+  --danger-bg:#faf1ee; --danger-line:#e6c3b7;
 }
 *{box-sizing:border-box}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 body{margin:0;background:var(--page);color:var(--ink);font-family:'Trirong',Georgia,serif;
-  font-size:16px;line-height:1.75;-webkit-text-size-adjust:100%}
-
-.head{max-width:1200px;margin:0 auto;padding:20px 16px 0;display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
-.head h1{font-size:18px;font-weight:700;margin:0}
-.head p{margin:0;color:var(--dim);font-size:13px;flex:1;min-width:190px}
-.head button{border:none;background:none;color:var(--dim);font-family:inherit;font-size:12.5px;
-  cursor:pointer;border-bottom:1px solid var(--line);padding:0}
-.pick{max-width:1200px;margin:10px auto 0;padding:0 16px;display:flex;gap:15px;flex-wrap:wrap;align-items:center}
-.pick b{font-size:12.5px;color:var(--dim);font-weight:400}
-.pick button{border:none;background:none;font-family:inherit;font-size:14.5px;color:var(--ink2);
-  cursor:pointer;padding:2px 0;border-bottom:1.5px solid transparent}
-.pick button[aria-pressed=true]{color:var(--accent);border-bottom-color:var(--accent)}
-
-.scene{position:relative;max-width:1200px;margin:14px auto 0;padding:16px;
-  background:var(--page);border:1px solid var(--line2);border-radius:14px;overflow:hidden}
-.behind{filter:blur(1.6px);opacity:.45;pointer-events:none;user-select:none}
-.behind h4{margin:0 0 8px;font-size:13.5px;color:var(--dim);font-weight:400}
-.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:7px}
-.bcard{background:var(--surface);border:1px solid var(--line2);border-left:3px solid var(--faint);
-  border-radius:9px;padding:8px 9px;font-size:14px;color:var(--ink2);min-height:40px}
-.veil{position:absolute;inset:0;background:rgba(48,38,26,.38);backdrop-filter:blur(2px)}
-:root[data-theme=dark] .veil{background:rgba(6,4,2,.6)}
-
-.modal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1130px,calc(100% - 26px));
-  background:var(--panel);border:1px solid var(--line);border-radius:16px;
-  box-shadow:0 24px 70px rgba(40,28,14,.34);display:grid;grid-template-columns:1.42fr .58fr;
-  overflow:hidden;animation:pop .22s ease}
-@keyframes pop{from{opacity:0;transform:translate(-50%,-47%)}to{opacity:1;transform:translate(-50%,-50%)}}
+  font-size:16px;line-height:1.78;-webkit-text-size-adjust:100%}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media(max-width:900px){
-  .modal{grid-template-columns:1fr;position:static;transform:none;width:auto;animation:none}
-  .scene{padding:9px;height:auto!important;border:none;background:none}
-  .behind,.veil{display:none}
+  [data-el=map]{grid-template-columns:1fr!important;grid-template-areas:'hero' 'left' 'right'!important}
+  [data-r=side2]{border-left:none!important;border-top:1px solid var(--line)!important}
+  [data-r=behind],[data-r=veil]{display:none!important}
+  [data-r=scene]{padding:0!important;border:none!important;background:none!important}
 }
-.side{padding:18px 20px 20px;min-width:0}
-.side+.side{border-left:1px solid var(--line);background:linear-gradient(var(--panel),var(--panel))}
-@media(max-width:900px){.side+.side{border-left:none;border-top:1px solid var(--line)}}
-.cap{font-size:11px;letter-spacing:.2em;color:var(--dim);margin:0 0 10px;text-transform:uppercase}
-
-/* ── ผังใยความคิด ── */
-.map{position:relative}
-svg.links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:0}
-.map>*{position:relative;z-index:1}
-.lk{fill:none;stroke-linecap:round;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
-  animation:draw .55s ease forwards}
-@keyframes draw{to{stroke-dashoffset:0}}
-
-/* คำหลัก — ต้องเด่นที่สุดในจอ */
-.heroWrap{display:flex;justify-content:center;margin-bottom:26px}
-.hero{background:var(--surface);border:2px solid var(--primary);border-radius:14px;
-  padding:15px 22px;box-shadow:0 10px 26px -14px rgba(40,28,14,.55);max-width:min(560px,100%)}
-.hero .eb{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);
-  display:block;margin-bottom:4px}
-.hero .tx{font-size:clamp(21px,2.5vw,31px);font-weight:700;line-height:1.55;color:var(--ink);word-break:break-word}
-.hero .mt{font-size:12.5px;color:var(--dim);margin-top:5px}
-mark{background:var(--c1);color:inherit;border-radius:3px;padding:1px 2px;
-  box-shadow:inset 0 -0.14em 0 var(--c2);-webkit-box-decoration-break:clone;box-decoration-break:clone}
-
-/* คำสกัด — ใบไม้สีเดียวกับที่ไฮไลต์ในวลี */
-.leaves{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
-.leaf{border:none;border-radius:20px;padding:5px 15px;font-family:inherit;font-size:15px;
-  color:#fffaf0;cursor:pointer;line-height:1.6;box-shadow:0 5px 12px -7px rgba(40,28,14,.7)}
-.leaf:hover{transform:translateY(-2px)}
-.leaf.dim{opacity:.62}
-/* วลีแม่ (ทางกลับ) */
-.pars{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;align-items:center}
-.par{background:var(--surface);border:1px solid var(--line2);border-radius:10px;padding:8px 13px;
-  font-family:inherit;font-size:14.5px;line-height:1.65;color:var(--ink);cursor:pointer;
-  max-width:min(520px,100%);text-align:left}
-.par:hover{border-color:var(--primary)}
-
-/* หมวด → กิ่ง */
-.cats{display:flex;flex-direction:column;gap:14px}
-.catrow{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
-@media(max-width:520px){.catrow{grid-template-columns:1fr;gap:10px}
-  .catnode{justify-self:start}.blist{padding-left:14px}}
-.catnode{align-self:start;background:var(--cc);color:#fffaf0;border-radius:9px;padding:6px 13px;
-  font-size:13.5px;font-weight:700;white-space:nowrap;box-shadow:0 5px 13px -8px rgba(40,28,14,.75)}
-.catnode span{display:block;font-size:11px;font-weight:400;opacity:.88;white-space:normal;max-width:150px}
-.blist{display:flex;flex-direction:column;gap:6px;padding-top:2px}
-.bnode{display:flex;gap:8px;align-items:flex-start;background:var(--surface);
-  border:1px solid var(--line2);border-left:3px solid var(--cc);border-radius:0 9px 9px 0;padding:6px 10px}
-.bnode.old{background:none;border-style:dashed;border-left-style:dashed}
-.bp{flex:1;font-size:13.5px;line-height:1.6;color:var(--ink2)}
-.bp .src{font-size:10.5px;color:var(--faint);margin-left:6px}
-.x{border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit}
-.x:hover{color:var(--accent)}
-.addb{align-self:flex-start;font-size:11.5px;padding:3px 11px;border-radius:20px;border:1px dashed var(--line);
-  background:none;color:var(--dim);cursor:pointer;font-family:inherit}
-.addcat{margin-top:12px;font-size:12.5px;border:none;background:none;color:var(--primary);
-  cursor:pointer;font-family:inherit;padding:0}
-
-/* ฝั่งแก้ไข */
-label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin:0 0 4px}
-.f{width:100%;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--surface);
-  color:var(--ink);font-family:inherit;font-size:14.5px;outline:none;margin-bottom:11px}
-.two{display:flex;gap:9px}.two>div{flex:1;min-width:0}
-.acts{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
-.acts .sp{flex:1}
-.bt{padding:8px 14px;border-radius:9px;font-family:inherit;font-size:14px;cursor:pointer}
-.del{border:1px solid #e6c3b7;background:#faf1ee;color:var(--accent)}
-:root[data-theme=dark] .del{border-color:#5c3a30;background:#33231e}
-.can{border:1px solid var(--line);background:transparent;color:var(--ink2)}
-.ok{border:none;background:var(--primary);color:#fbf3e2;font-weight:600;padding:8px 20px}
-
-.foot{max-width:1200px;margin:14px auto 40px;padding:13px 16px 0;border-top:1px solid var(--line2);
-  color:var(--faint);font-size:12.5px;line-height:1.8}
-.foot b{color:var(--ink2)}
+@media(max-width:560px){
+  [data-r=catrow]{grid-template-columns:1fr!important;gap:9px!important}
+  [data-r=catwrap]{padding-left:16px!important}
+}
+.sd:hover{border-color:var(--primary)!important;color:var(--ink)!important}
+.lf:hover{filter:brightness(1.06)}
 </style>
 
-<div class="head">
-  <h1>หน้าต่างคำ</h1>
-  <p>ภาพร่างป๊อปอัปที่เด้งขึ้นมาตอนกดคำในหน้าคลังคำ — ซ้ายคือผังเส้นโยง ขวาคือช่องแก้ไขเดิมของเว็บ</p>
-  <button id="tog">สลับกลางวัน / กลางคืน</button>
-</div>
-<div class="pick"><b>ดูตัวอย่าง</b><span id="pk"></span></div>
+<div style="max-width:1180px;margin:0 auto;padding:30px 20px 60px">
 
-<div class="scene">
-  <div class="behind">
-    <h4>คลังคำ · หมวด 1 บรรยากาศ แสง สี และสถานที่</h4>
-    <div class="bgrid" id="bg"></div>
-  </div>
-  <div class="veil"></div>
-  <div class="modal">
-    <div class="side">
-      <p class="cap">ผังเส้นโยง</p>
-      <div class="map" id="map"><svg class="links" id="svg"></svg></div>
+  <div style="display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap">
+    <div style="min-width:0">
+      <div style="font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint)">ม็อคอัพ · คลังคำ</div>
+      <h1 style="font-size:27px;font-weight:700;margin:2px 0 0;line-height:1.3;letter-spacing:.01em">หน้าต่างคำ</h1>
     </div>
-    <div class="side">
-      <p class="cap">แก้ไข</p>
-      <div id="form"></div>
+    <p style="margin:0;color:var(--dim);font-size:13.5px;line-height:1.7;flex:1;min-width:220px;max-width:520px">ป๊อปอัปที่เด้งขึ้นมาตอนกดคำในหน้าคลังคำ — ฝั่งซ้ายคือผังเส้นโยงทั้งคลัง ฝั่งขวาคือช่องแก้ไขเดิมของเว็บ</p>
+    <button class="sd" id="tog" style="border:1px solid var(--line);background:var(--panel);color:var(--ink2);font-family:inherit;font-size:12.5px;cursor:pointer;padding:6px 14px;border-radius:20px;line-height:1.5">โหมดกลางคืน</button>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;margin:22px 0 0">
+    <div style="height:1px;flex:1;background:var(--line)"></div>
+    <div style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--faint);white-space:nowrap">ตัวอย่างจากคลังจริง</div>
+    <div style="height:1px;flex:1;background:var(--line)"></div>
+  </div>
+
+  <div id="seeds" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0 0"></div>
+
+  <div data-r="scene" style="position:relative;margin:22px 0 0;padding:30px 26px;background:var(--page);border:1px solid var(--line2);border-radius:16px;overflow:hidden">
+    <div data-r="behind" style="position:absolute;inset:0;padding:18px 20px;filter:blur(1.8px);opacity:.5;pointer-events:none;user-select:none">
+      <div style="font-size:13px;color:var(--dim);margin-bottom:10px">คลังคำ · หมวด 1 บรรยากาศ แสง สี และสถานที่</div>
+      <div id="behind" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px"></div>
+    </div>
+    <div data-r="veil" style="position:absolute;inset:0;background:rgba(48,38,26,.4);backdrop-filter:blur(2.5px)"></div>
+
+    <div data-r="modal" style="position:relative;background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 30px 80px -24px rgba(38,26,12,.5),0 2px 0 rgba(255,255,255,.5) inset;animation:pop .28s ease">
+      <div data-el="map" id="map" style="position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-areas:'hero hero' 'left right'">
+        <svg data-el="svg" id="svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:0"></svg>
+        <div id="heroArea" style="grid-area:hero;position:relative;z-index:1;padding:20px 24px 0;min-width:0"></div>
+        <div style="grid-area:left;position:relative;min-width:0;padding:18px 24px 26px">
+          <div data-r="catwrap" id="cats" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:18px"></div>
+        </div>
+        <div data-r="side2" id="side2" style="grid-area:right;position:relative;padding:18px 22px 26px;border-left:1px solid var(--line);min-width:0"></div>
+      </div>
     </div>
   </div>
+
+  <div id="foot" style="margin:20px 0 0;padding-top:14px;border-top:1px solid var(--line2);color:var(--faint);font-size:12.5px;line-height:1.85"></div>
 </div>
-<p class="foot" id="foot"></p>
 
 <script>
 const D = __DATA__, N = D.nodes, F = D.facts;
-/* จานสีคำสกัด — ชุดเดียวกับที่หน้าตรวจทานของจริงใช้ไฮไลต์คำที่ AI ดึงจากประโยค */
 const PAL = ['#8f6b4a','#5f7f92','#a86a79','#6f8a56','#7c6a99','#3f7d6c','#96603a'];
-const CATCOL = ['#5e7a4a','#9a5a63','#8a6a3c','#4d6c86','#6d5f8c','#3f7a6b','#8a6540','#4a6f7a',
-                '#7a6a4a','#96603a','#7e4f66','#557a55','#5f5f8a','#8a6a3a','#6f7a45'];
-const ccol = n => CATCOL[(n - 1) % CATCOL.length];
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const KIND = { word: 'คำ', phrase: 'วลี', sentence: 'ประโยค' };
 const CATS = ['1 บรรยากาศ แสง สี และสถานที่','2 รูปลักษณ์และลักษณะบุคคล','3 กริยา ท่าทาง และการเคลื่อนไหว',
   '4 เสียง','5 สภาวะภายใน','6 คำปรุงแต่งและคำอเนกประสงค์','15 บทบรรยายและภาพรวมฉาก'];
+const BEHIND = ['แสงสลัวราง','ม่านหมอก','ฟ้าสาง','เงาทาบ','ลมโชย','ครึ้มฟ้าครึ้มฝน','แดดจ้า','สนธยา','อรุณรุ่ง','มืดตึดตื๋อ','ละอองฝน','แสงเรือง'];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-document.getElementById('bg').innerHTML =
-  ['แสงสลัวราง','ม่านหมอก','ฟ้าสาง','เงาทาบ','ลมโชย','ครึ้มฟ้าครึ้มฝน','แดดจ้า','สนธยา','อรุณรุ่ง','มืดตึดตื๋อ','ละอองฝน','แสงเรือง']
-    .map(t => `<div class="bcard">${t}</div>`).join('');
-document.getElementById('pk').innerHTML = D.seeds.map(t =>
-  `<button data-sp="${esc(t)}" aria-pressed="false">${esc(t.length > 26 ? t.slice(0, 24) + '…' : t)}</button>`).join(' ');
+/* ไล่สีหมวด: น้ำตาลเข้มอิ่ม → จางลง (หมวดที่มีกิ่งเยอะที่สุดเข้มที่สุด) */
+const ramp = (i, n) => `oklch(${(34 + (n > 1 ? i * (17 / (n - 1)) : 0)).toFixed(1)}% ${Math.max(0.018, 0.062 - i * 0.011).toFixed(3)} 58)`;
+/* ไล่สีจากหมวดตั้งต้น (เข้ม) ลงไปทีละชั้นจนถึงหมวดย่อย (จาง) — depth ลบ = เข้มกว่าฐาน */
+const tint = (base, depth, alpha) => {
+  const m = /oklch\(([\d.]+)%\s*([\d.]+)\s*([\d.]+)\)/.exec(base);
+  if (!m) return base;
+  const L = +m[1], C = +m[2], H = +m[3];
+  const L2 = Math.max(8, Math.min(78, L + depth * 8)).toFixed(1), C2 = Math.max(0.024, C - depth * 0.006).toFixed(3);
+  return alpha != null ? `oklch(${L2}% ${C2} ${H} / ${alpha})` : `oklch(${L2}% ${C2} ${H})`;
+};
 
-/* ระบายสีคำสกัดลงในวลี — คำที่ซ้อนอยู่ในคำที่ยาวกว่าจะระบายทับกันไม่ได้ คืน used กลับไปด้วย */
+let cur = null, stack = [], theme = null, animKey = null;
+
+document.getElementById('behind').innerHTML = BEHIND.map(b =>
+  `<div style="background:var(--surface);border:1px solid var(--line2);border-left:3px solid var(--faint);border-radius:9px;padding:9px 10px;font-size:14px;color:var(--ink2);min-height:42px">${esc(b)}</div>`).join('');
+
+/* ระบายสีคำสกัดลงในวลี — คำที่ซ้อนในคำยาวกว่าระบายทับกันไม่ได้ จึงคืน used กลับไปด้วย */
 function paint(sentence, words) {
   const hit = [];
   words.forEach((w, i) => {
@@ -295,157 +226,333 @@ function paint(sentence, words) {
     while (w && (at = sentence.indexOf(w, f)) !== -1) { hit.push({ a: at, b: at + w.length, i }); f = at + w.length; }
   });
   hit.sort((x, y) => x.a - y.a || (y.b - y.a) - (x.b - x.a));
-  let out = '', cur = 0; const used = new Set();
+  let out = '', c0 = 0; const used = new Set();
   for (const h of hit) {
-    if (h.a < cur) continue;
-    out += esc(sentence.slice(cur, h.a));
+    if (h.a < c0) continue;
+    out += esc(sentence.slice(c0, h.a));
     const c = PAL[h.i % PAL.length];
     used.add(h.i);
-    out += `<mark data-m="${h.i}" style="--c1:${c}30;--c2:${c}">${esc(sentence.slice(h.a, h.b))}</mark>`;
-    cur = h.b;
+    out += `<span data-m="${h.i}" style="background:${c}2e;border-radius:3px;padding:1px 2px;`
+      + `box-shadow:inset 0 -0.14em 0 ${c};-webkit-box-decoration-break:clone;box-decoration-break:clone">`
+      + esc(sentence.slice(h.a, h.b)) + '</span>';
+    c0 = h.b;
   }
-  return { html: out + esc(sentence.slice(cur)), used };
+  return { html: out + esc(sentence.slice(c0)), used };
 }
 
-let cur = null;
-function render(t) {
-  const n = N[t], map = document.getElementById('map');
-  const isSrc = n.kids.length > 0;
-  const pt = isSrc ? paint(t, n.kids) : { html: esc(t), used: new Set() };
+/* เรียงคำสกัดตามลำดับที่ปรากฏในวลี — ไม่ให้เส้นไขว้กันเอง */
+function order(sentence, kids) {
+  return kids.map(w => ({ w, at: sentence.indexOf(w), len: w.length }))
+    .sort((a, b) => a.at - b.at || b.len - a.len).map(x => x.w);
+}
 
+/* แตกเส้นทางกิ่ง (a / b / c) เป็นชั้น ๆ — ชั้นที่ซ้ำกันยุบรวมเป็นก้อนเดียว */
+function tree(list, no, c) {
+  const root = { kids: new Map() };
+  list.forEach(x => {
+    let cu = root;
+    x.path.split(' / ').forEach((p, i, arr) => {
+      if (!cu.kids.has(p)) cu.kids.set(p, { name: p, kids: new Map(), leaf: null });
+      cu = cu.kids.get(p);
+      if (i === arr.length - 1) cu.leaf = x;
+    });
+  });
+  const rows = [];
+  const walk = (node, depth, pid) => {
+    [...node.kids.values()].forEach((k, i) => {
+      const id = pid ? pid + '.' + i : no + '.' + i;
+      const isLeaf = !!k.leaf, old = isLeaf && k.leaf.from === 'เดิม';
+      /* สามโทนตายตัว: เข้ม = หมวด+ชั้นแรก · กลาง = ชั้นถัดไป · จางสุด = ปลายกิ่ง */
+      const tone = isLeaf ? 2 : (depth === 0 ? 0 : 1);
+      const toneColor = tint(c, [0, 4, 8][tone]), toneBg = isLeaf ? 'var(--surface)' : tint(c, [1, 5][tone], [.16, .11][tone]);
+      rows.push({
+        id, p: pid || '', name: k.name, isLeaf,
+        tail: old ? 'จากคลังเดิม' : '',
+        tailStyle: `font-size:10.5px;color:var(--faint);flex:none;line-height:1.9;${old ? '' : 'letter-spacing:.02em'}`,
+        textStyle: isLeaf
+          ? 'flex:1;min-width:0;font-size:13.5px;line-height:1.65;color:var(--ink)'
+          : 'flex:1;min-width:0;font-size:12.5px;line-height:1.5;color:var(--ink);font-weight:600',
+        style: `display:flex;gap:9px;align-items:${isLeaf ? 'flex-start' : 'center'};margin-left:${depth * 22}px;`
+          + `background:${old ? 'none' : toneBg};border-width:1px;border-style:${old ? 'dashed' : 'solid'};`
+          + `border-color:var(--line2);border-left-width:4px;border-left-style:${old ? 'dashed' : 'solid'};`
+          + `border-left-color:${toneColor};border-radius:0 11px 11px 0;padding:${isLeaf ? '7px 11px' : '6px 13px'};min-width:0`
+      });
+      walk(k, depth + 1, id);
+    });
+  };
+  walk(root, 0, '');
+  return rows;
+}
+
+function render(t) {
+  const n = N[t];
+  const isSrc = n.kids.length > 0;
+  const kids = isSrc ? order(t, n.kids) : [];
+  const pt = isSrc ? paint(t, kids) : { html: esc(t), used: new Set() };
   const byCat = new Map();
   n.paths.forEach(x => { if (!byCat.has(x.no)) byCat.set(x.no, { cat: x.cat, list: [] }); byCat.get(x.no).list.push(x); });
 
+  /* ── หัวผัง + วลีแม่ + คำหลัก + คำสกัด ── */
   const h = [];
-  /* วลีแม่ — วางไว้เหนือคำหลัก แล้วลากเส้นลงมา */
-  if (n.parents.length) h.push('<div class="pars" id="pars">' + n.parents.map((p, i) => {
-    const q = paint(p, [t]);
-    return `<button class="par" data-go="${esc(p)}" data-p="${i}">${q.html}</button>`;
-  }).join('') + '</div>');
+  h.push('<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
+    + '<div style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);white-space:nowrap">ผังเส้นโยง</div>'
+    + '<div style="height:1px;flex:1;background:var(--line)"></div>'
+    + (stack.length ? '<button class="sd" id="back" style="border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-family:inherit;font-size:12px;padding:3px 12px;border-radius:16px;cursor:pointer;white-space:nowrap">‹ ย้อนกลับ</button>' : '')
+    + '</div>');
 
-  h.push('<div class="heroWrap"><div class="hero" id="hero">'
-    + `<span class="eb">${n.parents.length ? 'คำที่กำลังดู' : 'วลีตั้งต้น'}</span>`
-    + `<div class="tx">${pt.html}</div>`
-    + `<div class="mt">${KIND[n.kind] || 'คำ'} · เกาะอยู่ ${n.paths.length} กิ่ง ใน ${byCat.size} หมวด`
-    + (n.novels.length > 1 ? ` · เจอใน ${n.novels.length} เรื่อง` : '')
-    + (n.meaning ? ` · ${esc(n.meaning)}` : '') + '</div></div></div>');
+  if (n.parents.length) h.push('<div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:9px;margin-bottom:26px">'
+    + '<div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);background:var(--panel);padding:0 9px;border-radius:10px">แตกมาจาก</div>'
+    + n.parents.map(p => `<button class="sd" data-el="par" data-go="${esc(p)}" style="background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:9px 15px;font-family:inherit;font-size:14.5px;line-height:1.7;color:var(--ink);cursor:pointer;max-width:min(540px,100%);text-align:left">${paint(p, [t]).html}</button>`).join('')
+    + '</div>');
 
-  if (isSrc) h.push('<div class="leaves" id="leaves">' + n.kids.map((k, i) =>
-    `<button class="leaf${pt.used.has(i) ? '' : ' dim'}" data-go="${esc(k)}" data-k="${i}"`
-    + ` style="background:${PAL[i % PAL.length]}">${esc(k)}</button>`).join('') + '</div>');
+  h.push('<div data-el="hero" style="position:relative;z-index:1;background:var(--surface);border:2px solid var(--primary);border-radius:15px;padding:16px 24px 15px;box-shadow:0 14px 30px -18px rgba(40,28,14,.6);width:100%;text-align:center;margin-bottom:34px">'
+    + `<span style="display:inline-block;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:#fdf6e8;background:var(--accent);border-radius:12px;padding:2px 11px;margin-bottom:9px;line-height:1.9">${n.parents.length ? 'คำที่กำลังดู' : 'วลีตั้งต้น'}</span>`
+    + `<div style="font-size:clamp(22px,2.6vw,32px);font-weight:700;line-height:1.55;color:var(--ink);word-break:break-word">${pt.html}</div>`
+    + `<div style="font-size:12px;color:var(--dim);margin-top:8px;letter-spacing:.02em">`
+    + [KIND[n.kind] || 'คำ', `เกาะอยู่ ${n.paths.length} กิ่ง ใน ${byCat.size} หมวด`]
+        .concat(n.novels.length > 1 ? [`เจอใน ${n.novels.length} เรื่อง`] : []).join(' · ') + '</div>'
+    + (n.meaning ? `<div style="font-size:13.5px;color:var(--ink2);margin-top:6px;padding-top:7px;border-top:1px solid var(--line2);display:inline-block">${esc(n.meaning)}</div>` : '')
+    + '</div>');
 
-  h.push('<div class="cats" id="cats">' + [...byCat.entries()].map(([no, g]) =>
-    `<div class="catrow" style="--cc:${ccol(no)}"><div class="catnode" data-c="${no}">หมวด ${no}<span>${esc(g.cat)}</span></div>`
-    + '<div class="blist">' + g.list.map(x =>
-      `<div class="bnode${x.from === 'เดิม' ? ' old' : ''}" data-b="${no}"><span class="bp">${esc(x.path)}`
-      + (x.from === 'เดิม' ? '<span class="src">จากคลังเดิม</span>' : '') + '</span><button class="x">✕</button></div>').join('')
-    + '<button class="addb">＋ เพิ่มกิ่งในหมวดนี้</button></div></div>').join('')
-    + '</div><button class="addcat">＋ เพิ่มหมวด</button>');
+  if (isSrc) h.push('<div style="position:relative;z-index:1;display:flex;gap:12px;align-items:flex-start;margin-bottom:26px">'
+    + '<div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);white-space:nowrap;padding-top:9px">แตกออกเป็น</div>'
+    + '<div style="display:flex;gap:26px 9px;flex-wrap:wrap;justify-content:center;flex:1">'
+    + kids.map((k, i) => `<button class="lf" data-el="leaf" data-k="${i}" data-go="${esc(k)}" style="border:none;border-radius:20px;padding:6px 16px;font-family:inherit;font-size:15px;color:#fffaf0;cursor:pointer;line-height:1.6;background:${PAL[i % PAL.length]};box-shadow:0 6px 14px -8px rgba(40,28,14,.75),inset 0 1px 0 rgba(255,255,255,.22);opacity:${pt.used.has(i) ? 1 : .62}">${esc(k)}</button>`).join('')
+    + '</div></div>');
+  document.getElementById('heroArea').innerHTML = h.join('');
 
-  map.innerHTML = '<svg class="links" id="svg"></svg>' + h.join('');
-  document.getElementById('form').innerHTML =
-    `<label>คำ / วลี</label><input class="f" value="${esc(t)}">`
-    + `<label>ความหมาย (ไม่บังคับ)</label><input class="f" value="${esc(n.meaning)}" placeholder="ยังไม่ได้ใส่">`
-    + '<div class="two"><div><label>ชนิด</label><select class="f">'
-    + ['word','phrase','sentence'].map(k => `<option${k === n.kind ? ' selected' : ''}>${KIND[k]}</option>`).join('')
-    + '</select></div><div><label>หมวดหลัก</label><select class="f">'
-    + CATS.map(c => `<option${+c.split(' ')[0] === n.paths[0].no ? ' selected' : ''}>หมวด ${c}</option>`).join('')
-    + '</select></div></div><label>จากเรื่อง</label>'
-    + n.novels.map(v => `<input class="f" value="${esc(v)}">`).join('')
-    + '<div class="acts"><button class="bt del">ลบคำนี้</button><span class="sp"></span>'
-    + '<button class="bt can">ยกเลิก</button><button class="bt ok">บันทึก</button></div>';
+  /* ── หมวดและกิ่ง: เรียงตามจำนวนกิ่งมากไปน้อย แล้วไล่สีเข้ม → จาง ── */
+  const cats = [...byCat.entries()].sort((x, y) => y[1].list.length - x[1].list.length || x[0] - y[0]);
+  document.getElementById('cats').innerHTML = cats.map(([no, g], i) => {
+    const col = ramp(i, cats.length);
+    return `<div data-r="catrow" data-el="catrow" style="display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start">`
+      + `<div data-el="catnode" data-c="${no}" data-col="${col}" style="align-self:start;background:${col};color:#fffaf0;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2)">`
+      + `<div style="font-size:13px;font-weight:700;letter-spacing:.04em">หมวด ${no}</div>`
+      + `<div style="font-size:11px;font-weight:400;opacity:.9;white-space:normal;max-width:148px;line-height:1.5">${esc(g.cat)}</div></div>`
+      + '<div style="display:flex;flex-direction:column;gap:5px;padding-top:2px;min-width:0">'
+      + tree(g.list, no, col).map(b =>
+        `<div data-el="tnode" data-id="${b.id}" data-p="${b.p}" style="${b.style}">`
+        + `<span style="${b.textStyle}">${esc(b.name)}</span>`
+        + `<span style="${b.tailStyle}">${esc(b.tail)}</span>`
+        + (b.isLeaf ? '<button style="border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit;line-height:1.9;flex:none">✕</button>' : '')
+        + '</div>').join('')
+      + '<button class="sd" style="align-self:flex-start;font-size:11.5px;padding:3px 12px;border-radius:20px;border:1px dashed var(--line);background:none;color:var(--dim);cursor:pointer;font-family:inherit;line-height:1.7">＋ เพิ่มกิ่งในหมวดนี้</button>'
+      + '</div></div>';
+  }).join('')
+    + '<button class="sd" style="align-self:flex-start;font-size:12.5px;border:none;background:none;color:var(--primary);cursor:pointer;font-family:inherit;padding:0;border-bottom:1px solid var(--line)">＋ เพิ่มหมวด</button>';
 
-  requestAnimationFrame(() => wire(t));
-  document.querySelectorAll('[data-sp]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sp === t)));
+  /* ── ฝั่งแก้ไข ── */
+  const lab = s => `<label style="display:block;font-size:11px;letter-spacing:.08em;font-weight:600;color:var(--ink2);margin:0 0 5px">${s}</label>`;
+  const fld = 'width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-family:inherit;font-size:14.5px;outline:none';
+  const sec = s => `<div style="font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--line2)">${s}</div>`;
+  document.getElementById('side2').innerHTML =
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
+    + '<div style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);white-space:nowrap">แก้ไข</div>'
+    + '<div style="height:1px;flex:1;background:var(--line)"></div></div>'
+    + '<div style="font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-bottom:10px">ข้อมูลคำ</div>'
+    + lab('คำ / วลี') + `<input value="${esc(t)}" style="${fld};margin-bottom:12px">`
+    + lab('ความหมาย (ไม่บังคับ)') + `<input value="${esc(n.meaning)}" placeholder="ยังไม่ได้ใส่" style="${fld}">`
+    + sec('หมวดหมู่')
+    + lab('ชนิด') + `<select style="${fld};margin-bottom:12px">`
+      + Object.keys(KIND).map(k => `<option${k === n.kind ? ' selected' : ''}>${KIND[k]}</option>`).join('') + '</select>'
+    + lab('หมวดหลัก') + `<select style="${fld}">`
+      + CATS.map(c => `<option${+c.split(' ')[0] === n.paths[0].no ? ' selected' : ''}>หมวด ${esc(c)}</option>`).join('') + '</select>'
+    + sec('อ้างอิง')
+    + n.novels.map(v => `<input value="${esc(v)}" style="${fld};margin-bottom:8px">`).join('')
+    + '<div style="font-size:11.5px;color:var(--faint);line-height:1.7;margin:14px 0 0">ชิปหมวดย่อยย้ายไปอยู่ในผังฝั่งซ้ายแล้ว — เพิ่มหรือลบกิ่งได้จากที่นั่น</div>'
+    + '<div style="display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line2);flex-wrap:wrap">'
+    + '<span style="font-size:12.5px;color:var(--accent);border-bottom:1px solid var(--danger-line);cursor:pointer">ลบคำนี้</span>'
+    + '<span style="flex:1"></span>'
+    + '<button class="sd" style="padding:9px 15px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink2)">ยกเลิก</button>'
+    + '<button style="padding:9px 22px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;border:none;background:var(--primary);color:#fbf3e2;font-weight:600">บันทึก</button></div>';
+
+  document.querySelectorAll('#seeds button').forEach(b =>
+    b.style.cssText = seedStyle(b.dataset.sp === t));
+  const bk = document.getElementById('back');
+  if (bk) bk.onclick = () => { const s = stack.pop(); if (s) { cur = s; render(s); } };
+  requestAnimationFrame(draw);
 }
 
-/* ลากเส้นโยง — วัดตำแหน่งจริงของแต่ละชิ้นแล้ววาดเส้นโค้งทับ */
-function wire(t) {
-  const map = document.getElementById('map'), svg = document.getElementById('svg');
+/* ลากเส้นโยง — ท่อร่วมมุมฉาก: เส้นตั้งฉากลงมารวมที่รางเดียวแล้วแยกเข้าปลายทาง ไม่มีเส้นไขว้ */
+function draw() {
+  const map = document.querySelector('[data-el=map]'), svg = document.querySelector('[data-el=svg]');
+  if (!map || !svg) return;
   const R = map.getBoundingClientRect();
   const rel = el => { const b = el.getBoundingClientRect(); return { x: b.left - R.left, y: b.top - R.top, w: b.width, h: b.height }; };
-  const relMark = el => { const b = el.getClientRects()[0] || el.getBoundingClientRect();
-    return { x: b.left - R.left, y: b.top - R.top, w: b.width, h: b.height }; };
-  const P = [];
-  const curveV = (x1, y1, x2, y2) => { const d = Math.max(18, (y2 - y1) * .45);
-    return `M${x1.toFixed(1)} ${y1.toFixed(1)}C${x1.toFixed(1)} ${(y1 + d).toFixed(1)} ${x2.toFixed(1)} ${(y2 - d).toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`; };
-  const curveH = (x1, y1, x2, y2) => { const d = Math.max(14, (x2 - x1) * .5);
-    return `M${x1.toFixed(1)} ${y1.toFixed(1)}C${(x1 + d).toFixed(1)} ${y1.toFixed(1)} ${(x2 - d).toFixed(1)} ${y2.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`; };
-
-  const hero = document.getElementById('hero');
+  const relMark = el => { const b = el.getClientRects()[0] || el.getBoundingClientRect(); return { x: b.left - R.left, y: b.top - R.top, w: b.width, h: b.height }; };
+  const f = v => (+v).toFixed(1);
+  const V = (x, y1, y2) => `M${f(x)} ${f(y1)}L${f(x)} ${f(y2)}`;
+  const H = (y, x1, x2) => `M${f(x1)} ${f(y)}L${f(x2)} ${f(y)}`;
+  /* เส้นหักมุมฉากตามชุดจุด มุมโค้งรัศมีเล็ก */
+  const poly = pts => {
+    let d = `M${f(pts[0].x)} ${f(pts[0].y)}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const p = pts[i], a = pts[i - 1], b = pts[i + 1];
+      const ux = Math.sign(p.x - a.x), uy = Math.sign(p.y - a.y);
+      const vx = Math.sign(b.x - p.x), vy = Math.sign(b.y - p.y);
+      if (ux === vx && uy === vy) continue;
+      const r = Math.max(0, Math.min(9, Math.hypot(p.x - a.x, p.y - a.y) / 2, Math.hypot(b.x - p.x, b.y - p.y) / 2));
+      d += `L${f(p.x - ux * r)} ${f(p.y - uy * r)}Q${f(p.x)} ${f(p.y)} ${f(p.x + vx * r)} ${f(p.y + vy * r)}`;
+    }
+    const e = pts[pts.length - 1];
+    return d + `L${f(e.x)} ${f(e.y)}`;
+  };
+  const orth = (x1, y1, x2, y2, my) =>
+    Math.abs(x2 - x1) < 2 ? V(x1, y1, y2) : poly([{ x: x1, y: y1 }, { x: x1, y: my }, { x: x2, y: my }, { x: x2, y: y2 }]);
+  /* ลงแล้วเลี้ยวออกขวา */
+  const elbow = (x1, y1, x2, y2) => {
+    const r = Math.max(2, Math.min(9, Math.abs(y2 - y1), Math.abs(x2 - x1)));
+    return `M${f(x1)} ${f(y1)}L${f(x1)} ${f(y2 - r)}Q${f(x1)} ${f(y2)} ${f(x1 + r)} ${f(y2)}L${f(x2)} ${f(y2)}`;
+  };
+  const P = [], dots = [];
+  const hero = map.querySelector('[data-el=hero]');
   if (hero) {
-    const hb = rel(hero);
-    /* วลีแม่ → คำหลัก */
-    map.querySelectorAll('.par').forEach(el => {
-      const b = rel(el);
-      P.push([curveV(b.x + b.w / 2, b.y + b.h, hb.x + hb.w / 2, hb.y), 'var(--primary)', 1.8, .55]);
+    const hb = rel(hero), hbot = hb.y + hb.h;
+    [...map.querySelectorAll('[data-el=par]')].forEach(el => {
+      const b = rel(el), pbot = b.y + b.h;
+      P.push([orth(b.x + b.w / 2, pbot, hb.x + hb.w / 2, hb.y, pbot + (hb.y - pbot) * .5), 'var(--primary)', 1.7, .5, 0]);
     });
-    /* คำที่ไฮไลต์ในวลี → ใบไม้คำสกัด · เส้นสีเดียวกับที่ระบายไว้ในวลี
-       คำที่ซ้อนอยู่ในคำยาวกว่า (มืดครึ้ม อยู่ใน ท้องฟ้ามืดครึ้ม) ระบายทับกันไม่ได้
-       จึงลากเส้นออกจากคำยาวที่ครอบมันอยู่แทน เป็นเส้นประ — ทุกคำสกัดต้องมีเส้นโยง ไม่มีใครลอย */
-    const marks = [...map.querySelectorAll('mark')];
-    map.querySelectorAll('.leaf').forEach(leaf => {
-      const i = +leaf.dataset.k, txt = leaf.textContent;
-      let m = marks.find(x => +x.dataset.m === i), dash = 0;
-      if (!m) { m = marks.find(x => x.textContent.includes(txt)); dash = 1; }
-      if (!m) return;
-      const a = relMark(m), b = rel(leaf);
-      P.push([curveV(a.x + a.w / 2, a.y + a.h + 2, b.x + b.w / 2, b.y),
-        PAL[i % PAL.length], dash ? 1.4 : 2.2, dash ? .55 : .95, dash]);
-    });
-    /* คำหลัก → ป้ายหมวด */
-    map.querySelectorAll('.catnode').forEach(el => {
-      const b = rel(el);
-      P.push([curveV(hb.x + Math.min(hb.w / 2, 90), hb.y + hb.h, b.x + Math.min(b.w / 2, 40), b.y), ccol(+el.dataset.c), 2, .8]);
-    });
+    const marks = [...hero.querySelectorAll('[data-m]')];
+    const leaves = [...map.querySelectorAll('[data-el=leaf]')];
+    if (leaves.length) {
+      /* จับชิปเป็นแถวตามตำแหน่งจริง — แต่ละเส้นได้รางเป็นของตัวเอง ไม่วิ่งทับกัน
+         เรียงราง: เส้นที่ต้องวิ่งไกลจากกลางการ์ดอยู่รางบน เส้นสั้นอยู่รางล่าง ได้รูปพัดคลี่ */
+      const boxes = leaves.map(el => ({ el, b: rel(el) })), rows = [];
+      boxes.forEach(o => {
+        const r = rows.find(r => Math.abs(r.top - o.b.y) < 6);
+        if (r) { r.items.push(o); r.bot = Math.max(r.bot, o.b.y + o.b.h); }
+        else rows.push({ top: o.b.y, bot: o.b.y + o.b.h, items: [o] });
+      });
+      rows.sort((x, y) => x.top - y.top);
+      const mapW = map.clientWidth;
+      const spineL = Math.max(5, Math.min(...boxes.map(o => o.b.x)) - 14);
+      const spineR = Math.min(mapW - 5, Math.max(...boxes.map(o => o.b.x + o.b.w)) + 14);
+      const roomL = Math.min(...boxes.map(o => o.b.x)) - spineL >= 10;
+      const roomR = spineR - Math.max(...boxes.map(o => o.b.x + o.b.w)) >= 10;
+      const hc = hb.x + hb.w / 2;
+      let prev = hbot;
+      rows.forEach(r => {
+        const gap = r.top - prev;
+        r.band = [prev + gap * (rows.length > 1 ? .22 : .3), prev + gap * .82];
+        prev = r.bot;
+        r.conns = [];
+        r.items.forEach(o => {
+          const i = +o.el.dataset.k, txt = o.el.textContent;
+          let m = marks.find(x => +x.dataset.m === i), dash = 0;
+          if (!m) { m = marks.find(x => x.textContent.includes(txt)); dash = 1; }
+          if (!m) return;
+          const a = relMark(m);
+          r.conns.push({
+            sx: Math.min(Math.max(a.x + a.w / 2, hb.x + 10), hb.x + hb.w - 10),
+            cx: o.b.x + o.b.w / 2, top: o.b.y, c: PAL[i % PAL.length], dash
+          });
+        });
+        const nn = r.conns.length;
+        [...r.conns].sort((p, q) => Math.abs(q.cx - hc) - Math.abs(p.cx - hc))
+          .forEach((o, k) => { o.lane = r.band[0] + (nn > 1 ? k * (r.band[1] - r.band[0]) / (nn - 1) : 0); });
+      });
+      rows.forEach((r, ri) => r.conns.forEach((o, k) => {
+        /* ชิปที่ตกไปแถวถัด ๆ ไป เลี้ยวลงข้างที่ใกล้ชิปเป้าหมายที่สุด (และมีที่ว่างพอ) */
+        const right = roomR && (o.cx > hc || !roomL);
+        const spine = right ? spineR - k * 3.5 : spineL + k * 3.5;
+        const y0 = rows[0].band[0] - 5 - k * 3.5;
+        const pts = ri === 0
+          ? [{ x: o.sx, y: hbot }, { x: o.sx, y: o.lane }, { x: o.cx, y: o.lane }, { x: o.cx, y: o.top }]
+          : [{ x: o.sx, y: hbot }, { x: o.sx, y: y0 }, { x: spine, y: y0 },
+             { x: spine, y: o.lane }, { x: o.cx, y: o.lane }, { x: o.cx, y: o.top }];
+        P.push([poly(pts), o.c, o.dash ? 1.3 : 1.9, o.dash ? .55 : .95, o.dash]);
+        dots.push([o.sx, hbot, o.c, 2.4, .9]);
+      }));
+    }
+    /* ลำต้นของหมวด: เส้นตั้งเส้นเดียวจากใต้การ์ด แตกข้อศอกเข้าแต่ละหมวด */
+    const crows = [...map.querySelectorAll('[data-el=catrow]')];
+    const nodes = crows.map(r => r.querySelector('[data-el=catnode]')).filter(Boolean);
+    if (nodes.length) {
+      const trunk = Math.max(6, hb.x + 15);
+      const stop = rel(nodes[nodes.length - 1]);
+      P.push([V(trunk, hbot, stop.y + 17), 'var(--line)', 1.6, 1, 0]);
+      dots.push([trunk, hbot, 'var(--primary)', 3, .45]);
+      nodes.forEach(node => {
+        const a = rel(node), c = node.dataset.col || 'var(--primary)';
+        P.push([elbow(trunk, Math.max(hbot, a.y - 10), a.x, a.y + 17), c, 1.8, .9, 0]);
+      });
+    }
   }
-  /* ป้ายหมวด → กิ่งของหมวดนั้น */
-  map.querySelectorAll('.catrow').forEach(row => {
-    const node = row.querySelector('.catnode'); if (!node) return;
-    const a = rel(node);
-    row.querySelectorAll('.bnode').forEach(bn => {
-      const b = rel(bn);
-      /* จอกว้างกิ่งอยู่ขวาของป้ายหมวด ลากเส้นแนวนอน · จอแคบกิ่งตกลงมาอยู่ใต้ป้าย ต้องลากแนวตั้งแทน
-         ไม่งั้นเส้นจะกวาดอ้อมไปข้างหลังป้ายหมวด ดูรก */
-      const below = b.y > a.y + a.h - 4;
-      P.push([below ? curveV(a.x + 22, a.y + a.h, b.x + 16, b.y)
-                    : curveH(a.x + a.w, a.y + a.h / 2, b.x, b.y + Math.min(b.h / 2, 16)),
-        ccol(+node.dataset.c), 1.6, .75]);
+  /* ในแต่ละหมวด: รางตั้งหนึ่งรางต่อหนึ่งชั้น แตกเส้นสั้นเข้าลูกของชั้นนั้น */
+  map.querySelectorAll('[data-el=catrow]').forEach(row => {
+    const node = row.querySelector('[data-el=catnode]'); if (!node) return;
+    const a = rel(node), c = node.dataset.col || 'var(--primary)';
+    const nodes = [...row.querySelectorAll('[data-el=tnode]')].map(el => ({ b: rel(el), id: el.dataset.id, p: el.dataset.p }));
+    if (!nodes.length) return;
+    const anchor = o => o.b.y + Math.min(o.b.h / 2, 15);
+    const byId = new Map(nodes.map(o => [o.id, o])), groups = new Map();
+    nodes.forEach(o => { const k = o.p || ''; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(o); });
+    groups.forEach((kids, pid) => {
+      const par = byId.get(pid);
+      const gd = kids[0].id.split('.').length - 2, gc = tint(c, gd + 1);
+      let railX, startY, deep = !!par;
+      if (par) { railX = par.b.x + 11; startY = par.b.y + par.b.h - 1; }
+      else if (kids[0].b.y > a.y + a.h - 4) { railX = a.x + 20; startY = a.y + a.h; }
+      else { railX = a.x + a.w + 15; startY = a.y + 17; P.push([H(startY, a.x + a.w, railX), gc, 1.6, .7, 0]); }
+      P.push([V(railX, startY, anchor(kids[kids.length - 1])), gc, deep ? 1.2 : 1.4, deep ? .5 : .6, 0]);
+      kids.forEach(o => {
+        const y = anchor(o);
+        P.push([H(y, railX, o.b.x), gc, deep ? 1.2 : 1.4, deep ? .55 : .65, 0]);
+        dots.push([o.b.x, y, gc, deep ? 1.7 : 2, .7]);
+      });
     });
   });
-
   svg.setAttribute('viewBox', `0 0 ${map.clientWidth} ${map.clientHeight}`);
   svg.innerHTML = P.map(([d, c, w, o, dash], i) =>
-    `<path class="lk${dash ? ' dash' : ''}" d="${d}" stroke="${c}" stroke-width="${w}" opacity="${o}"`
-    + ` style="animation-delay:${(i * .035).toFixed(2)}s"/>`).join('');
-  svg.querySelectorAll('path').forEach(q => {
-    const L = q.getTotalLength().toFixed(0);
-    if (q.classList.contains('dash')) { q.style.strokeDasharray = '4 5'; q.style.animation = 'none'; }
-    else q.style.setProperty('--len', L);
+    `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${o}"${dash ? ' stroke-dasharray="4 5"' : ' data-anim="1"'} style="animation-delay:${(i * .025).toFixed(2)}s"/>`).join('')
+    + dots.map(([x, y, c, r, o]) => `<circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}" opacity="${o}"/>`).join('');
+  /* เก็บกวาดเส้นยาวศูนย์ — เกิดตอนกิ่งชั้นนั้นมีลูกตัวเดียวและอยู่ระดับเดียวกับราง วาดไปก็มองไม่เห็น */
+  svg.querySelectorAll('path').forEach(q => { if (q.getTotalLength() < 2) q.remove(); });
+  /* วาดเส้นแบบไล่ทีละเส้นเฉพาะตอนเปลี่ยนคำ — ถ้าวาดใหม่เพราะเลย์เอาต์ขยับ ให้ขึ้นเต็มเส้นทันที
+     ใช้ transition ไม่ใช่ animation เพื่อให้จบที่ dashoffset 0 เสมอ แม้ถูกขัดกลางทาง */
+  const fresh = animKey !== cur;
+  animKey = cur;
+  if (!fresh) return;
+  svg.querySelectorAll('path[data-anim]').forEach(q => {
+    const L = q.getTotalLength().toFixed(0), d = q.style.animationDelay || '0s';
+    q.style.strokeDasharray = L; q.style.strokeDashoffset = L;
+    q.getBoundingClientRect();
+    q.style.transition = `stroke-dashoffset .55s ease ${d}`;
+    q.style.strokeDashoffset = '0';
   });
-
-  const sc = document.querySelector('.scene'), md = document.querySelector('.modal');
-  sc.style.height = innerWidth > 900 ? Math.max(500, md.offsetHeight + 52) + 'px' : '';
 }
 
-function go(t) { if (N[t]) { cur = t; render(t); } }
+const seedStyle = active => 'border:none;background:none;font-family:inherit;font-size:14.5px;cursor:pointer;'
+  + 'padding:3px 2px;line-height:1.6;border-bottom:1.5px solid '
+  + (active ? 'var(--accent);color:var(--accent)' : 'transparent;color:var(--ink2)');
+document.getElementById('seeds').innerHTML = D.seeds.map(s =>
+  `<button data-sp="${esc(s)}" style="${seedStyle(false)}">${esc(s.length > 26 ? s.slice(0, 24) + '…' : s)}</button>`).join('');
+
 document.addEventListener('click', e => {
-  const g = e.target.closest('[data-go]'); if (g) return go(g.dataset.go);
-  const s = e.target.closest('[data-sp]'); if (s) return go(s.dataset.sp);
+  const g = e.target.closest('[data-go]');
+  if (g) { const t = g.dataset.go; if (N[t] && t !== cur) { stack.push(cur); cur = t; render(t); } return; }
+  const s = e.target.closest('[data-sp]');
+  if (s) { stack = []; cur = s.dataset.sp; render(cur); }
 });
 document.getElementById('tog').onclick = () => {
   const r = document.documentElement;
-  const now = r.dataset.theme || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
-  r.dataset.theme = now === 'dark' ? 'light' : 'dark';
+  theme = (theme || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light')) === 'dark' ? 'light' : 'dark';
+  r.dataset.theme = theme;
+  document.getElementById('tog').textContent = theme === 'dark' ? 'โหมดกลางวัน' : 'โหมดกลางคืน';
+  requestAnimationFrame(draw);
 };
-let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => cur && render(cur), 160); });
-document.getElementById('foot').innerHTML =
-  'คำ วลี และกิ่งทุกอันในหน้านี้ดึงมาจากคลังจริง · ตัวเลขที่ทำให้ต้องมีระบบนี้ — '
-  + `<b>${F.crossOld}</b> คำในคลังเดิมถูกแตกเป็น ${F.dupRows} แถวเพราะคำหนึ่งอยู่ได้หมวดเดียว · `
-  + `<b>${F.overlap}</b> คำมีอยู่ทั้งสองคลัง · <b>${F.multiCat}</b> คำในคลังชุดใหม่เกาะกิ่งข้ามหมวด`;
-go(D.seeds[0]);
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(draw, 150); });
+if (window.ResizeObserver) new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(draw, 150); }).observe(document.body);
+if (document.fonts) document.fonts.ready.then(() => draw());
+[0, 150, 500, 1200].forEach(ms => setTimeout(draw, ms));
+
+document.getElementById('foot').textContent =
+  `คำ วลี และกิ่งทุกอันในหน้านี้ดึงมาจากคลังจริง · ตัวเลขที่ทำให้ต้องมีระบบนี้ — ${F.crossOld} คำในคลังเดิมถูกแตกเป็น ${F.dupRows} แถวเพราะคำหนึ่งอยู่ได้หมวดเดียว · ${F.overlap} คำมีอยู่ทั้งสองคลัง · ${F.multiCat} คำในคลังชุดใหม่เกาะกิ่งข้ามหมวด`;
+cur = D.seeds[0];
+render(cur);
 </script>
 '''
+
 body = BODY.replace('__FONTS__', FONTCSS).replace('__DATA__', DATA)
 full = ('<!doctype html>\n<html lang="th">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width,initial-scale=1">\n'

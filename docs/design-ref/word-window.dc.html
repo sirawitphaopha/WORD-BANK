@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="stylesheet" href="assets/trirong.css">
+<script src="assets/wordweb-data.js"></script>
+<style>
+:root{
+  --panel:#f8f2e4; --surface:#fffdf7; --line:#e2d3b0; --line2:#eadfc6;
+  --page:#e9dec6; --ink:#2f251c; --ink2:#5b4f43; --dim:#8a7d6d; --faint:#b3a488;
+  --accent:#9c3b2b; --primary:#6f4e37; --chip:#f1e9d6; --chipb:#e4d8bd;
+  --danger-bg:#faf1ee; --danger-line:#e6c3b7;
+}
+:root[data-theme=dark]{
+  --panel:#241d16; --surface:#2c241b; --line:#463a2a; --line2:#3d3325; --page:#15100a;
+  --ink:#f3e8d2; --ink2:#cdbfa6; --dim:#9d8e77; --faint:#6f6353;
+  --accent:#e8907a; --primary:#c69a6d; --chip:#332b21; --chipb:#453a2c;
+  --danger-bg:#3a2620; --danger-line:#6b4034;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:'Trirong',Georgia,serif;font-size:16px;line-height:1.78;-webkit-text-size-adjust:100%}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--primary)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:900px){
+  [data-el=map]{grid-template-columns:1fr!important;grid-template-areas:'hero' 'left' 'right'!important}
+  [data-r=side2]{border-left:none!important;border-top:1px solid var(--line)!important}
+  [data-r=behind],[data-r=veil]{display:none!important}
+  [data-r=scene]{padding:0!important;border:none!important;background:none!important}
+}
+@media(max-width:560px){
+  [data-r=catrow]{grid-template-columns:1fr!important;gap:9px!important}
+  [data-r=catwrap]{padding-left:16px!important}
+}
+</style>
+</helmet>
+<div style="max-width:1180px;margin:0 auto;padding:30px 20px 60px">
+
+  <div style="display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap">
+    <div style="min-width:0">
+      <div style="font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint)">ม็อคอัพ · คลังคำ</div>
+      <h1 style="font-size:27px;font-weight:700;margin:2px 0 0;line-height:1.3;letter-spacing:.01em">หน้าต่างคำ</h1>
+    </div>
+    <p style="margin:0;color:var(--dim);font-size:13.5px;line-height:1.7;flex:1;min-width:220px;max-width:520px;text-wrap:pretty">ป๊อปอัปที่เด้งขึ้นมาตอนกดคำในหน้าคลังคำ — ฝั่งซ้ายคือผังเส้นโยงทั้งคลัง ฝั่งขวาคือช่องแก้ไขเดิมของเว็บ</p>
+    <button onClick="{{ toggleTheme }}" style="border:1px solid var(--line);background:var(--panel);color:var(--ink2);font-family:inherit;font-size:12.5px;cursor:pointer;padding:6px 14px;border-radius:20px;line-height:1.5" style-hover="border-color:var(--primary);color:var(--ink)">{{ themeLabel }}</button>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;margin:22px 0 0">
+    <div style="height:1px;flex:1;background:var(--line)"></div>
+    <div style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--faint);white-space:nowrap">ตัวอย่างจากคลังจริง</div>
+    <div style="height:1px;flex:1;background:var(--line)"></div>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0 0">
+    <sc-for list="{{ seeds }}" as="s" hint-placeholder-count="3">
+      <button onClick="{{ s.onClick }}" style="{{ s.style }}">{{ s.label }}</button>
+    </sc-for>
+  </div>
+
+  <div data-r="scene" style="position:relative;margin:22px 0 0;padding:30px 26px;background:var(--page);border:1px solid var(--line2);border-radius:16px;overflow:hidden">
+    <sc-if value="{{ showBackdrop }}" hint-placeholder-val="{{ true }}">
+    <div data-r="behind" style="position:absolute;inset:0;padding:18px 20px;filter:blur(1.8px);opacity:.5;pointer-events:none;user-select:none">
+      <div style="font-size:13px;color:var(--dim);margin-bottom:10px">คลังคำ · หมวด 1 บรรยากาศ แสง สี และสถานที่</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px">
+        <sc-for list="{{ behind }}" as="b" hint-placeholder-count="12">
+          <div style="background:var(--surface);border:1px solid var(--line2);border-left:3px solid var(--faint);border-radius:9px;padding:9px 10px;font-size:14px;color:var(--ink2);min-height:42px">{{ b }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div data-r="veil" style="position:absolute;inset:0;background:rgba(48,38,26,.4);backdrop-filter:blur(2.5px)"></div>
+    </sc-if>
+
+    <div data-r="modal" style="position:relative;background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 30px 80px -24px rgba(38,26,12,.5),0 2px 0 rgba(255,255,255,.5) inset;animation:pop .28s ease">
+
+      <div data-el="map" style="position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-areas:'hero hero' 'left right'">
+        <svg data-el="svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:0"></svg>
+
+        <div style="grid-area:hero;position:relative;z-index:1;padding:20px 24px 0;min-width:0">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <div style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);white-space:nowrap">ผังเส้นโยง</div>
+          <div style="height:1px;flex:1;background:var(--line)"></div>
+          <sc-if value="{{ hasBack }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ back }}" style="border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-family:inherit;font-size:12px;padding:3px 12px;border-radius:16px;cursor:pointer;white-space:nowrap" style-hover="border-color:var(--primary);color:var(--ink)">‹ ย้อนกลับ</button>
+          </sc-if>
+        </div>
+
+          <sc-if value="{{ hasParents }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:9px;margin-bottom:26px">
+              <div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);background:var(--panel);padding:0 9px;border-radius:10px">แตกมาจาก</div>
+              <sc-for list="{{ parents }}" as="p" hint-placeholder-count="1">
+                <button data-el="par" onClick="{{ p.onClick }}" style="background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:9px 15px;font-family:inherit;font-size:14.5px;line-height:1.7;color:var(--ink);cursor:pointer;max-width:min(540px,100%);text-align:left;text-wrap:pretty" style-hover="border-color:var(--primary)">{{ p.el }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <div data-el="hero" style="position:relative;z-index:1;background:var(--surface);border:2px solid var(--primary);border-radius:15px;padding:16px 24px 15px;box-shadow:0 14px 30px -18px rgba(40,28,14,.6);width:100%;text-align:center;margin-bottom:34px">
+            <span style="display:inline-block;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:#fdf6e8;background:var(--accent);border-radius:12px;padding:2px 11px;margin-bottom:9px;line-height:1.9">{{ heroLabel }}</span>
+            <div style="font-size:clamp(22px,2.6vw,32px);font-weight:700;line-height:1.55;color:var(--ink);word-break:break-word;text-wrap:pretty">{{ heroText }}</div>
+            <div style="font-size:12px;color:var(--dim);margin-top:8px;letter-spacing:.02em">{{ meta }}</div>
+            <sc-if value="{{ hasMeaning }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:13.5px;color:var(--ink2);margin-top:6px;padding-top:7px;border-top:1px solid var(--line2);display:inline-block">{{ meaning }}</div>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ hasLeaves }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative;z-index:1;display:flex;gap:12px;align-items:flex-start;margin-bottom:26px">
+              <div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);white-space:nowrap;padding-top:9px">แตกออกเป็น</div>
+              <div style="display:flex;gap:26px 9px;flex-wrap:wrap;justify-content:center;flex:1">
+                <sc-for list="{{ leaves }}" as="l" hint-placeholder-count="4">
+                  <button data-el="leaf" data-k="{{ l.k }}" onClick="{{ l.onClick }}" style="{{ l.style }}">{{ l.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="grid-area:left;position:relative;min-width:0;padding:18px 24px 26px">
+          <div data-r="catwrap" style="position:relative;z-index:1;display:flex;flex-direction:column;gap:18px">
+            <sc-for list="{{ cats }}" as="c" hint-placeholder-count="2">
+              <div data-r="catrow" data-el="catrow" style="{{ c.cardStyle }}">
+                <div data-el="catnode" data-c="{{ c.no }}" data-col="{{ c.col }}" style="{{ c.style }}">
+                  <div style="font-size:13px;font-weight:700;letter-spacing:.04em">{{ c.no1 }}</div>
+                  <div style="font-size:11px;font-weight:400;opacity:.9;white-space:normal;max-width:148px;line-height:1.5">{{ c.name }}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px;padding-top:2px;min-width:0">
+                  <sc-for list="{{ c.rows }}" as="b" hint-placeholder-count="4">
+                    <div data-el="tnode" data-id="{{ b.id }}" data-p="{{ b.p }}" style="{{ b.style }}">
+                      <span style="{{ b.textStyle }}">{{ b.name }}</span>
+                      <span style="{{ b.tailStyle }}">{{ b.tail }}</span>
+                      <sc-if value="{{ b.isLeaf }}" hint-placeholder-val="{{ true }}">
+                        <button style="border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit;line-height:1.9;flex:none" style-hover="color:var(--accent)">✕</button>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                  <button style="align-self:flex-start;font-size:11.5px;padding:3px 12px;border-radius:20px;border:1px dashed var(--line);background:none;color:var(--dim);cursor:pointer;font-family:inherit;line-height:1.7" style-hover="border-color:var(--primary);color:var(--ink2)">＋ เพิ่มกิ่งในหมวดนี้</button>
+                </div>
+              </div>
+            </sc-for>
+            <button style="align-self:flex-start;font-size:12.5px;border:none;background:none;color:var(--primary);cursor:pointer;font-family:inherit;padding:0;border-bottom:1px solid var(--line)" style-hover="color:var(--accent)">＋ เพิ่มหมวด</button>
+          </div>
+        </div>
+
+      <div data-r="side2" style="grid-area:right;position:relative;padding:18px 22px 26px;border-left:1px solid var(--line);min-width:0">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <div style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);white-space:nowrap">แก้ไข</div>
+          <div style="height:1px;flex:1;background:var(--line)"></div>
+        </div>
+
+        <div style="font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-bottom:10px">ข้อมูลคำ</div>
+        <label style="display:block;font-size:11px;letter-spacing:.08em;font-weight:600;color:var(--ink2);margin:0 0 5px">คำ / วลี</label>
+        <input value="{{ edit.text }}" onChange="{{ onText }}" style="width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-family:inherit;font-size:14.5px;outline:none;margin-bottom:12px" style-focus="border-color:var(--primary)">
+        <label style="display:block;font-size:11px;letter-spacing:.08em;font-weight:600;color:var(--ink2);margin:0 0 5px">ความหมาย (ไม่บังคับ)</label>
+        <input value="{{ edit.meaning }}" onChange="{{ onMeaning }}" placeholder="ยังไม่ได้ใส่" style="width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-family:inherit;font-size:14.5px;outline:none">
+
+        <div style="font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--line2)">หมวดหมู่</div>
+        <label style="display:block;font-size:11px;letter-spacing:.08em;font-weight:600;color:var(--ink2);margin:0 0 5px">ชนิด</label>
+        <select value="{{ edit.kind }}" onChange="{{ onKind }}" style="width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-family:inherit;font-size:14.5px;outline:none;margin-bottom:12px">
+          <sc-for list="{{ kindOpts }}" as="k" hint-placeholder-count="3">
+            <option value="{{ k.v }}">{{ k.t }}</option>
+          </sc-for>
+        </select>
+        <label style="display:block;font-size:11px;letter-spacing:.08em;font-weight:600;color:var(--ink2);margin:0 0 5px">หมวดหลัก</label>
+        <select value="{{ edit.cat }}" onChange="{{ onCat }}" style="width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-family:inherit;font-size:14.5px;outline:none">
+          <sc-for list="{{ catOpts }}" as="c" hint-placeholder-count="7">
+            <option value="{{ c }}">{{ c }}</option>
+          </sc-for>
+        </select>
+
+        <div style="font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--line2)">อ้างอิง</div>
+        <sc-for list="{{ novels }}" as="n" hint-placeholder-count="1">
+          <input value="{{ n.value }}" onChange="{{ n.onChange }}" style="width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-family:inherit;font-size:14.5px;outline:none" style-focus="border-color:var(--primary)">
+        </sc-for>
+
+        <div style="font-size:11.5px;color:var(--faint);line-height:1.7;margin:14px 0 0">ชิปหมวดย่อยย้ายไปอยู่ในผังฝั่งซ้ายแล้ว — เพิ่มหรือลบกิ่งได้จากที่นั่น</div>
+
+        <div style="display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line2);flex-wrap:wrap">
+          <span style="font-size:12.5px;color:var(--accent);border-bottom:1px solid var(--danger-line);cursor:pointer" style-hover="border-color:var(--accent)">ลบคำนี้</span>
+          <span style="flex:1"></span>
+          <button style="padding:9px 15px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink2)" style-hover="border-color:var(--primary);color:var(--ink)">ยกเลิก</button>
+          <button style="padding:9px 22px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;border:none;background:var(--primary);color:#fbf3e2;font-weight:600" style-hover="background:var(--accent)">บันทึก</button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin:20px 0 0;padding-top:14px;border-top:1px solid var(--line2);color:var(--faint);font-size:12.5px;line-height:1.85;text-wrap:pretty">{{ footer }}</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showBackdrop&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;ม็อคอัพ&quot;},&quot;animateLinks&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;ผังเส้นโยง&quot;},&quot;nightMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;ม็อคอัพ&quot;}}">
+const PAL = ['#8f6b4a','#5f7f92','#a86a79','#6f8a56','#7c6a99','#3f7d6c','#96603a'];
+const CATCOL = ['#5e7a4a','#9a5a63','#8a6a3c','#4d6c86','#6d5f8c','#3f7a6b','#8a6540','#4a6f7a',
+                '#7a6a4a','#96603a','#7e4f66','#557a55','#5f5f8a','#8a6a3a','#6f7a45'];
+const ccol = n => CATCOL[(n - 1) % CATCOL.length];
+/* ไล่สีหมวด: น้ำตาลเข้มอิ่ม → จางลง (หมวดที่มีกิ่งเยอะที่สุดเข้มที่สุด) */
+const ramp = (i, n) => `oklch(${(34 + (n > 1 ? i * (17 / (n - 1)) : 0)).toFixed(1)}% ${Math.max(0.018, 0.062 - i * 0.011).toFixed(3)} 58)`;
+/* ไล่สีจากหมวดตั้งต้น (เข้ม) ลงไปทีละชั้นจนถึงหมวดย่อย (จาง) — depth ลบ = เข้มกว่าฐาน */
+const tint = (base, depth, alpha) => {
+  const m = /oklch\(([\d.]+)%\s*([\d.]+)\s*([\d.]+)\)/.exec(base);
+  if (!m) return base;
+  const L = +m[1], C = +m[2], H = +m[3];
+  const L2 = Math.max(8, Math.min(78, L + depth * 8)).toFixed(1), C2 = Math.max(0.024, C - depth * 0.006).toFixed(3);
+  return alpha != null ? `oklch(${L2}% ${C2} ${H} / ${alpha})` : `oklch(${L2}% ${C2} ${H})`;
+};
+const KIND = { word: 'คำ', phrase: 'วลี', sentence: 'ประโยค' };
+const CATS = ['1 บรรยากาศ แสง สี และสถานที่','2 รูปลักษณ์และลักษณะบุคคล','3 กริยา ท่าทาง และการเคลื่อนไหว',
+  '4 เสียง','5 สภาวะภายใน','6 คำปรุงแต่งและคำอเนกประสงค์','15 บทบรรยายและภาพรวมฉาก'];
+const BEHIND = ['แสงสลัวราง','ม่านหมอก','ฟ้าสาง','เงาทาบ','ลมโชย','ครึ้มฟ้าครึ้มฝน','แดดจ้า','สนธยา','อรุณรุ่ง','มืดตึดตื๋อ','ละอองฝน','แสงเรือง'];
+
+class Component extends DCLogic {
+  state = { data: null, cur: null, stack: [], theme: 'light', edit: null };
+
+  componentDidMount() {
+    this.mapRef = el => { this.map = el; };
+    this.svgRef = el => { this.svg = el; };
+    this.onResize = () => { clearTimeout(this._t); this._t = setTimeout(() => this.draw(), 150); };
+    addEventListener('resize', this.onResize);
+    /* ผังสตรีมเข้ามาทีละส่วน — วาดใหม่เมื่อเลย์เอาต์นิ่ง ไม่ใช่แค่ตอน state เปลี่ยน */
+    if (window.ResizeObserver) { this.ro = new ResizeObserver(this.onResize); this.ro.observe(document.body); }
+    if (document.fonts) document.fonts.ready.then(this.onResize);
+    [0, 150, 500, 1200].forEach(ms => setTimeout(this.onResize, ms));
+    if (this.props.nightMode) { document.documentElement.dataset.theme = 'dark'; this.setState({ theme: 'dark' }); }
+    this.wait();
+  }
+  componentWillUnmount() { removeEventListener('resize', this.onResize); this.ro && this.ro.disconnect(); clearTimeout(this._t); }
+  wait() {
+    if (window.WW) { const d = window.WW; this.setState({ data: d, cur: d.seeds[0], edit: this.mkEdit(d, d.seeds[0]) }); }
+    else setTimeout(() => this.wait(), 40);
+  }
+  componentDidUpdate() { requestAnimationFrame(() => this.draw()); }
+  mkEdit(d, t) {
+    const n = d.nodes[t];
+    return { text: t, meaning: n.meaning || '', kind: n.kind, cat: 'หมวด ' + (CATS.find(c => +c.split(' ')[0] === n.paths[0].no) || CATS[0]), novels: n.novels.slice() };
+  }
+  go(t, push) {
+    const d = this.state.data; if (!d || !d.nodes[t] || t === this.state.cur) return;
+    const stack = push === false ? this.state.stack : [...this.state.stack, this.state.cur];
+    this.setState({ cur: t, stack, edit: this.mkEdit(d, t) });
+  }
+  back() {
+    const s = this.state.stack.slice(); const t = s.pop();
+    if (!t) return;
+    this.setState({ cur: t, stack: s, edit: this.mkEdit(this.state.data, t) });
+  }
+  pick(t) { const d = this.state.data; this.setState({ cur: t, stack: [], edit: this.mkEdit(d, t) }); }
+  toggleTheme() {
+    const r = document.documentElement;
+    const next = this.state.theme === 'dark' ? 'light' : 'dark';
+    r.dataset.theme = next; this.setState({ theme: next });
+    requestAnimationFrame(() => this.draw());
+  }
+
+  /* ระบายสีคำสกัดลงในวลี — คำที่ซ้อนในคำยาวกว่าระบายทับกันไม่ได้ จึงคืน used กลับไปด้วย */
+  paint(sentence, words, key) {
+    const hit = [];
+    words.forEach((w, i) => {
+      let f = 0, at;
+      while (w && (at = sentence.indexOf(w, f)) !== -1) { hit.push({ a: at, b: at + w.length, i }); f = at + w.length; }
+    });
+    hit.sort((x, y) => x.a - y.a || (y.b - y.a) - (x.b - x.a));
+    const out = []; let cur = 0, k = 0; const used = new Set();
+    for (const h of hit) {
+      if (h.a < cur) continue;
+      if (h.a > cur) out.push(React.createElement('span', { key: 'p' + k++ }, sentence.slice(cur, h.a)));
+      const c = PAL[h.i % PAL.length];
+      used.add(h.i);
+      out.push(React.createElement('span', {
+        key: 'm' + k++, 'data-m': h.i,
+        style: { background: c + '2e', borderRadius: 3, padding: '1px 2px', boxShadow: 'inset 0 -0.14em 0 ' + c, WebkitBoxDecorationBreak: 'clone', boxDecorationBreak: 'clone' }
+      }, sentence.slice(h.a, h.b)));
+      cur = h.b;
+    }
+    if (cur < sentence.length) out.push(React.createElement('span', { key: 'p' + k++ }, sentence.slice(cur)));
+    return { el: React.createElement(React.Fragment, { key }, out), used };
+  }
+
+  /* ลากเส้นโยง — ท่อร่วมมุมฉาก: เส้นตั้งฉากลงมารวมที่รางเดียวแล้วแยกเข้าปลายทาง ไม่มีเส้นไขว้ */
+  draw() {
+    const map = document.querySelector('[data-el=map]'), svg = document.querySelector('[data-el=svg]');
+    if (!map || !svg) return;
+    const R = map.getBoundingClientRect();
+    const rel = el => { const b = el.getBoundingClientRect(); return { x: b.left - R.left, y: b.top - R.top, w: b.width, h: b.height }; };
+    const relMark = el => { const b = el.getClientRects()[0] || el.getBoundingClientRect(); return { x: b.left - R.left, y: b.top - R.top, w: b.width, h: b.height }; };
+    const f = v => (+v).toFixed(1);
+    const V = (x, y1, y2) => `M${f(x)} ${f(y1)}L${f(x)} ${f(y2)}`;
+    const H = (y, x1, x2) => `M${f(x1)} ${f(y)}L${f(x2)} ${f(y)}`;
+    /* เส้นหักมุมฉากตามชุดจุด มุมโค้งรัศมีเล็ก */
+    const poly = pts => {
+      let d = `M${f(pts[0].x)} ${f(pts[0].y)}`;
+      for (let i = 1; i < pts.length - 1; i++) {
+        const p = pts[i], a = pts[i - 1], b = pts[i + 1];
+        const ux = Math.sign(p.x - a.x), uy = Math.sign(p.y - a.y);
+        const vx = Math.sign(b.x - p.x), vy = Math.sign(b.y - p.y);
+        if (ux === vx && uy === vy) continue;
+        const r = Math.max(0, Math.min(9, Math.hypot(p.x - a.x, p.y - a.y) / 2, Math.hypot(b.x - p.x, b.y - p.y) / 2));
+        d += `L${f(p.x - ux * r)} ${f(p.y - uy * r)}Q${f(p.x)} ${f(p.y)} ${f(p.x + vx * r)} ${f(p.y + vy * r)}`;
+      }
+      const e = pts[pts.length - 1];
+      return d + `L${f(e.x)} ${f(e.y)}`;
+    };
+    const orth = (x1, y1, x2, y2, my) =>
+      Math.abs(x2 - x1) < 2 ? V(x1, y1, y2) : poly([{ x: x1, y: y1 }, { x: x1, y: my }, { x: x2, y: my }, { x: x2, y: y2 }]);
+    /* ลงแล้วเลี้ยวออกขวา */
+    const elbow = (x1, y1, x2, y2) => {
+      const r = Math.max(2, Math.min(9, Math.abs(y2 - y1), Math.abs(x2 - x1)));
+      return `M${f(x1)} ${f(y1)}L${f(x1)} ${f(y2 - r)}Q${f(x1)} ${f(y2)} ${f(x1 + r)} ${f(y2)}L${f(x2)} ${f(y2)}`;
+    };
+    const P = [], dots = [];
+    const hero = map.querySelector('[data-el=hero]');
+    if (hero) {
+      const hb = rel(hero), hbot = hb.y + hb.h;
+      const pars = [...map.querySelectorAll('[data-el=par]')];
+      pars.forEach(el => {
+        const b = rel(el), pbot = b.y + b.h;
+        P.push([orth(b.x + b.w / 2, pbot, hb.x + hb.w / 2, hb.y, pbot + (hb.y - pbot) * .5), 'var(--primary)', 1.7, .5, 0]);
+      });
+      const marks = [...hero.querySelectorAll('[data-m]')];
+      const leaves = [...map.querySelectorAll('[data-el=leaf]')];
+      if (leaves.length) {
+        /* จับชิปเป็นแถวตามตำแหน่งจริง — แต่ละเส้นได้รางเป็นของตัวเอง ไม่วิ่งทับกัน
+           เรียงราง: เส้นที่ต้องวิ่งไกลจากกลางการ์ดอยู่รางบน เส้นสั้นอยู่รางล่าง ได้รูปพัดคลี่ */
+        const boxes = leaves.map(el => ({ el, b: rel(el) })), rows = [];
+        boxes.forEach(o => {
+          const r = rows.find(r => Math.abs(r.top - o.b.y) < 6);
+          if (r) { r.items.push(o); r.bot = Math.max(r.bot, o.b.y + o.b.h); }
+          else rows.push({ top: o.b.y, bot: o.b.y + o.b.h, items: [o] });
+        });
+        rows.sort((x, y) => x.top - y.top);
+        const mapW = map.clientWidth;
+        const spineL = Math.max(5, Math.min(...boxes.map(o => o.b.x)) - 14);
+        const spineR = Math.min(mapW - 5, Math.max(...boxes.map(o => o.b.x + o.b.w)) + 14);
+        const roomL = Math.min(...boxes.map(o => o.b.x)) - spineL >= 10;
+        const roomR = spineR - Math.max(...boxes.map(o => o.b.x + o.b.w)) >= 10;
+        const hc = hb.x + hb.w / 2;
+        let prev = hbot;
+        rows.forEach(r => {
+          const gap = r.top - prev;
+          r.band = [prev + gap * (rows.length > 1 ? .22 : .3), prev + gap * .82];
+          prev = r.bot;
+          r.conns = [];
+          r.items.forEach(o => {
+            const i = +o.el.dataset.k, txt = o.el.textContent;
+            let m = marks.find(x => +x.dataset.m === i), dash = 0;
+            if (!m) { m = marks.find(x => x.textContent.includes(txt)); dash = 1; }
+            if (!m) return;
+            const a = relMark(m);
+            r.conns.push({
+              sx: Math.min(Math.max(a.x + a.w / 2, hb.x + 10), hb.x + hb.w - 10),
+              cx: o.b.x + o.b.w / 2, top: o.b.y, c: PAL[i % PAL.length], dash
+            });
+          });
+          const n = r.conns.length;
+          [...r.conns].sort((p, q) => Math.abs(q.cx - hc) - Math.abs(p.cx - hc))
+            .forEach((o, k) => { o.lane = r.band[0] + (n > 1 ? k * (r.band[1] - r.band[0]) / (n - 1) : 0); });
+        });
+        rows.forEach((r, ri) => r.conns.forEach((o, k) => {
+          /* ชิปที่ตกไปแถวถัด ๆ ไป เลี้ยวลงข้างที่ใกล้ชิปเป้าหมายที่สุด (และมีที่ว่างพอ) */
+          const right = roomR && (o.cx > hc || !roomL);
+          const spine = right ? spineR - k * 3.5 : spineL + k * 3.5;
+          const y0 = rows[0].band[0] - 5 - k * 3.5;
+          const pts = ri === 0
+            ? [{ x: o.sx, y: hbot }, { x: o.sx, y: o.lane }, { x: o.cx, y: o.lane }, { x: o.cx, y: o.top }]
+            : [{ x: o.sx, y: hbot }, { x: o.sx, y: y0 }, { x: spine, y: y0 },
+               { x: spine, y: o.lane }, { x: o.cx, y: o.lane }, { x: o.cx, y: o.top }];
+          P.push([poly(pts), o.c, o.dash ? 1.3 : 1.9, o.dash ? .55 : .95, o.dash]);
+          dots.push([o.sx, hbot, o.c, 2.4, .9]);
+        }));
+      }
+      /* ลำต้นของหมวด: เส้นตั้งเส้นเดียวจากใต้การ์ด แตกข้อศอกเข้าแต่ละหมวด */
+      const rows = [...map.querySelectorAll('[data-el=catrow]')];
+      const nodes = rows.map(r => r.querySelector('[data-el=catnode]')).filter(Boolean);
+      if (nodes.length) {
+        const trunk = Math.max(6, hb.x + 15);
+        const stop = rel(nodes[nodes.length - 1]);
+        P.push([V(trunk, hbot, stop.y + 17), 'var(--line)', 1.6, 1, 0]);
+        dots.push([trunk, hbot, 'var(--primary)', 3, .45]);
+        nodes.forEach(node => {
+          const a = rel(node), c = node.dataset.col || 'var(--primary)';
+          P.push([elbow(trunk, Math.max(hbot, a.y - 10), a.x, a.y + 17), c, 1.8, .9, 0]);
+        });
+      }
+    }
+    /* ในแต่ละหมวด: รางตั้งหนึ่งรางต่อหนึ่งชั้น แตกเส้นสั้นเข้าลูกของชั้นนั้น */
+    map.querySelectorAll('[data-el=catrow]').forEach(row => {
+      const node = row.querySelector('[data-el=catnode]'); if (!node) return;
+      const a = rel(node), c = node.dataset.col || 'var(--primary)';
+      const nodes = [...row.querySelectorAll('[data-el=tnode]')].map(el => ({ b: rel(el), id: el.dataset.id, p: el.dataset.p }));
+      if (!nodes.length) return;
+      const anchor = o => o.b.y + Math.min(o.b.h / 2, 15);
+      const byId = new Map(nodes.map(o => [o.id, o])), groups = new Map();
+      nodes.forEach(o => { const k = o.p || ''; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(o); });
+      groups.forEach((kids, pid) => {
+        const par = byId.get(pid);
+        const gd = kids[0].id.split('.').length - 2, gc = tint(c, gd + 1);
+        let railX, startY, deep = !!par;
+        if (par) { railX = par.b.x + 11; startY = par.b.y + par.b.h - 1; }
+        else if (kids[0].b.y > a.y + a.h - 4) { railX = a.x + 20; startY = a.y + a.h; }
+        else { railX = a.x + a.w + 15; startY = a.y + 17; P.push([H(startY, a.x + a.w, railX), gc, 1.6, .7, 0]); }
+        P.push([V(railX, startY, anchor(kids[kids.length - 1])), gc, deep ? 1.2 : 1.4, deep ? .5 : .6, 0]);
+        kids.forEach(o => {
+          const y = anchor(o);
+          P.push([H(y, railX, o.b.x), gc, deep ? 1.2 : 1.4, deep ? .55 : .65, 0]);
+          dots.push([o.b.x, y, gc, deep ? 1.7 : 2, .7]);
+        });
+      });
+    });
+    svg.setAttribute('viewBox', `0 0 ${map.clientWidth} ${map.clientHeight}`);
+    svg.innerHTML = P.map(([d, c, w, o, dash], i) =>
+      `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${o}"${dash ? ' stroke-dasharray="4 5"' : ' data-anim="1"'} style="animation-delay:${(i * .025).toFixed(2)}s"/>`).join('')
+      + dots.map(([x, y, c, r, o]) => `<circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}" opacity="${o}"/>`).join('');
+    /* วาดเส้นแบบไล่ทีละเส้นเฉพาะตอนเปลี่ยนคำ — ถ้าวาดใหม่เพราะเลย์เอาต์ขยับ ให้ขึ้นเต็มเส้นทันที
+       ใช้ transition ไม่ใช่ animation เพื่อให้จบที่ dashoffset 0 เสมอ แม้ถูกขัดกลางทาง */
+    const fresh = this._animKey !== this.state.cur;
+    this._animKey = this.state.cur;
+    if (this.props.animateLinks === false || !fresh) return;
+    svg.querySelectorAll('path[data-anim]').forEach(q => {
+      const L = q.getTotalLength().toFixed(0), d = q.style.animationDelay || '0s';
+      q.style.strokeDasharray = L; q.style.strokeDashoffset = L;
+      q.getBoundingClientRect();
+      q.style.transition = `stroke-dashoffset .55s ease ${d}`;
+      q.style.strokeDashoffset = '0';
+    });
+  }
+
+  /* แตกเส้นทางกิ่ง (a / b / c) เป็นชั้น ๆ — ชั้นที่ซ้ำกันยุบรวมเป็นก้อนเดียว */
+  tree(list, no, c) {
+    const root = { kids: new Map() };
+    list.forEach(x => {
+      let cur = root;
+      x.path.split(' / ').forEach((p, i, arr) => {
+        if (!cur.kids.has(p)) cur.kids.set(p, { name: p, kids: new Map(), leaf: null });
+        cur = cur.kids.get(p);
+        if (i === arr.length - 1) cur.leaf = x;
+      });
+    });
+    const rows = [];
+    const walk = (node, depth, pid) => {
+      [...node.kids.values()].forEach((k, i) => {
+        const id = pid ? pid + '.' + i : no + '.' + i;
+        const isLeaf = !!k.leaf, old = isLeaf && k.leaf.from === 'เดิม';
+        /* สามโทนตายตัว ไม่ไล่ตามความลึกต่อเนื่อง: เข้ม = หมวด+ชั้นแรก, กลาง = ชั้นถัดไป, จางสุด = ปลายกิ่ง */
+        const tone = isLeaf ? 2 : (depth === 0 ? 0 : 1);
+        const toneColor = tint(c, [0, 4, 8][tone]), toneBg = isLeaf ? 'var(--surface)' : tint(c, [1, 5][tone], [.16, .11][tone]);
+        rows.push({
+          id, p: pid || '', name: k.name, isLeaf,
+          tail: old ? 'จากคลังเดิม' : '',
+          tailStyle: `font-size:10.5px;color:var(--faint);flex:none;line-height:1.9;${old ? '' : 'letter-spacing:.02em'}`,
+          textStyle: isLeaf
+            ? 'flex:1;min-width:0;font-size:13.5px;line-height:1.65;color:var(--ink);text-wrap:pretty'
+            : 'flex:1;min-width:0;font-size:12.5px;line-height:1.5;color:var(--ink);text-wrap:pretty;font-weight:600',
+          style: `display:flex;gap:9px;align-items:${isLeaf ? 'flex-start' : 'center'};margin-left:${depth * 22}px;background:${old ? 'none' : toneBg};border-width:1px;border-style:${old ? 'dashed' : 'solid'};border-color:var(--line2);border-left-width:4px;border-left-style:${old ? 'dashed' : 'solid'};border-left-color:${toneColor};border-radius:0 11px 11px 0;padding:${isLeaf ? '7px 11px' : '6px 13px'};min-width:0`
+        });
+        walk(k, depth + 1, id);
+      });
+    };
+    walk(root, 0, '');
+    return rows;
+  }
+
+  /* เรียงคำสกัดตามลำดับที่ปรากฏในวลี — ไม่ให้เส้นไขว้กันเอง */
+  order(sentence, kids) {
+    return kids.map(w => ({ w, at: sentence.indexOf(w), len: w.length }))
+      .sort((a, b) => a.at - b.at || b.len - a.len).map(x => x.w);
+  }
+
+  renderVals() {
+    const d = this.state.data, t = this.state.cur;
+    const seedBtn = active => 'border:none;background:none;font-family:inherit;font-size:14.5px;cursor:pointer;padding:3px 2px;line-height:1.6;border-bottom:1.5px solid ' +
+      (active ? 'var(--accent);color:var(--accent)' : 'transparent;color:var(--ink2)');
+    const base = {
+      behind: BEHIND,
+      showBackdrop: this.props.showBackdrop !== false,
+      themeLabel: this.state.theme === 'dark' ? 'โหมดกลางวัน' : 'โหมดกลางคืน',
+      toggleTheme: () => this.toggleTheme(),
+      mapRef: this.mapRef, svgRef: this.svgRef,
+      kindOpts: Object.keys(KIND).map(k => ({ v: k, t: KIND[k] })),
+      catOpts: CATS.map(c => 'หมวด ' + c),
+    };
+    if (!d || !t) return base;
+
+    const n = d.nodes[t], F = d.facts, e = this.state.edit;
+    const isSrc = n.kids.length > 0;
+    const kids = isSrc ? this.order(t, n.kids) : [];
+    const pt = isSrc ? this.paint(t, kids, 'hero') : { el: t, used: new Set() };
+    const byCat = new Map();
+    n.paths.forEach(x => { if (!byCat.has(x.no)) byCat.set(x.no, { cat: x.cat, list: [] }); byCat.get(x.no).list.push(x); });
+
+    return Object.assign(base, {
+      seeds: d.seeds.map(s => ({
+        label: s.length > 26 ? s.slice(0, 24) + '…' : s,
+        style: seedBtn(s === t), onClick: () => this.pick(s)
+      })),
+      hasBack: this.state.stack.length > 0, back: () => this.back(),
+      hasParents: n.parents.length > 0,
+      parents: n.parents.map((p, i) => ({ el: this.paint(p, [t], 'p' + i).el, onClick: () => this.go(p) })),
+      heroLabel: n.parents.length ? 'คำที่กำลังดู' : 'วลีตั้งต้น',
+      heroText: pt.el,
+      meta: [KIND[n.kind] || 'คำ', `เกาะอยู่ ${n.paths.length} กิ่ง ใน ${byCat.size} หมวด`]
+        .concat(n.novels.length > 1 ? [`เจอใน ${n.novels.length} เรื่อง`] : []).join(' · '),
+      hasMeaning: !!n.meaning, meaning: n.meaning,
+      hasLeaves: isSrc,
+      leaves: kids.map((k, i) => ({
+        k: i, label: k, onClick: () => this.go(k),
+        style: `border:none;border-radius:20px;padding:6px 16px;font-family:inherit;font-size:15px;color:#fffaf0;cursor:pointer;line-height:1.6;background:${PAL[i % PAL.length]};box-shadow:0 6px 14px -8px rgba(40,28,14,.75),inset 0 1px 0 rgba(255,255,255,.22);opacity:${pt.used.has(i) ? 1 : .62}`
+      })),
+      /* หมวดเรียงตามจำนวนกิ่ง มากไปน้อย แล้วไล่สีน้ำตาลเข้ม → จาง ตามลำดับนั้น */
+      cats: [...byCat.entries()]
+        .sort((x, y) => y[1].list.length - x[1].list.length || x[0] - y[0])
+        .map(([no, g], i, all) => {
+          const col = ramp(i, all.length);
+          return {
+            no, no1: 'หมวด ' + no, name: g.cat, col,
+            cardStyle: `display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start`,
+            style: `align-self:start;background:${col};color:#fffaf0;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2)`,
+            rows: this.tree(g.list, no, col)
+          };
+        }),
+      edit: e,
+      onText: ev => this.setState({ edit: Object.assign({}, e, { text: ev.target.value }) }),
+      onMeaning: ev => this.setState({ edit: Object.assign({}, e, { meaning: ev.target.value }) }),
+      onKind: ev => this.setState({ edit: Object.assign({}, e, { kind: ev.target.value }) }),
+      onCat: ev => this.setState({ edit: Object.assign({}, e, { cat: ev.target.value }) }),
+      novels: e.novels.map((v, i) => ({
+        value: v,
+        onChange: ev => { const a = e.novels.slice(); a[i] = ev.target.value; this.setState({ edit: Object.assign({}, e, { novels: a }) }); }
+      })),
+      footer: `คำ วลี และกิ่งทุกอันในหน้านี้ดึงมาจากคลังจริง · ตัวเลขที่ทำให้ต้องมีระบบนี้ — ${F.crossOld} คำในคลังเดิมถูกแตกเป็น ${F.dupRows} แถวเพราะคำหนึ่งอยู่ได้หมวดเดียว · ${F.overlap} คำมีอยู่ทั้งสองคลัง · ${F.multiCat} คำในคลังชุดใหม่เกาะกิ่งข้ามหมวด`
+    });
+  }
+}
+
+</script>
+</body>
+</html>
