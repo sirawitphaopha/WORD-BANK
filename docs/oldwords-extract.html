@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>โต๊ะคัดคำ · คลังเดิม 682 คำ</title>
+</head>
+<body>
+<title>โต๊ะคัดคำ · คลังเดิม 682 คำ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --paper:#f4f0e6; --paper2:#eae3d2; --card:#fbf7ee; --card2:#f2ecdd;
+  --ink:#2f2a22; --ink-soft:#5b5347; --muted:#8d8471;
+  --mark:#6b4a2c; --mark-deep:#4e351d; --mark-soft:#e2d3bd;
+  --own:#4a6d4f; --own-deep:#365239; --own-soft:#d5e3d4;
+  --brick:#9c3b2b; --gold:#a9782a;
+  --line:#dbd2bd; --line-soft:#e8e0cd;
+  --shadow:0 1px 2px rgba(70,54,32,.06),0 3px 12px rgba(70,54,32,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#1b1814; --paper2:#15120f; --card:#252019; --card2:#2e281f;
+    --ink:#eee6d7; --ink-soft:#b8ae9c; --muted:#8b8271;
+    --mark:#c9a06a; --mark-deep:#e0bd8b; --mark-soft:#3d3123;
+    --own:#8fb48f; --own-deep:#a8c9a6; --own-soft:#2b3a2c;
+    --brick:#dd8a72; --gold:#d3a860;
+    --line:#3a332a; --line-soft:#2e2820;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 3px 14px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#f4f0e6; --paper2:#eae3d2; --card:#fbf7ee; --card2:#f2ecdd;
+  --ink:#2f2a22; --ink-soft:#5b5347; --muted:#8d8471;
+  --mark:#6b4a2c; --mark-deep:#4e351d; --mark-soft:#e2d3bd;
+  --own:#4a6d4f; --own-deep:#365239; --own-soft:#d5e3d4;
+  --brick:#9c3b2b; --gold:#a9782a;
+  --line:#dbd2bd; --line-soft:#e8e0cd;
+  --shadow:0 1px 2px rgba(70,54,32,.06),0 3px 12px rgba(70,54,32,.07);
+}
+:root[data-theme="dark"]{
+  --paper:#1b1814; --paper2:#15120f; --card:#252019; --card2:#2e281f;
+  --ink:#eee6d7; --ink-soft:#b8ae9c; --muted:#8b8271;
+  --mark:#c9a06a; --mark-deep:#e0bd8b; --mark-soft:#3d3123;
+  --own:#8fb48f; --own-deep:#a8c9a6; --own-soft:#2b3a2c;
+  --brick:#dd8a72; --gold:#d3a860;
+  --line:#3a332a; --line-soft:#2e2820;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 3px 14px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai","TH Sarabun New",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.68; -webkit-font-smoothing:antialiased;}
+.wrap{max-width:840px; margin:0 auto; padding:20px 16px 120px}
+h1,h2{font-family:Georgia,"Noto Serif Thai","Times New Roman",serif; text-wrap:balance; line-height:1.28; margin:0}
+
+/* ---------- หัวเรื่อง ---------- */
+.hero{padding:22px 20px; border-radius:14px; position:relative; overflow:hidden;
+  background:linear-gradient(150deg,var(--card),var(--card2)); border:1px solid var(--line); box-shadow:var(--shadow)}
+.hero::before{content:""; position:absolute; inset:0 auto 0 0; width:5px; background:linear-gradient(var(--mark),var(--mark-deep))}
+.eyebrow{font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--mark); font-weight:700; margin:0 0 5px}
+.hero h1{font-size:clamp(24px,5.6vw,33px)}
+.hero p{margin:9px 0 0; color:var(--ink-soft); font-size:14.5px}
+.stats{display:flex; flex-wrap:wrap; gap:7px; margin-top:15px}
+.stat{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:7px 12px; min-width:74px}
+.stat b{display:block; font-family:Georgia,serif; font-size:21px; line-height:1.1; color:var(--mark-deep); font-variant-numeric:tabular-nums}
+.stat.g b{color:var(--own-deep)}
+.stat span{font-size:11px; color:var(--muted); display:block}
+
+/* ---------- คำแนะนำ ---------- */
+.howto{margin:14px 0 0; background:var(--card); border:1px solid var(--line-soft); border-left:3px solid var(--gold);
+  border-radius:10px; padding:12px 15px; font-size:13.8px; color:var(--ink-soft)}
+.howto b{color:var(--ink)}
+.howto ol{margin:7px 0 0; padding-left:20px} .howto li{margin:3px 0}
+.howto.safe{border-left-color:var(--own); margin-top:10px} .howto.safe b{color:var(--own-deep); display:block; margin-bottom:3px}
+
+/* ---------- แถบเครื่องมือตรึง ---------- */
+.bar{position:sticky; top:0; z-index:20; margin:16px -16px 0; padding:11px 16px 12px;
+  background:color-mix(in srgb,var(--paper) 93%,transparent); backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:9px}
+.barrow{display:flex; gap:7px; align-items:center; flex-wrap:wrap}
+.count{font-size:13px; color:var(--ink-soft); font-variant-numeric:tabular-nums; margin-right:auto}
+.count b{color:var(--mark-deep); font-size:15px} .count i{font-style:normal; color:var(--own-deep); font-weight:700}
+.savest{font-size:12px; font-variant-numeric:tabular-nums; padding:3px 9px; border-radius:999px;
+  border:1px solid rgba(150,132,96,.34); color:var(--ink-soft); white-space:nowrap}
+.savest.ok{color:#2f6d43; border-color:rgba(47,109,67,.42); background:rgba(47,109,67,.09)}
+.savest.bad{color:#9c2b23; border-color:rgba(156,43,35,.5); background:rgba(156,43,35,.12); font-weight:700}
+.warnbox{margin:14px 0 0; padding:12px 14px; border-radius:12px; line-height:1.7; font-size:14px;
+  background:rgba(156,43,35,.1); border:1px solid rgba(156,43,35,.45); color:#7d241d}
+.warnbox[hidden]{display:none}
+.warnbox b{color:#9c2b23}
+input[type=search],input[type=text],select{font:inherit; font-size:14.5px; color:var(--ink); background:var(--card);
+  border:1px solid var(--line); border-radius:9px; padding:7px 11px; min-width:0}
+input[type=search]{flex:1 1 190px}
+select{flex:0 1 auto; max-width:100%}
+.btn{font:inherit; font-size:13.5px; font-weight:600; cursor:pointer; color:var(--ink-soft); background:var(--card);
+  border:1px solid var(--line); border-radius:9px; padding:7px 12px; white-space:nowrap; transition:.14s}
+.btn:hover{border-color:var(--mark); color:var(--mark-deep)}
+.btn.primary{background:var(--mark); border-color:var(--mark); color:var(--paper)}
+.btn.primary:hover{background:var(--mark-deep); color:var(--paper)}
+.btn.danger:hover{border-color:var(--brick); color:var(--brick)}
+.segs{display:flex; gap:5px; flex-wrap:wrap}
+.seg{font:inherit; font-size:13px; cursor:pointer; padding:5px 11px; border-radius:20px; border:1px solid var(--line);
+  background:var(--card); color:var(--ink-soft); white-space:nowrap; transition:.14s}
+.seg[aria-pressed=true]{background:var(--mark); border-color:var(--mark); color:var(--paper); font-weight:600}
+:focus-visible{outline:2px solid var(--mark); outline-offset:2px}
+
+.tools{margin-top:11px}
+
+/* ---------- แถวคำ ---------- */
+.list{margin-top:14px; display:flex; flex-direction:column; gap:13px}
+.row{background:var(--card); border:1px solid var(--line-soft); border-radius:12px; padding:13px 13px 14px;
+  display:flex; flex-direction:column; gap:9px}
+.row.has{border-color:var(--line)}
+.row.picked{border-color:color-mix(in srgb,var(--mark) 45%,transparent); background:color-mix(in srgb,var(--mark-soft) 30%,var(--card))}
+.rowhead{display:flex; gap:9px; align-items:baseline}
+.num{font-family:Georgia,serif; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; flex:none; padding-top:2px}
+/* วลีหลักตัวใหญ่ "เท่านิ้ว" — ลากง่าย ไม่ต้องเล็ง
+   touch-action:none = ลากบนวลีแล้วหน้าจอห้ามเลื่อนตาม (เจ้าของสั่ง) · เลื่อนหน้าจอใช้พื้นที่นอกวลี */
+.src{font-size:clamp(22px,6vw,27px); line-height:1.95; font-weight:600; color:var(--ink); word-break:break-word;
+  user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; touch-action:none; cursor:text}
+.row.plain .src{color:var(--ink-soft)}
+.tok{border-radius:6px; padding:4px 0}
+.tok.on{background:var(--mark); color:var(--paper); box-shadow:0 0 0 3px var(--mark)}
+
+/* ป๊อปโชว์คำที่กำลังลาก — เด้งเหนือนิ้ว เพราะนิ้วบังตัวหนังสือ */
+.magnify{position:fixed; z-index:70; transform:translate(-50%,-100%); padding:12px 16px; border-radius:14px;
+  background:var(--mark-deep); color:var(--paper); font-size:clamp(20px,5.2vw,25px); font-weight:700;
+  max-width:92vw; text-align:center; word-break:break-word; line-height:1.75; pointer-events:none;
+  box-shadow:0 8px 26px rgba(40,28,12,.4); border:2px solid var(--paper)}
+.magnify .mdim{opacity:.34; font-weight:600}
+.magnify .mon{opacity:1; background:color-mix(in srgb,var(--paper) 24%,transparent); border-radius:5px; padding:2px 0}
+.magnify[hidden]{display:none}
+.magnify::after{content:""; position:absolute; left:50%; margin-left:-9px; bottom:-9px;
+  border:9px solid transparent; border-top-color:var(--mark-deep); border-bottom:0}
+.magnify em{font-style:normal; opacity:.65; font-size:14px; display:block; font-weight:600}
+.row.selecting{border-color:var(--mark); background:color-mix(in srgb,var(--mark-soft) 22%,var(--card))}
+
+/* แถบยืนยันคำที่ลากไว้ */
+.selbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:9px 11px; border-radius:10px;
+  background:var(--paper2); border:1px dashed var(--mark)}
+.selbar[hidden]{display:none}                    /* ต้องมี ไม่งั้น display:flex ทับ hidden แล้วแถบโผล่ทุกแถว */
+.addrow{display:flex; gap:7px; align-items:center; flex:1 1 100%}
+.addrow[hidden]{display:none}
+.selword{font-size:16.5px; font-weight:700; color:var(--mark-deep); flex:1 1 100%; word-break:break-word}
+.fine{display:flex; align-items:center; gap:4px; flex-wrap:wrap; flex:1 1 100%}
+.selact{display:flex; gap:8px; flex:1 1 100%; justify-content:flex-end}
+.finelbl{font-size:11.5px; color:var(--muted); margin-left:6px}
+.finelbl:first-child{margin-left:0}
+.finebtn{font:inherit; font-size:14px; line-height:1; cursor:pointer; width:38px; height:34px; flex:none;
+  background:var(--card); border:1px solid var(--line); border-radius:8px; color:var(--mark-deep)}
+.finebtn:hover{border-color:var(--mark); background:var(--paper2)}
+.selword::before{content:"👆 "}
+.okbtn{font:inherit; font-size:15px; font-weight:700; cursor:pointer; flex:none; border-radius:9px; padding:8px 18px;
+  background:var(--mark); border:1px solid var(--mark); color:var(--paper); transition:.13s}
+.okbtn:hover{background:var(--mark-deep); border-color:var(--mark-deep)}
+.nobtn{font:inherit; font-size:14px; cursor:pointer; flex:none; border-radius:9px; padding:8px 13px;
+  background:transparent; border:1px solid var(--line); color:var(--ink-soft)}
+.notebtn{font:inherit; font-size:12.5px; cursor:pointer; background:none; border:none; color:var(--muted);
+  padding:2px 0; text-decoration:underline; text-underline-offset:3px; align-self:flex-start}
+.notebtn:hover{color:var(--gold)}
+.notewrap{display:flex; gap:7px; align-items:flex-start}
+.noteicon{font-size:15px; padding-top:8px; flex:none; opacity:.8}
+.notewrap[hidden]{display:none}
+.noteinp{font:inherit; font-size:14.5px; line-height:1.6; width:100%; resize:vertical; min-height:52px;
+  color:var(--ink); background:color-mix(in srgb,var(--gold) 8%,var(--paper)); border:1px dashed var(--gold);
+  border-radius:9px; padding:8px 11px}
+.noteinp::placeholder{color:var(--muted); font-size:13.5px}
+.row.hasnote{border-color:color-mix(in srgb,var(--gold) 45%,transparent)}
+.kbbtn{font:inherit; font-size:12.5px; cursor:pointer; background:none; border:none; color:var(--muted);
+  padding:2px 0; text-decoration:underline; text-underline-offset:3px}
+.kbbtn:hover{color:var(--mark-deep)}
+.chips{display:flex; flex-wrap:wrap; gap:6px; padding-left:30px}
+.chip{font:inherit; font-size:15px; cursor:pointer; padding:4px 12px; border-radius:8px; transition:.13s;
+  border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); position:relative}
+.chip:hover{border-color:var(--mark)}
+.chip[aria-pressed=true]{background:var(--mark); border-color:var(--mark); color:var(--paper); font-weight:600}
+.chip[aria-pressed=true]::after{content:"✓"; margin-left:6px; font-size:12px}
+.chip .cat{display:none; font-size:10.5px; opacity:.72; margin-left:5px; font-family:Georgia,serif}
+body.showcat .chip .cat{display:inline}
+/* คำที่เก็บได้เรียงลงมาแถวละคำ (เจ้าของสั่ง) — ช่องพิมพ์เอง/หมายเหตุวลี ต่อท้ายข้างล่าง */
+.own{display:flex; flex-direction:column; gap:7px; padding-left:30px; align-items:stretch}
+.wrow{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.wnoteinp{flex:1 1 130px; min-width:0; font:inherit; font-size:14.5px; color:var(--ink);
+  background:color-mix(in srgb,var(--gold) 8%,var(--paper)); border:1px dashed var(--gold);
+  border-radius:9px; padding:8px 11px}
+.wnoteinp::placeholder{color:var(--muted); font-size:13.5px}
+.kbbtn,.notebtn{align-self:flex-start}
+.own .ochip{font-size:15px; border-radius:8px; background:var(--own); color:var(--paper); font-weight:600;
+  display:inline-flex; align-items:center; overflow:hidden; flex:none; max-width:100%}
+.own .ochip.noted{box-shadow:0 0 0 2px var(--gold)}
+.ochiplbl{padding:7px 4px 7px 12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.ochipx{font:inherit; background:none; border:none; color:inherit; cursor:pointer; padding:7px 11px 7px 6px; font-size:14px; opacity:.85; line-height:1; flex:none}
+.own .ochip.warn{background:var(--gold)}
+.own input{flex:1 1 150px; font-size:15px; padding:7px 11px; border-style:dashed}
+.own input::placeholder{color:var(--muted); font-size:13.5px}
+.addbtn{font:inherit; font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap; flex:none;
+  background:var(--own); border:1px solid var(--own); color:var(--paper); border-radius:8px; padding:7px 14px; transition:.13s}
+.addbtn:hover{background:var(--own-deep); border-color:var(--own-deep)}
+.saved{font-size:12.5px; color:var(--own-deep); font-weight:600; padding-left:30px; display:flex; align-items:center; gap:5px}
+.warnnote{font-size:12px; color:var(--gold); padding-left:30px}
+
+/* ---------- ท้าย / ส่งออก ---------- */
+.more{display:block; width:100%; margin-top:12px; padding:11px}
+.more[hidden]{display:none}                      /* กันปัญหาเดียวกับ .selbar */
+.empty{text-align:center; color:var(--muted); padding:34px 10px; font-size:14.5px}
+dialog{border:1px solid var(--line); border-radius:14px; background:var(--card); color:var(--ink); padding:0;
+  max-width:min(720px,94vw); width:100%; box-shadow:0 10px 40px rgba(40,30,15,.28)}
+dialog::backdrop{background:rgba(35,26,14,.45)}
+.dlg{padding:18px 20px 16px; display:flex; flex-direction:column; gap:11px}
+.dlg h2{font-size:20px; color:var(--brick)}
+.dlg p{margin:0; font-size:14px; color:var(--ink-soft)}
+textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12.5px; line-height:1.6; width:100%;
+  min-height:230px; resize:vertical; background:var(--paper); color:var(--ink); border:1px solid var(--line);
+  border-radius:9px; padding:11px}
+.dlgbtns{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+.toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(80px); opacity:0; z-index:60;
+  background:var(--mark-deep); color:var(--paper); padding:10px 18px; border-radius:22px; font-size:14px; font-weight:600;
+  transition:.24s; pointer-events:none; box-shadow:var(--shadow)}
+.toast.on{transform:translateX(-50%) translateY(0); opacity:1}
+.foot{margin-top:26px; padding-top:16px; border-top:1px solid var(--line-soft); font-size:12.5px; color:var(--muted); text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+@media (max-width:520px){
+  .wrap{padding:16px 12px 120px}
+  .bar{margin:14px -12px 0; padding:10px 12px}
+  .chips,.own,.warnnote,.selbar{padding-left:0}
+  .rowhead{gap:7px}
+}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">คลังคำ · โต๊ะคัดคำ</p>
+    <h1>โต๊ะคัดคำ · คลังเดิม</h1>
+    <p>ระบบสกัด “คำงาม” ที่ซ่อนอยู่ในวลียาวมาให้แล้ว กดเลือกคำที่ต้องการเก็บเข้าคลัง หรือพิมพ์สกัดเองเพิ่มได้ทุกวลี · คำที่เลือกจะติดวลีตั้งต้นไปด้วยเสมอ</p>
+    <div class="stats">
+      <div class="stat"><b id="s-lines">0</b><span>วลีทั้งหมด</span></div>
+      <div class="stat"><b id="s-prop">0</b><span>คำที่ระบบเสนอ</span></div>
+      <div class="stat"><b id="s-pick">0</b><span>เลือกแล้ว</span></div>
+      <div class="stat g"><b id="s-own">0</b><span>สกัดเอง</span></div>
+    </div>
+  </header>
+
+  <section class="howto">
+    <b>วิธีใช้</b>
+    <ol>
+      <li><b>ลากนิ้วคลุมคำในวลี</b> → กด <b>ตกลง</b> → คำจะไปกองอยู่ข้างล่าง → <b>ลากใหม่ได้เรื่อย ๆ</b> วลีเดียวแบ่งได้ไม่จำกัด (ไม่ต้องพิมพ์)</li>
+      <li>ลากแล้วหนึบเข้าขอบคำไทยให้เอง ไม่ต้องเล็งทีละตัวอักษร · ระหว่างลาก <b>คำที่เลือกจะเด้งขึ้นเหนือนิ้ว</b> จะได้ไม่ถูกนิ้วบัง</li>
+      <li>ลากบนตัววลี หน้าจอจะไม่เลื่อนตาม · <b>เลื่อนหน้าจอให้ปัดตรงที่ว่างนอกวลี</b> (ช่องไฟระหว่างการ์ด หรือแถวคำข้างล่าง)</li>
+      <li>คำที่ระบบเสนอไว้แล้ว (กรอบสี่เหลี่ยม) แตะเพื่อเลือก แตะซ้ำเพื่อยกเลิก</li>
+      <li>อยากอธิบายว่าทำไมถึงแยกคำแบบนี้ กดปุ่ม <b>📝 หมายเหตุ</b> ใต้วลี แล้วพิมพ์ได้เลย · หมายเหตุจะติดไปกับทุกคำของวลีนั้นตอนส่งออก</li>
+      <li>ช่องค้นหา <b>พิมพ์เลขบรรทัดได้</b> เช่นพิมพ์ <b>670</b> แล้วกระโดดไปที่วลีบรรทัดนั้นเลย ไม่ต้องไล่หา</li>
+      <li>เลือกเสร็จกดปุ่ม <b>ส่งออก</b> แล้วคัดลอกผลไปวางในแชท</li>
+    </ol>
+  </section>
+
+  <section class="howto safe">
+    <b>ของไม่หายแน่นอน</b>
+    ทุกครั้งที่ลากหรือพิมพ์ ระบบเก็บลงเครื่องทันที ไม่ต้องกดอะไรเลย · ปิดหน้า สลับแอป แบตหมด หรือรีเฟรช เปิดกลับมายังอยู่ครบ แม้แต่คำที่ลากค้างไว้ยังไม่ได้กดตกลง
+    <br>ก่อนกดแสดงเพิ่ม ค้นหา เปลี่ยนตัวกรอง หรือส่งออก ระบบจะเก็บของที่ค้างอยู่ให้เองก่อนเสมอ
+  </section>
+
+  <div class="warnbox" id="storewarn" hidden></div>
+
+  <div class="bar">
+    <div class="barrow">
+      <span class="count">เลือกแล้ว <b id="c-pick">0</b> คำ · สกัดเอง <i id="c-own">0</i> คำ</span>
+      <span class="savest" id="savest"></span>
+      <button class="btn primary" id="b-export" type="button">ส่งออก</button>
+    </div>
+    <div class="barrow">
+      <input type="search" id="q" placeholder="ค้นหาคำ วลี หรือพิมพ์เลขบรรทัด" aria-label="ค้นหาคำ วลี หรือเลขบรรทัด">
+      <select id="fcat" aria-label="กรองตามหมวด"><option value="">ทุกหมวด</option></select>
+    </div>
+    <div class="barrow segs" id="filters" role="group" aria-label="ตัวกรอง">
+      <button class="seg" type="button" data-f="prop" aria-pressed="true">มีคำเสนอ</button>
+      <button class="seg" type="button" data-f="all" aria-pressed="false">ทุกวลี</button>
+      <button class="seg" type="button" data-f="picked" aria-pressed="false">เลือกแล้ว</button>
+      <button class="seg" type="button" data-f="todo" aria-pressed="false">ยังไม่เลือก</button>
+      <button class="seg" type="button" data-f="own" aria-pressed="false">สกัดเอง</button>
+    </div>
+  </div>
+
+  <div class="barrow tools">
+    <button class="btn" id="b-all" type="button">เลือกทุกคำที่แสดงอยู่</button>
+    <button class="btn danger" id="b-clr" type="button">ล้างที่เลือกทั้งหมด</button>
+    <button class="btn" id="b-cat" type="button">แสดงหมวด</button>
+  </div>
+
+  <div class="list" id="list"></div>
+  <button class="btn more" id="b-more" type="button" hidden>แสดงเพิ่ม</button>
+
+  <p class="foot">คลังคำ (Word Bank) · เก็บคำงาม ไว้แต่งเรื่องของเราเอง</p>
+</div>
+
+<dialog id="dlg-out"><form method="dialog" class="dlg">
+  <h2>ผลการเลือก</h2>
+  <p id="out-sum"></p>
+  <textarea id="out" readonly aria-label="ผลการเลือก"></textarea>
+  <div class="dlgbtns">
+    <button class="btn" value="close" type="submit">ปิด</button>
+    <button class="btn" id="b-dl" type="button">บันทึกเป็นไฟล์</button>
+    <button class="btn primary" id="b-copy" type="button">คัดลอก</button>
+  </div>
+</form></dialog>
+
+<dialog id="dlg-ask"><form method="dialog" class="dlg">
+  <h2 id="ask-t">ยืนยัน</h2>
+  <p id="ask-m"></p>
+  <div class="dlgbtns">
+    <button class="btn" value="no" type="submit">ยกเลิก</button>
+    <button class="btn primary" value="yes" type="submit" id="ask-ok">ยืนยัน</button>
+  </div>
+</form></dialog>
+
+<div class="magnify" id="mag" hidden aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const DATA =
+{"total_lines":654,"lines":[{"n":1,"t":"กรีดร้องโหยหวนด้วยเสียงแหลมสูงราวกับว่าปอดถูกบีบคั้นสุดขีด"},{"n":2,"t":"ครางเสียงเศร้าและอึกอักราวกับมีเส้นด้ายพันอยู่ในลำคอ"},{"n":3,"t":"ลำแสงสีขาววาววับราวดาบคมกริบฟาดฟันลงมาในความมืด"},{"n":4,"t":"สว่างเรืองด้วยแสงอ่อน ๆ จากเปลวเทียนที่ไหววูบ"},{"n":5,"t":"แสงสว่างยามรุ่งสางส่องผ่านผ้าม่านเบาบางเข้ามา"},{"n":6,"t":"เสียงแหลมสูงเหมือนไม่ใช่มนุษย์กรีดก้องออกมา"},{"n":7,"t":"ใบหน้ากระตุกและบิดเบี้ยวน่าเกลียดน่ากลัว"},{"n":8,"t":"ดวงตาสีน้ำตาลเข้มที่มีประกายแข็งกร้าว"},{"n":9,"t":"ดวงตากลมโตเป็นประกายด้วยความตื่นเต้น"},{"n":10,"t":"ดีดปลายเล็บยาว [...] แปร๊ดกับขอบโต๊ะ"},{"n":11,"t":"ดวงจันทร์สีซีดคล้อยต่ำอยู่บนท้องฟ้า"},{"n":12,"t":"โหดเหี้ยมเลือดเย็นน่าเกลียดน่ากลัว"},{"n":13,"t":"ด่าทอ [ชื่อคน] อย่างสาดเสียเทเสีย"},{"n":14,"t":"เธอไม่ต่อปากต่อคำอะไรด้วยทั้งนั้น"},{"n":15,"t":"เหลียวหน้าเหลียวหลังอย่างล่อกแล่ก"},{"n":16,"t":"จมูกขนาดใหญ่งุ้มงอเหมือนนกอินทรี"},{"n":17,"t":"จ้องมองด้วยสายตาเคลือบแคลงสงสัย"},{"n":18,"t":"ท่องอยู่หลายเที่ยวจนจำได้ขึ้นใจ"},{"n":19,"t":"ฝังแน่นอยู่ในใจไม่มีวันเลือนหาย"},{"n":20,"t":"เสียวสันหลังวาบด้วยความหวาดกลัว"},{"n":21,"t":"ความกลัวที่แผ่ซ่านจากทั่วร่าง"},{"n":22,"t":"ทรงตัวอย่างหมิ่นเหม่เสียสมดุล"},{"n":23,"t":"ทำหน้าเชื่อครึ่งไม่เชื่อครึ่ง"},{"n":24,"t":"ผมยาวสลวยพลิ้วไปตามสายลมอ่อนๆ"},{"n":25,"t":"ลำแสงสีขาววาววับราวดาบคมกริบฯ"},{"n":26,"t":"เปลวไฟที่ไหววูบวาบขจัดความมืด"},{"n":27,"t":"เสียงของ [ชื่อคน] เฉียบคมขึ้น"},{"n":28,"t":"กระเพื่อมขึ้นลงตามระลอกคลื่น"},{"n":29,"t":"ครางเสียงเบาหวิวแทบจะขาดห้วง"},{"n":30,"t":"เดินอย่างระมัดระวังทุกฝีก้าว"},{"n":31,"t":"เสียง [ชื่อคน] สะท้อนดังก้อง"},{"n":32,"t":"เสียงพื้นกระดานดังเอี๊ยดอ๊าด"},{"n":33,"t":"แวบออกมาให้เห็นเป็นครั้งคราว"},{"n":34,"t":"นิ้วมือห้อยลงไปเรี่ยกับพื้น"},{"n":35,"t":"แสดงอารมณ์โกรธเกรี้ยวรุนแรง"},{"n":36,"t":"จะให้นิ่งเฉยอยู่ได้อย่างไร"},{"n":37,"t":"รอยเท้าทับซ้อนพลวันกันไปมา"},{"n":38,"t":"เสียงพื้นไม้ลั่นเอี๊ยดอ๊าด"},{"n":39,"t":"ใบหน้านิ่งเฉยไร้ความรู้สึก"},{"n":40,"t":"ริมฝีปากหนาซีดขาวไร้เลือด"},{"n":41,"t":"สะบัดเสียงด้วยความไม่พอใจ"},{"n":42,"t":"เหลียวไปมองข้างหลังแวบนึง"},{"n":43,"t":"ไม่มีกะจิตกะใจที่จะทำอะไร"},{"n":44,"t":"ดวงตาบวมแดงจากการร้องไห้"},{"n":45,"t":"ท้องฟ้าคำรามเสียงดังลั่น"},{"n":46,"t":"นอนหงายนิ่งสนิทไม่ไหวติง"},{"n":47,"t":"สภาพที่วิปริตผิดธรรมชาติ"},{"n":48,"t":"ส่ายศีรษะที่หนักอึ้งช้าๆ"},{"n":49,"t":"อากาศเย็นชื้นและเหม็นอับ"},{"n":50,"t":"เซถลาเข้ามาราวกับถูกผลัก"},{"n":51,"t":"โต้กลับด้วยเสียงเฉียบขาด"},{"n":52,"t":"ไหวสะเทือนเป็นระลอกคลื่น"},{"n":53,"t":"ขยะแขยงจนขนลุกไปทั้งตัว"},{"n":54,"t":"ปริศนาที่ต้องขบคิดอีกที"},{"n":55,"t":"ลอยคว้างอยู่ในความทรงจำ"},{"n":56,"t":"สายลมที่พัดมาลูบไล้แก้ม"},{"n":57,"t":"คฤหาสน์ที่ใหญ่โตโก้หรู"},{"n":58,"t":"คล่องแคล่วกระฉับกระเฉง"},{"n":59,"t":"ควบคุมเสียงให้ราบเรียบ"},{"n":60,"t":"ความเวิ้งว้างว่างเปล่า"},{"n":61,"t":"พ้องกันอย่างน่าประหลาด"},{"n":62,"t":"มือยกขึ้นไขว่คว้าอากาศ"},{"n":63,"t":"ยืนตาค้างด้วยความตะลึง"},{"n":64,"t":"รู้สึกหนักอึ้งอยู่ในใจ"},{"n":65,"t":"สายตาเย็นชาแฝงแววดูถูก"},{"n":66,"t":"คลายวงแขนที่รัดตัวเธอ"},{"n":67,"t":"ซากปรักหักพังกลืนร่าง"},{"n":68,"t":"ตอบด้วยเสียงอ่อนระโหย"},{"n":69,"t":"นั่งฟังอย่างหน้าตาเฉย"},{"n":70,"t":"ปัดป่ายมือสองข้างไปมา"},{"n":71,"t":"ภาพเหตุการณ์แวบขึ้นมา"},{"n":72,"t":"ม่านหมอกความคลุมเครือ"},{"n":73,"t":"ริมฝีปากสีแดงจิ้มลิ้ม"},{"n":74,"t":"วิงวอนขอความช่วยเหลือ"},{"n":75,"t":"หงายหลังลงไปนอนแผ่หลา"},{"n":76,"t":"หนวดเคราปรกหน้ารุงรัง"},{"n":77,"t":"โหม่งโขดหินจนศีรษะแตก"},{"n":78,"t":"ความมืดมิดในยามราตรี"},{"n":79,"t":"ชุดหลุดลุ่ยไร้รูปทรง"},{"n":80,"t":"ดวงตาเป็นประกายสุกใส"},{"n":81,"t":"นิ่วหน้าจนเห็นรอยลึก"},{"n":82,"t":"บ่น [...] เสียยืดยาว"},{"n":83,"t":"ผมเผ้าหนวดเครารุงรัง"},{"n":84,"t":"พื้นกระดานที่ทรุดยวบ"},{"n":85,"t":"พุ่งเข้าไปกระแทกท้อง"},{"n":86,"t":"รุงรังไปด้วยหนวดเครา"},{"n":87,"t":"เบิกตาโตด้วยความตกใจ"},{"n":88,"t":"เสียงฟ้าคำรามกึกก้อง"},{"n":89,"t":"เสียงไม้หักดัง กร๊อบ"},{"n":90,"t":"แสงดาวที่สาดส่องสลัว"},{"n":91,"t":"ใบหน้าผอมเรียวยับย่น"},{"n":92,"t":"ขู่ด้วยเสียงแหบแห้ง"},{"n":93,"t":"คิดอะไรเรื่อยเปื่อย"},{"n":94,"t":"ดวงอาทิตย์ลับขอบฟ้า"},{"n":95,"t":"ดูผิดแปลกจากยามปกติ"},{"n":96,"t":"ตวาดเสียงดังกึกก้อง"},{"n":97,"t":"ถูกเหยียบย่ำยับเยิน"},{"n":98,"t":"น้ำเสียงไม่สบอารมณ์"},{"n":99,"t":"ปราดไปที่ริมระเบียง"},{"n":100,"t":"ผ่านไปแค่อึดใจเดียว"},{"n":101,"t":"ร้องทักเสียงแหลมสูง"},{"n":102,"t":"ร้องโอดโอยเสียงลั่น"},{"n":103,"t":"สะบัดหน้าไปทางหนึ่ง"},{"n":104,"t":"เด้งตัวขึ้นจากเตียง"},{"n":105,"t":"เสียงโหยหวนชวนขนลุก"},{"n":106,"t":"โถงทางเดินที่ทอดยาว"},{"n":107,"t":"กระโจนเข้าไปในห้อง"},{"n":108,"t":"คลื่นเหียนวิงเวียน"},{"n":109,"t":"คอหักพับลงไปที่บ่า"},{"n":110,"t":"จับต้นชนปลายไม่ถูก"},{"n":111,"t":"ฉายชัดอยู่บนใบหน้า"},{"n":112,"t":"ทำตาหยีเป็นเส้นตรง"},{"n":113,"t":"ทำหน้านิ่วคิ้วขมวด"},{"n":114,"t":"ผลุนผลันออกจากห้อง"},{"n":115,"t":"ผุดลุกขึ้นจากเตียง"},{"n":116,"t":"ย่องอย่างเงียบกริบ"},{"n":117,"t":"ราวไม้ที่หักสะบั้น"},{"n":118,"t":"ริมฝีปากอันแห้งผาก"},{"n":119,"t":"สะดุ้งจนไหล่สะท้าน"},{"n":120,"t":"อาคารโย้เย้จวนถล่ม"},{"n":121,"t":"อ่อนเปลี้ยเพลียแรง"},{"n":122,"t":"อ้าแขนกว้างกั้นไว้"},{"n":123,"t":"เจียมเนื้อเจียมตัว"},{"n":124,"t":"แสงสว่างยามรุ่งสาง"},{"n":125,"t":"ใบหน้าเรียวคางแหลม"},{"n":126,"t":"ไม่อาจข่มตาให้หลับ"},{"n":127,"t":"กระโจนออกจากประตู"},{"n":128,"t":"ครั้นจะเข้าไปช่วย"},{"n":129,"t":"ความกลัวระคนสงสัย"},{"n":130,"t":"คิดถึงขึ้นมาจับใจ"},{"n":131,"t":"จิ้มลิ้มพริ้มเพรา"},{"n":132,"t":"ดวงตาสีน้ำตาลเข้ม"},{"n":133,"t":"ถอนหายใจเฮือกใหญ่"},{"n":134,"t":"ถ้อยคำที่ถ่อยสถุล"},{"n":135,"t":"ทรุดตัวลงนั่งแหมะ"},{"n":136,"t":"ท่าทางแข็งกระด้าง"},{"n":137,"t":"ฝุ่นจับขะมุกขะมอม"},{"n":138,"t":"ฟังอย่างใจจดใจจ่อ"},{"n":139,"t":"ภายใต้แสงสว่างไสว"},{"n":140,"t":"ล่องลอยเคว้งคว้าง"},{"n":141,"t":"สงสัยขึ้นมาตงิด ๆ"},{"n":142,"t":"สายลมพัดพรูเข้ามา"},{"n":143,"t":"อารมณ์เกรี้ยวกราด"},{"n":144,"t":"เงื้อแผ่นไม้ในมือ"},{"n":145,"t":"เป็นเรื่องเป็นราว"},{"n":146,"t":"เรื่องคอขาดบาดตาย"},{"n":147,"t":"เลือดเนื้อเชื้อไข"},{"n":148,"t":"แมกไม้ที่แกว่งไกว"},{"n":149,"t":"กระชับแฟ้มเอกสาร"},{"n":150,"t":"กิริยาอันนุ่มนวล"},{"n":151,"t":"ครางเสียงแหบแห้ง"},{"n":152,"t":"คลับคล้ายคลับคลา"},{"n":153,"t":"คาดคั้นเสียงแข็ง"},{"n":154,"t":"ฆาตกรกระหายเลือด"},{"n":155,"t":"ซุกตัวอยู่ในโซฟา"},{"n":156,"t":"ทรุดตัวลงนั่งยอง"},{"n":157,"t":"นอนหงายไม่ไหวติง"},{"n":158,"t":"น้ำเสียงราบเรียบ"},{"n":159,"t":"น้ำเสียงเฉียบขาด"},{"n":160,"t":"บริสุทธิ์ผุดผ่อง"},{"n":161,"t":"บันไดแคบๆทอดขึ้น"},{"n":162,"t":"ประตูที่แง้มอยู่"},{"n":163,"t":"ประสบเคราะห์กรรม"},{"n":164,"t":"ยิ้มอย่างอ่อนโยน"},{"n":165,"t":"รูปร่างพิกลพิการ"},{"n":166,"t":"วางท่าน่าเกรงขาม"},{"n":167,"t":"ส่งเสียงครืดคราด"},{"n":168,"t":"หยั่งฝีเท้าทดสอบ"},{"n":169,"t":"เดือดเนื้อร้อนใจ"},{"n":170,"t":"เบิกตาอย่างหวาดๆ"},{"n":171,"t":"เสียงน้ำหยดติ๋งๆ"},{"n":172,"t":"เสียงเฉียบคมขึ้น"},{"n":173,"t":"แขนซึ่งกางอ้าซ่า"},{"n":174,"t":"แนวคิ้วที่พาดยาว"},{"n":175,"t":"แมกไม้เขียวชอุ่ม"},{"n":176,"t":"แมกไม้เบียดเสียด"},{"n":177,"t":"ให้รู้แล้วรู้รอด"},{"n":178,"t":"กระซิบเสียงสั่น"},{"n":179,"t":"กระปรี้กระเปร่า"},{"n":180,"t":"กวนใจให้ว้าวุ่น"},{"n":181,"t":"ความลับแดงออกมา"},{"n":182,"t":"ตัดพ้อปีนเกลียว"},{"n":183,"t":"ติดตรึงอยู่ในใจ"},{"n":184,"t":"ทำเสียงจิ๊ในปาก"},{"n":185,"t":"ทิ้งตัวลงบนโซฟา"},{"n":186,"t":"ท้องฟ้าขมุกขมัว"},{"n":187,"t":"ท้องแตกไส้ทะลัก"},{"n":188,"t":"น่ารักน่าเอ็นดู"},{"n":189,"t":"ปฏิเสธเสียงแข็ง"},{"n":190,"t":"ผมเผ้ายุ่งเหยิง"},{"n":191,"t":"มืออันหยาบกร้าน"},{"n":192,"t":"ยื่นมือไปกระชาก"},{"n":193,"t":"ร้องไห้คร่ำครวญ"},{"n":194,"t":"ส่องสว่างวอมแวม"},{"n":195,"t":"หายเป็นปลิดทิ้ง"},{"n":196,"t":"ห้องกว้างมืดทึบ"},{"n":197,"t":"เกร็งตัวแข็งขืน"},{"n":198,"t":"เชื้อไม่ทิ้งแถว"},{"n":199,"t":"เรื่องพรรค์นั้น"},{"n":200,"t":"เหมือนกันเปี๊ยบ"},{"n":201,"t":"เหลียวซ้ายแลขวา"},{"n":202,"t":"เหลือบ่ากว่าแรง"},{"n":203,"t":"เอียงคอทำหน้างง"},{"n":204,"t":"แผดเสียงแหลมสูง"},{"n":205,"t":"ใบหน้ากระตุกถี่"},{"n":206,"t":"กรีดร้องโหยหวน"},{"n":207,"t":"คอหักบิดเบี้ยว"},{"n":208,"t":"จะพังมิพังแหล่"},{"n":209,"t":"ซีดขาวไร้เลือด"},{"n":210,"t":"ดวงตาเรียวเล็ก"},{"n":211,"t":"ตึกรามบ้านช่อง"},{"n":212,"t":"ถูกรถทับบี้แบน"},{"n":213,"t":"นอนตัวแข็งทื่อ"},{"n":214,"t":"นั่งตาลอยคว้าง"},{"n":215,"t":"บรรเทาเบาบางลง"},{"n":216,"t":"บาดแผลเหวอะหวะ"},{"n":217,"t":"ประมาทเลินเล่อ"},{"n":218,"t":"ปรามเสียงเรียบ"},{"n":219,"t":"ปั้นหน้าเครียด"},{"n":220,"t":"ปากที่อ้ากว้าง"},{"n":221,"t":"ป่าเขาลำเนาไพร"},{"n":222,"t":"พยุงให้ลุกขึ้น"},{"n":223,"t":"พร่ำบ่นนั่นนี่"},{"n":224,"t":"พร่ำพูดพร่ำบอก"},{"n":225,"t":"พร้อมเพรียงกัน"},{"n":226,"t":"ฟ้าแลบแปลบปลาบ"},{"n":227,"t":"ยันตัวขึ้นนั่ง"},{"n":228,"t":"ริมฝีปากซุกไซ้"},{"n":229,"t":"ลำคอกลับตีบตัน"},{"n":230,"t":"ลึกลับซ่อนเร้น"},{"n":231,"t":"วงแขนแข็งแกร่ง"},{"n":232,"t":"สภาพที่ยับเยิน"},{"n":233,"t":"สายตาที่แหลมคม"},{"n":234,"t":"สูงโปร่งสมส่วน"},{"n":235,"t":"ส่งเสียงซู่ซ่า"},{"n":236,"t":"หน้าซีดตัวสั่น"},{"n":237,"t":"อย่างใจจดใจจ่อ"},{"n":238,"t":"เจ้ากี้เจ้าการ"},{"n":239,"t":"เบนสายตาขึ้นไป"},{"n":240,"t":"เปลวไฟสว่างวาบ"},{"n":241,"t":"เป็นห่วงเป็นใย"},{"n":242,"t":"เรี่ยวแรงถดถอย"},{"n":243,"t":"เล่าเสียงเนิบๆ"},{"n":244,"t":"เสียงตบเข่าฉาด"},{"n":245,"t":"เสียงสั่นเครือ"},{"n":246,"t":"เสียงเยียบเย็น"},{"n":247,"t":"เหลวไหลไร้สาระ"},{"n":248,"t":"ใบหน้าซีดเผือด"},{"n":249,"t":"ใบหน้าโชกเลือด"},{"n":250,"t":"กระเสือกกระสน"},{"n":251,"t":"ขนานนามคนร้าย"},{"n":252,"t":"ชายร่างล่ำสัน"},{"n":253,"t":"ช้อนสายตาขึ้น"},{"n":254,"t":"ซ้ำแล้วซ้ำอีก"},{"n":255,"t":"ถามนั่นถามนี่"},{"n":256,"t":"ทรุดตัวลงนั่ง"},{"n":257,"t":"ทวีความรุนแรง"},{"n":258,"t":"ทึ้งเถากุหลาบ"},{"n":259,"t":"น่าคลื่นเหียน"},{"n":260,"t":"น้ำตาร่วงเผาะ"},{"n":261,"t":"ผมยาวสีดอกเลา"},{"n":262,"t":"ผุดลุกขึ้นยืน"},{"n":263,"t":"พยักหน้าหงึกๆ"},{"n":264,"t":"พร่ำถามตัวเอง"},{"n":265,"t":"รักใคร่เอ็นดู"},{"n":266,"t":"ร่างลอยละลิ่ว"},{"n":267,"t":"ร่างสูงล่ำสัน"},{"n":268,"t":"ร่างไร้วิญญาณ"},{"n":269,"t":"วาบขึ้นมาในใจ"},{"n":270,"t":"วิ่งโซซัดโซเซ"},{"n":271,"t":"สกปรกเลอะเทอะ"},{"n":272,"t":"สอดรู้สอดเห็น"},{"n":273,"t":"สิ้นแรงขัดขืน"},{"n":274,"t":"หมู่ไม้หนาทึบ"},{"n":275,"t":"หายวับไปกับตา"},{"n":276,"t":"เข้มงวดกวดขัน"},{"n":277,"t":"เลียบเคียงถาม"},{"n":278,"t":"เสียงดัง แก๊ก"},{"n":279,"t":"เอะอะเสียงดัง"},{"n":280,"t":"เอะอะเอ็ดตะโร"},{"n":281,"t":"เอาเป็นเอาตาย"},{"n":282,"t":"โอ่อ่าอลังการ"},{"n":283,"t":"ใบหน้าบึ้งตึง"},{"n":284,"t":"กระซิบกระซาบ"},{"n":285,"t":"กระตือรือร้น"},{"n":286,"t":"กระแนะกระแหน"},{"n":287,"t":"กะพริบตาช้าๆ"},{"n":288,"t":"ขนสีดำหนาทึบ"},{"n":289,"t":"ขวัญหนีดีฝ่อ"},{"n":290,"t":"ขอบตาคล้ำจัด"},{"n":291,"t":"คลอด้วยน้ำตา"},{"n":292,"t":"ความมืดครึ้ม"},{"n":293,"t":"คอระหงขาวนวล"},{"n":294,"t":"ชะงักกลางคัน"},{"n":295,"t":"ดิ้นรนขัดขืน"},{"n":296,"t":"ดึก ๆ ดื่น ๆ"},{"n":297,"t":"ตรงดิ่งไปยัง"},{"n":298,"t":"ตีหน้าเฉยเมย"},{"n":299,"t":"ต่อหน้าต่อตา"},{"n":300,"t":"ถอนรากถอนโคน"},{"n":301,"t":"นอนเหยียดยาว"},{"n":302,"t":"ปราดเข้าไปหา"},{"n":303,"t":"ปาไปหนึ่งวัน"},{"n":304,"t":"ราวทุ่มครึ่ง"},{"n":305,"t":"ลูกตาถูกควัก"},{"n":306,"t":"ล้มระเนระนาด"},{"n":307,"t":"สายตาคาดคั้น"},{"n":308,"t":"สีชมพูเรื่อๆ"},{"n":309,"t":"หน้าผากกว้าง"},{"n":310,"t":"หน้าแข้งลีบๆ"},{"n":311,"t":"อรชรอ้อนแอ้น"},{"n":312,"t":"อาฆาตมาดร้าย"},{"n":313,"t":"อ่อนปวกเปียก"},{"n":314,"t":"เขี้ยวแหลมคม"},{"n":315,"t":"เล็ดลอดสายตา"},{"n":316,"t":"เล่นหูเล่นตา"},{"n":317,"t":"เสียงแหบพร่า"},{"n":318,"t":"แข้งขาปัดเป๋"},{"n":319,"t":"แสงไฟริบหรี่"},{"n":320,"t":"ใบหน้าซูบซีด"},{"n":321,"t":"ไร้ความปรานี"},{"n":322,"t":"กระทุ้งเข่า"},{"n":323,"t":"กระแอมกระไอ"},{"n":324,"t":"ความมืดสลัว"},{"n":325,"t":"คว้าน้ำเหลว"},{"n":326,"t":"ชันเข่าขึ้น"},{"n":327,"t":"ชายร่างใหญ่"},{"n":328,"t":"ชายเสื้อนอน"},{"n":329,"t":"ซุบซิบนินทา"},{"n":330,"t":"ดังกรอบแกรบ"},{"n":331,"t":"ตาเบิกกว้าง"},{"n":332,"t":"ตีหน้าเฉยชา"},{"n":333,"t":"ทำเสียงขรึม"},{"n":334,"t":"ท่าทีอึกอัก"},{"n":335,"t":"ธรรมดาสามัญ"},{"n":336,"t":"นอนครวญคราง"},{"n":337,"t":"นั่งปักหลัก"},{"n":338,"t":"บันไดแคบชัน"},{"n":339,"t":"ประดังประเด"},{"n":340,"t":"พานจะเกลียด"},{"n":341,"t":"พิลึกพิลั่น"},{"n":342,"t":"พูดจาแทะโลม"},{"n":343,"t":"พูดอ้อมค้อม"},{"n":344,"t":"มูลความจริง"},{"n":345,"t":"รูปร่างอรชร"},{"n":346,"t":"วาระสุดท้าย"},{"n":347,"t":"สงบจิตสงบใจ"},{"n":348,"t":"สะอึกสะอื้น"},{"n":349,"t":"หน้าตาสะสวย"},{"n":350,"t":"หมุนตัวกลับ"},{"n":351,"t":"หลุบตาต่ำลง"},{"n":352,"t":"หว่านเสน่ห์"},{"n":353,"t":"อ้าปากกว้าง"},{"n":354,"t":"เกลี้ยกล่อม"},{"n":355,"t":"เงื้อสุดแขน"},{"n":356,"t":"เด็กหัวรั้น"},{"n":357,"t":"เปรอะเปื้อน"},{"n":358,"t":"เม้มปากแน่น"},{"n":359,"t":"เยี่ยมเยียน"},{"n":360,"t":"เลือดไหลนอง"},{"n":361,"t":"เสียงฝีเท้า"},{"n":362,"t":"เสียงสะอื้น"},{"n":363,"t":"เสียงแหบต่ำ"},{"n":364,"t":"เอะอะโวยวาย"},{"n":365,"t":"แต่ไหนแต่ไร"},{"n":366,"t":"แมลงบินว่อน"},{"n":367,"t":"ใบหน้าเรียว"},{"n":368,"t":"กลบเกลื่อน"},{"n":369,"t":"กัดฟันแน่น"},{"n":370,"t":"ก้มหน้างุด"},{"n":371,"t":"ขื่อเปลือย"},{"n":372,"t":"คะยั้นคะยอ"},{"n":373,"t":"จริงดังคาด"},{"n":374,"t":"จุดพลิกผัน"},{"n":375,"t":"จ้องตาขวาง"},{"n":376,"t":"ช็อกสุดขีด"},{"n":377,"t":"ซมซานจากไป"},{"n":378,"t":"ตาแดงเรื่อ"},{"n":379,"t":"ตื่นตระหนก"},{"n":380,"t":"ทั่วสารทิศ"},{"n":381,"t":"ทำหน้าขรึม"},{"n":382,"t":"นั่งคุดคู้"},{"n":383,"t":"นั่งตัวลีบ"},{"n":384,"t":"นั่งห่อตัว"},{"n":385,"t":"นั่งห้อยขา"},{"n":386,"t":"ประพฤติตัว"},{"n":387,"t":"ผงะถอยหลัง"},{"n":388,"t":"พูดจี้ใจดำ"},{"n":389,"t":"พูดรัวเร็ว"},{"n":390,"t":"ยืดตัวขึ้น"},{"n":391,"t":"ยืนนิ่งขึง"},{"n":392,"t":"ระลอกคลื่น"},{"n":393,"t":"ระแวดระวัง"},{"n":394,"t":"ร่างบึกบึน"},{"n":395,"t":"ละล่ำละลัก"},{"n":396,"t":"ลูบไล้แก้ม"},{"n":397,"t":"วิ่งเหยาะๆ"},{"n":398,"t":"สงบเสงี่ยม"},{"n":399,"t":"สีแดงแปร๊ด"},{"n":400,"t":"เคลิ้มหลับ"},{"n":401,"t":"เงาดำทะมึน"},{"n":402,"t":"เงี่ยหูฟัง"},{"n":403,"t":"เดินตัดสวน"},{"n":404,"t":"เตลิดไปไกล"},{"n":405,"t":"เที่ยวเตร่"},{"n":406,"t":"เบิกตาโพลง"},{"n":407,"t":"เร่งฝีเท้า"},{"n":408,"t":"เล่าลือกัน"},{"n":409,"t":"เสียงงึมงำ"},{"n":410,"t":"เสื่อมเสีย"},{"n":411,"t":"เหนื่อยล้า"},{"n":412,"t":"เหยียบย่าง"},{"n":413,"t":"เหลียวไปดู"},{"n":414,"t":"เอียงคอคิด"},{"n":415,"t":"โคมไฟระย้า"},{"n":416,"t":"โผเข้าซบอก"},{"n":417,"t":"โพล่งออกมา"},{"n":418,"t":"กระชับมือ"},{"n":419,"t":"ครั้งคราว"},{"n":420,"t":"คร่ำเคร่ง"},{"n":421,"t":"จ้องเขม็ง"},{"n":422,"t":"ชะโงกหน้า"},{"n":423,"t":"ตบเข่าฉาด"},{"n":424,"t":"ตวัดหางตา"},{"n":425,"t":"ถลาล้มทับ"},{"n":426,"t":"ถลึงตาตอบ"},{"n":427,"t":"ถามซักไซ้"},{"n":428,"t":"ทำหน้าฉงน"},{"n":429,"t":"ทุกข์ระทม"},{"n":430,"t":"นอนแผ่หลา"},{"n":431,"t":"นิสัยใจคอ"},{"n":432,"t":"ปิดดังปัง"},{"n":433,"t":"ป่ามืดทึบ"},{"n":434,"t":"ผมขาวโพลน"},{"n":435,"t":"ผมสยายยาว"},{"n":436,"t":"ฝนกระหน่ำ"},{"n":437,"t":"พริ้มเพรา"},{"n":438,"t":"พร่ำเรียก"},{"n":439,"t":"ยืนโอนเอน"},{"n":440,"t":"ยุ่งเหยิง"},{"n":441,"t":"ระทมทุกข์"},{"n":442,"t":"ร้องไห้โฮ"},{"n":443,"t":"ละแวกบ้าน"},{"n":444,"t":"สังหรณ์ใจ"},{"n":445,"t":"สับสนปนเป"},{"n":446,"t":"ส่ายศีรษะ"},{"n":447,"t":"หรี่ตาตอบ"},{"n":448,"t":"หลายอึดใจ"},{"n":449,"t":"หันขวับไป"},{"n":450,"t":"หายสาบสูญ"},{"n":451,"t":"อ่อนระทวย"},{"n":452,"t":"เกลียดชัง"},{"n":453,"t":"เงาตะคุ่ม"},{"n":454,"t":"เชิงบันได"},{"n":455,"t":"เชิงเทียน"},{"n":456,"t":"เดินดุ่มๆ"},{"n":457,"t":"เดินเฉียด"},{"n":458,"t":"เท้าสะเอว"},{"n":459,"t":"เปลวเทียน"},{"n":460,"t":"เหลียวมอง"},{"n":461,"t":"เหี้ยมโหด"},{"n":462,"t":"แข็งกร้าว"},{"n":463,"t":"แผลฉกรรจ์"},{"n":464,"t":"โพล่งขึ้น"},{"n":465,"t":"ไม่ทันกาล"},{"n":466,"t":"ไม่ปริปาก"},{"n":467,"t":"ไล่ตะเพิด"},{"n":468,"t":"กรุกระจก"},{"n":469,"t":"ขนาบข้าง"},{"n":470,"t":"ขมวดคิ้ว"},{"n":471,"t":"ครางเบาๆ"},{"n":472,"t":"ครึกโครม"},{"n":473,"t":"ครุ่นคิด"},{"n":474,"t":"ครู่ก่อน"},{"n":475,"t":"คลอนแคลน"},{"n":476,"t":"คางเรียว"},{"n":477,"t":"ฉุกละหุก"},{"n":478,"t":"ช่องโพรง"},{"n":479,"t":"ซีดเผือด"},{"n":480,"t":"ดันทุรัง"},{"n":481,"t":"ดูลาดเลา"},{"n":482,"t":"ทรุดโทรม"},{"n":483,"t":"นังตัวดี"},{"n":484,"t":"น่าสมเพช"},{"n":485,"t":"น่าเวทนา"},{"n":486,"t":"บึ่งรถมา"},{"n":487,"t":"บ่นพึมพำ"},{"n":488,"t":"ผงกศีรษะ"},{"n":489,"t":"พร่ำเอ่ย"},{"n":490,"t":"พลั้งปาก"},{"n":491,"t":"พูดห้วนๆ"},{"n":492,"t":"มีลู่ทาง"},{"n":493,"t":"มุ่งหน้า"},{"n":494,"t":"ม่านหมอก"},{"n":495,"t":"ยัดเยียด"},{"n":496,"t":"ยามวิกาล"},{"n":497,"t":"ย่อตัวลง"},{"n":498,"t":"ย่างเท้า"},{"n":499,"t":"รุ่งเช้า"},{"n":500,"t":"ร่างกำยำ"},{"n":501,"t":"ล่อกแล่ก"},{"n":502,"t":"วิ่งปราด"},{"n":503,"t":"ศีรษะแตก"},{"n":504,"t":"สตาร์ตรถ"},{"n":505,"t":"สีดอกเลา"},{"n":506,"t":"หนักอึ้ง"},{"n":507,"t":"หมุนติ้ว"},{"n":508,"t":"หล่นตุ้บ"},{"n":509,"t":"ห้อมล้อม"},{"n":510,"t":"เจ็บแปลบ"},{"n":511,"t":"เดินโซเซ"},{"n":512,"t":"เบนสายตา"},{"n":513,"t":"เบิกตาโต"},{"n":514,"t":"เลิกคิ้ว"},{"n":515,"t":"เลิกแว่น"},{"n":516,"t":"เหม็นอับ"},{"n":517,"t":"เหม่อมอง"},{"n":518,"t":"เหวอะหวะ"},{"n":519,"t":"แข็งทื่อ"},{"n":520,"t":"แดงเรื่อ"},{"n":521,"t":"แปลกพิกล"},{"n":522,"t":"แผดเสียง"},{"n":523,"t":"โศกเศร้า"},{"n":524,"t":"ใจปลาซิว"},{"n":525,"t":"กระหน่ำ"},{"n":526,"t":"กระเซ็น"},{"n":527,"t":"กอดเข่า"},{"n":528,"t":"ขนานนาม"},{"n":529,"t":"ขับเน้น"},{"n":530,"t":"ขาวโพลน"},{"n":531,"t":"ครั้นจะ"},{"n":532,"t":"คัดค้าน"},{"n":533,"t":"คางแหลม"},{"n":534,"t":"คาดคั้น"},{"n":535,"t":"จนปัญญา"},{"n":536,"t":"จับจ้อง"},{"n":537,"t":"ชำเลือง"},{"n":538,"t":"ซุกซ่อน"},{"n":539,"t":"ดังระงม"},{"n":540,"t":"ดังแว่ว"},{"n":541,"t":"ดื้อดึง"},{"n":542,"t":"ดุนหลัง"},{"n":543,"t":"ตวัดหาง"},{"n":544,"t":"ทำตาลอย"},{"n":545,"t":"ทำตาวาว"},{"n":546,"t":"ทุ่มเศษ"},{"n":547,"t":"นั่งยอง"},{"n":548,"t":"น่าอนาถ"},{"n":549,"t":"บุ้ยใบ้"},{"n":550,"t":"ปรักปรำ"},{"n":551,"t":"ปลีกตัว"},{"n":552,"t":"ผลีผลาม"},{"n":553,"t":"ผ่ายผอม"},{"n":554,"t":"พลัดหลง"},{"n":555,"t":"รัวเร็ว"},{"n":556,"t":"รุนหลัง"},{"n":557,"t":"ลอดโพรง"},{"n":558,"t":"ละลานตา"},{"n":559,"t":"ลื่นไถล"},{"n":560,"t":"วิ่งกวด"},{"n":561,"t":"ว้าวุ่น"},{"n":562,"t":"สยดสยอง"},{"n":563,"t":"สลัวราง"},{"n":564,"t":"สีดำปี๋"},{"n":565,"t":"หยากไย่"},{"n":566,"t":"หยุดกึก"},{"n":567,"t":"หลืบเงา"},{"n":568,"t":"หลุดปาก"},{"n":569,"t":"หักโค่น"},{"n":570,"t":"หายนภัย"},{"n":571,"t":"ห่อไหล่"},{"n":572,"t":"ห้วงคิด"},{"n":573,"t":"อ้ำอึ้ง"},{"n":574,"t":"เขยื่อน"},{"n":575,"t":"เพิกเฉย"},{"n":576,"t":"เพ่งมอง"},{"n":577,"t":"เหวี่ยง"},{"n":578,"t":"เอ่ยปาก"},{"n":579,"t":"แก้มซูบ"},{"n":580,"t":"แก้มตอบ"},{"n":581,"t":"แน่นิ่ง"},{"n":582,"t":"แผ่ซ่าน"},{"n":583,"t":"แหงนมอง"},{"n":584,"t":"แห้งผาก"},{"n":585,"t":"โอบอุ้ม"},{"n":586,"t":"ไขว้แขน"},{"n":587,"t":"กระโจน"},{"n":588,"t":"กวาดตา"},{"n":589,"t":"กุมแขน"},{"n":590,"t":"ขาวซีด"},{"n":591,"t":"ขาวนวล"},{"n":592,"t":"ควานหา"},{"n":593,"t":"คอระหง"},{"n":594,"t":"งุ้มงอ"},{"n":595,"t":"จองหอง"},{"n":596,"t":"จัดแจง"},{"n":597,"t":"จับจอง"},{"n":598,"t":"ฉาบฉาย"},{"n":599,"t":"ฉุดลาก"},{"n":600,"t":"ซักไซ้"},{"n":601,"t":"ดูแคลน"},{"n":602,"t":"ตาถั่ว"},{"n":603,"t":"ทาบทับ"},{"n":604,"t":"ปรือตา"},{"n":605,"t":"ผอมบาง"},{"n":606,"t":"พงหญ้า"},{"n":607,"t":"พาน..."},{"n":608,"t":"ฟาดฟัน"},{"n":609,"t":"มอมแมม"},{"n":610,"t":"รุนแรง"},{"n":611,"t":"รูโหว่"},{"n":612,"t":"ร้อนรน"},{"n":613,"t":"ลบล้าง"},{"n":614,"t":"ลอบมอง"},{"n":615,"t":"สวบสาบ"},{"n":616,"t":"สารพัด"},{"n":617,"t":"สารรูป"},{"n":618,"t":"สีทึมๆ"},{"n":619,"t":"หักโหม"},{"n":620,"t":"อับทึบ"},{"n":621,"t":"อิดโรย"},{"n":622,"t":"เชิงผา"},{"n":623,"t":"เบ้าตา"},{"n":624,"t":"เมามาย"},{"n":625,"t":"แนบชิด"},{"n":626,"t":"แอ่นอก"},{"n":627,"t":"งงงวย"},{"n":628,"t":"ฉะฉาน"},{"n":629,"t":"ชะงัก"},{"n":630,"t":"ดุด่า"},{"n":631,"t":"ตาฝาด"},{"n":632,"t":"ต้นตอ"},{"n":633,"t":"ถอนใจ"},{"n":634,"t":"พึมพำ"},{"n":635,"t":"ลนลาน"},{"n":636,"t":"ลังเล"},{"n":637,"t":"วงแขน"},{"n":638,"t":"สำทับ"},{"n":639,"t":"สีซีด"},{"n":640,"t":"หวาดๆ"},{"n":641,"t":"หามศพ"},{"n":642,"t":"เผียะ"},{"n":643,"t":"เวอร์"},{"n":644,"t":"เออออ"},{"n":645,"t":"โหยหา"},{"n":646,"t":"ได้ใจ"},{"n":647,"t":"คอตก"},{"n":648,"t":"ช็อก"},{"n":649,"t":"ระคน"},{"n":650,"t":"ล็อก"},{"n":651,"t":"สลวย"},{"n":652,"t":"โทร."},{"n":653,"t":"โพละ"},{"n":654,"t":"ลอด"}],"props":{"12":{"line":12,"src":"โหดเหี้ยมเลือดเย็นน่าเกลียดน่ากลัว","words":[{"w":"เลือดเย็น","cat":8},{"w":"น่าเกลียดน่ากลัว","cat":8},{"w":"โหดเหี้ยม","cat":8}]},"123":{"line":123,"src":"เจียมเนื้อเจียมตัว","words":[{"w":"เจียมตัว","cat":8}]},"136":{"line":136,"src":"ท่าทางแข็งกระด้าง","words":[{"w":"แข็งกระด้าง","cat":8}]},"160":{"line":160,"src":"บริสุทธิ์ผุดผ่อง","words":[{"w":"ผุดผ่อง","cat":2}]},"166":{"line":166,"src":"วางท่าน่าเกรงขาม","words":[{"w":"น่าเกรงขาม","cat":8},{"w":"วางท่า","cat":3}]},"188":{"line":188,"src":"น่ารักน่าเอ็นดู","words":[{"w":"น่าเอ็นดู","cat":8}]},"259":{"line":259,"src":"น่าคลื่นเหียน","words":[{"w":"คลื่นเหียน","cat":5}]},"276":{"line":276,"src":"เข้มงวดกวดขัน","words":[{"w":"เข้มงวด","cat":8},{"w":"กวดขัน","cat":8}]},"356":{"line":356,"src":"เด็กหัวรั้น","words":[{"w":"หัวรั้น","cat":8}]},"398":{"line":398,"src":"สงบเสงี่ยม","words":[{"w":"เสงี่ยม","cat":8}]},"483":{"line":483,"src":"นังตัวดี","words":[{"w":"ตัวดี","cat":8}]},"484":{"line":484,"src":"น่าสมเพช","words":[{"w":"สมเพช","cat":8}]},"485":{"line":485,"src":"น่าเวทนา","words":[{"w":"เวทนา","cat":5}]},"548":{"line":548,"src":"น่าอนาถ","words":[{"w":"อนาถ","cat":8}]}}};
+const CATNAME={1:"๑ บรรยากาศ",2:"๒ รูปลักษณ์",3:"๓ กริยา",4:"๔ เสียง",5:"๕ สภาวะภายใน",6:"๖ คำปรุงแต่ง",
+7:"๗ ทับศัพท์",8:"๘ นิสัย",9:"๙ อื่น ๆ",10:"๑๐ สิ่งของ",11:"๑๑ สถานะ",12:"๑๒ ความเชื่อ",13:"๑๓ ภาษา",14:"๑๔ กฎหมาย"};
+const CATFULL={1:"หมวด ๑ บรรยากาศ แสง สี และสถานที่",2:"หมวด ๒ รูปลักษณ์และลักษณะบุคคล",3:"หมวด ๓ กริยา ท่าทาง และการเคลื่อนไหว",
+4:"หมวด ๔ เสียง",5:"หมวด ๕ สภาวะภายใน",6:"หมวด ๖ คำปรุงแต่งและคำอเนกประสงค์",7:"หมวด ๗ คำทับศัพท์",8:"หมวด ๘ นิสัยและบุคลิกภาพ",
+9:"หมวด ๙ อื่น ๆ",10:"หมวด ๑๐ สิ่งของและข้าวของ",11:"หมวด ๑๑ สถานะ บทบาท และชาติตระกูล",12:"หมวด ๑๒ ความเชื่อ พิธีกรรม และสิ่งเหนือธรรมชาติ",
+13:"หมวด ๑๓ ภาษา ถ้อยคำ และการประพันธ์",14:"หมวด ๑๔ กฎหมาย คดีความ และสิทธิ"};
+const KEY='wordbank:oldextract:v1', PAGE=150;
+const $=s=>document.querySelector(s), listEl=$('#list');
+let state={pick:{},own:{},draft:{},sel:{},note:{},wnote:{}};
+
+/* ---------- ที่เก็บข้อมูล 3 ชั้น (กันงานหายตอนรีเฟรช) ----------
+   🔴 บทเรียน 25 ก.ค. 2569: พี่กันทำงานไปหลายร้อยคำ พอรีเฟรชแล้วหายหมด
+   ต้นเหตุ: เดิมพึ่ง localStorage อย่างเดียว แล้วครอบด้วย try/catch เงียบ ๆ
+   ถ้าเบราว์เซอร์ห้ามใช้ (โหมดส่วนตัว / หน้าเว็บถูกฝังในกรอบแบบจำกัดสิทธิ์ / พื้นที่เต็ม)
+   มันจะ "ล้มเหลวแบบไม่มีใครรู้" — หน้าจอยังทำงานปกติเพราะข้อมูลอยู่ในหน่วยความจำ
+   แต่พอรีเฟรชก็หายเกลี้ยง
+
+   แก้ 3 ชั้น:
+   1. ทดสอบจริงว่าเขียนแล้วอ่านกลับได้ไหม (ไม่ใช่แค่ไม่ throw)
+   2. ถ้าใช้ไม่ได้ ตกไปที่ sessionStorage แล้วตกไปที่ window.name
+      (window.name อยู่รอดข้ามการรีเฟรชในแท็บเดิม ใช้ได้แม้ที่เก็บอื่นถูกห้าม)
+   3. โชว์สถานะให้เห็นด้วยตา + เตือนตัวแดงถ้าเก็บถาวรไม่ได้ จะได้กดส่งออกเก็บเอง */
+const STORE=(()=>{
+  const probe=(o)=>{ try{ const k=KEY+':probe'; o.setItem(k,'1'); const ok=o.getItem(k)==='1'; o.removeItem(k); return ok; }catch(e){ return false; } };
+  try{ if(typeof localStorage!=='undefined' && probe(localStorage))
+    return {tier:'local', label:'เครื่องนี้', durable:true,
+            get:()=>localStorage.getItem(KEY), set:v=>localStorage.setItem(KEY,v)}; }catch(e){}
+  try{ if(typeof sessionStorage!=='undefined' && probe(sessionStorage))
+    return {tier:'session', label:'ชั่วคราว (แท็บนี้)', durable:false,
+            get:()=>sessionStorage.getItem(KEY), set:v=>sessionStorage.setItem(KEY,v)}; }catch(e){}
+  return {tier:'winname', label:'ชั่วคราว (แท็บนี้)', durable:false,
+          get:()=>{ try{ const m=/^__wboldx__(\{[\s\S]*\})$/.exec(window.name||''); return m?m[1]:null; }catch(e){ return null; } },
+          set:v=>{ window.name='__wboldx__'+v; }};
+})();
+
+try{const r=STORE.get(); if(r) state=Object.assign(state,JSON.parse(r));}catch(e){}
+if(!state.pick) state.pick={}; if(!state.own) state.own={}; if(!state.draft) state.draft={}; if(!state.sel) state.sel={}; if(!state.note) state.note={}; if(!state.wnote) state.wnote={};
+
+let saveOK=null, savedAt='';
+const save=()=>{
+  try{
+    const v=JSON.stringify(state);
+    STORE.set(v);
+    let back=null; try{ back=STORE.get(); }catch(e){}
+    saveOK = (back===v);            // ✅ อ่านกลับมาเทียบจริง ไม่ใช่แค่ไม่พัง
+  }catch(e){ saveOK=false; }
+  const d=new Date();
+  savedAt=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);
+  paintSaveState();
+};
+let saveT=0; const saveSoon=()=>{clearTimeout(saveT); saveT=setTimeout(()=>{saveT=0; save();},140);};
+
+/* ---------- เตรียมข้อมูลแถว ---------- */
+const ROWS=DATA.lines.map(L=>{
+  const p=DATA.props[L.n];
+  return {n:L.n, t:L.t, words:p?p.words:[]};
+});
+const BYN={}; ROWS.forEach(r=>{BYN[r.n]=r;});
+const totalProp=ROWS.reduce((a,r)=>a+r.words.length,0);
+$('#s-lines').textContent=DATA.lines.length.toLocaleString('th-TH');
+$('#s-prop').textContent=totalProp.toLocaleString('th-TH');
+const fcat=$('#fcat');
+[...new Set(ROWS.flatMap(r=>r.words.map(w=>w.cat)))].sort((a,b)=>a-b).forEach(c=>{
+  const o=document.createElement('option'); o.value=c; o.textContent=CATFULL[c]; fcat.appendChild(o);
+});
+
+const pickedOf=r=>(state.pick[r.n]||[]);
+const ownOf=r=>(state.own[r.n]||[]);
+const countPick=()=>Object.values(state.pick).reduce((a,v)=>a+v.length,0);
+const countOwn=()=>Object.values(state.own).reduce((a,v)=>a+v.length,0);
+function refreshCounts(){
+  const p=countPick(), o=countOwn();
+  $('#s-pick').textContent=p.toLocaleString('th-TH');
+  $('#s-own').textContent=o.toLocaleString('th-TH');
+  $('#c-pick').textContent=p.toLocaleString('th-TH');
+  $('#c-own').textContent=o.toLocaleString('th-TH');
+}
+
+/* ---------- กรอง ---------- */
+let filter='prop', query='', catFilter='', shown=PAGE;
+function match(r){
+  if(catFilter && !r.words.some(w=>String(w.cat)===catFilter)) return false;
+  if(query){
+    const q=query;
+    // พิมพ์ตัวเลขล้วน = ค้นด้วยเลขบรรทัด (กระโดดไปตรงข้อนั้นเลย ไม่ต้องไล่หาเป็นพัน)
+    if(/^\d+$/.test(q)) return String(r.n)===q;
+    if(!(r.t.includes(q) || r.words.some(w=>w.w.includes(q)) || ownOf(r).some(w=>w.includes(q)) || noteOf(r).includes(q) || ownOf(r).some(w=>wnoteOf(r.n,w).includes(q)))) return false;
+  }
+  const np=pickedOf(r).length, no=ownOf(r).length, nd=(state.draft[r.n]||state.sel[r.n]||state.note[r.n]||ownOf(r).some(w=>wnoteOf(r.n,w)))?1:0;
+  if(filter==='prop') return r.words.length>0;
+  if(filter==='picked') return np>0||no>0||nd>0;
+  if(filter==='todo') return r.words.length>0 && np===0 && no===0 && nd===0;
+  if(filter==='own') return no>0||nd>0;
+  return true;
+}
+const visible=()=>ROWS.filter(match);
+
+/* ---------- 👆 ลากนิ้วเลือกคำจากวลี ----------
+   หัวใจของเครื่องมือ: ไม่ต้องพิมพ์ · ลากนิ้วคลุมคำในวลี → กดตกลง → คำไปกองข้างล่าง → ลากใหม่ได้เรื่อย ๆ
+   วลีถูกซอยเป็น "คำไทย" ด้วย Intl.Segmenter ของเบราว์เซอร์ ลากแล้วจึงหนึบเข้าขอบคำเอง ไม่ต้องเล็งทีละตัวอักษร */
+const SEG = (()=>{ try{ return new Intl.Segmenter('th',{granularity:'word'}); }catch(e){ return null; } })();
+const GSEG = (()=>{ try{ return new Intl.Segmenter('th',{granularity:'grapheme'}); }catch(e){ return null; } })();
+const TOK={};
+/* 🔤 หน่วยการเลือก = "ตัวอักษร" (grapheme) ไม่ใช่ "คำ"
+   เหตุผล: ตัวซอยคำของเบราว์เซอร์ซอยพลาดได้ (ปล่อยก๊าก → ก๊า|ก · หลุบตาลง|อย่าง)
+   ถ้าล็อกให้เลือกได้แค่ตามขอบคำ = เลือกคำที่ต้องการไม่ได้เลย ต้องไปพิมพ์เอง
+   ตอนนี้: "ลาก" ยังหนึบเข้าขอบคำให้เหมือนเดิม (ลากง่าย) แต่ปรับหัว-ท้ายทีละตัวอักษรได้ */
+function tokensOf(r){
+  if(TOK[r.n]) return TOK[r.n];
+  let g,words;
+  try{ g = GSEG ? [...GSEG.segment(r.t)].map(x=>x.segment) : Array.from(r.t); }
+  catch(e){ g = Array.from(r.t); }
+  // ตำแหน่งเริ่มต้นของแต่ละ "คำ" เทียบเป็นลำดับตัวอักษร ไว้ให้การลากหนึบเข้าขอบคำ
+  const startAt=new Array(g.length).fill(0), endAt=new Array(g.length).fill(g.length-1);
+  let bounds=[0];
+  try{
+    if(SEG){
+      // แผนที่ "ตำแหน่งอักขระดิบ → ลำดับตัวอักษร(grapheme)" ต้องใช้แบบนี้
+      // เพราะขอบคำอาจตกกลางกลุ่มสระ/วรรณยุกต์ ใช้ indexOf ตรง ๆ จะพลาดเป็น -1
+      const unitToG=new Array(r.t.length).fill(0);
+      let ci=0;
+      g.forEach((ch,gi)=>{ for(let k=0;k<ch.length;k++) unitToG[ci+k]=gi; ci+=ch.length; });
+      [...SEG.segment(r.t)].forEach(seg=>{
+        const gi=unitToG[seg.index];
+        if(gi>0) bounds.push(gi);
+      });
+    }
+  }catch(e){}
+  bounds.push(g.length);
+  bounds=[...new Set(bounds)].sort((a,b)=>a-b);
+  for(let k=0;k<bounds.length-1;k++){
+    for(let i=bounds[k]; i<bounds[k+1]; i++){ startAt[i]=bounds[k]; endAt[i]=bounds[k+1]-1; }
+  }
+  return TOK[r.n]={g,startAt,endAt};
+}
+const graphsOf=r=>tokensOf(r).g;
+const selOf=r=>state.sel[r.n];
+const selText=(r,s)=>{ if(!s) return ''; const g=graphsOf(r); return g.slice(Math.min(s[0],s[1]),Math.max(s[0],s[1])+1).join('').trim(); };
+let drag=null;
+function paintSel(r,el){
+  const s=selOf(r), lo=s?Math.min(s[0],s[1]):-1, hi=s?Math.max(s[0],s[1]):-2;
+  el.querySelectorAll('.tok').forEach(t=>{
+    const i=+t.dataset.i;
+    t.classList.toggle('on', i>=lo && i<=hi);
+  });
+  const bar=el.querySelector('.selbar'), txt=selText(r,s);
+  if(txt){ bar.hidden=false; bar.querySelector('.selword').textContent=txt; el.classList.add('selecting'); }
+  else { bar.hidden=true; el.classList.remove('selecting'); }
+}
+function setSel(r,a,b,el){ state.sel[r.n]=[a,b]; saveSoon(); paintSel(r,el); }
+function clearSel(r,el){ delete state.sel[r.n]; saveSoon(); if(el) paintSel(r,el); }
+
+/* ป๊อปกระจกเงาของวลี — ตอนลาก นิ้วบังตัวหนังสือ ป๊อปนี้จึงโชว์ "วลีเต็ม" ซ้ำให้ดู
+   ส่วนที่ลากอยู่ = สว่างเน้น · ส่วนที่ยังไม่ลาก = จาง → เห็นได้ทันทีว่าลากมาถึงไหนแล้ว
+   🚫 ป๊อป "ไม่ตามนิ้ว" — เกาะอยู่เหนือตัววลีนั้นตลอด (เจ้าของสั่ง: ป๊อปตามนิ้วแล้วหลุดไปคนละที่) */
+function showMag(r,el){
+  const m=$('#mag'), s=selOf(r);
+  if(!s){ m.hidden=true; return; }
+  const lo=Math.min(s[0],s[1]), hi=Math.max(s[0],s[1]);
+  m.textContent='';
+  graphsOf(r).forEach((t,i)=>{
+    const sp=document.createElement('span');
+    sp.className=(i>=lo&&i<=hi)?'mon':'mdim';
+    sp.textContent=t;
+    m.append(sp);
+  });
+  m.hidden=false;
+  if(drag && drag.n===r.n && drag.mag){   // ล็อกตำแหน่งไว้ตั้งแต่จังหวะแรก ป๊อปจะได้นิ่งสนิท ไม่ขยับตามนิ้ว
+    m.style.left=drag.mag.left+'px'; m.style.top=drag.mag.top+'px'; return;
+  }
+  const src=el.querySelector('.src'); if(!src) return;
+  const b=src.getBoundingClientRect(), pad=8, w=m.offsetWidth, h=m.offsetHeight;
+  const left=Math.min(Math.max(b.left+b.width/2, w/2+pad), innerWidth-w/2-pad);
+  let top=b.top-12;                       // ลอยเหนือตัววลี
+  if(top-h<pad) top=h+pad;                // ไม่มีที่เหนือวลี → ดันไปชิดขอบบนจอ
+  m.style.left=left+'px'; m.style.top=top+'px';
+  if(drag && drag.n===r.n) drag.mag={left,top};
+}
+const hideMag=()=>{ $('#mag').hidden=true; };
+addEventListener('pointerup',()=>{drag=null; hideMag();});
+addEventListener('pointercancel',()=>{drag=null; hideMag();});
+
+/* ---------- วาดแถว ---------- */
+function rowEl(r){
+  const el=document.createElement('div');
+  const np=pickedOf(r), no=ownOf(r);
+  el.className='row'+(r.words.length?' has':' plain')+((np.length||no.length)?' picked':'');
+  el.dataset.n=r.n;
+  const head=document.createElement('div'); head.className='rowhead';
+  const num=document.createElement('span'); num.className='num'; num.textContent=r.n;
+  const src=document.createElement('div'); src.className='src';
+  graphsOf(r).forEach((s,i)=>{
+    const sp=document.createElement('span');
+    sp.className='tok'+(/^\s+$/.test(s)?' ws':''); sp.dataset.i=i; sp.textContent=s;
+    src.append(sp);
+  });
+  src.addEventListener('pointerdown',ev=>{
+    const t=ev.target.closest('.tok'); if(!t) return;
+    ev.preventDefault();                       // กันหน้าจอเลื่อนตามนิ้วระหว่างลาก
+    const i=+t.dataset.i, T=tokensOf(r);
+    drag={n:r.n, a:i};
+    setSel(r,T.startAt[i],T.endAt[i],el);      // แตะครั้งแรก = ได้ทั้งคำ (ลากง่าย)
+    showMag(r,el);
+  });
+  src.addEventListener('pointermove',ev=>{
+    if(!drag || drag.n!==r.n) return;
+    ev.preventDefault();
+    const under=document.elementFromPoint(ev.clientX,ev.clientY);
+    const t=under && under.closest ? under.closest('.tok') : null;
+    if(t && src.contains(t)){
+      const T=tokensOf(r), j=+t.dataset.i;
+      const lo=Math.min(drag.a,j), hi=Math.max(drag.a,j);
+      setSel(r,T.startAt[lo],T.endAt[hi],el);  // ลากคลุมกี่คำก็ได้ทั้งคำ
+    }
+    showMag(r,el);
+  });
+  head.append(num,src); el.append(head);
+
+  // แถบยืนยันคำที่ลากไว้
+  const bar=document.createElement('div'); bar.className='selbar'; bar.hidden=true;
+  const pv=document.createElement('span'); pv.className='selword';
+  const ok=document.createElement('button'); ok.type='button'; ok.className='okbtn'; ok.textContent='✓ ตกลง';
+  const no2=document.createElement('button'); no2.type='button'; no2.className='nobtn'; no2.textContent='ยกเลิก';
+  /* ✂ ปรับทีละตัวอักษร — ตัวซอยคำพลาดได้ ต้องมีทางแก้ในตัว ไม่ใช่ให้ไปพิมพ์เอง */
+  const fine=document.createElement('div'); fine.className='fine';
+  function nudge(which,step){
+    const s=selOf(r); if(!s) return;
+    const g=graphsOf(r); let lo=Math.min(s[0],s[1]), hi=Math.max(s[0],s[1]);
+    if(which==='head') lo=Math.max(0,Math.min(hi,lo+step));
+    else               hi=Math.min(g.length-1,Math.max(lo,hi+step));
+    setSel(r,lo,hi,el);
+  }
+  [['head',-1,'◀','ขยายหัวคำไปทางซ้าย 1 ตัวอักษร'],
+   ['head', 1,'▶','หดหัวคำเข้ามา 1 ตัวอักษร'],
+   ['tail',-1,'◀','หดท้ายคำเข้ามา 1 ตัวอักษร'],
+   ['tail', 1,'▶','ขยายท้ายคำไปทางขวา 1 ตัวอักษร']].forEach(([w,st,gl,lab],k)=>{
+    if(k===0){ const t=document.createElement('span'); t.className='finelbl'; t.textContent='หัวคำ'; fine.append(t); }
+    if(k===2){ const t=document.createElement('span'); t.className='finelbl'; t.textContent='ท้ายคำ'; fine.append(t); }
+    const b=document.createElement('button'); b.type='button'; b.className='finebtn'; b.textContent=gl;
+    b.title=lab; b.setAttribute('aria-label',lab);
+    b.addEventListener('click',()=>nudge(w,st));
+    fine.append(b);
+  });
+  ok.addEventListener('click',()=>{
+    const txt=selText(r,selOf(r)); if(!txt) return;
+    const own=el.querySelector('.own');
+    const added=addOwn(r,[txt],el,own);
+    clearSel(r,el);
+    toast(added? 'เก็บ “'+txt+'” แล้ว' : 'คำนี้เก็บไว้แล้ว');
+  });
+  no2.addEventListener('click',()=>clearSel(r,el));
+  const act=document.createElement('div'); act.className='selact';
+  act.append(no2,ok);                              // ยกเลิกซ้าย · ตกลงขวาสุด (เจ้าของสั่ง)
+  bar.append(pv,fine,act); el.append(bar);
+
+  if(r.words.length){
+    const chips=document.createElement('div'); chips.className='chips';
+    r.words.forEach(w=>{
+      const b=document.createElement('button'); b.type='button'; b.className='chip';
+      b.setAttribute('aria-pressed', np.includes(w.w)?'true':'false');
+      b.append(document.createTextNode(w.w));
+      const c=document.createElement('span'); c.className='cat'; c.textContent=CATNAME[w.cat]||''; b.append(c);
+      b.addEventListener('click',()=>toggle(r,w.w,b,el));
+      chips.append(b);
+    });
+    el.append(chips);
+  }
+
+  const own=document.createElement('div'); own.className='own';
+  no.forEach(w=>own.append(ownChip(r,w,el)));
+
+  // ช่องพิมพ์ = ตัวสำรอง ซ่อนไว้ก่อน (เปิดเองเมื่อมีข้อความค้าง)
+  const inp=document.createElement('input'); inp.type='text';
+  inp.className='owninp';
+  inp.placeholder='พิมพ์คำ คั่นหลายคำด้วย ,';
+  inp.setAttribute('aria-label','พิมพ์คำเองจากวลีบรรทัดที่ '+r.n);
+  inp.autocomplete='off'; inp.autocapitalize='off'; inp.spellcheck=false;
+  inp.enterKeyHint='done';
+  inp.value=draftOf(r);                       // 🛟 คืนข้อความที่พิมพ์ค้างไว้
+  const addrow=document.createElement('div'); addrow.className='addrow';
+  addrow.hidden=!draftOf(r);
+  const add=document.createElement('button');
+  add.type='button'; add.className='addbtn'; add.textContent='＋ เพิ่ม';
+  add.setAttribute('aria-label','เพิ่มคำที่พิมพ์ในวลีบรรทัดที่ '+r.n);
+  // พิมพ์ปุ๊บเก็บปั๊บ · เจอ , หรือขึ้นบรรทัดใหม่ = ตัดเป็นคำทันที
+  inp.addEventListener('input',()=>{
+    if(/[,\n]/.test(inp.value)) commitInput(r,inp,el,own,true);
+    else setDraft(r.n,inp.value);
+  });
+  inp.addEventListener('keydown',ev=>{
+    if(ev.key!=='Enter') return;
+    ev.preventDefault(); commitInput(r,inp,el,own,false);
+  });
+  inp.addEventListener('blur',()=>commitInput(r,inp,el,own,false));
+  add.addEventListener('click',()=>{ commitInput(r,inp,el,own,false); inp.focus(); });
+  const kb=document.createElement('button');
+  kb.type='button'; kb.className='kbbtn'; kb.textContent='⌨ พิมพ์เอง';
+  kb.hidden=!addrow.hidden;
+  kb.addEventListener('click',()=>{ addrow.hidden=false; kb.hidden=true; inp.focus(); });
+  addrow.append(inp,add); own.append(kb,addrow); el.append(own);
+
+  // 📝 ช่องหมายเหตุ — ไว้เขียนบอกว่าทำไมแยกคำแบบนี้ (เจ้าของสั่ง 25 ก.ค.)
+  const noteWrap=document.createElement('div'); noteWrap.className='notewrap';
+  const nt=document.createElement('textarea'); nt.className='noteinp'; nt.rows=2;
+  nt.placeholder='หมายเหตุของทั้งวลี (อยากเขียนเจาะจงรายคำ ให้แตะที่ตัวคำข้างบน)';
+  nt.setAttribute('aria-label','หมายเหตุของวลีบรรทัดที่ '+r.n);
+  nt.value=noteOf(r);
+  nt.addEventListener('input',()=>{ setNote(r.n,nt.value); el.classList.toggle('hasnote',!!nt.value.trim()); });
+  const nb=document.createElement('button');
+  nb.type='button'; nb.className='notebtn'; nb.textContent='📝 หมายเหตุของทั้งวลี';
+  noteWrap.hidden=!noteOf(r); nb.hidden=!noteWrap.hidden;
+  nb.addEventListener('click',()=>{ noteWrap.hidden=false; nb.hidden=true; nt.focus(); });
+  const nicon=document.createElement('span'); nicon.className='noteicon'; nicon.textContent='📝';
+  noteWrap.append(nicon,nt); el.append(nb,noteWrap);
+  if(noteOf(r)||no.some(z=>wnoteOf(r.n,z))) el.classList.add('hasnote');
+  if(r.words.length===0 && no.length===0 && !draftOf(r)) el.classList.add('plain');
+  if(selOf(r)) paintSel(r,el);                // 🛟 คืนคำที่ลากค้างไว้
+  return el;
+}
+
+/* ---------- 🛟 ระบบกันข้อความหาย ----------
+   บทเรียน 25 ก.ค. 2569: เดิมต้องกด Enter เท่านั้นถึงจะเก็บคำ และตอนวาดรายการใหม่
+   (กดแสดงเพิ่ม / ค้นหา / เปลี่ยนตัวกรอง) โค้ดล้าง DOM ทิ้งทั้งหมด = ข้อความที่พิมพ์ค้าง
+   ในช่องหายเกลี้ยงเป็นร้อยคำ · ตอนนี้ทุกตัวอักษรถูกเก็บลงเครื่องทันทีที่พิมพ์
+   และก่อนวาดใหม่/ปิดหน้า/ส่งออก จะกวาดเก็บทุกช่องให้กลายเป็นคำก่อนเสมอ */
+const draftOf=r=>(state.draft[r.n]||'');
+const noteOf=r=>(state.note[r.n]||'');
+const wkey=(n,w)=>n+'|'+w;                      // หมายเหตุรายคำ ผูกกับ บรรทัด+ตัวคำ
+const wnoteOf=(n,w)=>(state.wnote[wkey(n,w)]||'');
+function setWnote(n,w,v){
+  const k=wkey(n,w);
+  if((v||'').trim()) state.wnote[k]=v; else delete state.wnote[k];
+  saveSoon();
+}
+function setNote(n,v){                      // เก็บทุกตัวอักษรทันที ไม่ต้องกดอะไร
+  v=(v||'');
+  if(v.trim()) state.note[n]=v; else delete state.note[n];
+  saveSoon();
+}
+function setDraft(n,v){
+  v=(v||'').replace(/\s+$/,'');
+  if(v) state.draft[n]=v; else delete state.draft[n];
+  saveSoon();
+}
+function addOwn(r,words,el,own){
+  const arr=state.own[r.n]||(state.own[r.n]=[]);
+  const anchor=own? (own.querySelector('.kbbtn')||own.querySelector('.addrow')) : null;  // ชิปใหม่ต่อท้ายชิปเดิม อยู่ก่อนปุ่มพิมพ์เอง
+  let added=0;
+  words.forEach(w=>{
+    w=String(w).trim();
+    if(!w || arr.includes(w)) return;
+    arr.push(w); added++;
+    if(own) own.insertBefore(ownChip(r,w,el),anchor);
+  });
+  if(!arr.length) delete state.own[r.n];
+  if(added){ if(el) el.classList.remove('plain'), el.classList.add('picked'); save(); refreshCounts(); }
+  return added;
+}
+// keepTail = true ตอนกำลังพิมพ์ (เก็บท่อนหลัง , ไว้ในช่องต่อ) · false = เก็บทั้งหมด
+function commitInput(r,inp,el,own,keepTail){
+  const parts=inp.value.split(/[,\n]/);
+  const tail=keepTail? parts.pop() : '';
+  const added=addOwn(r,parts,el,own);
+  inp.value=keepTail? tail.replace(/^\s+/,'') : '';
+  setDraft(r.n,inp.value);
+  return added;
+}
+function commitAll(){
+  let added=0;
+  listEl.querySelectorAll('.row').forEach(el=>{
+    const inp=el.querySelector('.owninp');
+    if(!inp || !inp.value.trim()) return;
+    const r=BYN[+el.dataset.n]; if(!r) return;
+    added+=commitInput(r,inp,el,el.querySelector('.own'),false);
+  });
+  if(added) save();
+  return added;
+}
+// คำที่ลากค้างไว้แต่ยังไม่ได้กดตกลง — เก็บให้ตอนส่งออก จะได้ไม่มีอะไรตกหล่น
+function commitPending(){
+  let added=0;
+  Object.keys(state.sel).forEach(n=>{
+    const r=BYN[n]; if(!r) return;
+    const txt=selText(r,state.sel[n]);
+    if(!txt) { delete state.sel[n]; return; }
+    const el=listEl.querySelector('.row[data-n="'+n+'"]');
+    added+=addOwn(r,[txt],el,el?el.querySelector('.own'):null);
+    delete state.sel[n];
+    if(el) paintSel(r,el);
+  });
+  if(added) save();
+  return added;
+}
+/* คำที่เก็บได้ = 1 คำ 1 แถว · ช่องหมายเหตุอยู่ข้าง ๆ คำนั้นเลย (เจ้าของสั่ง)
+   [คำสกัด1][หมายเหตุ]
+   [คำสกัด2][หมายเหตุ]
+   พิมพ์เอง                                                        */
+function ownChip(r,w,el){
+  const row=document.createElement('div'); row.className='wrow';
+  const s=document.createElement('span');
+  s.className='ochip'+(r.t.includes(w)?'':' warn')+(wnoteOf(r.n,w)?' noted':'');
+  s.title=r.t.includes(w)?'คำที่เก็บไว้':'คำนี้ไม่ตรงกับข้อความในวลีตั้งต้น';
+  const lbl=document.createElement('span'); lbl.className='ochiplbl'; lbl.textContent=w;
+  const x=document.createElement('button'); x.type='button'; x.className='ochipx'; x.textContent='✕';
+  x.setAttribute('aria-label','เอาคำ '+w+' ออก');
+  s.append(lbl,x);
+
+  const nt=document.createElement('input'); nt.type='text'; nt.className='wnoteinp';
+  nt.placeholder='หมายเหตุ';
+  nt.setAttribute('aria-label','หมายเหตุของคำ '+w);
+  nt.autocomplete='off'; nt.value=wnoteOf(r.n,w);
+  nt.addEventListener('input',()=>{
+    setWnote(r.n,w,nt.value);
+    s.classList.toggle('noted',!!nt.value.trim());
+    el.classList.toggle('hasnote',!!(noteOf(r)||ownOf(r).some(z=>wnoteOf(r.n,z))));
+  });
+  x.addEventListener('click',()=>{
+    const arr=state.own[r.n]||[]; const i=arr.indexOf(w); if(i>=0) arr.splice(i,1);
+    if(!arr.length) delete state.own[r.n];
+    delete state.wnote[wkey(r.n,w)];
+    save(); refreshCounts(); row.remove();
+    if(!pickedOf(r).length && !ownOf(r).length) el.classList.remove('picked');
+    el.classList.toggle('hasnote',!!(noteOf(r)||ownOf(r).some(z=>wnoteOf(r.n,z))));
+  });
+  row.append(s,nt); return row;
+}
+function toggle(r,w,btn,el){
+  const arr=state.pick[r.n]||(state.pick[r.n]=[]);
+  const i=arr.indexOf(w);
+  if(i>=0) arr.splice(i,1); else arr.push(w);
+  if(!arr.length) delete state.pick[r.n];
+  btn.setAttribute('aria-pressed', i>=0?'false':'true');
+  el.classList.toggle('picked', !!(pickedOf(r).length||ownOf(r).length));
+  save(); refreshCounts();
+}
+
+function render(reset){
+  commitAll();                 // 🛟 กวาดเก็บทุกช่องก่อนล้าง DOM — ห้ามลบบรรทัดนี้เด็ดขาด
+  if(reset) shown=PAGE;
+  const vis=visible();
+  listEl.textContent='';
+  if(!vis.length){
+    const e=document.createElement('p'); e.className='empty'; e.textContent='ไม่พบวลีที่ตรงกับเงื่อนไข';
+    listEl.append(e); $('#b-more').hidden=true; return;
+  }
+  const frag=document.createDocumentFragment();
+  vis.slice(0,shown).forEach(r=>frag.append(rowEl(r)));
+  listEl.append(frag);
+  const rest=vis.length-shown;
+  const more=$('#b-more');
+  more.hidden=rest<=0;
+  if(rest>0) more.textContent='แสดงเพิ่ม (เหลืออีก '+rest.toLocaleString('th-TH')+' วลี)';
+}
+$('#b-more').addEventListener('click',()=>{shown+=PAGE; render(false);});
+
+/* ---------- แถบเครื่องมือ ---------- */
+$('#filters').addEventListener('click',ev=>{
+  const b=ev.target.closest('.seg'); if(!b) return;
+  filter=b.dataset.f;
+  [...$('#filters').children].forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  render(true);
+});
+let qt; $('#q').addEventListener('input',ev=>{
+  clearTimeout(qt); qt=setTimeout(()=>{query=ev.target.value.trim(); render(true);},220);
+});
+fcat.addEventListener('change',ev=>{catFilter=ev.target.value; render(true);});
+$('#b-cat').addEventListener('click',()=>{
+  document.body.classList.toggle('showcat');
+  $('#b-cat').textContent=document.body.classList.contains('showcat')?'ซ่อนหมวด':'แสดงหมวด';
+});
+
+const askDlg=$('#dlg-ask');
+function ask(title,msg,okLabel,fn){
+  $('#ask-t').textContent=title; $('#ask-m').textContent=msg; $('#ask-ok').textContent=okLabel;
+  askDlg.returnValue=''; askDlg.showModal();
+  askDlg.addEventListener('close',function h(){askDlg.removeEventListener('close',h); if(askDlg.returnValue==='yes') fn();});
+}
+$('#b-all').addEventListener('click',()=>{
+  const vis=visible().filter(r=>r.words.length);
+  const n=vis.reduce((a,r)=>a+r.words.filter(w=>!pickedOf(r).includes(w.w)).length,0);
+  if(!n){toast('คำที่แสดงอยู่ถูกเลือกครบแล้ว'); return;}
+  ask('เลือกทุกคำที่แสดงอยู่','จะเลือกเพิ่มอีก '+n.toLocaleString('th-TH')+' คำ จาก '+vis.length.toLocaleString('th-TH')+' วลีที่แสดงอยู่ตอนนี้','เลือกทั้งหมด',()=>{
+    vis.forEach(r=>{const arr=state.pick[r.n]||(state.pick[r.n]=[]); r.words.forEach(w=>{if(!arr.includes(w.w)) arr.push(w.w);});});
+    save(); refreshCounts(); render(false); toast('เลือกเพิ่ม '+n.toLocaleString('th-TH')+' คำ');
+  });
+});
+$('#b-clr').addEventListener('click',()=>{
+  commitAll();
+  const p=countPick(), o=countOwn();
+  if(!p&&!o){toast('ยังไม่ได้เลือกคำใด'); return;}
+  const nn=Object.keys(state.note).length+Object.keys(state.wnote).length;
+  ask('ล้างที่เลือกทั้งหมด','จะล้างคำที่เลือกไว้ '+p.toLocaleString('th-TH')+' คำ · คำที่สกัดเอง '+o.toLocaleString('th-TH')+' คำ'+(nn?' · หมายเหตุ '+nn.toLocaleString('th-TH')+' อัน':'')+' การกระทำนี้ย้อนกลับไม่ได้','ล้างทั้งหมด',()=>{
+    state={pick:{},own:{},draft:{},sel:{},note:{},wnote:{}}; save(); refreshCounts(); render(true); toast('ล้างเรียบร้อย');
+  });
+});
+
+/* 🛟 ปิดหน้า / สลับแอป / มือถือพักหน้าจอ = กวาดเก็บทุกช่องแล้วบันทึกทันที
+   เขียนทับเฉพาะตอนแท็บนี้มีของค้างจริง (กันแท็บที่ไม่ได้แตะอะไรเลยไปทับของแท็บอื่น) */
+const flush=()=>{ const n=commitAll(); if(n||saveT){ clearTimeout(saveT); saveT=0; save(); } };
+addEventListener('pagehide',flush);
+addEventListener('beforeunload',flush);
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) flush(); });
+
+/* ---------- ส่งออก ---------- */
+function result(){
+  const out=[];
+  ROWS.forEach(r=>{
+    pickedOf(r).forEach(w=>{
+      const meta=r.words.find(x=>x.w===w);
+      out.push({คำ:w, วลีตั้งต้น:r.t, บรรทัด:r.n, หมวดที่เสนอ:meta?CATFULL[meta.cat]:'', ที่มา:'ระบบเสนอ', หมายเหตุ:noteOf(r)});
+    });
+    ownOf(r).forEach(w=>out.push({คำ:w, วลีตั้งต้น:r.t, บรรทัด:r.n, หมวดที่เสนอ:'', ที่มา:'สกัดเอง',
+      หมายเหตุ:[wnoteOf(r.n,w),noteOf(r)].filter(Boolean).join(' · ')}));
+  });
+  return out;
+}
+/* คั่นด้วย " / " ไม่ใช้แท็บ (เจ้าของสั่ง) — แท็บถูกบีบจนคอลัมน์ชนกันตอนเอาไปวางในแชท
+   ต้องเป็นเครื่องหมายที่มองเห็น จะได้ไม่อ่านสลับคอลัมน์ · เรียงเลขด้วย จะได้อ้างเป็นข้อได้
+   เช็คแล้วว่าคำและวลีในคลังไม่มีตัว / ปนอยู่เลย จึงใช้เป็นตัวคั่นได้ปลอดภัย */
+function textOut(rows){
+  const L=['# คำที่เลือกเก็บเข้าคลัง — '+rows.length.toLocaleString('th-TH')+' คำ',
+           '# รูปแบบ: ข้อที่. คำ / วลีตั้งต้น / บรรทัดที่ / ที่มา / หมายเหตุ',
+           '# เลขบรรทัด = พิมพ์เลขนี้ในช่องค้นหาของเครื่องมือ แล้วมันจะกระโดดไปที่วลีนั้นให้เลย',''];
+  rows.forEach((r,i)=>{
+    const cells=[r['คำ'], r['วลีตั้งต้น'], 'บรรทัดที่ '+r['บรรทัด'], r['ที่มา']];
+    const note=(r['หมายเหตุ']||'').replace(/[\t\n\/]+/g,' ').trim();
+    if(note) cells.push('หมายเหตุ: '+note);
+    L.push((i+1)+'. '+cells.join(' / '));
+  });
+  return L.join('\n');
+}
+const outDlg=$('#dlg-out');
+$('#b-export').addEventListener('click',()=>{
+  commitAll(); commitPending();   // 🛟 ทั้งคำที่พิมพ์ค้าง และคำที่ลากค้างไว้ ต้องติดไปด้วย
+  const rows=result();
+  if(!rows.length){toast('ยังไม่ได้เลือกคำใด'); return;}
+  const own=rows.filter(r=>r['ที่มา']==='สกัดเอง').length;
+  const noteN=rows.filter(r=>r['หมายเหตุ']).length;
+  $('#out-sum').textContent='รวม '+rows.length.toLocaleString('th-TH')+' คำ (ระบบเสนอ '+(rows.length-own).toLocaleString('th-TH')+' · สกัดเอง '+own.toLocaleString('th-TH')+') · ทุกคำมีวลีตั้งต้นกำกับไว้แล้ว'+(noteN? ' · มีหมายเหตุ '+noteN.toLocaleString('th-TH')+' คำ':'');
+  $('#out').value=textOut(rows);
+  outDlg.showModal();
+});
+$('#b-copy').addEventListener('click',async()=>{
+  const t=$('#out');
+  try{ await navigator.clipboard.writeText(t.value); toast('คัดลอกแล้ว'); }
+  catch(e){ t.removeAttribute('readonly'); t.select(); t.setAttribute('readonly',''); toast('กดค้างเพื่อคัดลอกข้อความ'); }
+});
+/* 🐛 เดิมกดแล้วไม่มีอะไรโหลดเลยบนมือถือ — 2 สาเหตุ:
+   (1) <a> ไม่ได้ใส่ลง DOM ก่อนกด (บางเบราว์เซอร์ไม่ทำงานถ้า element ลอยอยู่)
+   (2) iOS ในกรอบ artifact บล็อกการดาวน์โหลดของ iframe → ต้องใช้ "แชร์ไฟล์" แทน */
+$('#b-dl').addEventListener('click',async()=>{
+  commitAll(); commitPending();
+  const rows=result();
+  if(!rows.length){ toast('ยังไม่ได้เลือกคำใด'); return; }
+  const txt=textOut(rows), name='คำที่เลือก.txt';
+  try{
+    const file=new File([txt],name,{type:'text/plain'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title:'คำที่เลือกเก็บเข้าคลัง'});
+      toast('ส่งไฟล์แล้ว'); return;
+    }
+  }catch(e){ if(e && e.name==='AbortError') return; }
+  // ทาง 2: ดาวน์โหลดตรง ๆ (จอคอมได้ · มือถือในกรอบ artifact มักถูกบล็อก)
+  let ok=false;
+  try{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain;charset=utf-8'}));
+    a.download=name; a.style.display='none';
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },2000);
+    ok=true; toast('บันทึกไฟล์แล้ว');
+  }catch(e){}
+  if(ok) return;
+  // ทาง 3: เปิดเป็นหน้าใหม่ ให้กดบันทึก/แชร์จากเบราว์เซอร์เอง
+  try{
+    const w=window.open('','_blank');
+    if(w){
+      w.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+        '<title>'+name+'</title><pre style="white-space:pre-wrap;word-break:break-word;font-size:15px;padding:14px">'+
+        txt.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</pre>');
+      w.document.close(); toast('เปิดหน้าใหม่แล้ว กดแชร์หรือบันทึกจากเบราว์เซอร์ได้เลย'); return;
+    }
+  }catch(e){}
+  // ทาง 4: เลือกข้อความให้พร้อม กดค้างแล้วคัดลอกได้เลย
+  const t=$('#out');
+  t.removeAttribute('readonly'); t.focus(); t.select(); t.setAttribute('readonly','');
+  toast('เครื่องนี้บันทึกไฟล์ไม่ได้ — เลือกข้อความให้แล้ว กดปุ่มคัดลอกได้เลย');
+});
+
+/* ---------- โชว์สถานะการบันทึกให้เห็นด้วยตา ----------
+   เดิมบันทึกแบบเงียบ ๆ พังก็ไม่มีใครรู้จนกระทั่งรีเฟรชแล้วหาย
+   ตอนนี้มีป้ายบอกทุกครั้งว่าบันทึกสำเร็จหรือไม่ + เวลาล่าสุด */
+function paintSaveState(){
+  const el=$('#savest'); if(!el) return;
+  const n=countPicked();
+  if(saveOK===false){
+    el.className='savest bad';
+    el.textContent='⚠ บันทึกไม่ได้ — กดส่งออกเก็บไว้ทันที';
+  }else if(saveOK===true){
+    el.className='savest '+(STORE.durable?'ok':'bad');
+    el.textContent=(STORE.durable?'💾 บันทึกแล้ว ':'⚠ เก็บชั่วคราว ')+savedAt+' · '+n.toLocaleString('th-TH')+' คำ';
+  }else{
+    el.className='savest'; el.textContent='';
+  }
+}
+function countPicked(){ try{ return countPick()+countOwn(); }catch(e){ return 0; } }
+(function storeBanner(){
+  const w=$('#storewarn'); if(!w) return;
+  if(STORE.durable){ w.hidden=true; return; }
+  w.hidden=false;
+  w.innerHTML='<b>⚠ เครื่องนี้เก็บข้อมูลถาวรไม่ได้</b><br>'
+    +'เบราว์เซอร์ไม่อนุญาตให้หน้านี้เก็บข้อมูลไว้ในเครื่อง (อาจเป็นโหมดส่วนตัว หรือหน้านี้ถูกเปิดอยู่ในกรอบที่ถูกจำกัดสิทธิ์)<br>'
+    +'ตอนนี้เก็บไว้ได้แค่ <b>ในแท็บนี้เท่านั้น</b> — รีเฟรชได้ แต่ถ้าปิดแท็บจะหาย<br>'
+    +'👉 <b>กดปุ่ม “ส่งออก” เก็บไว้บ่อย ๆ</b> หรือเปิดไฟล์นี้จากเครื่องตัวเองโดยตรงแทน';
+})();
+
+let tt; function toast(m){
+  const t=$('#toast'); t.textContent=m; t.classList.add('on');
+  clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),1900);
+}
+
+refreshCounts(); render(true);
+</script>
+</body>
+</html>
