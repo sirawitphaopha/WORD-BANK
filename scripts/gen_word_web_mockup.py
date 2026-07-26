@@ -50,6 +50,18 @@ for w in NEW['words']:
         if w['text'] not in KIDS[s]:
             KIDS[s].append(w['text'])
 
+# ชื่ออังกฤษของกิ่ง — ทะเบียนกิ่งมีครบทั้ง 766 กิ่ง
+BR_EN = {(b['category_id'], b['path']): b.get('en', '') for b in NEW['branches']}
+
+
+def path_ens(cid, path):
+    """คืนชื่ออังกฤษทีละชั้นของเส้นทางกิ่ง เช่น a / b / c → [en(a), en(a/b), en(a/b/c)]"""
+    parts, out, cur = path.split(' / '), [], []
+    for p in parts:
+        cur.append(p)
+        out.append(BR_EN.get((cid, ' / '.join(cur)), ''))
+    return out
+
 # พี่กันบอก "แค่เฉพาะไม่กี่คำ" → เอา 3 คำที่ครอบเคสต่างกันพอ
 SEEDS = ['อรุณรุ่งที่ท้องฟ้ามืดครึ้มเป็นสีตะกั่วชวนมัวหมองหดหู่', 'เล็ดลอด', 'ล้มระเนระนาด']
 
@@ -67,8 +79,11 @@ for t in sorted(seen):
         'kind': w.get('kind') or 'word',
         'meaning': w.get('meaning') or '',
         'novels': [w['novel']] if w.get('novel') else [],
+        # ens = ชื่ออังกฤษของกิ่งทีละชั้น (ชั้นแรก / ชั้นสอง / ชั้นสาม) — พี่กันสั่งให้โชว์คู่กับชื่อไทย
         'paths': [{'no': CAT[a['category_id']]['no'], 'cat': CAT[a['category_id']]['name_th'],
-                   'path': a['path'], 'from': 'ใหม่'} for a in (w.get('all_paths') or [])],
+                   'catEn': CAT[a['category_id']].get('name_en', ''),
+                   'path': a['path'], 'ens': path_ens(a['category_id'], a['path']), 'from': 'ใหม่'}
+                  for a in (w.get('all_paths') or [])],
         'parents': [s for s in parents(w) if s in seen],
         'kids': [k for k in KIDS.get(t, []) if k in seen],
         'line': w.get('line'),
@@ -77,7 +92,9 @@ for t in sorted(seen):
         for o in OLDBY[t]:
             no = int(o['category_id'][1:]) + 1
             n['paths'].append({'no': no, 'cat': CAT.get(f'c{no-1}', {}).get('name_th', ''),
-                               'path': o.get('subpath') or '', 'from': 'เดิม'})
+                               'catEn': CAT.get(f'c{no-1}', {}).get('name_en', ''),
+                               'path': o.get('subpath') or '',
+                               'ens': path_ens(f'c{no-1}', o.get('subpath') or ''), 'from': 'เดิม'})
             nv = o.get('novel') or 'ไม่ระบุเรื่อง'
             if nv not in n['novels']:
                 n['novels'].append(nv)
@@ -156,8 +173,10 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:'Trirong',Geor
 select.f{background-image:linear-gradient(45deg,transparent 50%,var(--dim) 50%),linear-gradient(135deg,var(--dim) 50%,transparent 50%);
   background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
 .f:focus{border-color:var(--primary)}
-/* 🔒 ล็อกอยู่ = อ่านอย่างเดียว ทำให้หน้าตาเป็นข้อความ ไม่ใช่ช่องกรอก จะได้ไม่เผลอพิมพ์ทับ */
-body[data-lock=on] .f{border-color:transparent;background:transparent;padding-left:0;cursor:default;opacity:1;color:var(--ink)}
+/* 🔒 ล็อกอยู่ = อ่านอย่างเดียว แต่ยังเป็นช่องพื้นขาวเหมือนเดิม
+   (พี่กันสั่ง "ต้องการให้ช่องกรอกยังเป็นสีขาว เพราะแบบนั้นสีมันกลืนกับฉากหลังหมด ไม่มีอะไรเด่นเลย")
+   บอกว่าล็อกอยู่ด้วยเส้นขอบประจาง ๆ แทน ไม่ใช่ทำให้ช่องหายไปกับพื้น */
+body[data-lock=on] .f{background:var(--surface);border-style:dashed;border-color:var(--line2);cursor:default;opacity:1;color:var(--ink)}
 body[data-lock=on] select.f{background-image:none}
 body[data-lock=on] .edt{display:none!important}
 #save[disabled]{background:var(--chip);color:var(--faint);cursor:not-allowed}
@@ -269,7 +288,7 @@ function tree(list, no, c) {
   list.forEach(x => {
     let cu = root;
     x.path.split(' / ').forEach((p, i, arr) => {
-      if (!cu.kids.has(p)) cu.kids.set(p, { name: p, kids: new Map(), leaf: null });
+      if (!cu.kids.has(p)) cu.kids.set(p, { name: p, en: (x.ens || [])[i] || '', kids: new Map(), leaf: null });
       cu = cu.kids.get(p);
       if (i === arr.length - 1) cu.leaf = x;
     });
@@ -283,7 +302,7 @@ function tree(list, no, c) {
       const tone = isLeaf ? 2 : (depth === 0 ? 0 : 1);
       const toneColor = tint(c, [0, 4, 8][tone]), toneBg = isLeaf ? 'var(--surface)' : tint(c, [1, 5][tone], [.16, .11][tone]);
       rows.push({
-        id, p: pid || '', name: k.name, isLeaf,
+        id, p: pid || '', name: k.name, en: k.en || '', isLeaf,
         tail: old ? 'จากคลังเดิม' : '',
         tailStyle: `font-size:10.5px;color:var(--faint);flex:none;line-height:1.9;${old ? '' : 'letter-spacing:.02em'}`,
         textStyle: isLeaf
@@ -334,7 +353,7 @@ function render(t) {
   const kids = isSrc ? order(t, n.kids) : [];
   const pt = isSrc ? paint(t, kids) : { html: esc(t), used: new Set() };
   const byCat = new Map();
-  n.paths.forEach(x => { if (!byCat.has(x.no)) byCat.set(x.no, { cat: x.cat, list: [] }); byCat.get(x.no).list.push(x); });
+  n.paths.forEach(x => { if (!byCat.has(x.no)) byCat.set(x.no, { cat: x.cat, catEn: x.catEn || '', list: [] }); byCat.get(x.no).list.push(x); });
 
   /* ── หัวผัง + วลีแม่ + คำหลัก + คำสกัด ── */
   const h = [];
@@ -368,13 +387,15 @@ function render(t) {
   /* ── หมวดและกิ่ง: เรียงตามจำนวนกิ่งมากไปน้อย แล้วไล่สีเข้ม → จาง ── */
   const cats = [...byCat.entries()].sort((x, y) => y[1].list.length - x[1].list.length || x[0] - y[0]);
   /* ── จากนิยาย: ให้ที่อยู่เป็นของตัวเองในผัง เด่นพอ ๆ กับหมวด และรองรับหลายเรื่อง ── */
-  const novelBlock = '<div data-r="catrow" style="display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start">'
-    + '<div data-el="novelnode" data-col="var(--accent)" style="align-self:start;background:var(--accent);color:#fff6ec;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2)">'
+  /* 🔑 ใช้โครงเดียวกับหมวดเป๊ะ (catrow/catnode/tnode) เส้นจะได้ตรงเหมือนกัน
+     พี่กันสั่ง "จากนิยาย ไม่เอาเส้นโค้ง เอาตรงไปเลยเหมือนหมวด" → เลิกวาดเส้นแยกของตัวเอง */
+  const novelBlock = '<div data-r="catrow" data-el="catrow" style="display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start">'
+    + '<div data-el="catnode" data-col="var(--accent)" style="align-self:start;background:var(--accent);color:#fff6ec;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2)">'
     + '<div style="font-size:13px;font-weight:700;letter-spacing:.04em">จากนิยาย</div>'
-    + `<div style="font-size:11px;font-weight:400;opacity:.9;line-height:1.5">${n.novels.length} เรื่อง</div></div>`
-    + '<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'
-    + n.novels.map(v => `<div data-el="nnode" style="display:flex;gap:9px;align-items:center;background:var(--surface);border:1px solid var(--line2);border-left:4px solid var(--accent);border-radius:0 11px 11px 0;padding:8px 12px;min-width:0">`
-      + `<span style="flex:1;min-width:0;font-size:14.5px;line-height:1.6;color:var(--ink)">${esc(v)}</span>`
+    + `<div style="font-size:11px;font-weight:400;opacity:.9;line-height:1.5">Source Novels · ${n.novels.length} เรื่อง</div></div>`
+    + '<div style="display:flex;flex-direction:column;gap:5px;padding-top:2px;min-width:0">'
+    + n.novels.map((v, i) => `<div data-el="tnode" data-id="nv.${i}" data-p="" style="display:flex;gap:9px;align-items:flex-start;background:var(--surface);border:1px solid var(--line2);border-left:4px solid var(--accent);border-radius:0 11px 11px 0;padding:7px 11px;min-width:0">`
+      + `<span style="flex:1;min-width:0;font-size:13.5px;line-height:1.65;color:var(--ink)">${esc(v)}</span>`
       + '<button class="edt" style="border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit;line-height:1.9;flex:none">✕</button></div>').join('')
     + '<button class="sd edt" style="align-self:flex-start;font-size:11.5px;padding:3px 12px;border-radius:20px;border:1px dashed var(--line);background:none;color:var(--dim);cursor:pointer;font-family:inherit;line-height:1.7">＋ เพิ่มเรื่องที่เจอคำนี้</button>'
     + '</div></div>';
@@ -384,11 +405,14 @@ function render(t) {
     return `<div data-r="catrow" data-el="catrow" style="display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start">`
       + `<div data-el="catnode" data-c="${no}" data-col="${col}" style="align-self:start;background:${col};color:#fffaf0;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2)">`
       + `<div style="font-size:13px;font-weight:700;letter-spacing:.04em">หมวด ${no}</div>`
-      + `<div style="font-size:11px;font-weight:400;opacity:.9;white-space:normal;max-width:148px;line-height:1.5">${esc(g.cat)}</div></div>`
-      + '<div style="display:flex;flex-direction:column;gap:5px;padding-top:2px;min-width:0">'
+      + `<div style="font-size:11px;font-weight:400;opacity:.9;white-space:normal;max-width:158px;line-height:1.5">${esc(g.cat)}`
+      + (g.catEn ? `<br><span style="opacity:.75;letter-spacing:.02em">${esc(g.catEn)}</span>` : '') + '</div></div>'
+      + '<div style="display:flex;flex-direction:column;gap:11px;padding-top:2px;min-width:0">'
       + tree(g.list, no, col).map(b =>
         `<div data-el="tnode" data-id="${b.id}" data-p="${b.p}" style="${b.style}">`
-        + `<span style="${b.textStyle}">${esc(b.name)}</span>`
+        + `<span style="${b.textStyle}">${esc(b.name)}`
+        + (b.en ? `<span style="display:block;font-size:10.5px;font-weight:400;color:var(--faint);letter-spacing:.02em;line-height:1.5">${esc(b.en)}</span>` : '')
+        + '</span>'
         + `<span style="${b.tailStyle}">${esc(b.tail)}</span>`
         + (b.isLeaf ? '<button class="edt" style="border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit;line-height:1.9;flex:none">✕</button>' : '')
         + '</div>').join('')
@@ -524,7 +548,7 @@ function draw() {
       }));
     }
     /* ลำต้นของหมวด: เส้นตั้งเส้นเดียวจากใต้การ์ด แตกข้อศอกเข้าแต่ละหมวด */
-    const nodes = [...map.querySelectorAll('[data-el=novelnode],[data-el=catnode]')];
+    const nodes = [...map.querySelectorAll('[data-el=catnode]')];
     if (nodes.length) {
       const trunk = Math.max(6, hb.x + 15);
       const stop = rel(nodes[nodes.length - 1]);
@@ -560,21 +584,6 @@ function draw() {
       });
     });
   });
-  /* บล็อกจากนิยาย: รางเดียวกันกับหมวด แต่สีเน้น เพราะเป็นคนละชนิดความสัมพันธ์ */
-  const nv = map.querySelector('[data-el=novelnode]');
-  if (nv) {
-    const a = rel(nv), c = 'var(--accent)';
-    const kids = [...map.querySelectorAll('[data-el=nnode]')].map(el => rel(el));
-    if (kids.length) {
-      const anchor = b => b.y + Math.min(b.h / 2, 15);
-      const below = kids[0].y > a.y + a.h - 4;
-      const railX = below ? a.x + 20 : a.x + a.w + 15;
-      const startY = below ? a.y + a.h : a.y + 17;
-      if (!below) P.push([H(startY, a.x + a.w, railX), c, 1.6, .7, 0]);
-      P.push([V(railX, startY, anchor(kids[kids.length - 1])), c, 1.4, .6, 0]);
-      kids.forEach(b => { const y = anchor(b); P.push([H(y, railX, b.x), c, 1.4, .65, 0]); dots.push([b.x, y, c, 2, .7]); });
-    }
-  }
   svg.setAttribute('viewBox', `0 0 ${map.clientWidth} ${map.clientHeight}`);
   svg.innerHTML = P.map(([d, c, w, o, dash], i) =>
     `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${o}"${dash ? ' stroke-dasharray="4 5"' : ' data-anim="1"'} style="animation-delay:${(i * .025).toFixed(2)}s"/>`).join('')
