@@ -21,6 +21,10 @@ WORK = sys.argv[1] if len(sys.argv) > 1 else '.'
 
 def p(*a): return os.path.join(ROOT, *a)
 
+# ชื่อนิยายต้นทางของคลังชุดนี้ (พี่กันบอกเอง 26 ก.ค. 2569)
+# ตรงกับคอลัมน์ novel ในตาราง wb_words และ wb_review
+NOVEL = 'คินดะอิจิยอดนักสืบ ตอน บทเพลงปีศาจ'
+
 
 # ─────────────────────────────────────────────
 # คำที่ "เครื่องมือคัดคำตัดผิด" ไม่ใช่คำที่พี่กันตั้งใจเลือก
@@ -354,7 +358,7 @@ def main():
             cut_fixed, text = text, CUT_FIX[text]
 
         words.append({
-            'text': text, 'cut_fixed_from': cut_fixed, 'kind': kind,
+            'text': text, 'cut_fixed_from': cut_fixed, 'kind': kind, 'novel': NOVEL,
             'category_id': paths[0]['category_id'],
             'subpath': paths[0]['path'],
             'subpaths': [x['path'] for x in paths],
@@ -382,6 +386,7 @@ def main():
     out = {
         'meta': {
             'source': ['docs/newwords-clean.txt', 'docs/newwords-picked.md'],
+            'novel': NOVEL,
             'status': 'draft — ยังไม่อัป Supabase',
             'note': 'คลังคำชุดใหม่ (นิยายสืบสวน) แยกจาก docs/branches-data.json ของคลังเดิม 680 คำ '
                     'ยังไม่รวมกับ docs/branches-clean.md จนกว่าพี่กันจะอ่านกิ่งใหม่แล้วเคาะ',
