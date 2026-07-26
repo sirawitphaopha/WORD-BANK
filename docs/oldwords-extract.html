@@ -274,8 +274,8 @@ textarea{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace; font-size:12
       <select id="fcat" aria-label="กรองตามหมวด"><option value="">ทุกหมวด</option></select>
     </div>
     <div class="barrow segs" id="filters" role="group" aria-label="ตัวกรอง">
-      <button class="seg" type="button" data-f="prop" aria-pressed="true">มีคำเสนอ</button>
-      <button class="seg" type="button" data-f="all" aria-pressed="false">ทุกวลี</button>
+      <button class="seg" type="button" data-f="prop" aria-pressed="false">มีคำเสนอ</button>
+      <button class="seg" type="button" data-f="all" aria-pressed="true">ทุกวลี</button>
       <button class="seg" type="button" data-f="picked" aria-pressed="false">เลือกแล้ว</button>
       <button class="seg" type="button" data-f="todo" aria-pressed="false">ยังไม่เลือก</button>
       <button class="seg" type="button" data-f="own" aria-pressed="false">สกัดเอง</button>
@@ -399,7 +399,7 @@ function refreshCounts(){
 }
 
 /* ---------- กรอง ---------- */
-let filter='prop', query='', catFilter='', shown=PAGE;
+let filter='all', query='', catFilter='', shown=PAGE;
 function match(r){
   if(catFilter && !r.words.some(w=>String(w.cat)===catFilter)) return false;
   if(query){

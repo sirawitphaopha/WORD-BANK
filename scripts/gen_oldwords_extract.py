@@ -98,6 +98,13 @@ def main():
                       'โต๊ะคัดคำ · คลังเดิม 682 คำ')
     src = re.sub(r'(<h1[^>]*>)[^<]*(</h1>)', r'\1โต๊ะคัดคำ · คลังเดิม\2', src, count=1)
 
+    # ④ ตัวกรองเริ่มต้น: ของเดิมเปิดมาที่ "มีคำเสนอ" เพราะคลังชุดใหม่มีคำเสนอเกือบทุกบรรทัด
+    #    แต่คลังเดิมยังไม่ได้ให้ผู้ช่วยสกัด จึงมีคำเสนอแค่ไม่กี่บรรทัด เปิดมาจะเห็นแทบว่าง
+    #    → เปลี่ยนเป็นเปิดมาเห็นทุกวลี (ยังกดสลับกลับไปดูเฉพาะที่มีคำเสนอได้เหมือนเดิม)
+    src = src.replace("let filter='prop'", "let filter='all'")
+    src = re.sub(r'(data-f="prop"[^>]*?)aria-pressed="true"', r'\1aria-pressed="false"', src)
+    src = re.sub(r'(data-f="all"[^>]*?)aria-pressed="false"', r'\1aria-pressed="true"', src)
+
     out = P('docs/oldwords-extract.html')
     open(out, 'w', encoding='utf-8').write(src)
     if len(sys.argv) > 1:
