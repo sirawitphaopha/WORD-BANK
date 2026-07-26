@@ -100,12 +100,19 @@ def build_items(raw, picked):
             continue
         seen[r['text']] = len(items)
         items.append({'text': r['text'], 'line': r['line'], 'origin': 'raw',
-                      'source': None, 'source_others': [], 'by_owner': False, 'note': ''})
+                      'source': None, 'source_others': [], 'picked_from': [],
+                      'by_owner': False, 'note': ''})
 
     for q in picked:
         t = q['text']
         if t in seen:                                   # ซ้ำ → ยุบเข้าแถวเดิม
             it = items[seen[t]]
+            # 🔑 เก็บ "เส้นเชื่อม" ไว้เสมอว่าพี่กันตัดคำนี้ออกมาจากวลีไหนบ้าง
+            #    (พี่กันจับได้ 26 ก.ค.: บทบรรยายบทหนึ่งพี่กันตัดไว้ 4 คำ แต่ไฟล์โชว์คำเดียว
+            #     เพราะอีก 3 คำมีเป็นบรรทัดเดี่ยวในคลังอยู่แล้ว พอยุบซ้ำแล้วเส้นเชื่อมหายไปด้วย
+            #     คำไม่ได้หายจากคลัง แต่ข้อมูลว่ามาจากบทไหนหายไป)
+            if q['source'] != it['text'] and q['source'] not in it['picked_from']:
+                it['picked_from'].append(q['source'])
             if it['origin'] == 'extract' and q['source'] != it['source'] \
                and q['source'] not in it['source_others']:
                 it['source_others'].append(q['source'])
@@ -114,7 +121,7 @@ def build_items(raw, picked):
             continue
         seen[t] = len(items)
         items.append({'text': t, 'line': q['line'], 'origin': 'extract',
-                      'source': q['source'], 'source_others': [],
+                      'source': q['source'], 'source_others': [], 'picked_from': [],
                       # คำที่พี่กันคิดขึ้นเองตอนคัด (ไม่ได้เป็นข้อความส่วนหนึ่งของวลีตั้งต้น)
                       # พี่กันสั่งให้เก็บด้วย ห้ามตัดทิ้ง
                       'by_owner': t not in q['source'], 'note': q['note']})
@@ -242,6 +249,7 @@ def main():
             'meaning': (d.get('meaning') or None),
             'reason': (d.get('reason') or None),
             'source': it['source'], 'source_others': it['source_others'],
+            'picked_from': it.get('picked_from', []),
             'by_owner': it['by_owner'], 'loanword_en': loan,
             'origin': it['origin'], 'line': it['line'],
             'owner_note': it['note'] or None,

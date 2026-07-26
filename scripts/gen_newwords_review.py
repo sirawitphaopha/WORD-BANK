@@ -37,11 +37,15 @@ def narration():
     passages = [w for w in W if any(q['category_id'] == NARR for q in w['all_paths'])]
     passages.sort(key=lambda w: -len(w['text']))
 
-    # คำย่อยที่สกัดออกมาจากบทนั้น (จับคู่ด้วยช่อง source)
+    # คำย่อยที่พี่กันตัดออกมาจากบทนั้น
+    # 🔑 ต้องดู 2 ช่อง ไม่ใช่ช่องเดียว (พี่กันจับได้ 26 ก.ค. ว่าโชว์คำย่อยไม่ครบ)
+    #    source      = คำสกัดที่เป็นคำใหม่ ไม่เคยมีเป็นบรรทัดเดี่ยว
+    #    picked_from = คำที่มีเป็นบรรทัดเดี่ยวในคลังอยู่แล้ว แต่พี่กันก็ตัดจากบทนี้ด้วย
     subs = collections.defaultdict(list)
     for w in W:
-        if w.get('source'):
-            subs[w['source']].append(w)
+        for s in ([w['source']] if w.get('source') else []) + w.get('picked_from', []):
+            if w not in subs[s]:
+                subs[s].append(w)
 
     L = ['# 📖 บทบรรยายในหมวด 15 — ลิสต์ให้พี่กันเคาะว่าอันไหนเอา อันไหนไม่เอา',
          '',
@@ -92,11 +96,12 @@ def narration():
         sw = subs.get(w['text'], [])
         if sw:
             L.append('')
-            L.append(f'✂ **คำย่อยที่สกัดจากบทนี้ ({len(sw)} คำ)**')
+            L.append(f'✂ **คำย่อยที่พี่กันตัดจากบทนี้ ({len(sw)} คำ)**')
             for s in sw:
                 paths = ' · '.join(f'{cname(q["category_id"])} → `{q["path"]}`'
                                    for q in s['all_paths'])
-                L.append(f'- **{s["text"]}** — {paths}')
+                tag = '' if s['origin'] == 'extract' else f' _(มีเป็นบรรทัดเดี่ยวในคลังอยู่แล้ว บรรทัด {s["line"]})_'
+                L.append(f'- **{s["text"]}**{tag} — {paths}')
         if w.get('reason'):
             L.append('')
             L.append(f'🗨 _{w["reason"]}_')
