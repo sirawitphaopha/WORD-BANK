@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # gen_branches.py — สร้างไฟล์ "กิ่งที่เกลาแล้ว" 3 ไฟล์ จากไฟล์ร่าง redesign
-#   อ่าน:  docs/cat1..cat6 · cat8 · cat10 · cat11 -redesign.md (หมวดที่เกลาแล้ว)
+#   อ่าน:  docs/cat1..cat6 · cat8 · cat10..cat15 -redesign.md (หมวดที่เกลาแล้ว)
 #   เขียน: docs/branches-clean.md  (โครงกิ่ง + นิยาม + อังกฤษ · ไม่มีคำ · คนอ่าน)
 #          docs/branches-data.json (กิ่ง + นิยาม + อังกฤษ + คำ + โยงข้ามหมวด + ยกออก · อัป Supabase)
 #          docs/branches-data.md   (เหมือน json แต่ฉบับอ่านทวน)
@@ -20,8 +20,13 @@ FILES = [("docs/cat1-redesign.md",1,"c0"),
          ("docs/cat7-loanwords-redesign.md",7,"c6"),
          ("docs/cat8-redesign.md",8,"c7"),
          ("docs/cat10-objects-redesign.md",10,"c9"),
-         ("docs/cat11-status-redesign.md",11,"c10")]
-CAT  = {1:"หมวด 1",2:"หมวด 2",3:"หมวด 3",4:"หมวด 4",5:"หมวด 5",6:"หมวด 6",7:"หมวด 7",8:"หมวด 8",10:"หมวด 10",11:"หมวด 11"}
+         ("docs/cat11-status-redesign.md",11,"c10"),
+         # หมวดใหม่จากคลังคำชุดใหม่ (พี่กันเคาะ 25-26 ก.ค. 2569)
+         ("docs/cat12-belief-redesign.md",12,"c11"),
+         ("docs/cat13-language-redesign.md",13,"c12"),
+         ("docs/cat14-law-redesign.md",14,"c13"),
+         ("docs/cat15-narration-redesign.md",15,"c14")]
+CAT  = {n:f"หมวด {n}" for n in range(1,16)}
 HOME = {"c0":"หมวด 1","c1":"หมวด 2","c2":"หมวด 3","c3":"หมวด 4","c4":"หมวด 5","c6":"หมวด 7",
         "c5":"หมวด 6","c7":"หมวด 8","c9":"หมวด 10","c10":"หมวด 11"}
 NUM2CODE = {1:'c0',2:'c1',3:'c2',4:'c3',5:'c4',6:'c5',7:'c6',8:'c7',9:'c8',10:'c9',11:'c10'}
