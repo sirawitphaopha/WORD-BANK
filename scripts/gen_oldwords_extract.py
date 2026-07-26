@@ -23,31 +23,23 @@ BASE = P('docs/newwords-picker.html')
 
 
 def build():
-    bd = json.load(open(P('docs/branches-data.json'), encoding='utf-8'))
-    words = bd['words']
+    # 🔑 ยึด docs/oldwords/extract/in.jsonl เป็นแหล่งเดียว
+    #    เพราะนั่นคือไฟล์ที่ผู้ช่วยอ่านไปทำงาน เลขบรรทัด n จึงตรงกันทั้งสองฝั่ง
+    #    (ถ้าไปสร้างรายการเองใหม่จาก branches-data.json ลำดับจะเลื่อน แล้วคำที่เสนอจะไปเกาะผิดวลี)
+    rows = [json.loads(l) for l in open(P('docs/oldwords/extract/in.jsonl'), encoding='utf-8')
+            if l.strip()]
+    seen = {r['t']: r.get('cat', []) for r in rows}
 
-    # 🔴 คลังเดิมมี 27 คำที่อยู่ 2 หมวด = 682 แถวแต่ 655 ข้อความ
-    # ตรงนี้ให้ 1 บรรทัด = 1 ข้อความ (ไม่ซ้ำ) เพราะโต๊ะคัดคำมองที่ "ตัววลี" ไม่ใช่ที่แถวในฐานข้อมูล
-    seen, lines = {}, []
-    for w in words:
-        t = w['text']
-        if t in seen:
-            seen[t].append(w['category_id'])
-            continue
-        seen[t] = [w['category_id']]
-        lines.append(t)
-
-    # เรียงยาวก่อน — วลียาวคือที่ที่มีคำงามซ่อนอยู่ ลากได้เยอะกว่า
-    lines.sort(key=lambda t: (-len(t), t))
-
-    # คำที่ผู้ช่วยเสนอไว้แล้ว (มีเฉพาะหมวดที่รันไปแล้ว) เอามาเป็นชิปให้กดเลือก
+    # คำที่ผู้ช่วยเสนอไว้ เอามาเป็นชิปให้กดเลือก
+    # รับ 2 รูปแบบ: รอบเกลาหมวด (text/extract) และรอบสกัดคำ (t/ex)
     prop = {}
     for f in sorted(glob.glob(P('docs/oldwords/*/out*.jsonl'))):
         for line in open(f, encoding='utf-8'):
             if not line.strip():
                 continue
             r = json.loads(line)
-            for e in (r.get('extract') or []):
+            txt = r.get('text') or r.get('t') or ''
+            for e in (r.get('extract') or r.get('ex') or []):
                 w = (e.get('w') or '').strip()
                 if not w:
                     continue
@@ -57,10 +49,11 @@ def build():
                     if c:
                         cat = int(c[1:]) + 1
                         break
-                prop.setdefault(r.get('text', ''), {})[w] = cat
+                prop.setdefault(txt, {})[w] = cat
 
     L, props = [], {}
-    for i, t in enumerate(lines, 1):
+    for r in rows:
+        i, t = r['n'], r['t']
         L.append({'n': i, 't': t})
         ws = prop.get(t)
         if ws:
