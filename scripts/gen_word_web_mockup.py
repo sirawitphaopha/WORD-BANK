@@ -150,6 +150,19 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:'Trirong',Geor
 }
 .sd:hover{border-color:var(--primary)!important;color:var(--ink)!important}
 .lf:hover{filter:brightness(1.06)}
+.f{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);
+  color:var(--ink);font-family:inherit;font-size:14.5px;outline:none;margin-bottom:12px;
+  transition:border-color .15s,background .15s,padding .15s;-webkit-appearance:none;appearance:none}
+select.f{background-image:linear-gradient(45deg,transparent 50%,var(--dim) 50%),linear-gradient(135deg,var(--dim) 50%,transparent 50%);
+  background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.f:focus{border-color:var(--primary)}
+/* 🔒 ล็อกอยู่ = อ่านอย่างเดียว ทำให้หน้าตาเป็นข้อความ ไม่ใช่ช่องกรอก จะได้ไม่เผลอพิมพ์ทับ */
+body[data-lock=on] .f{border-color:transparent;background:transparent;padding-left:0;cursor:default;opacity:1;color:var(--ink)}
+body[data-lock=on] select.f{background-image:none}
+body[data-lock=on] .edt{display:none!important}
+#save[disabled]{background:var(--chip);color:var(--faint);cursor:not-allowed}
+#save:not([disabled]){background:var(--primary);color:#fbf3e2;cursor:pointer}
+#save:not([disabled]):hover{background:var(--accent)}
 </style>
 
 <div style="max-width:1180px;margin:0 auto;padding:30px 20px 60px">
@@ -214,6 +227,10 @@ const tint = (base, depth, alpha) => {
 };
 
 let cur = null, stack = [], theme = null, animKey = null;
+/* 🔒 ล็อกไว้ก่อนเสมอ — พี่กันสั่ง "การจะแก้คำ ต้องยากกว่านี้ ไม่ใช่เอาเมาส์ไปกดแล้วพิมพ์ได้เลย เสี่ยงพังมาก"
+   ปลดล็อกแล้วถึงจะพิมพ์ได้ · ปุ่มบันทึกยังกดไม่ได้จนกว่าจะมีอะไรเปลี่ยนจริง */
+let locked = true, snap = null;
+const HEAD = 'font-size:17px;font-weight:700;color:var(--ink);letter-spacing:.01em;white-space:nowrap;line-height:1.5';
 
 document.getElementById('behind').innerHTML = BEHIND.map(b =>
   `<div style="background:var(--surface);border:1px solid var(--line2);border-left:3px solid var(--faint);border-radius:9px;padding:9px 10px;font-size:14px;color:var(--ink2);min-height:42px">${esc(b)}</div>`).join('');
@@ -284,6 +301,33 @@ function tree(list, no, c) {
   return rows;
 }
 
+/* อ่านค่าทุกช่องออกมาเป็นสตริงเดียว ไว้เทียบว่ามีอะไรเปลี่ยนไปจริงหรือยัง */
+function readFields() {
+  return [...document.querySelectorAll('#side2 .f')].map(el => el.value).join('');
+}
+/* ปุ่มบันทึกกดได้ต่อเมื่อ ปลดล็อกแล้ว และมีการแก้ไขจริงอย่างน้อยหนึ่งจุด */
+function refreshSave() {
+  const s = document.getElementById('save'); if (!s) return;
+  const changed = !locked && readFields() !== snap;
+  s.disabled = !changed;
+  s.title = changed ? '' : (locked ? 'ปลดล็อกก่อนจึงจะแก้ไขได้' : 'ยังไม่มีการแก้ไข');
+}
+function applyLock() {
+  document.body.dataset.lock = locked ? 'on' : 'off';
+  document.querySelectorAll('#side2 input.f').forEach(el => { el.readOnly = locked; });
+  document.querySelectorAll('#side2 select.f').forEach(el => { el.disabled = locked; });
+  const b = document.getElementById('lock'), hint = document.getElementById('lockhint');
+  if (b) {
+    b.textContent = locked ? '🔒 ปลดล็อกเพื่อแก้ไข' : '🔓 กำลังแก้ไข · กดเพื่อล็อก';
+    b.style.borderColor = locked ? 'var(--line)' : 'var(--accent)';
+    b.style.color = locked ? 'var(--ink2)' : 'var(--accent)';
+  }
+  if (hint) hint.textContent = locked
+    ? 'ตอนนี้อ่านอย่างเดียว กันเผลอพิมพ์ทับ — กดปลดล็อกก่อนจึงจะแก้ไขได้'
+    : 'แก้ไขได้แล้ว — ปุ่มลบกิ่งและปุ่มเพิ่มในผังฝั่งซ้ายเปิดใช้งานพร้อมกัน';
+  refreshSave();
+}
+
 function render(t) {
   const n = N[t];
   const isSrc = n.kids.length > 0;
@@ -294,8 +338,8 @@ function render(t) {
 
   /* ── หัวผัง + วลีแม่ + คำหลัก + คำสกัด ── */
   const h = [];
-  h.push('<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
-    + '<div style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);white-space:nowrap">ผังเส้นโยง</div>'
+  h.push('<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">'
+    + `<div style="${HEAD}">ผังเส้นโยง</div>`
     + '<div style="height:1px;flex:1;background:var(--line)"></div>'
     + (stack.length ? '<button class="sd" id="back" style="border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-family:inherit;font-size:12px;padding:3px 12px;border-radius:16px;cursor:pointer;white-space:nowrap">‹ ย้อนกลับ</button>' : '')
     + '</div>');
@@ -305,7 +349,7 @@ function render(t) {
     + n.parents.map(p => `<button class="sd" data-el="par" data-go="${esc(p)}" style="background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:9px 15px;font-family:inherit;font-size:14.5px;line-height:1.7;color:var(--ink);cursor:pointer;max-width:min(540px,100%);text-align:left">${paint(p, [t]).html}</button>`).join('')
     + '</div>');
 
-  h.push('<div data-el="hero" style="position:relative;z-index:1;background:var(--surface);border:2px solid var(--primary);border-radius:15px;padding:16px 24px 15px;box-shadow:0 14px 30px -18px rgba(40,28,14,.6);width:100%;text-align:center;margin-bottom:34px">'
+  h.push('<div data-el="hero" style="position:relative;z-index:1;background:var(--surface);border:2px solid var(--primary);border-radius:15px;padding:16px 24px 15px;box-shadow:0 14px 30px -18px rgba(40,28,14,.6);width:100%;text-align:center;margin-bottom:78px">'
     + `<span style="display:inline-block;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:#fdf6e8;background:var(--accent);border-radius:12px;padding:2px 11px;margin-bottom:9px;line-height:1.9">${n.parents.length ? 'คำที่กำลังดู' : 'วลีตั้งต้น'}</span>`
     + `<div style="font-size:clamp(22px,2.6vw,32px);font-weight:700;line-height:1.55;color:var(--ink);word-break:break-word">${pt.html}</div>`
     + `<div style="font-size:12px;color:var(--dim);margin-top:8px;letter-spacing:.02em">`
@@ -323,7 +367,19 @@ function render(t) {
 
   /* ── หมวดและกิ่ง: เรียงตามจำนวนกิ่งมากไปน้อย แล้วไล่สีเข้ม → จาง ── */
   const cats = [...byCat.entries()].sort((x, y) => y[1].list.length - x[1].list.length || x[0] - y[0]);
-  document.getElementById('cats').innerHTML = cats.map(([no, g], i) => {
+  /* ── จากนิยาย: ให้ที่อยู่เป็นของตัวเองในผัง เด่นพอ ๆ กับหมวด และรองรับหลายเรื่อง ── */
+  const novelBlock = '<div data-r="catrow" style="display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start">'
+    + '<div data-el="novelnode" data-col="var(--accent)" style="align-self:start;background:var(--accent);color:#fff6ec;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2)">'
+    + '<div style="font-size:13px;font-weight:700;letter-spacing:.04em">จากนิยาย</div>'
+    + `<div style="font-size:11px;font-weight:400;opacity:.9;line-height:1.5">${n.novels.length} เรื่อง</div></div>`
+    + '<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'
+    + n.novels.map(v => `<div data-el="nnode" style="display:flex;gap:9px;align-items:center;background:var(--surface);border:1px solid var(--line2);border-left:4px solid var(--accent);border-radius:0 11px 11px 0;padding:8px 12px;min-width:0">`
+      + `<span style="flex:1;min-width:0;font-size:14.5px;line-height:1.6;color:var(--ink)">${esc(v)}</span>`
+      + '<button class="edt" style="border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit;line-height:1.9;flex:none">✕</button></div>').join('')
+    + '<button class="sd edt" style="align-self:flex-start;font-size:11.5px;padding:3px 12px;border-radius:20px;border:1px dashed var(--line);background:none;color:var(--dim);cursor:pointer;font-family:inherit;line-height:1.7">＋ เพิ่มเรื่องที่เจอคำนี้</button>'
+    + '</div></div>';
+
+  document.getElementById('cats').innerHTML = novelBlock + cats.map(([no, g], i) => {
     const col = ramp(i, cats.length);
     return `<div data-r="catrow" data-el="catrow" style="display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start">`
       + `<div data-el="catnode" data-c="${no}" data-col="${col}" style="align-self:start;background:${col};color:#fffaf0;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2)">`
@@ -334,38 +390,41 @@ function render(t) {
         `<div data-el="tnode" data-id="${b.id}" data-p="${b.p}" style="${b.style}">`
         + `<span style="${b.textStyle}">${esc(b.name)}</span>`
         + `<span style="${b.tailStyle}">${esc(b.tail)}</span>`
-        + (b.isLeaf ? '<button style="border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit;line-height:1.9;flex:none">✕</button>' : '')
+        + (b.isLeaf ? '<button class="edt" style="border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit;line-height:1.9;flex:none">✕</button>' : '')
         + '</div>').join('')
-      + '<button class="sd" style="align-self:flex-start;font-size:11.5px;padding:3px 12px;border-radius:20px;border:1px dashed var(--line);background:none;color:var(--dim);cursor:pointer;font-family:inherit;line-height:1.7">＋ เพิ่มกิ่งในหมวดนี้</button>'
+      + '<button class="sd edt" style="align-self:flex-start;font-size:11.5px;padding:3px 12px;border-radius:20px;border:1px dashed var(--line);background:none;color:var(--dim);cursor:pointer;font-family:inherit;line-height:1.7">＋ เพิ่มกิ่งในหมวดนี้</button>'
       + '</div></div>';
   }).join('')
-    + '<button class="sd" style="align-self:flex-start;font-size:12.5px;border:none;background:none;color:var(--primary);cursor:pointer;font-family:inherit;padding:0;border-bottom:1px solid var(--line)">＋ เพิ่มหมวด</button>';
+    + '<button class="sd edt" style="align-self:flex-start;font-size:12.5px;border:none;background:none;color:var(--primary);cursor:pointer;font-family:inherit;padding:0;border-bottom:1px solid var(--line)">＋ เพิ่มหมวด</button>';
 
   /* ── ฝั่งแก้ไข ── */
   const lab = s => `<label style="display:block;font-size:11px;letter-spacing:.08em;font-weight:600;color:var(--ink2);margin:0 0 5px">${s}</label>`;
-  const fld = 'width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-family:inherit;font-size:14.5px;outline:none';
   const sec = s => `<div style="font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--line2)">${s}</div>`;
   document.getElementById('side2').innerHTML =
-    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
-    + '<div style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);white-space:nowrap">แก้ไข</div>'
-    + '<div style="height:1px;flex:1;background:var(--line)"></div></div>'
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">'
+    + `<div style="${HEAD}">แก้ไข</div>`
+    + '<div style="height:1px;flex:1;background:var(--line)"></div>'
+    + '<button id="lock" class="sd" style="border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-family:inherit;font-size:12px;padding:4px 13px;border-radius:16px;cursor:pointer;white-space:nowrap"></button></div>'
+    + '<div id="lockhint" style="font-size:11.5px;color:var(--faint);line-height:1.7;margin-bottom:14px"></div>'
     + '<div style="font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-bottom:10px">ข้อมูลคำ</div>'
-    + lab('คำ / วลี') + `<input value="${esc(t)}" style="${fld};margin-bottom:12px">`
-    + lab('ความหมาย (ไม่บังคับ)') + `<input value="${esc(n.meaning)}" placeholder="ยังไม่ได้ใส่" style="${fld}">`
+    + lab('คำ / วลี') + `<input class="f" data-k="text" value="${esc(t)}">`
+    + lab('ความหมาย (ไม่บังคับ)') + `<input class="f" data-k="meaning" value="${esc(n.meaning)}" placeholder="ยังไม่ได้ใส่">`
     + sec('หมวดหมู่')
-    + lab('ชนิด') + `<select style="${fld};margin-bottom:12px">`
+    + lab('ชนิด') + '<select class="f" data-k="kind">'
       + Object.keys(KIND).map(k => `<option${k === n.kind ? ' selected' : ''}>${KIND[k]}</option>`).join('') + '</select>'
-    + lab('หมวดหลัก') + `<select style="${fld}">`
+    + lab('หมวดหลัก') + '<select class="f" data-k="cat">'
       + CATS.map(c => `<option${+c.split(' ')[0] === n.paths[0].no ? ' selected' : ''}>หมวด ${esc(c)}</option>`).join('') + '</select>'
-    + sec('อ้างอิง')
-    + n.novels.map(v => `<input value="${esc(v)}" style="${fld};margin-bottom:8px">`).join('')
-    + '<div style="font-size:11.5px;color:var(--faint);line-height:1.7;margin:14px 0 0">ชิปหมวดย่อยย้ายไปอยู่ในผังฝั่งซ้ายแล้ว — เพิ่มหรือลบกิ่งได้จากที่นั่น</div>'
-    + '<div style="display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line2);flex-wrap:wrap">'
-    + '<span style="font-size:12.5px;color:var(--accent);border-bottom:1px solid var(--danger-line);cursor:pointer">ลบคำนี้</span>'
+    + '<div style="display:flex;align-items:center;gap:12px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line2);flex-wrap:wrap">'
+    + '<span class="edt" style="font-size:12.5px;color:var(--accent);border-bottom:1px solid var(--danger-line);cursor:pointer">ลบคำนี้</span>'
     + '<span style="flex:1"></span>'
-    + '<button class="sd" style="padding:9px 15px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink2)">ยกเลิก</button>'
-    + '<button style="padding:9px 22px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;border:none;background:var(--primary);color:#fbf3e2;font-weight:600">บันทึก</button></div>';
+    + '<button id="cancel" class="sd" style="padding:9px 15px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink2)">ยกเลิก</button>'
+    + '<button id="save" style="padding:9px 22px;border-radius:10px;font-family:inherit;font-size:14px;border:none;font-weight:600">บันทึก</button></div>';
 
+  snap = readFields();
+  applyLock();
+  document.querySelectorAll('#side2 .f').forEach(el => el.addEventListener('input', refreshSave));
+  document.getElementById('lock').onclick = () => { locked = !locked; applyLock(); };
+  document.getElementById('cancel').onclick = () => { locked = true; render(cur); };
   document.querySelectorAll('#seeds button').forEach(b =>
     b.style.cssText = seedStyle(b.dataset.sp === t));
   const bk = document.getElementById('back');
@@ -465,8 +524,7 @@ function draw() {
       }));
     }
     /* ลำต้นของหมวด: เส้นตั้งเส้นเดียวจากใต้การ์ด แตกข้อศอกเข้าแต่ละหมวด */
-    const crows = [...map.querySelectorAll('[data-el=catrow]')];
-    const nodes = crows.map(r => r.querySelector('[data-el=catnode]')).filter(Boolean);
+    const nodes = [...map.querySelectorAll('[data-el=novelnode],[data-el=catnode]')];
     if (nodes.length) {
       const trunk = Math.max(6, hb.x + 15);
       const stop = rel(nodes[nodes.length - 1]);
@@ -502,6 +560,21 @@ function draw() {
       });
     });
   });
+  /* บล็อกจากนิยาย: รางเดียวกันกับหมวด แต่สีเน้น เพราะเป็นคนละชนิดความสัมพันธ์ */
+  const nv = map.querySelector('[data-el=novelnode]');
+  if (nv) {
+    const a = rel(nv), c = 'var(--accent)';
+    const kids = [...map.querySelectorAll('[data-el=nnode]')].map(el => rel(el));
+    if (kids.length) {
+      const anchor = b => b.y + Math.min(b.h / 2, 15);
+      const below = kids[0].y > a.y + a.h - 4;
+      const railX = below ? a.x + 20 : a.x + a.w + 15;
+      const startY = below ? a.y + a.h : a.y + 17;
+      if (!below) P.push([H(startY, a.x + a.w, railX), c, 1.6, .7, 0]);
+      P.push([V(railX, startY, anchor(kids[kids.length - 1])), c, 1.4, .6, 0]);
+      kids.forEach(b => { const y = anchor(b); P.push([H(y, railX, b.x), c, 1.4, .65, 0]); dots.push([b.x, y, c, 2, .7]); });
+    }
+  }
   svg.setAttribute('viewBox', `0 0 ${map.clientWidth} ${map.clientHeight}`);
   svg.innerHTML = P.map(([d, c, w, o, dash], i) =>
     `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${o}"${dash ? ' stroke-dasharray="4 5"' : ' data-anim="1"'} style="animation-delay:${(i * .025).toFixed(2)}s"/>`).join('')
