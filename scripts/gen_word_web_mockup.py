@@ -63,7 +63,15 @@ def path_ens(cid, path):
     return out
 
 # พี่กันบอก "แค่เฉพาะไม่กี่คำ" → เอา 3 คำที่ครอบเคสต่างกันพอ
-SEEDS = ['อรุณรุ่งที่ท้องฟ้ามืดครึ้มเป็นสีตะกั่วชวนมัวหมองหดหู่', 'เล็ดลอด', 'ล้มระเนระนาด']
+SEEDS = ['อรุณรุ่งที่ท้องฟ้ามืดครึ้มเป็นสีตะกั่วชวนมัวหมองหดหู่', 'เล็ดลอด', 'ล้มระเนระนาด', 'วังเวง']
+
+# 📚 เดโมกรณี "คำเดียวเจอในหลายเรื่อง" (พี่กันขอ 26 ก.ค. 2569)
+#    คลังจริงตอนนี้มีนิยายเรื่องเดียว จึงยังไม่มีคำไหนเจอหลายเรื่องให้ดูของจริง
+#    เลยสมมติชื่อเรื่องเพิ่มให้ดูภาพ และติดป้าย "ตัวอย่างสมมติ" กำกับไว้ในหน้าจอ ไม่ให้เข้าใจผิดว่าเป็นข้อมูลจริง
+DEMO_WORD = 'วังเวง'
+DEMO_NOVELS = ['คินดะอิจิยอดนักสืบ ตอน บทเพลงปีศาจ',
+               'คินดะอิจิยอดนักสืบ ตอน หมู่บ้านแปดสุสาน',
+               'คินดะอิจิยอดนักสืบ ตอน เกาะประตูนรก']
 
 seen = set()
 for t in SEEDS:
@@ -99,6 +107,10 @@ for t in sorted(seen):
             if nv not in n['novels']:
                 n['novels'].append(nv)
     NODES[t] = n
+
+if DEMO_WORD in NODES:
+    NODES[DEMO_WORD]['novels'] = list(DEMO_NOVELS)
+    NODES[DEMO_WORD]['demoNovels'] = True
 
 oldc = collections.Counter(o['text'] for o in OLD)
 dup = [t for t, c in oldc.items() if c > 1]
@@ -154,6 +166,24 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:'Trirong',Geor
   font-size:16px;line-height:1.78;-webkit-text-size-adjust:100%}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* ── ลำดับการเข้าเวที: การ์ดคำหลักขึ้นก่อน → ไฮไลต์กวาดสี → ใบไม้เด้ง → เส้นวิ่ง → หมวดและกิ่งเลื่อนเข้า ── */
+@keyframes riseIn{from{opacity:0;transform:translateY(16px) scale(.975)}to{opacity:1;transform:none}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes popIn{from{opacity:0;transform:translateY(12px) scale(.82)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes sweep{from{background-size:0 100%}to{background-size:100% 100%}}
+@keyframes badgeIn{from{opacity:0;transform:scale(.6)}60%{transform:scale(1.08)}to{opacity:1;transform:scale(1)}}
+@keyframes savePulse{0%{box-shadow:0 0 0 0 rgba(156,59,43,.45)}70%{box-shadow:0 0 0 9px rgba(156,59,43,0)}100%{box-shadow:0 0 0 0 rgba(156,59,43,0)}}
+@keyframes keyShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-13deg)}75%{transform:rotate(13deg)}}
+/* เปลี่ยนธีมแล้วสีค่อย ๆ ไล่ ไม่กระพริบ */
+body,[data-r=modal],[data-r=scene],[data-el=hero],[data-el=tnode],[data-el=catnode],.f,.sd{
+  transition:background-color .35s ease,color .35s ease,border-color .25s ease,box-shadow .25s ease,transform .18s ease}
+/* ชี้ค้างที่กิ่ง = ขยับออกนิดหนึ่ง ให้รู้ว่าแตะได้ */
+[data-el=tnode]:hover{transform:translateX(5px);box-shadow:0 6px 16px -12px rgba(40,28,14,.85)}
+[data-el=catnode]:hover{transform:translateY(-2px) scale(1.02)}
+[data-el=par]:hover{transform:translateY(-2px)}
+#lock:hover span{display:inline-block;animation:keyShake .5s ease}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media(max-width:900px){
   [data-el=map]{grid-template-columns:1fr!important;grid-template-areas:'hero' 'left' 'right'!important}
@@ -266,10 +296,13 @@ function paint(sentence, words) {
   for (const h of hit) {
     if (h.a < c0) continue;
     out += esc(sentence.slice(c0, h.a));
-    const c = PAL[h.i % PAL.length];
+    const c = PAL[h.i % PAL.length], ord = used.size;
     used.add(h.i);
-    out += `<span data-m="${h.i}" style="background:${c}2e;border-radius:3px;padding:1px 2px;`
-      + `box-shadow:inset 0 -0.14em 0 ${c};-webkit-box-decoration-break:clone;box-decoration-break:clone">`
+    /* ไฮไลต์ + เส้นใต้รวมเป็นภาพพื้นชิ้นเดียว แล้วกวาดจากซ้ายไปขวา ตัวอักษรยังอ่านได้ตลอดระหว่างกวาด */
+    out += `<span data-m="${h.i}" style="background-image:linear-gradient(to top,${c} 0 2px,${c}2e 2px 100%);`
+      + 'background-repeat:no-repeat;background-size:0 100%;border-radius:3px;padding:1px 2px;'
+      + `-webkit-box-decoration-break:clone;box-decoration-break:clone;`
+      + `animation:sweep .5s cubic-bezier(.22,.8,.3,1) ${(0.16 + ord * 0.075).toFixed(2)}s forwards">`
       + esc(sentence.slice(h.a, h.b)) + '</span>';
     c0 = h.b;
   }
@@ -328,7 +361,9 @@ function readFields() {
 function refreshSave() {
   const s = document.getElementById('save'); if (!s) return;
   const changed = !locked && readFields() !== snap;
+  const was = s.disabled;
   s.disabled = !changed;
+  if (was && changed) { s.style.animation = 'none'; s.offsetWidth; s.style.animation = 'savePulse .7s ease'; }
   s.title = changed ? '' : (locked ? 'ปลดล็อกก่อนจึงจะแก้ไขได้' : 'ยังไม่มีการแก้ไข');
 }
 function applyLock() {
@@ -337,7 +372,7 @@ function applyLock() {
   document.querySelectorAll('#side2 select.f').forEach(el => { el.disabled = locked; });
   const b = document.getElementById('lock'), hint = document.getElementById('lockhint');
   if (b) {
-    b.textContent = locked ? '🔒 ปลดล็อกเพื่อแก้ไข' : '🔓 กำลังแก้ไข · กดเพื่อล็อก';
+    b.innerHTML = locked ? '<span>🔒</span> ปลดล็อกเพื่อแก้ไข' : '<span>🔓</span> กำลังแก้ไข · กดเพื่อล็อก';
     b.style.borderColor = locked ? 'var(--line)' : 'var(--accent)';
     b.style.color = locked ? 'var(--ink2)' : 'var(--accent)';
   }
@@ -365,11 +400,11 @@ function render(t) {
 
   if (n.parents.length) h.push('<div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:9px;margin-bottom:26px">'
     + '<div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);background:var(--panel);padding:0 9px;border-radius:10px">แตกมาจาก</div>'
-    + n.parents.map(p => `<button class="sd" data-el="par" data-go="${esc(p)}" style="background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:9px 15px;font-family:inherit;font-size:14.5px;line-height:1.7;color:var(--ink);cursor:pointer;max-width:min(540px,100%);text-align:left">${paint(p, [t]).html}</button>`).join('')
+    + n.parents.map(p => `<button class="sd" data-el="par" data-go="${esc(p)}" style="background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:9px 15px;font-family:inherit;font-size:14.5px;line-height:1.7;color:var(--ink);cursor:pointer;max-width:min(540px,100%);text-align:left;animation:dropIn .45s cubic-bezier(.2,.8,.25,1) both">${paint(p, [t]).html}</button>`).join('')
     + '</div>');
 
-  h.push('<div data-el="hero" style="position:relative;z-index:1;background:var(--surface);border:2px solid var(--primary);border-radius:15px;padding:16px 24px 15px;box-shadow:0 14px 30px -18px rgba(40,28,14,.6);width:100%;text-align:center;margin-bottom:78px">'
-    + `<span style="display:inline-block;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:#fdf6e8;background:var(--accent);border-radius:12px;padding:2px 11px;margin-bottom:9px;line-height:1.9">${n.parents.length ? 'คำที่กำลังดู' : 'วลีตั้งต้น'}</span>`
+  h.push('<div data-el="hero" style="position:relative;z-index:1;background:var(--surface);border:2px solid var(--primary);border-radius:15px;padding:16px 24px 15px;box-shadow:0 14px 30px -18px rgba(40,28,14,.6);width:100%;text-align:center;margin-bottom:78px;animation:riseIn .5s cubic-bezier(.2,.8,.25,1) both">'
+    + `<span style="display:inline-block;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:#fdf6e8;background:var(--accent);border-radius:12px;padding:2px 11px;margin-bottom:9px;line-height:1.9;animation:badgeIn .42s cubic-bezier(.2,.9,.3,1) .28s both">${n.parents.length ? 'คำที่กำลังดู' : 'วลีตั้งต้น'}</span>`
     + `<div style="font-size:clamp(22px,2.6vw,32px);font-weight:700;line-height:1.55;color:var(--ink);word-break:break-word">${pt.html}</div>`
     + `<div style="font-size:12px;color:var(--dim);margin-top:8px;letter-spacing:.02em">`
     + [KIND[n.kind] || 'คำ', `เกาะอยู่ ${n.paths.length} กิ่ง ใน ${byCat.size} หมวด`]
@@ -380,7 +415,7 @@ function render(t) {
   if (isSrc) h.push('<div style="position:relative;z-index:1;display:flex;gap:12px;align-items:flex-start;margin-bottom:26px">'
     + '<div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);white-space:nowrap;padding-top:9px">แตกออกเป็น</div>'
     + '<div style="display:flex;gap:26px 9px;flex-wrap:wrap;justify-content:center;flex:1">'
-    + kids.map((k, i) => `<button class="lf" data-el="leaf" data-k="${i}" data-go="${esc(k)}" style="border:none;border-radius:20px;padding:6px 16px;font-family:inherit;font-size:15px;color:#fffaf0;cursor:pointer;line-height:1.6;background:${PAL[i % PAL.length]};box-shadow:0 6px 14px -8px rgba(40,28,14,.75),inset 0 1px 0 rgba(255,255,255,.22);opacity:${pt.used.has(i) ? 1 : .62}">${esc(k)}</button>`).join('')
+    + kids.map((k, i) => `<button class="lf" data-el="leaf" data-k="${i}" data-go="${esc(k)}" style="border:none;border-radius:20px;padding:6px 16px;font-family:inherit;font-size:15px;color:#fffaf0;cursor:pointer;line-height:1.6;background:${PAL[i % PAL.length]};box-shadow:0 6px 14px -8px rgba(40,28,14,.75),inset 0 1px 0 rgba(255,255,255,.22);opacity:${pt.used.has(i) ? 1 : .62};animation:popIn .42s cubic-bezier(.2,.85,.3,1) ${(0.42 + i * 0.06).toFixed(2)}s both">${esc(k)}</button>`).join('')
     + '</div></div>');
   document.getElementById('heroArea').innerHTML = h.join('');
 
@@ -390,11 +425,11 @@ function render(t) {
   /* 🔑 ใช้โครงเดียวกับหมวดเป๊ะ (catrow/catnode/tnode) เส้นจะได้ตรงเหมือนกัน
      พี่กันสั่ง "จากนิยาย ไม่เอาเส้นโค้ง เอาตรงไปเลยเหมือนหมวด" → เลิกวาดเส้นแยกของตัวเอง */
   const novelBlock = '<div data-r="catrow" data-el="catrow" style="display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start">'
-    + '<div data-el="catnode" data-col="var(--accent)" style="align-self:start;background:var(--accent);color:#fff6ec;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2)">'
+    + '<div data-el="catnode" data-col="var(--accent)" style="align-self:start;background:var(--accent);color:#fff6ec;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2);animation:slideIn .45s cubic-bezier(.2,.8,.25,1) .46s both">'
     + '<div style="font-size:13px;font-weight:700;letter-spacing:.04em">จากนิยาย</div>'
-    + `<div style="font-size:11px;font-weight:400;opacity:.9;line-height:1.5">Source Novels · ${n.novels.length} เรื่อง</div></div>`
+    + `<div style="font-size:11px;font-weight:400;opacity:.92;line-height:1.5">Source Novels · ${n.novels.length} เรื่อง</div>` + (n.demoNovels ? '<div style="font-size:10px;letter-spacing:.06em;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.3);opacity:.95">ตัวอย่างสมมติ</div>' : '') + '</div>'
     + '<div style="display:flex;flex-direction:column;gap:5px;padding-top:2px;min-width:0">'
-    + n.novels.map((v, i) => `<div data-el="tnode" data-id="nv.${i}" data-p="" style="display:flex;gap:9px;align-items:flex-start;background:var(--surface);border:1px solid var(--line2);border-left:4px solid var(--accent);border-radius:0 11px 11px 0;padding:7px 11px;min-width:0">`
+    + n.novels.map((v, i) => `<div data-el="tnode" data-id="nv.${i}" data-p="" style="display:flex;gap:9px;align-items:flex-start;background:var(--surface);border:1px solid var(--line2);border-left:4px solid var(--accent);border-radius:0 11px 11px 0;padding:7px 11px;min-width:0;animation:slideIn .4s cubic-bezier(.2,.8,.25,1) ${(0.52 + i * 0.055).toFixed(2)}s both">`
       + `<span style="flex:1;min-width:0;font-size:13.5px;line-height:1.65;color:var(--ink)">${esc(v)}</span>`
       + '<button class="edt" style="border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit;line-height:1.9;flex:none">✕</button></div>').join('')
     + '<button class="sd edt" style="align-self:flex-start;font-size:11.5px;padding:3px 12px;border-radius:20px;border:1px dashed var(--line);background:none;color:var(--dim);cursor:pointer;font-family:inherit;line-height:1.7">＋ เพิ่มเรื่องที่เจอคำนี้</button>'
@@ -403,15 +438,15 @@ function render(t) {
   document.getElementById('cats').innerHTML = novelBlock + cats.map(([no, g], i) => {
     const col = ramp(i, cats.length);
     return `<div data-r="catrow" data-el="catrow" style="display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start">`
-      + `<div data-el="catnode" data-c="${no}" data-col="${col}" style="align-self:start;background:${col};color:#fffaf0;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2)">`
+      + `<div data-el="catnode" data-c="${no}" data-col="${col}" style="align-self:start;background:${col};color:#fffaf0;border-radius:11px;padding:8px 14px;white-space:nowrap;box-shadow:0 7px 16px -10px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.2);animation:slideIn .45s cubic-bezier(.2,.8,.25,1) ${(0.54 + i * 0.1).toFixed(2)}s both">`
       + `<div style="font-size:13px;font-weight:700;letter-spacing:.04em">หมวด ${no}</div>`
       + `<div style="font-size:11px;font-weight:400;opacity:.9;white-space:normal;max-width:158px;line-height:1.5">${esc(g.cat)}`
-      + (g.catEn ? `<br><span style="opacity:.75;letter-spacing:.02em">${esc(g.catEn)}</span>` : '') + '</div></div>'
+      + (g.catEn ? `<br><span style="opacity:.9;letter-spacing:.03em">${esc(g.catEn)}</span>` : '') + '</div></div>'
       + '<div style="display:flex;flex-direction:column;gap:11px;padding-top:2px;min-width:0">'
-      + tree(g.list, no, col).map(b =>
-        `<div data-el="tnode" data-id="${b.id}" data-p="${b.p}" style="${b.style}">`
+      + tree(g.list, no, col).map((b, j) =>
+        `<div data-el="tnode" data-id="${b.id}" data-p="${b.p}" style="${b.style};animation:slideIn .4s cubic-bezier(.2,.8,.25,1) ${(0.6 + i * 0.1 + j * 0.055).toFixed(2)}s both">`
         + `<span style="${b.textStyle}">${esc(b.name)}`
-        + (b.en ? `<span style="display:block;font-size:10.5px;font-weight:400;color:var(--faint);letter-spacing:.02em;line-height:1.5">${esc(b.en)}</span>` : '')
+        + (b.en ? `<span style="display:block;font-size:11px;font-weight:400;color:var(--ink2);opacity:.82;letter-spacing:.03em;line-height:1.5">${esc(b.en)}</span>` : '')
         + '</span>'
         + `<span style="${b.tailStyle}">${esc(b.tail)}</span>`
         + (b.isLeaf ? '<button class="edt" style="border:none;background:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;font-family:inherit;line-height:1.9;flex:none">✕</button>' : '')
@@ -425,7 +460,8 @@ function render(t) {
   const lab = s => `<label style="display:block;font-size:11px;letter-spacing:.08em;font-weight:600;color:var(--ink2);margin:0 0 5px">${s}</label>`;
   const sec = s => `<div style="font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--line2)">${s}</div>`;
   document.getElementById('side2').innerHTML =
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">'
+    '<div style="animation:fadeIn .5s ease .35s both">'
+    + '<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">'
     + `<div style="${HEAD}">แก้ไข</div>`
     + '<div style="height:1px;flex:1;background:var(--line)"></div>'
     + '<button id="lock" class="sd" style="border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-family:inherit;font-size:12px;padding:4px 13px;border-radius:16px;cursor:pointer;white-space:nowrap"></button></div>'
@@ -442,7 +478,7 @@ function render(t) {
     + '<span class="edt" style="font-size:12.5px;color:var(--accent);border-bottom:1px solid var(--danger-line);cursor:pointer">ลบคำนี้</span>'
     + '<span style="flex:1"></span>'
     + '<button id="cancel" class="sd" style="padding:9px 15px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink2)">ยกเลิก</button>'
-    + '<button id="save" style="padding:9px 22px;border-radius:10px;font-family:inherit;font-size:14px;border:none;font-weight:600">บันทึก</button></div>';
+    + '<button id="save" style="padding:9px 22px;border-radius:10px;font-family:inherit;font-size:14px;border:none;font-weight:600">บันทึก</button></div></div>';
 
   snap = readFields();
   applyLock();
@@ -452,7 +488,7 @@ function render(t) {
   document.querySelectorAll('#seeds button').forEach(b =>
     b.style.cssText = seedStyle(b.dataset.sp === t));
   const bk = document.getElementById('back');
-  if (bk) bk.onclick = () => { const s = stack.pop(); if (s) { cur = s; render(s); } };
+  if (bk) bk.onclick = () => { const s = stack.pop(); if (s) { cur = s; locked = true; render(s); } };
   requestAnimationFrame(draw);
 }
 
@@ -526,6 +562,7 @@ function draw() {
           if (!m) return;
           const a = relMark(m);
           r.conns.push({
+            k: i,
             sx: Math.min(Math.max(a.x + a.w / 2, hb.x + 10), hb.x + hb.w - 10),
             cx: o.b.x + o.b.w / 2, top: o.b.y, c: PAL[i % PAL.length], dash
           });
@@ -543,7 +580,7 @@ function draw() {
           ? [{ x: o.sx, y: hbot }, { x: o.sx, y: o.lane }, { x: o.cx, y: o.lane }, { x: o.cx, y: o.top }]
           : [{ x: o.sx, y: hbot }, { x: o.sx, y: y0 }, { x: spine, y: y0 },
              { x: spine, y: o.lane }, { x: o.cx, y: o.lane }, { x: o.cx, y: o.top }];
-        P.push([poly(pts), o.c, o.dash ? 1.3 : 1.9, o.dash ? .55 : .95, o.dash]);
+        P.push([poly(pts), o.c, o.dash ? 1.3 : 1.9, o.dash ? .55 : .95, o.dash, o.k]);
         dots.push([o.sx, hbot, o.c, 2.4, .9]);
       }));
     }
@@ -585,8 +622,10 @@ function draw() {
     });
   });
   svg.setAttribute('viewBox', `0 0 ${map.clientWidth} ${map.clientHeight}`);
-  svg.innerHTML = P.map(([d, c, w, o, dash], i) =>
-    `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${o}"${dash ? ' stroke-dasharray="4 5"' : ' data-anim="1"'} style="animation-delay:${(i * .025).toFixed(2)}s"/>`).join('')
+  svg.innerHTML = P.map(([d, c, w, o, dash, lk], i) =>
+    `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${o}"`
+    + (lk != null ? ` data-leaf="${lk}"` : '')
+    + `${dash ? ' stroke-dasharray="4 5"' : ' data-anim="1"'} style="animation-delay:${(0.34 + i * .03).toFixed(2)}s"/>`).join('')
     + dots.map(([x, y, c, r, o]) => `<circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}" opacity="${o}"/>`).join('');
   /* เก็บกวาดเส้นยาวศูนย์ — เกิดตอนกิ่งชั้นนั้นมีลูกตัวเดียวและอยู่ระดับเดียวกับราง วาดไปก็มองไม่เห็น */
   svg.querySelectorAll('path').forEach(q => { if (q.getTotalLength() < 2) q.remove(); });
@@ -602,6 +641,28 @@ function draw() {
     q.style.transition = `stroke-dashoffset .55s ease ${d}`;
     q.style.strokeDashoffset = '0';
   });
+
+  /* ชี้ค้างที่ใบไม้คำสกัด = คำนั้นในวลีสว่างขึ้น และเส้นที่โยงถึงกันหนาขึ้นพร้อมกัน
+     ทำให้เห็นทันทีว่าคำนี้มาจากช่วงไหนของวลี โดยไม่ต้องไล่สายตาตามเส้น */
+  map.querySelectorAll('[data-el=leaf]').forEach(el => {
+    const i = el.dataset.k;
+    /* ค้นเส้นตอนชี้จริง ไม่เก็บไว้ล่วงหน้า เพราะ draw() วาดเส้นใหม่ได้หลายรอบ (ตอนย่อจอ ตอนฟอนต์โหลดเสร็จ)
+       ถ้าเก็บไว้จะชี้ไปที่เส้นเก่าที่ถูกลบไปแล้ว แล้วไฮไลต์ไม่ขึ้น */
+    const set = on => {
+      el.style.transform = on ? 'translateY(-3px) scale(1.05)' : '';
+      el.style.boxShadow = on ? '0 10px 20px -8px rgba(40,28,14,.8),inset 0 1px 0 rgba(255,255,255,.3)' : '';
+      const mark = document.querySelector(`[data-m="${i}"]`);
+      if (mark) { mark.style.transition = 'filter .2s'; mark.style.filter = on ? 'saturate(1.6) brightness(.95)' : ''; }
+      document.querySelectorAll(`#svg [data-leaf="${i}"]`).forEach(p => {
+        p.style.strokeWidth = on ? '3.4' : ''; p.style.opacity = on ? '1' : '';
+      });
+    };
+    /* ใช้ onmouseenter (แทนที่ของเดิม) ไม่ใช่ addEventListener ไม่งั้นตัวฟังซ้อนกันทุกครั้งที่วาดใหม่ */
+    el.onmouseenter = () => set(1);
+    el.onmouseleave = () => set(0);
+    el.onfocus = () => set(1);
+    el.onblur = () => set(0);
+  });
 }
 
 const seedStyle = active => 'border:none;background:none;font-family:inherit;font-size:14.5px;cursor:pointer;'
@@ -612,9 +673,9 @@ document.getElementById('seeds').innerHTML = D.seeds.map(s =>
 
 document.addEventListener('click', e => {
   const g = e.target.closest('[data-go]');
-  if (g) { const t = g.dataset.go; if (N[t] && t !== cur) { stack.push(cur); cur = t; render(t); } return; }
+  if (g) { const t = g.dataset.go; if (N[t] && t !== cur) { stack.push(cur); cur = t; locked = true; render(t); } return; }
   const s = e.target.closest('[data-sp]');
-  if (s) { stack = []; cur = s.dataset.sp; render(cur); }
+  if (s) { stack = []; cur = s.dataset.sp; locked = true; render(cur); }
 });
 document.getElementById('tog').onclick = () => {
   const r = document.documentElement;
