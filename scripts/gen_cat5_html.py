@@ -207,7 +207,7 @@ body+='<div class="hero"><div class="eyebrow">ร่างเกลากิ่�
 body+='<h1>หมวด ๕ · สภาวะภายใน</h1><div class="en">Internal States</div>'
 body+='<p>คำที่บอกสิ่งที่เกิดขึ้น “ข้างใน” ตัวละคร — ทั้งอารมณ์ ความรู้สึกนึกคิด และสัมผัสทางกายที่คนภายนอกมองไม่เห็น · เรียงขั้วบวก (happy) ขึ้นก่อน</p>'
 body+='<div class="stats">'
-for n,l in [('๑๓','กิ่งหลัก'),('๗๒','คำบ้านหลัก'),('๑๒','โยงข้ามหมวด'),('๑๖','ยกออก'),('๑๐๐','วลีรวม')]:
+for n,l in [('๑๓','กิ่งหลัก'),('๗๒','คำบ้านหลัก'),('๑๒','โยงข้ามหมวด'),('๑๖','ยกออก'),('๙๙','วลีรวม')]:
     body+=f'<div class="stat"><b>{n}</b><span>{l}</span></div>'
 body+='</div></div>'
 body+='<div class="legend"><span class="tag t-new">🆕 กิ่งใหม่ (ตั้งเผื่อ)</span><span class="tag t-multi">⚡ คำหลายกิ่ง</span><span class="tag t-cross">🔗 โยงข้ามหมวด</span><span class="tag t-genre">แนวนิยาย</span></div>'
