@@ -119,7 +119,7 @@ export function renderAbout(app) {
         </p>
       </div>
 
-      {/* ศัพท์น่ารู้: ช่อ กับ กิ่ง (ย้ายมาจากหน้าผลทดสอบ) */}
+      {/* ศัพท์น่ารู้: ช่อ กับ กิ่ง (ย้ายมาจากหน้าผลทดสอบ) + ชั้นของกิ่ง (เพิ่ม 2026-07-27 ตามที่พี่กันสั่ง) */}
       <div style={card}>
         {head('', 'ศัพท์น่ารู้ — “ช่อ” กับ “กิ่ง”')}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: '12px' }}>
@@ -150,6 +150,50 @@ export function renderAbout(app) {
             </span>
           </div>
           <div style={{ fontSize: '12.5px', color: faint, marginTop: '11px' }}>คำเดียว มองได้ 2 มุม (ทั้งบรรยากาศฉาก + อารมณ์คน) เลยติดได้ 2 กิ่ง</div>
+        </div>
+      </div>
+
+      {/* ชั้นของกิ่ง — ศัพท์ที่ใช้เรียกกันเองในโปรเจกต์ (พี่กันสั่งให้เขียนลงเว็บ 2026-07-27) */}
+      <div style={card}>
+        {head('', 'กิ่งมีกี่ชั้น — เรียกชั้นไหนว่าอะไร')}
+        <p style={{ fontSize: '14.5px', color: faint, lineHeight: 1.75, margin: '0 0 18px' }}>
+          ที่อยู่ของคำในคลังไล่จากกว้างไปแคบ <b>ลึกได้มากสุด 3 ชั้น</b> เวลาพูดถึงกันสั้น ๆ ใช้เลขชั้นในวงเล็บได้เลย
+          เช่น <code style={{ background: '#eef3e4', padding: '1px 6px', borderRadius: '5px', fontSize: '13px' }}>ธรรมชาติและสภาพอากาศ(1)/พืชพรรณ(2)/ป่าและหมู่ไม้หนาทึบ(3)</code>
+        </p>
+
+        {/* ผังชั้น — ไล่ซ้ายไปขวาบนจอกว้าง · ไล่บนลงล่างบนมือถือ · มีลูกศรคั่นให้เห็นว่าเป็นลำดับที่ลึกลงไปเรื่อย ๆ */}
+        <div style={{ display: 'flex', flexDirection: S.isMobile ? 'column' : 'row', alignItems: 'stretch', gap: '0', marginBottom: '16px' }}>
+          {[
+            { n: '', t: 'หมวด', d: 'กล่องใหญ่สุด มี 14 หมวด', ex: 'บรรยากาศ แสง สี และสถานที่', bg: '#f3e8de', bd: '#e0c8b4', fg: '#8a4b2b' },
+            { n: '1', t: 'กิ่งหลัก', d: 'แกนใหญ่ในหมวดนั้น', ex: 'ธรรมชาติและสภาพอากาศ', bg: '#eef3e4', bd: '#cbdcb8', fg: '#4d6136' },
+            { n: '2', t: 'กิ่งย่อย', d: 'แตกจากกิ่งหลัก', ex: 'พืชพรรณ', bg: '#e7eee0', bd: '#c2d4ac', fg: '#4d6136' },
+            { n: '3', t: 'กิ่งแขนง', d: 'ชั้นลึกที่สุดที่มีได้', ex: 'ป่าและหมู่ไม้หนาทึบ', bg: '#e0e9d7', bd: '#b8cda0', fg: '#43552e' },
+            { n: '', t: 'คำ', d: 'ตัวคำที่เก็บไว้', ex: 'แมกไม้', bg: '#fbeecb', bd: '#ecd39a', fg: '#8a5a1e' },
+          ].map((x, i, arr) => (
+            <React.Fragment key={x.t}>
+              <div style={{ flex: '1 1 0', minWidth: 0, padding: '12px 13px', background: x.bg, border: '1px solid ' + x.bd, borderRadius: '11px' }}>
+                <div style={{ fontSize: '14.5px', fontWeight: 700, color: x.fg, marginBottom: '3px' }}>
+                  {x.t}{x.n ? <span style={{ fontSize: '12px', opacity: .75 }}> ({x.n})</span> : null}
+                </div>
+                <div style={{ fontSize: '12px', color: faint, lineHeight: 1.6, marginBottom: '7px' }}>{x.d}</div>
+                <div style={{ fontFamily: SERIF, fontSize: '13.5px', fontWeight: 600, color: ink, lineHeight: 1.5 }}>{x.ex}</div>
+              </div>
+              {i < arr.length - 1 ? (
+                <div aria-hidden="true" style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#b9a888', fontSize: '17px', padding: S.isMobile ? '3px 0' : '0 5px' }}>
+                  {S.isMobile ? '↓' : '›'}
+                </div>
+              ) : null}
+            </React.Fragment>
+          ))}
+        </div>
+
+        <div style={{ padding: '15px 17px', background: 'var(--surface,#fffdf6)', border: '1px dashed ' + line, borderRadius: '12px' }}>
+          <div style={{ fontSize: '13.5px', color: ink, fontWeight: 600, marginBottom: '8px' }}>คำจะลงไปอยู่ชั้นลึกที่สุดของสายกิ่งนั้นเสมอ</div>
+          <div style={{ fontSize: '13px', color: faint, lineHeight: 1.85 }}>
+            ถ้ากิ่งหลักแตกลงไปถึงกิ่งแขนง คำก็ต้องลงไปถึงกิ่งแขนง · ถ้าแตกแค่กิ่งย่อย คำก็ลงถึงกิ่งย่อย
+            <br />ถ้ากิ่งหลักไม่ได้แตกอะไรเลย คำอยู่ที่กิ่งหลักได้ เพราะนั่นคือชั้นลึกที่สุดของสายนั้นอยู่แล้ว
+            <br /><b style={{ color: ink }}>คำจะไม่ค้างกลางทาง</b> — ถ้าเจอว่าค้าง แปลว่ายังไม่มีกิ่งที่เหมาะให้ลง ต้องซอยกิ่งเพิ่ม
+          </div>
         </div>
       </div>
 

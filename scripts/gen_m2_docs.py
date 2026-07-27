@@ -363,6 +363,14 @@ def by_cat(items):
     return t
 
 
+def lvpath(p):
+    """เติมเลขชั้นในวงเล็บให้ทุกชั้น — พี่กันสั่ง 27 ก.ค.
+    "ธรรมชาติและสภาพอากาศ / พืชพรรณ / ป่าและหมู่ไม้หนาทึบ"
+      → "ธรรมชาติและสภาพอากาศ(1)/พืชพรรณ(2)/ป่าและหมู่ไม้หนาทึบ(3)"
+    เห็นภาพชั้นได้ทันทีโดยไม่ต้องนับเอง"""
+    return '/'.join('%s(%d)' % (x.strip(), i + 1) for i, x in enumerate(p.split(' / ')))
+
+
 def mark(src, w):
     """ทำตัวหนาตรงตำแหน่งคำที่สกัด ในวลีตั้งต้น"""
     return src.replace(w, '**%s**' % w, 1) if w in src else src
@@ -382,7 +390,7 @@ def final_paths(w, kept):
     if real != w:
         out.append(('note', 'แก้คำสะกดแล้ว: %s → %s' % (w, real), 'พี่กันเคาะ 27 ก.ค.'))
     for c, p in sorted(NOWPATHS[real], key=lambda x: (NO.get(x[0], 99), x[1])):
-        label = 'ม.%s › %s' % (NO.get(c, '?'), p)
+        label = 'ม.%s › %s' % (NO.get(c, '?'), lvpath(p))
         if (c, p) == kept:
             out.append(('keep', label, 'กิ่งเดิม · กิ่งที่ผู้ช่วยขอถอน แต่คงไว้'))
         elif (c, p) in was:
@@ -391,7 +399,7 @@ def final_paths(w, kept):
             out.append(('new', label, 'เพิ่มรอบนี้'))
     for (ww, c, p), why in LATER_DROPPED.items():
         if ww == w:
-            out.append(('gone', 'ม.%s › %s' % (NO.get(c, '?'), p), why))
+            out.append(('gone', 'ม.%s › %s' % (NO.get(c, '?'), lvpath(p)), why))
     return out
 
 
@@ -471,7 +479,7 @@ def md_summary():
          '| คำ | กิ่งแม่ที่ถอน | กิ่งลูกที่เหลือ |', '|---|---|---|']
     for w, c, p in drop:
         kids = [x['p'] for x in SENSE[w]['paths'] if x['c'] == c and x['p'].startswith(p + ' / ')]
-        o.append('| %s | %s | %s |' % (w, p, ' · '.join(x.split(' / ')[-1] for x in kids)))
+        o.append('| %s | %s | %s |' % (w, lvpath(p), ' · '.join(x.split(' / ')[-1] for x in kids)))
     o += ['', '## กิ่งที่เพิ่ม แยกตามหมวด (ภาพรวม)', '',
           '> รายชื่อเต็มทุกเส้นอยู่ที่ [`2-added-branches.md`](./2-added-branches.md)', '',
           '| หมวด | กิ่งที่เพิ่ม |', '|---|---|']
@@ -497,7 +505,7 @@ def md_added():
         o.append('## %s · %d เส้น' % (cname(cid), n))
         o.append('')
         for path in sorted(t[cid]):
-            o.append('- **%s** — %s' % (path, ' · '.join(sorted(t[cid][path]))))
+            o.append('- **%s** — %s' % (lvpath(path), ' · '.join(sorted(t[cid][path]))))
         o.append('')
     return '\n'.join(o) + '\n'
 
@@ -569,7 +577,7 @@ def md_drop():
             fintxt = '<br>'.join('%s %s _(%s)_' % (ICON.get(t, '✅'), lab, tag)
                                  for t, lab, tag in fin)
             o.append('| **%s** | %s | ม.%s › %s | %s | %s | %s |'
-                     % (w, mark(BEF[w]['source'], w), NO[c], p,
+                     % (w, mark(BEF[w]['source'], w), NO[c], lvpath(p),
                         ' · '.join(s['senses']), why, fintxt))
         o.append('')
     o += ['## ประเด็นที่วิจัยต่อได้', '',
@@ -640,7 +648,7 @@ def html_report():
              % (e(cname(cid)), n)]
         for path in sorted(t[cid]):
             s.append('<div class=sec><span class=h>%s</span>%s</div>'
-                     % (e(path), e(' · '.join(sorted(t[cid][path])))))
+                     % (e(lvpath(path)), e(' · '.join(sorted(t[cid][path])))))
         s.append('</details>')
         blocks.append(''.join(s))
 
@@ -652,7 +660,7 @@ def html_report():
                  % (e(r['w']), e(' · '.join(r['senses']))) for r in multi)
     dropped = ''.join(
         '<tr><td><b>%s</b></td><td class=dim>%s</td><td>%s</td></tr>'
-        % (e(w), e(p), e(' · '.join(x['p'].split(' / ')[-1] for x in SENSE[w]['paths']
+        % (e(w), e(lvpath(p)), e(' · '.join(x['p'].split(' / ')[-1] for x in SENSE[w]['paths']
                                     if x['c'] == c and x['p'].startswith(p + ' / '))))
         for w, c, p in drop)
 
@@ -731,7 +739,7 @@ def html_drop():
                       '<td class=dim data-l="ความหมายที่ผู้ช่วยเห็น">%s</td>'
                       '<td data-l="%s">%s</td>'
                       '<td data-l="สุดท้ายอยู่กิ่งอะไร (ผลจริงในคลัง)">%s</td></tr>'
-                      % (e(w), src, NO[c], e(p), e(' · '.join(s['senses'])), verb, e(why), fin))
+                      % (e(w), src, NO[c], e(lvpath(p)), e(' · '.join(s['senses'])), verb, e(why), fin))
         blocks.append(
             '<details class=card open><summary><b>กลุ่ม %s · %s</b> <span class=dim>· %d เส้น</span></summary>'
             '<p class=quote>%s</p><div class=tw><table class=dropt><thead>'
