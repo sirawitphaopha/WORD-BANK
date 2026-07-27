@@ -10,7 +10,7 @@
   "note": "คลังเดิม · schema ตรงกับ docs/newwords-branches.json เพื่อให้รวม 2 คลังได้ตรง ๆ ช่อง source/picked_from ยังไม่มีคอลัมน์ใน wb_words รอ scripts/014_word_web.sql",
   "counts": {
    "words": 1060,
-   "word_branch_links": 2549,
+   "word_branch_links": 2547,
    "branches": 768,
    "categories": 14
   }
@@ -12043,7 +12043,7 @@
    "branches_added_this_round": []
   },
   {
-   "text": "พลวัน",
+   "text": "พัลวัน",
    "cut_fixed_from": null,
    "kind": "word",
    "novel": null,
@@ -12061,19 +12061,11 @@
     {
      "category_id": "c0",
      "path": "สภาพและร่องรอยของสถานที่ / ร่องรอย"
-    },
-    {
-     "category_id": "c5",
-     "path": "เวลา จังหวะ และความเร็ว / ความทันทีและการชะงัก"
-    },
-    {
-     "category_id": "c5",
-     "path": "คำเชื่อมและคำคุมประโยค / ลำดับเรื่องและเปลี่ยนฉาก"
     }
    ],
    "meaning": "ยุ่งเหยิงสับสนไปมา",
    "reason": null,
-   "source": "รอยเท้าทับซ้อนพลวันกันไปมา",
+   "source": null,
    "source_others": [],
    "picked_from": [],
    "by_owner": false,
@@ -12243,7 +12235,7 @@
    ]
   },
   {
-   "text": "รอยเท้าทับซ้อนพลวันกันไปมา",
+   "text": "รอยเท้าทับซ้อนพัลวันกันไปมา",
    "cut_fixed_from": null,
    "kind": "phrase",
    "novel": null,
@@ -12269,15 +12261,10 @@
    "picked_from": [],
    "by_owner": false,
    "loanword_en": null,
-   "origin": "original",
+   "origin": "extract",
    "line": null,
    "owner_note": null,
-   "branches_added_this_round": [
-    {
-     "category_id": "c13",
-     "path": "คดีความและกระบวนการยุติธรรม"
-    }
-   ]
+   "branches_added_this_round": []
   },
   {
    "text": "ไหลนอง",
