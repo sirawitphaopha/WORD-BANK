@@ -31,3 +31,7 @@ yarn-error.log*
 
 # editor
 .vscode/
+
+# python cache
+__pycache__/
+*.pyc
