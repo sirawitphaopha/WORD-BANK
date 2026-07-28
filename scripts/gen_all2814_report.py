@@ -22,6 +22,49 @@ D = lambda *a: P('docs/m2-sense/round2', *a)
 BANK_NAME = {'old': 'เสียงกระซิบจากความมืด', 'new': 'คินดะอิจิยอดนักสืบ ตอน บทเพลงปีศาจ'}
 
 
+def group_paths(all_paths):
+    """ยุบท่อนต้นของกิ่งที่ซ้ำกันให้เหลือครั้งเดียว — กันคำที่ติดหลายกิ่งแล้วท่อนต้นเหมือนกัน
+    ถูกพิมพ์เต็มเส้นทางซ้ำ ๆ จนอ่านแล้วดูเหมือนเขียนซ้ำ (พี่กันจับได้ 28 ก.ค.)
+
+    all_paths: [{'category_id':.., 'path':'A / B / C'}, ...]
+    จัดกลุ่มตามหมวดก่อนเสมอ (ห้ามยุบข้ามหมวด เพราะคำติดหลายกิ่งข้ามหมวดได้ปกติ ~58%
+    ของรายการ และ segment แรกอาจชื่อชนกันโดยบังเอิญคนละหมวด)
+    ภายในหมวดเดียวกัน หาท่อนต้นที่ทุกเส้นเหมือนกันเป๊ะ แล้วโชว์ครั้งเดียว ตามด้วย "→"
+    และส่วนที่เหลือของแต่ละเส้นคั่นด้วย " · " — ถ้าไม่มีท่อนต้นร่วมกันเลย โชว์เต็มเส้นทางแยกกันตามเดิม
+    """
+    groups = collections.OrderedDict()
+    for p in all_paths:
+        groups.setdefault(p['category_id'], []).append(p['path'])
+    out = []
+    for _, paths in groups.items():
+        uniq = []
+        for p in paths:
+            if p not in uniq:
+                uniq.append(p)
+        if len(uniq) == 1:
+            out.append(uniq[0])
+            continue
+        segs = [p.split(' / ') for p in uniq]
+        minlen = min(len(s) for s in segs)
+        common = []
+        for i in range(minlen):
+            if len({s[i] for s in segs}) == 1:
+                common.append(segs[0][i])
+            else:
+                break
+        if common and len(common) < minlen:
+            tails, seen = [], set()
+            for s in segs:
+                t = ' / '.join(s[len(common):])
+                if t not in seen:
+                    seen.add(t)
+                    tails.append(t)
+            out.append('%s → %s' % (' / '.join(common), ' · '.join(tails)))
+        else:
+            out.extend(uniq)
+    return out
+
+
 def load():
     rows = [json.loads(l) for l in open(D('in.jsonl'), encoding='utf-8') if l.strip()]
     before = json.load(open(D('before.json'), encoding='utf-8'))
@@ -61,9 +104,9 @@ def f_md(items, meta):
             for e in x['entries']:
                 lines.append('**[%s]**' % BANK_NAME.get(e['bank'], e['bank']))
                 lines.append('- ความหมาย: ' + ' · '.join(e.get('meanings') or ['—']))
-                paths = e.get('subpaths') or []
-                if paths:
-                    lines.append('- กิ่ง (%d): %s' % (len(paths), ' · '.join(paths)))
+                allp = e.get('all_paths') or []
+                if allp:
+                    lines.append('- กิ่ง (%d): %s' % (len(allp), ' · '.join(group_paths(allp))))
                 else:
                     lines.append('- กิ่ง: —')
                 if e.get('source'):
@@ -145,13 +188,14 @@ def f_html(items, meta):
         if x['entries']:
             body = []
             for en in x['entries']:
-                paths = en.get('subpaths') or []
+                allp = en.get('all_paths') or []
+                disp = group_paths(allp)
                 body.append('<div class="entry"><span class="lbl">[%s]</span>'
                              '<div class="mean"><span class="lbl">ความหมาย:</span> %s</div>'
                              '<div class="paths"><span class="lbl">กิ่ง (%d):</span> %s</div>%s</div>'
                              % (e(BANK_NAME.get(en['bank'], en['bank'])),
                                 e(' · '.join(en.get('meanings') or ['—'])),
-                                len(paths), e(' · '.join(paths)) if paths else '—',
+                                len(allp), e(' · '.join(disp)) if allp else '—',
                                 ('<div class="paths"><span class="lbl">ตัดมาจาก:</span> %s</div>' % e(en['source']))
                                 if en.get('source') else ''))
             parts.append('<div class="card" data-text="%s" data-status="ok">'
