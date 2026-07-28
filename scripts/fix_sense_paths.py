@@ -48,6 +48,21 @@ def main():
             if not line.strip():
                 continue
             r = json.loads(line)
+            # กิ่งใหม่ที่เสนอ — ถ้ากิ่งแม่ไม่มีจริง ลองเติมชั้นบนให้ครบ
+            for q in (r.get('new_paths') or []):
+                c, p = q.get('c'), q.get('p')
+                if not c or not p or ' / ' not in p:
+                    continue
+                par = p.rsplit(' / ', 1)[0]
+                if (c, par) in VALID:
+                    continue
+                fixpar = repair(c, par)
+                if fixpar:
+                    q['p'] = fixpar + ' / ' + p.rsplit(' / ', 1)[1]
+                    fixed[(c, p, q['p'])] += 1
+                    touched = True
+                else:
+                    unfixed.append((os.path.basename(f), r.get('id'), c, 'กิ่งใหม่ ' + p))
             for q in (r.get('paths') or []):
                 c, p = q.get('c'), q.get('p')
                 if not c or not p or (c, p) in VALID:

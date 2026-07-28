@@ -225,69 +225,89 @@ def f_suspect(diff, before, sense):
 
 
 # ══════════════════════════════════════════════════════════
-#  ฉบับ HTML — ยกธีมจากหน้ารายงานเดิมมาใช้ ไม่เขียนใหม่
+#  ② JSON พร้อมขึ้นฐานข้อมูล (พี่กันสั่ง "เอาแค่ md json")
+#     schema ตรงกับ docs/newwords-branches.json เพื่อให้รวมสองเล่มได้ตรง ๆ
 # ══════════════════════════════════════════════════════════
-def write_html(names):
-    import sys as _s, re
-    _s.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    try:
-        from gen_newwords_review_html import CSS
-    except Exception:
-        CSS = 'body{font-family:sans-serif;max-width:900px;margin:auto;padding:16px}'
+def write_json(diff, before, sense):
+    per = diff['perbank']
+    add, drop = collections.defaultdict(set), collections.defaultdict(set)
+    for tag in per:
+        for w, c, p in per[tag]['add']:
+            add[(tag, w)].add((c, p))
+        for w, c, p in per[tag]['drop']:
+            drop[(tag, w)].add((c, p))
 
-    def md2html(md):
-        out, intbl = [], False
-        for ln in md.split('\n'):
-            s = ln.rstrip()
-            if s.startswith('|'):
-                cells = [c.strip() for c in s.strip('|').split('|')]
-                if set(''.join(cells)) <= set('-: '):
-                    continue
-                tag = 'th' if not intbl else 'td'
-                if not intbl:
-                    out.append('<div class="tw"><table>')
-                    intbl = True
-                out.append('<tr>' + ''.join('<%s>%s</%s>' % (tag, inline(c), tag) for c in cells) + '</tr>')
-                continue
-            if intbl:
-                out.append('</table></div>')
-                intbl = False
-            if s.startswith('#'):
-                n = len(s) - len(s.lstrip('#'))
-                out.append('<h%d>%s</h%d>' % (min(n, 4), inline(s.lstrip('# ')), min(n, 4)))
-            elif s.startswith('>'):
-                out.append('<blockquote>%s</blockquote>' % inline(s.lstrip('> ')))
-            elif s.startswith('- '):
-                out.append('<li>%s</li>' % inline(s[2:]))
-            elif s.strip() == '---':
-                out.append('<hr>')
-            elif s.strip():
-                out.append('<p>%s</p>' % inline(s))
-        if intbl:
-            out.append('</table></div>')
-        return '\n'.join(out)
+    LOCKED = ('c6', 'c14')       # 🔒 หมวด 7 คำทับศัพท์ · หมวด 15 บทบรรยาย — ห้ามถอด
+    items, stat = [], collections.Counter()
+    for w, r in sorted(sense.items()):
+        b = before.get(w) or {}
+        for tag, bb in sorted(b.items()):
+            cur = [(x['c'], x['p']) for x in bb.get('paths', [])]
+            gone = {x for x in drop[(tag, w)] if x[0] not in LOCKED}
+            new = [x for x in cur if x not in gone]
+            for x in sorted(add[(tag, w)]):
+                if x not in new:
+                    new.append(x)
+            if not new:                       # 🛡 ห้ามเหลือศูนย์กิ่ง
+                new = cur
+                stat['guard'] += 1
+            prim = next((c for c, _ in new), None)
+            mns = r.get('meanings') or ([r['meaning']] if r.get('meaning') else [])
+            mns = [str(x).strip() for x in mns if str(x).strip()]
+            items.append({
+                'text': w,
+                'bank': tag,
+                'novel': BANK_NAME[tag],
+                'kind': bb.get('kind'),
+                'origin': 'extract' if bb.get('is_extract') else 'original',
+                'category_id': prim,
+                'subpath': next((p for c, p in new if c == prim), None),
+                'subpaths': [p for c, p in new if c == prim],
+                'all_paths': [{'category_id': c, 'path': p} for c, p in new],
+                'meanings': mns,
+                'meaning': ' · '.join(mns) or None,
+                'senses': r.get('senses') or [],
+                'source': bb.get('source'),
+                'source_others': bb.get('source_others') or [],
+                'picked_from': bb.get('picked_from') or [],
+                'by_owner': bb.get('by_owner', False),
+                'loanword_en': bb.get('loanword_en'),
+                'suspect': r.get('suspect'),
+                'paths_added_this_round': [{'category_id': c, 'path': p}
+                                           for c, p in sorted(add[(tag, w)])],
+                'paths_dropped_this_round': [{'category_id': c, 'path': p}
+                                             for c, p in sorted(gone)],
+            })
+            stat[tag] += 1
 
-    def inline(s):
-        s = html.escape(s)
-        s = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', s)
-        s = re.sub(r'`(.+?)`', r'<code>\1</code>', s)
-        s = re.sub(r'_(.+?)_', r'<i>\1</i>', s)
-        return s
+    newbr = []
+    seen = set()
+    for w, c, p, df, why in diff.get('new_paths', []):
+        if (c, p) in seen:
+            continue
+        seen.add((c, p))
+        newbr.append({'category_id': c, 'path': p, 'definition': df,
+                      'why': why, 'proposed_by_item': w})
 
-    body = []
-    for n in names:
-        body.append('<section>' + md2html(open(D(n), encoding='utf-8').read()) + '</section>')
-    doc = ('<!doctype html><html lang="th"><head><meta charset="utf-8">'
-           '<meta name="viewport" content="width=device-width,initial-scale=1">'
-           '<title>ยกเครื่องคลังคำ — รายงานรอบ 2</title><style>%s\n'
-           '.tw{overflow-x:auto}table{border-collapse:collapse;width:100%%;margin:10px 0}'
-           'th,td{border:1px solid rgba(120,100,70,.28);padding:6px 9px;text-align:left;font-size:14px}'
-           'th{background:rgba(160,140,100,.14)}code{font-size:13px}'
-           'section{margin-bottom:34px}blockquote{border-left:4px solid #9c3b2b;padding:4px 12px;margin:8px 0}'
-           '@media(max-width:700px){th,td{font-size:13px;padding:5px 6px}}</style></head><body>%s</body></html>'
-           % (CSS, '\n'.join(body)))
-    open(D('report.html'), 'w', encoding='utf-8').write(doc)
-    print('เขียน docs/m2-sense/round2/report.html')
+    out = {
+        'meta': {
+            'status': 'draft — ยังทบทวนไม่ครบ %d จาก 2814 รายการ' % len(sense),
+            'note': 'ผลรอบยกเครื่องคลังคำ 27 ก.ค. 2569 · ยังไม่เขียนลงคลังจริง '
+                    'รอทบทวนให้ครบแล้วให้เจ้าของคลังเคาะก่อน',
+            'rule': 'กฎดูที่ประธาน + ไม่มีเพดานจำนวนกิ่ง + ความหมายเป็นรายการ (คำสั่ง AI ฉบับที่ ๑๑)',
+            'locked_categories': 'c6 หมวด 7 คำทับศัพท์ · c14 หมวด 15 บทบรรยาย — ห้ามถอด',
+            'counts': {'รายการที่ทบทวน': len(sense), 'แถวทั้งหมด': len(items),
+                       'คลังเดิม': stat['old'], 'คลังชุดใหม่': stat['new'],
+                       'กิ่งที่เพิ่ม': len(diff['add']), 'กิ่งที่ถอน': len(diff['drop']),
+                       'กิ่งใหม่ที่เสนอ': len(newbr),
+                       'กันไว้เพราะจะเหลือ 0 กิ่ง': stat['guard']},
+        },
+        'new_branches_proposed': newbr,
+        'words': items,
+    }
+    json.dump(out, open(D('result.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    print('เขียน docs/m2-sense/round2/result.json (%d แถว · คลังเดิม %d · คลังชุดใหม่ %d)'
+          % (len(items), stat['old'], stat['new']))
 
 
 # ══════════════════════════════════════════════════════════
@@ -313,7 +333,7 @@ def main():
         open(D(name), 'w', encoding='utf-8').write(fn(diff, before, sense))
         print('เขียน docs/m2-sense/round2/%s' % name)
 
-    write_html(list(files))
+    write_json(diff, before, sense)
 
     # ── ด่านตรวจ: กิ่งที่บอกว่าเพิ่ม ต้องมีอยู่จริงในโครงกิ่ง ──
     ghost = [(w, c, p) for w, c, p in diff['add'] if (c, p) not in VALID]
