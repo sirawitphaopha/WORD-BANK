@@ -490,7 +490,7 @@
       "code": "A05-02-003",
       "category_id": "c0",
       "path": "สภาพและร่องรอยของสถานที่ / สภาพความพัง / พังทลายและหักโค่น",
-      "en": "Collapsed & Broken",
+      "en": "Structural Collapse",
       "definition": "โครงสร้างที่พังลงแล้ว"
     },
     {
@@ -1561,7 +1561,7 @@
       "code": "C01-02-001",
       "category_id": "c2",
       "path": "สายตาและการมอง / ปฏิกิริยาและอารมณ์ทางตา / ตกใจ/กลัว",
-      "en": "Shock & Fear",
+      "en": "Shocked & Fearful Eyes",
       "definition": "ดวงตาที่เบิกกว้างหรือค้างจากความตกใจกลัว"
     },
     {
@@ -1764,7 +1764,7 @@
       "code": "C02-03-003",
       "category_id": "c2",
       "path": "การแสดงออกทางใบหน้าและศีรษะ / สีหน้าและอารมณ์บนใบหน้า / ตกใจ/กลัว",
-      "en": "Shock & Fear",
+      "en": "Shocked & Fearful Face",
       "definition": "สีหน้าที่แสดงความตกใจ กลัว หรือซีดเผือด"
     },
     {
@@ -1834,7 +1834,7 @@
       "code": "C03-01-002",
       "category_id": "c2",
       "path": "การขยับแขนและมือ / สัมผัสและหยิบจับ / หยิบจับและถือครอง",
-      "en": "Holding & Grasping",
+      "en": "Hand Grasping & Gripping",
       "definition": "การกำ จับ กระชับ หรือถือสิ่งของ/คนไว้"
     },
     {
@@ -2597,7 +2597,7 @@
       "code": "C12-02-000",
       "category_id": "c2",
       "path": "การจัดการสิ่งของและพื้นที่ / การหยิบจับและถือครอง",
-      "en": "Grasping & Holding",
+      "en": "Object Handling & Holding",
       "definition": "การเอามือจับ ถือ หรือควักสิ่งของออกมา"
     },
     {
@@ -2772,7 +2772,7 @@
       "code": "D01-03-000",
       "category_id": "c3",
       "path": "เสียงของวัตถุและสิ่งก่อสร้าง / เสียงแตกหักและตกกระทบ",
-      "en": "Breaking & Impact Sounds",
+      "en": "Object Breaking & Falling",
       "definition": "เสียงของหล่น กระแทก หรือพังทลาย"
     },
     {
@@ -2863,14 +2863,14 @@
       "code": "D03-02-000",
       "category_id": "c3",
       "path": "เสียงจากการเคลื่อนไหวและร่างกาย / เสียงร่างกายกระทบ",
-      "en": "Body Impact Sounds",
+      "en": "Flesh & Physical Impacts",
       "definition": "เสียงการปะทะกันของอวัยวะหรือร่างกายกับสิ่งอื่น"
     },
     {
       "code": "D03-03-000",
       "category_id": "c3",
       "path": "เสียงจากการเคลื่อนไหวและร่างกาย / เสียงสรีระภายในร่างกาย",
-      "en": "Internal Body Sounds",
+      "en": "Internal Physiological Sounds",
       "definition": "เสียงที่เกิดจากอวัยวะภายในหรือกลไกของร่างกายเอง โดยไม่เปล่งออกทางปาก"
     },
     {
@@ -3213,35 +3213,35 @@
       "code": "D09-01-000",
       "category_id": "c3",
       "path": "คำเลียนเสียง / เสียงเสียดสีและขูดถู",
-      "en": "Scraping & Rustling Sounds",
+      "en": "Scraping Onomatopoeia",
       "definition": "เสียงที่เกิดจากผิวสัมผัสสองอย่างถูกันไปมา"
     },
     {
       "code": "D09-02-000",
       "category_id": "c3",
       "path": "คำเลียนเสียง / เสียงถี่ซ้ำและแผ่วเบา",
-      "en": "Light & Repeating Sounds",
+      "en": "Repeating Onomatopoeia",
       "definition": "เสียงเบาที่ดังซ้ำเป็นจังหวะต่อเนื่อง"
     },
     {
       "code": "D09-03-000",
       "category_id": "c3",
       "path": "คำเลียนเสียง / เสียงฉับพลันและวูบดับ",
-      "en": "Sudden & Snapping Sounds",
+      "en": "Snapping Onomatopoeia",
       "definition": "เสียงสั้นที่ดังขึ้นทันทีแล้วจบทันที"
     },
     {
       "code": "D09-04-000",
       "category_id": "c3",
       "path": "คำเลียนเสียง / เสียงจากปากและร่างกาย",
-      "en": "Body & Mouth Sounds",
+      "en": "Vocal Onomatopoeia",
       "definition": "เสียงที่ออกจากปากหรือร่างกายคนโดยไม่ใช่คำพูด"
     },
     {
       "code": "D09-05-000",
       "category_id": "c3",
       "path": "คำเลียนเสียง / เสียงกระทบและแตกหัก",
-      "en": "Impact & Crash Sounds",
+      "en": "Crash Onomatopoeia",
       "definition": "เสียงหนักที่เกิดตอนของกระทบกันหรือแตกหัก"
     },
     {
@@ -5145,7 +5145,7 @@
       "code": "J14-03-000",
       "category_id": "c9",
       "path": "สภาพและความเสียหายของสิ่งของ / หักและพังทลาย",
-      "en": "Broken & Collapsed",
+      "en": "Broken Objects",
       "definition": "สภาพที่โครงสร้างหลักหักหรือพังจนใช้การไม่ได้"
     },
     {
