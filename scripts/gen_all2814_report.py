@@ -133,10 +133,16 @@ def f_md(items, meta):
                 lines.append('- ชนิด: ' + kind_label(e))
                 lines.append('- ความหมาย:')
                 for m in (e.get('meanings') or ['—']):
-                    lines.append('  - %s' % m)
+                    lines.append('  - **%s**' % m)
                 allp = e.get('all_paths') or []
                 if allp:
-                    lines.append('- กิ่ง (%d): %s' % (len(allp), ' · '.join(group_paths(allp))))
+                    grp = group_paths(allp)
+                    if len(grp) == 1:
+                        lines.append('- กิ่ง (%d): %s' % (len(allp), grp[0]))
+                    else:
+                        lines.append('- กิ่ง (%d):' % len(allp))
+                        for g in grp:
+                            lines.append('  - %s' % g)
                 else:
                     lines.append('- กิ่ง: —')
                 lines.append('')
@@ -170,8 +176,10 @@ h1{font-size:clamp(20px,4vw,28px);color:var(--accent)}
 .kind{font-size:13px;color:var(--sub);margin:4px 0 2px}
 .mean{margin:2px 0}
 .mean ul{margin:2px 0 4px 20px;padding:0}
-.mean li{margin:2px 0}
+.mean li{margin:3px 0;font-weight:700;color:var(--accent)}
 .paths{font-size:13px;color:var(--sub)}
+.paths ul{margin:2px 0 0 20px;padding:0}
+.paths li{margin:2px 0}
 #count{font-size:13px;color:var(--sub);margin-bottom:8px}
 """
 
@@ -220,13 +228,17 @@ def f_html(items, meta):
                 allp = en.get('all_paths') or []
                 disp = group_paths(allp)
                 mean_li = ''.join('<li>%s</li>' % e(m) for m in (en.get('meanings') or ['—']))
+                if len(disp) <= 1:
+                    paths_html = e(disp[0]) if disp else '—'
+                else:
+                    paths_html = '<ul>%s</ul>' % ''.join('<li>%s</li>' % e(g) for g in disp)
                 body.append('<div class="entry"><span class="lbl">[%s]</span>'
                              '<div class="kind">%s</div>'
                              '<div class="mean"><span class="lbl">ความหมาย:</span><ul>%s</ul></div>'
                              '<div class="paths"><span class="lbl">กิ่ง (%d):</span> %s</div></div>'
                              % (e(BANK_NAME.get(en['bank'], en['bank'])),
                                 e(kind_label(en)), mean_li,
-                                len(allp), e(' · '.join(disp)) if allp else '—'))
+                                len(allp), paths_html if allp else '—'))
             parts.append('<div class="card" data-text="%s" data-status="ok">'
                           '<div class="hd"><span class="wid">#%d</span><span class="txt">%s</span>'
                           '<span class="st ok">ทบทวนแล้ว</span></div>%s</div>'
