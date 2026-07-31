@@ -36,12 +36,13 @@ def load():
             if line.strip():
                 r = json.loads(line)
                 raw.setdefault(r['id'], r)
-    notes = ''
-    if os.path.exists(P('docs/m2-sense/round3/recheck-notes.md')):
-        notes = open(P('docs/m2-sense/round3/recheck-notes.md'), encoding='utf-8').read()
+    notes = []
+    for f in sorted(glob.glob(P('docs/m2-sense/round3/recheck*notes.md'))):
+        notes.append((os.path.basename(f), open(f, encoding='utf-8').read()))
     recheck = []
-    if os.path.exists(P('docs/m2-sense/round3/recheck-out.jsonl')):
-        for line in open(P('docs/m2-sense/round3/recheck-out.jsonl'), encoding='utf-8'):
+    for f in sorted(glob.glob(P('docs/m2-sense/round3/recheck-out.jsonl'))
+                    + glob.glob(P('docs/m2-sense/round3/recheck?-out.jsonl'))):
+        for line in open(f, encoding='utf-8'):
             if line.strip():
                 try:
                     recheck.append(json.loads(line))
@@ -132,8 +133,9 @@ def build():
     else:
         L += ['> ไม่มีรายการไหนเข้ากิ่งใหม่ — แปลว่าการจัดกิ่งรอบแรกครอบคลุมอยู่แล้ว', '']
 
-    if notes.strip():
-        L += ['### ข้อสังเกตเพิ่มเติมจากรอบตรวจซ้ำ', '', notes.strip(), '']
+    for name, body in notes:
+        if body.strip():
+            L += ['---', '', '### 📝 บันทึกของผู้ช่วยรอบตรวจซ้ำ — `%s`' % name, '', body.strip(), '']
 
     # ── ๕ ไฟล์ที่เกี่ยวข้อง ──
     L += ['## ๕ · ไฟล์ที่เปิดอ่านต่อได้', '',
