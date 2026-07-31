@@ -22,9 +22,16 @@ D = lambda *a: P('docs/m2-sense/round2', *a)
 BANK_NAME = {'old': 'เสียงกระซิบจากความมืด', 'new': 'คินดะอิจิยอดนักสืบ ตอน บทเพลงปีศาจ'}
 
 
+def lv(seg, idx):
+    """ใส่เลขชั้นในวงเล็บ — กฎที่พี่กันสั่ง 27 ก.ค. 2569 ('ถ้าวงเล็บ 1 2 3 ด้วยเราจะเห็นภาพมากกว่า')
+    รูปแบบเดียวกับ lvpath() ใน gen_round2_docs.py"""
+    return '%s(%d)' % (seg.strip(), idx)
+
+
 def group_paths(all_paths):
     """ยุบท่อนต้นของกิ่งที่ซ้ำกันให้เหลือครั้งเดียว — กันคำที่ติดหลายกิ่งแล้วท่อนต้นเหมือนกัน
     ถูกพิมพ์เต็มเส้นทางซ้ำ ๆ จนอ่านแล้วดูเหมือนเขียนซ้ำ (พี่กันจับได้ 28 ก.ค.)
+    ใส่เลขชั้นในวงเล็บทุกชั้น ตามตำแหน่งจริงในเส้นทางเต็ม (ไม่ใช่นับใหม่หลังยุบ)
 
     all_paths: [{'category_id':.., 'path':'A / B / C'}, ...]
     จัดกลุ่มตามหมวดก่อนเสมอ (ห้ามยุบข้ามหมวด เพราะคำติดหลายกิ่งข้ามหมวดได้ปกติ ~58%
@@ -41,10 +48,11 @@ def group_paths(all_paths):
         for p in paths:
             if p not in uniq:
                 uniq.append(p)
-        if len(uniq) == 1:
-            out.append(uniq[0])
-            continue
         segs = [p.split(' / ') for p in uniq]
+        if len(uniq) == 1:
+            s = segs[0]
+            out.append('/'.join(lv(x, i + 1) for i, x in enumerate(s)))
+            continue
         minlen = min(len(s) for s in segs)
         common = []
         for i in range(minlen):
@@ -53,16 +61,36 @@ def group_paths(all_paths):
             else:
                 break
         if common and len(common) < minlen:
+            common_txt = '/'.join(lv(x, i + 1) for i, x in enumerate(common))
+            base = len(common)
             tails, seen = [], set()
             for s in segs:
-                t = ' / '.join(s[len(common):])
+                tail = s[base:]
+                t = '/'.join(lv(x, base + 1 + j) for j, x in enumerate(tail))
                 if t not in seen:
                     seen.add(t)
                     tails.append(t)
-            out.append('%s → %s' % (' / '.join(common), ' · '.join(tails)))
+            out.append('%s → %s' % (common_txt, ' · '.join(tails)))
         else:
-            out.extend(uniq)
+            for s in segs:
+                out.append('/'.join(lv(x, i + 1) for i, x in enumerate(s)))
     return out
+
+
+def kind_label(e):
+    """บอกว่ารายการนี้เป็น "วลีตั้งต้น" หรือ "คำที่สกัด" — พี่กันถาม 28 ก.ค. ว่า "แล้วไหนคำสกัด"
+    (ศัพท์ตามที่พี่กันเลือกเอง — ดู CLAUDE.md: วลีตั้งต้น = บรรทัดที่พิมพ์เข้าไปเอง ·
+    คำที่สกัด = คำที่ตัดออกมาจากวลีตั้งต้นอีกที)"""
+    if e.get('origin') != 'extract':
+        return 'วลีตั้งต้น'
+    parts = ['คำที่สกัด']
+    if e.get('source'):
+        parts.append('(ตัดมาจาก: %s)' % e['source'])
+    if e.get('source_others'):
+        parts.append('· ตัดมาจากวลีอื่นด้วย: %s' % ' · '.join(e['source_others']))
+    if e.get('picked_from'):
+        parts.append('· เส้นเชื่อมย้อนหลัง (มีอยู่แล้วในคลัง ตัดมาจาก): %s' % ' · '.join(e['picked_from']))
+    return ' '.join(parts)
 
 
 def load():
@@ -100,19 +128,17 @@ def f_md(items, meta):
         bank_label = ' · '.join(BANK_NAME.get(b, b) for b in x['banks']) or '?'
         if x['entries']:
             lines.append('### %d. ✅ %s' % (x['id'], x['text']))
-            lines.append('เล่ม: %s\n' % bank_label)
             for e in x['entries']:
                 lines.append('**[%s]**' % BANK_NAME.get(e['bank'], e['bank']))
-                lines.append('- ความหมาย: ' + ' · '.join(e.get('meanings') or ['—']))
+                lines.append('- ชนิด: ' + kind_label(e))
+                lines.append('- ความหมาย:')
+                for m in (e.get('meanings') or ['—']):
+                    lines.append('  - %s' % m)
                 allp = e.get('all_paths') or []
                 if allp:
                     lines.append('- กิ่ง (%d): %s' % (len(allp), ' · '.join(group_paths(allp))))
                 else:
                     lines.append('- กิ่ง: —')
-                if e.get('source'):
-                    lines.append('- ตัดมาจาก: %s' % e['source'])
-                if e.get('picked_from'):
-                    lines.append('- ตัดมาจาก (เส้นเชื่อมย้อนหลัง): %s' % ' · '.join(e['picked_from']))
                 lines.append('')
         else:
             lines.append('### %d. ⏳ %s' % (x['id'], x['text']))
@@ -141,7 +167,10 @@ h1{font-size:clamp(20px,4vw,28px);color:var(--accent)}
 .bank{font-size:12px;color:var(--sub);margin-top:2px}
 .entry{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
 .lbl{font-size:12px;color:var(--sub)}
+.kind{font-size:13px;color:var(--sub);margin:4px 0 2px}
 .mean{margin:2px 0}
+.mean ul{margin:2px 0 4px 20px;padding:0}
+.mean li{margin:2px 0}
 .paths{font-size:13px;color:var(--sub)}
 #count{font-size:13px;color:var(--sub);margin-bottom:8px}
 """
@@ -190,19 +219,18 @@ def f_html(items, meta):
             for en in x['entries']:
                 allp = en.get('all_paths') or []
                 disp = group_paths(allp)
+                mean_li = ''.join('<li>%s</li>' % e(m) for m in (en.get('meanings') or ['—']))
                 body.append('<div class="entry"><span class="lbl">[%s]</span>'
-                             '<div class="mean"><span class="lbl">ความหมาย:</span> %s</div>'
-                             '<div class="paths"><span class="lbl">กิ่ง (%d):</span> %s</div>%s</div>'
+                             '<div class="kind">%s</div>'
+                             '<div class="mean"><span class="lbl">ความหมาย:</span><ul>%s</ul></div>'
+                             '<div class="paths"><span class="lbl">กิ่ง (%d):</span> %s</div></div>'
                              % (e(BANK_NAME.get(en['bank'], en['bank'])),
-                                e(' · '.join(en.get('meanings') or ['—'])),
-                                len(allp), e(' · '.join(disp)) if allp else '—',
-                                ('<div class="paths"><span class="lbl">ตัดมาจาก:</span> %s</div>' % e(en['source']))
-                                if en.get('source') else ''))
+                                e(kind_label(en)), mean_li,
+                                len(allp), e(' · '.join(disp)) if allp else '—'))
             parts.append('<div class="card" data-text="%s" data-status="ok">'
                           '<div class="hd"><span class="wid">#%d</span><span class="txt">%s</span>'
-                          '<span class="st ok">ทบทวนแล้ว</span></div>'
-                          '<div class="bank">เล่ม: %s</div>%s</div>'
-                          % (e(x['text']), x['id'], e(x['text']), e(bank_label), ''.join(body)))
+                          '<span class="st ok">ทบทวนแล้ว</span></div>%s</div>'
+                          % (e(x['text']), x['id'], e(x['text']), ''.join(body)))
         else:
             parts.append('<div class="card pend" data-text="%s" data-status="pend">'
                           '<div class="hd"><span class="wid">#%d</span><span class="txt">%s</span>'
