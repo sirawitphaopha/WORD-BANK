@@ -15,7 +15,7 @@
 ใช้:  python3 scripts/apply_recheck.py            ดูผลอย่างเดียว
       python3 scripts/apply_recheck.py --write    เขียนไฟล์จริง
 """
-import json, os, sys, collections
+import json, os, sys, glob, collections
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = lambda *a: os.path.join(ROOT, *a)
@@ -24,8 +24,9 @@ D = lambda *a: P('docs/m2-sense/round3', *a)
 
 def main():
     write = '--write' in sys.argv
-    if not os.path.exists(D('recheck-out.jsonl')):
-        print('🔴 ยังไม่มี recheck-out.jsonl — รอบตรวจซ้ำยังไม่เสร็จ')
+    files = sorted(glob.glob(D('recheck-out.jsonl')) + glob.glob(D('recheck?-out.jsonl')))
+    if not files:
+        print('🔴 ยังไม่มีไฟล์ผลรอบตรวจซ้ำ')
         return 1
 
     bd = json.load(open(P('docs/branches-data.json'), encoding='utf-8'))
@@ -39,7 +40,11 @@ def main():
     byid = {r['id']: r for r in rows}
 
     adds, bad, skip = collections.Counter(), [], 0
-    for ln, line in enumerate(open(D('recheck-out.jsonl'), encoding='utf-8'), 1):
+    lines = [(os.path.basename(f), i, l)
+             for f in files for i, l in enumerate(open(f, encoding='utf-8'), 1)]
+    print('อ่านผลรอบตรวจซ้ำจาก %d ไฟล์: %s' % (len(files), ' · '.join(os.path.basename(f) for f in files)))
+    for who, ln, line in lines:
+        ln = '%s:%d' % (who, ln)
         if not line.strip():
             continue
         try:
@@ -72,7 +77,7 @@ def main():
     if bad:
         print('\n🔴 มีปัญหา %d จุด' % len(bad))
         for x in bad[:10]:
-            print('   บรรทัด %s · %s' % x)
+            print('   %s · %s' % x)
 
     if write:
         if bad:
