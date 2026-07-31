@@ -194,12 +194,23 @@ for path,no,cid in FILES:
         elif st.startswith('## ') or st=='---':
             inm=False
 
+# ---------- รหัสประจำกิ่ง (จากทะเบียนถาวร docs/branch-codes.json) ----------
+# ทะเบียนสร้าง/ต่อเติมด้วย scripts/gen_branch_codes.py — ที่นี่แค่ "อ่านมาแปะ" เท่านั้น
+# 🔒 ห้ามคำนวณรหัสเองที่นี่เด็ดขาด เพราะไฟล์นี้ถูกสร้างใหม่ทุกครั้ง รหัสจะเลื่อนทันที
+BCODE={}
+try:
+    _reg=json.load(open("docs/branch-codes.json",encoding='utf-8'))
+    for _k,_c in _reg.get("codes",{}).items():
+        _cid,_p=_k.split("\t"); BCODE[(_cid,_p)]=_c
+except Exception:
+    pass   # ยังไม่มีทะเบียน = ยังไม่ใส่รหัส (รัน gen_branch_codes.py แล้วรันไฟล์นี้ซ้ำ)
+
 # ---------- JSON ----------
 cat_nos=[c["no"] for c in categories]
 data={"meta":{"source":[f for f,_,_ in FILES],"status":"draft — ยังไม่อัป Supabase","categories":cat_nos,
       "note":"category_id: หมวด N = c(N-1) · หมวด10=c9 · หมวด11(สถานะ)=c10 · path คั่นชั้นด้วย ' / ' · คำโยงเข้าไม่นับเป็นคำบ้านหลัก"},
       "categories":categories,
-      "branches":[{"category_id":b["category_id"],"path":b["path"],"en":b["en"],"definition":b["definition"]} for b in branches],
+      "branches":[{"code":BCODE.get((b["category_id"],b["path"])),"category_id":b["category_id"],"path":b["path"],"en":b["en"],"definition":b["definition"]} for b in branches],
       "words":[{"text":t,"category_id":c,"subpaths":words[(c,t)],"meaning":word_meaning.get((c,t))} for (c,t) in word_order],
       "cross_links":cross,"moved_out":moved}
 open("docs/branches-data.json","w",encoding='utf-8').write(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
