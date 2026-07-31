@@ -45,6 +45,8 @@ Place & Structures:
     A04-03-002 Passages & Stairs
     A04-03-003 Openings & Gaps
     A04-03-004 Walls, Floors & Surfaces
+    None Roofs & Eaves
+    None Rooms & Interior Spaces
   A04-04-000 Enclosed & Cramped
   A04-05-000 Open & Vast
   A04-06-000 Crowding & Desertion
@@ -67,6 +69,7 @@ Nature & Weather:
     A06-02-001 Woods & Dense Growth
     A06-02-002 Grass, Vines & Undergrowth
     A06-02-003 Verdancy & Foliage Movement
+    None Trees & Plant Species
   A06-03-000 Fauna
   A06-04-000 Terrain
   A06-05-000 Water
@@ -226,6 +229,7 @@ Eyes & Gaze:
     C01-02-011 Contempt & Disdain
     C01-02-012 Drowsy & Fading Eyes
   C01-03-000 Eye Movements & Gestures
+  None Misperception & Illusion
 Facial & Head Movements:
   Facial Feature Movements:
     C02-01-001 Mouth & Lips
@@ -240,6 +244,7 @@ Facial & Head Movements:
     C02-02-004 Bowing & Dropping Head
     C02-02-006 Lifting & Raising the Head
     C02-02-005 Head-butting & Impact
+    None Neck Recoiling & Cringing
   Facial Expressions:
     C02-03-001 Blank & Cold
     C02-03-002 Tense & Angry
@@ -279,6 +284,7 @@ Legs & Locomotion:
     C04-03-002 Falling & Crashing
     C04-03-003 Crawling & Injured Movements
   C04-04-000 Vehicles & Travel
+  None Stationary Foot Actions
 Social Interaction:
   C05-01-000 Agreement & Compliance
   C05-02-000 Deception & Misdirection
@@ -294,6 +300,7 @@ Social Interaction:
   C05-12-000 Control & Manipulation
   C05-13-000 Threatening & Coercion
   C05-14-000 Bullying & Harassment
+  None Contempt & Belittling
   Inquiry & Probing:
     C05-15-001 Questioning & Probing
     C05-15-002 Pressuring & Interrogating
@@ -345,6 +352,7 @@ Involuntary Body Reactions:
   C08-03-000 Shaking & Spasms
   C08-04-000 Breathing Patterns
   C08-05-000 Tears & Bodily Secretions
+  None Swallowing & Throat Sensations
 Combat & Physical Violence:
   C09-01-000 Sexual Violence
   C09-02-000 Killing & Lethal Harm
@@ -366,6 +374,7 @@ Handling Objects & Space:
   C12-03-000 Handing Over & Giving
   C12-04-000 Deploying & Positioning People
   C12-05-000 Clearing & Demolition
+  None Searching & Seeking
 Dressing & Undressing:
   C13-01-000 Dressing & Adjusting
   C13-02-000 Undressing & Disrobing
@@ -464,6 +473,7 @@ Joy & Contentment:
   E01-01-000 Amusement & Mirth
   E01-02-000 Cheerfulness & Vigor
   E01-03-000 Calm & Contentment
+  None Moved & Touched
 Love & Affection:
   E02-01-000 Pity & Compassion
   E02-02-000 Fondness & Tenderness
@@ -542,6 +552,7 @@ Degree, Intensity & Emphasis:
   F03-05-000 Strangeness & Abnormality
   F03-06-000 Ordinariness & Lesser Degree
   F03-07-000 Intensifiers & Downtoners
+  None Salience & Eye-catching
 Connectives & Discourse Markers:
   F04-01-000 Connectives & Hesitation
   F04-02-000 Contrast & Transition
@@ -559,6 +570,7 @@ Situational Idioms:
   F07-04-000 Misfortune & Endings
   F07-05-000 Hardship & Pioneering
   F07-06-000 Scope & Quantity
+  None Umbrella Terms for Situations
 F08-00-000 Shape & Physical Form
 
 ## Loanwords & Spelling  [c6]
