@@ -16,6 +16,7 @@ P = lambda *a: os.path.join(ROOT, *a)
 e = html.escape
 
 from gen_newwords_review_html import CSS          # ธีมกระดาษชุดเดียวกับหน้ารายงานอื่น
+from spellfix import fix                          # คำที่แก้สะกดหลังลงคลัง
 
 FIN = json.load(open(P('docs/oldwords/picked/final.json'), encoding='utf-8'))
 BD = json.load(open(P('docs/branches-data.json'), encoding='utf-8'))
@@ -41,7 +42,7 @@ for w in BD['words']:
 was = collections.defaultdict(set)
 for w in BASE['words']:
     for p in (w.get('subpaths') or []):
-        was[w['text']].add((w['category_id'], p))
+        was[fix(w['text'])].add((w['category_id'], p))
 addtree = collections.defaultdict(lambda: collections.defaultdict(list))
 for r in MERGED:
     for a in r['add']:

@@ -123,15 +123,18 @@ for path,no,cid in FILES:
             d=re.match(r'^>\s*_(.+?)_\s*$',s)
             if d: lak["definition"]=clean_def(d.group(1))
             expect=False; continue
-        expect=False
-        if s.startswith('🗨'): continue
+        # 🔴 บั๊กเก่า (พบ 31 ก.ค.): เดิมตั้ง expect=False ทันทีที่เจอบรรทัดใด ๆ ที่ไม่ใช่ '>'
+        #    แต่ไฟล์หมวดจำนวนมากวาง "บรรทัดคำ" ไว้ระหว่างหัวกิ่งกับบรรทัดนิยาม
+        #    → นิยามของกิ่งหลักหล่นหายเงียบ ๆ 16 กิ่ง ทั้งที่เขียนไว้ครบในไฟล์ต้นฉบับ
+        #    แก้: ให้ยังรอบรรทัดนิยามต่อไป จนกว่าจะเจอหัวกิ่งอันถัดไป (บรรทัดคำไม่ล้มการรอ)
+        if s.startswith('🗨'): expect=False; continue
         m=RE_KHAENG.match(s)
         if m and l.startswith('  '):
             nm,en=split_name_en(m.group(1)); base=(yoy or lak)["path"]
-            khaeng={"category_id":cid,"path":base+" / "+nm,"en":en,"definition":clean_def(m.group(2)),"level":"khaeng"}; branches.append(khaeng); continue
+            khaeng={"category_id":cid,"path":base+" / "+nm,"en":en,"definition":clean_def(m.group(2)),"level":"khaeng"}; branches.append(khaeng); expect=False; continue
         m=RE_YOY.match(s)
         if m:
-            nm,en=split_name_en(m.group(1)); yoy={"category_id":cid,"path":lak["path"]+" / "+nm,"en":en,"definition":clean_def(m.group(2)),"level":"yoy"}; branches.append(yoy); khaeng=None; continue
+            nm,en=split_name_en(m.group(1)); yoy={"category_id":cid,"path":lak["path"]+" / "+nm,"en":en,"definition":clean_def(m.group(2)),"level":"yoy"}; branches.append(yoy); khaeng=None; expect=False; continue
         if s[0] in '->|#': continue
         ab=khaeng or yoy or lak
         if not ab: continue

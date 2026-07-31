@@ -12,10 +12,12 @@
 🔴 บทเรียน 26 ก.ค.: ยึด "ตัวข้อความ" เป็นกุญแจหลักเสมอ เลขบรรทัด n เป็นแค่ตัวช่วย
    (เคยแก้ in.jsonl ระหว่างเอเจนต์กำลังใช้ 654 → 666 วลี เลข n เลื่อนยกแผง)
 """
-import json, glob, os, collections
+import json, glob, os, sys, collections
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, 'scripts'))
 P = lambda *a: os.path.join(ROOT, *a)
+from spellfix import fix                  # ผลดิบเขียนรูปก่อนแก้สะกด แมปให้ตรงคลังปัจจุบัน
 IN = P('docs/oldwords/extract/in.jsonl')
 OUT = P('docs/oldwords/extract/merged.jsonl')
 
@@ -33,14 +35,14 @@ def main():
             if not line.strip():
                 continue
             r = json.loads(line)
-            t = r.get('t')
+            t = fix(r.get('t'))
             if t not in BYT:                      # ข้อความไม่ตรงคลัง = ทิ้งไว้ให้คนดู ไม่เงียบ
                 lost.append((who, r.get('n'), t))
                 continue
             a = acc.setdefault(t, {'ex': {}, 'add': {}, 'src': set()})
             a['src'].add(who)
             for e in (r.get('ex') or []):
-                w = (e.get('w') or '').strip()
+                w = fix((e.get('w') or '').strip())
                 if not w:
                     continue
                 cur = a['ex'].setdefault(w, {'meaning': None, 'paths': {}})

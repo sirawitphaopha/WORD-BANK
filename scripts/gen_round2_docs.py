@@ -40,16 +40,26 @@ def cat(c):
     return 'หมวด %s %s' % (NO.get(c, c), CATNAME.get(c, ''))
 
 
+# จำนวนรายการที่ตอบมาแล้ว นับตาม "เลขประจำรายการ" ไม่ใช่ตามตัวข้อความ
+# 🔴 ต้องนับตาม id เพราะหลังแก้คำสะกด 31 ก.ค. มี 3 คู่ที่ข้อความกลายเป็นเหมือนกัน
+#    (ปั้นปึ่ง · ผมเผ้า · ผมเผ้ายุ่งเหยิง) ถ้านับตามข้อความจะได้ตัวเลขต่ำกว่าความจริง 3 รายการ
+#    และคำซ้ำพวกนี้ห้ามลบ ต้องโยงเข้าหากันตามระบบใยแมงมุม
+N_ANSWERED = 0
+
+
 def load():
+    global N_ANSWERED
     diff = json.load(open(D('diff.json'), encoding='utf-8'))
     before = json.load(open(D('before.json'), encoding='utf-8'))
     import glob
-    sense = {}
+    sense, ids = {}, set()
     for f in sorted(glob.glob(D('sense*.jsonl')) + glob.glob(D('part*', 'sense*.jsonl'))):
         for line in open(f, encoding='utf-8'):
             if line.strip():
                 r = json.loads(line)
                 sense[r['w']] = r
+                ids.add(r['id'])
+    N_ANSWERED = len(ids)
     return diff, before, sense
 
 
@@ -65,7 +75,7 @@ def banks_of(before, w):
 # ══════════════════════════════════════════════════════════
 def f_summary(diff, before, sense):
     TOTAL = 2814
-    done = len(sense)
+    done = N_ANSWERED
     L = ['# ยกเครื่องคลังคำทั้งสองเล่ม — สรุปผล',
          '',
          '> # 🛑 นี่คือผล **%d จาก %d รายการ (%.0f%%)** — **ยังไม่ครบ**' % (done, TOTAL, 100 * done / TOTAL),
@@ -77,7 +87,7 @@ def f_summary(diff, before, sense):
          '', '']
     L += ['> ทบทวนคำและวลี **ทุกรายการ** ของทั้งสองเล่ม โดยผู้ช่วยเห็นแค่ตัวข้อความ',
           '> ไม่เห็นกิ่งเดิม ไม่เห็นหมวดเดิม และถ้าเป็นคำที่ถูกตัดมาจากวลียาว ก็ไม่เห็นวลีนั้น', '']
-    tot = len(sense)
+    tot = N_ANSWERED
     ex = sum(1 for w in sense if is_extract(before, w))
     L += ['## ตัวเลขรวม', '',
           '| | |', '|---|---|',

@@ -176,7 +176,7 @@ body{margin:0;background:var(--page);color:var(--ink);font-family:'Trirong',Geor
 @keyframes badgeIn{from{opacity:0;transform:scale(.6)}60%{transform:scale(1.08)}to{opacity:1;transform:scale(1)}}
 @keyframes savePulse{0%{box-shadow:0 0 0 0 rgba(156,59,43,.45)}70%{box-shadow:0 0 0 9px rgba(156,59,43,0)}100%{box-shadow:0 0 0 0 rgba(156,59,43,0)}}
 @keyframes keyShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-13deg)}75%{transform:rotate(13deg)}}
-/* เปลี่ยนธีมแล้วสีค่อย ๆ ไล่ ไม่กระพริบ */
+/* เปลี่ยนธีมแล้วสีค่อย ๆ ไล่ ไม่กะพริบ */
 body,[data-r=modal],[data-r=scene],[data-el=hero],[data-el=tnode],[data-el=catnode],.f,.sd{
   transition:background-color .35s ease,color .35s ease,border-color .25s ease,box-shadow .25s ease,transform .18s ease}
 @keyframes dotIn{from{transform:scale(0);opacity:0}to{transform:scale(1)}}

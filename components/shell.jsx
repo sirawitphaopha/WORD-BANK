@@ -7,6 +7,7 @@ import { renderLibrary } from '@/components/pages/library';
 import { renderAiLog } from '@/components/pages/aiLog';
 import { renderAiTest } from '@/components/pages/aiTest';
 import { renderPromptLog } from '@/components/pages/promptLog';
+import { renderResearch } from '@/components/pages/research';
 import { renderAbout } from '@/components/pages/about';
 import { renderWriting } from '@/components/pages/writing';
 import { renderEditModal, renderCatModal, renderSettings } from '@/components/pages/modals';
@@ -65,11 +66,12 @@ export function renderShell(app) {
     if (active) return { ...base, background: 'var(--primary,#6f4e37)', color: '#fbf3e2', fontWeight: 600, boxShadow: side ? 'none' : '0 3px 10px rgba(111,78,55,.3)' };
     return { ...base, background: side ? 'transparent' : 'rgba(255,255,255,.35)', color: '#7a6a52' };
   };
-  const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length], ['ailog', 'ประวัติ & สถิติ', 0], ['aitest', 'ผลทดสอบ AI', 0], ['prompts', 'ประวัติคำสั่ง', 0], ['lang', 'ว่าด้วยภาษา', 0], ['about', 'เกี่ยวกับ', 0]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
+  const navItems = [['add', 'เพิ่มคำ', 0], ['review', 'ตรวจทาน', S.review.length], ['library', 'คลังคำ', S.library.length], ['ailog', 'ประวัติ & สถิติ', 0], ['aitest', 'ผลทดสอบ AI', 0], ['prompts', 'ประวัติคำสั่ง', 0], ['research', 'บันทึกวิจัย', 0], ['lang', 'ว่าด้วยภาษา', 0], ['about', 'เกี่ยวกับ', 0]].map(([id, label, badgeN]) => ({ id, label, active: S.page === id, badgeN }));
   const badgeStyle = (active) => ({ marginLeft: '2px', fontSize: '12px', fontWeight: 700, minWidth: '20px', height: '20px', padding: '0 6px', borderRadius: '10px', display: 'inline-grid', placeItems: 'center', background: active ? 'rgba(255,255,255,.22)' : '#e2d3b0', color: active ? '#fbf3e2' : '#8a7159' });
 
   const isAdd = S.page === 'add', isReview = S.page === 'review', isLibrary = S.page === 'library', isAiLog = S.page === 'ailog', isAbout = S.page === 'about';
   const isAiTest = S.page === 'aitest', isPrompts = S.page === 'prompts', isLang = S.page === 'lang';
+  const isResearch = S.page === 'research';
 
   return (
     <div style={rootStyle}>
@@ -140,6 +142,7 @@ export function renderShell(app) {
           {isAiLog && renderAiLog(app)}
           {isAiTest && renderAiTest(app)}
           {isPrompts && renderPromptLog(app)}
+          {isResearch && renderResearch(app)}
           {isLang && renderWriting(app)}
           {isAbout && renderAbout(app)}
         </main>

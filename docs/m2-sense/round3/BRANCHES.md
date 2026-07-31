@@ -14,7 +14,7 @@ Light & Shadow:
     A01-03-002 Dim Light
     A01-03-003 Flash & Flicker
     A01-03-004 Beams & Direction
-    A01-03-005 Glow & Unnatural Light
+    A01-03-005 Self-Emitted Glow & Unnatural Light
   A01-04-000 Light Source
 Color:
   Saturation:
@@ -50,7 +50,7 @@ Place & Structures:
   A04-06-000 Crowding & Desertion
   A04-07-000 Machinery & Metal
   A04-08-000 Sacred & Occult
-  A04-09-000 Paths & Thresholds
+  A04-09-000 Thoroughfares & Thresholds
 Condition & Traces:
   A05-01-000 Placement of Objects
   Ruin & Decay:
@@ -102,7 +102,7 @@ Face & Head:
   B01-11-000 Chin & Jawline
   B01-12-000 Head & Skull
   B01-13-000 Makeup & Facial Adornment
-  B01-14-000 Resemblance & Group Features
+  B01-14-000 Resemblance & Group Traits
 Eyes & Gaze:
   B02-01-000 Eye Shape & Color
   B02-02-000 Gaze, Sparkle & Emotion
@@ -112,7 +112,7 @@ Eyes & Gaze:
   B02-06-000 Eye Injuries
   B02-07-000 Eyelids & Eyelashes
   Non-human & Altered Eyes:
-    B02-08-001 Beast & Otherworldly Eyes
+    B02-08-001 Animal & Creature Eyes
     B02-08-002 Cybernetic & Modified Eyes
 Body Parts & Limbs:
   B03-01-000 Individual Body Parts
@@ -238,6 +238,7 @@ Facial & Head Movements:
     C02-02-002 Turning & Leaning
     C02-02-003 Tilting & Listening
     C02-02-004 Bowing & Dropping Head
+    C02-02-006 Lifting & Raising the Head
     C02-02-005 Head-butting & Impact
   Facial Expressions:
     C02-03-001 Blank & Cold
@@ -530,6 +531,7 @@ Emergence, Persistence & Fading:
   F02-02-000 Onset & Spread
   F02-03-000 Fading & Vanishing
   F02-04-000 Lingering & Persistence
+  F02-05-000 Mixing & Blending
 Degree, Intensity & Emphasis:
   F03-01-000 Distance & Proximity
   Size & Scale:

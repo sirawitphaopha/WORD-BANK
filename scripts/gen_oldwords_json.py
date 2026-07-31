@@ -19,9 +19,11 @@
 แมปกับตารางจริง: text/meaning/kind/category_id/subpath/subpaths/novel → `wb_words`
                  source → ยังไม่มีคอลัมน์ใน wb_words (รอ scripts/014_word_web.sql)
 """
-import json, os, collections
+import json, os, sys, collections
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, 'scripts'))
+from spellfix import fix                       # คำที่แก้สะกดหลังลงคลัง
 P = lambda *a: os.path.join(ROOT, *a)
 OUT = P('docs/oldwords-branches.json')
 
@@ -43,13 +45,13 @@ def main():
     links = {r['w']: r for r in FIN['words']}
 
     # ② คำที่มีอยู่ก่อนรอบนี้ = คำเดิมของคลัง (ไว้ติดป้าย origin)
-    was = {w['text'] for w in BASE['words']}
+    was = {fix(w['text']) for w in BASE['words']}
 
     # ③ วลีเดิมที่ได้กิ่งเพิ่มรอบนี้ (ไว้บันทึกว่ากิ่งไหนเพิ่งติด)
     wasp = collections.defaultdict(set)
     for w in BASE['words']:
         for p in (w.get('subpaths') or []):
-            wasp[w['text']].add((w['category_id'], p))
+            wasp[fix(w['text'])].add((w['category_id'], p))
 
     # รวมแถวของคำเดียวกันที่กระจายอยู่หลายหมวด → all_paths เส้นเดียวจบ
     byword = collections.OrderedDict()
