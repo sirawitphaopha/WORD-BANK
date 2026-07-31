@@ -1,0 +1,126 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>คลังคำ — รายงานสรุปงานทบทวนทั้งคลัง</title><style>
+/* ธีมกระดาษวรรณกรรมของโปรเจกต์ (ครีม + หมึกน้ำตาล) — ใช้ตัวแปรสีล้วน
+   สลับธีมได้ 2 ทาง: ตามเครื่อง (prefers-color-scheme) และตามปุ่มสลับของหน้าเว็บ (data-theme)
+   ต้องเขียนทั้ง 3 ชุด ไม่งั้นปุ่มสลับธีมจะสู้ค่าของเครื่องไม่ได้ */
+:root,:root[data-theme=light]{--paper:#f6f1e4;--card:#fffdf6;--ink:#33291f;--soft:#7a6a52;
+      --line:#ddd0b4;--primary:#7b5e3b;--accent:#9c3b2b;--ok:#2f6d43;--mark:#b98a2e}
+@media (prefers-color-scheme:dark){:root{--paper:#221d17;--card:#2b251d;--ink:#efe6d5;
+      --soft:#b3a68c;--line:#463b2c;--primary:#c9a878;--accent:#e08b76;--ok:#7fc79a;--mark:#e0b878}}
+:root[data-theme=dark]{--paper:#221d17;--card:#2b251d;--ink:#efe6d5;--soft:#b3a68c;
+      --line:#463b2c;--primary:#c9a878;--accent:#e08b76;--ok:#7fc79a;--mark:#e0b878}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Sarabun","TH Sarabun New",system-ui,sans-serif;line-height:1.75;font-size:16px}
+.wrap{max-width:960px;margin:0 auto;padding:18px 16px 90px}
+h1{font-size:clamp(24px,5vw,34px);margin:.2em 0;color:var(--accent);line-height:1.35}
+.lead{color:var(--soft);font-size:14px;margin:0 0 14px}
+.quote{border-left:4px solid var(--line);padding:8px 12px;margin:12px 0;color:var(--soft);
+  background:var(--card);border-radius:0 10px 10px 0;font-size:14px}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13px}
+.stat b{color:var(--accent);font-size:17px}
+.bar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);
+  margin:0 -16px;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input[type=search],select{font:inherit;font-size:15px;padding:8px 11px;border:1px solid var(--line);
+  border-radius:10px;background:var(--card);color:var(--ink);min-width:0}
+input[type=search]{flex:1}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{font:inherit;font-size:13px;padding:6px 11px;border:1px solid var(--line);
+  border-radius:999px;background:var(--card);color:var(--soft);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--primary);color:#fff9ee;border-color:var(--primary)}
+.savest{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--soft);white-space:nowrap}
+.savest.ok{color:var(--ok);border-color:var(--ok)}
+.savest.bad{color:var(--accent);border-color:var(--accent);font-weight:700}
+.warn{margin:12px 0;padding:11px 13px;border-radius:12px;font-size:14px;line-height:1.7;
+  background:rgba(156,43,35,.1);border:1px solid var(--accent);color:var(--accent)}
+.warn[hidden]{display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin:13px 0}
+.card.no{opacity:.5}
+.card.yes{border-color:var(--ok);border-width:2px}
+.num{font-size:13px;color:var(--soft);font-weight:700}
+.txt{font-size:clamp(17px,3.6vw,20px);font-weight:600;margin:5px 0 8px;line-height:1.65}
+.meta{font-size:12.5px;color:var(--soft);margin-bottom:10px}
+.sec{margin:9px 0 0;font-size:14px}
+.sec .h{font-weight:700;font-size:13px;color:var(--primary);display:block;margin-bottom:3px}
+.path{display:inline-block;background:rgba(123,94,59,.1);border:1px solid var(--line);
+  border-radius:8px;padding:1px 8px;margin:2px 4px 2px 0;font-size:13px}
+.sub{margin:3px 0 3px 2px;font-size:14px}
+.sub b{color:var(--mark)}
+.dim{color:var(--soft);font-size:12.5px}
+.acts{display:flex;gap:8px;margin-top:12px}
+.acts button{flex:1;font:inherit;font-size:15px;padding:9px;border-radius:11px;cursor:pointer;
+  border:1px solid var(--line);background:var(--paper);color:var(--soft);font-weight:600}
+.acts button[aria-pressed=true].y{background:var(--ok);border-color:var(--ok);color:#fff}
+.acts button[aria-pressed=true].n{background:var(--accent);border-color:var(--accent);color:#fff}
+.out{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
+  padding:9px 16px;display:flex;gap:9px;align-items:center;font-size:13.5px}
+.out button{font:inherit;font-size:14px;padding:8px 14px;border-radius:10px;border:none;
+  background:var(--accent);color:#fff;font-weight:700;cursor:pointer}
+textarea{width:100%;min-height:150px;font:inherit;font-size:14px;padding:10px;border-radius:10px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink)}
+dialog{border:none;border-radius:14px;padding:16px;max-width:min(700px,94vw);background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--paper);
+  padding:9px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1}
+
+.tw{overflow-x:auto;margin:14px 0}.li{margin:4px 0 4px 18px}blockquote{border-left:4px solid var(--accent,#9c3b2b);margin:12px 0;padding:8px 14px;background:#faf4e6}@media(max-width:700px){.tw table,.tw tbody,.tw tr,.tw td{display:block;width:auto}.tw thead{display:none}.tw tr{border:1px solid #e6d9bd;border-radius:10px;margin:8px 0;padding:6px}.tw td::before{content:attr(data-l) " ";font-weight:700;color:#8a7d6d}}</style></head><body><div class="wrap"><h1>คลังคำ — รายงานสรุปงานทบทวนทั้งคลัง</h1>
+<blockquote>เขียนอัตโนมัติจาก <code>scripts/gen<i>final</i>report.py</code> · draft — ยังทบทวนไม่ครบ 1837 จาก 2814 รายการ</blockquote>
+<blockquote>🛑 <b>ยังไม่มีอะไรถูกเขียนลงคลังจริง และยังไม่ได้อัปขึ้นฐานข้อมูล</b> — รอเจ้าของคลังเคาะก่อน</blockquote>
+<h2>๑ · ตัวเลขรวม</h2>
+<div class="tw"><table><thead><tr><th></th><th>จำนวน</th></tr></thead><tbody><tr><td data-l="">รายการที่ทบทวนแล้ว</td><td data-l="จำนวน"><b>1840 จาก 2814 (65%)</b></td></tr><tr><td data-l="">แถวคำในผลลัพธ์</td><td data-l="จำนวน">1927</td></tr><tr><td data-l="">เส้นกิ่งรวม</td><td data-l="จำนวน">4516 (เฉลี่ย 2.34 เส้นต่อรายการ)</td></tr><tr><td data-l="">ช่องความหมายรวม</td><td data-l="จำนวน">2543 (เฉลี่ย 1.32)</td></tr><tr><td data-l="">รายการที่ตีความได้หลายทาง</td><td data-l="จำนวน">551</td></tr><tr><td data-l="">รายการที่ติดกิ่งข้ามหมวด</td><td data-l="จำนวน">1079</td></tr><tr><td data-l="">รายการที่ยังไม่มีความหมาย</td><td data-l="จำนวน">0</td></tr></tbody></table></div>
+<h2>๒ · กิ่งใหม่ที่ผู้ช่วยเสนอ — รอเจ้าของเคาะ</h2>
+<blockquote><b>13 กิ่ง</b> · ยังไม่ได้เพิ่มเข้าคลัง เอามาวางไว้ให้เคาะทีเดียว</blockquote>
+<h3>หมวด 3 กริยา ท่าทาง และการเคลื่อนไหว › (1)</h3>
+<p><i>การหดลำคอหรือย่นคอลงเพื่อแสดงปฏิกิริยารังเกียจ ขยะแขยง หรือหลบเลี่ยงสิ่งเร้า</i></p>
+<p>🗨 <i>กิ่งย่อยเดิมมีแต่พยักส่าย หันชะโงก เอียงคอ ก้มคอตก และใช้ศีรษะปะทะ ไม่มีกิ่งใดรับอาการหดหรือย่นคอ</i></p>
+<h3>หมวด 3 กริยา ท่าทาง และการเคลื่อนไหว › (1)</h3>
+<p><i>การใช้เท้ากระทืบ กระทุ้ง เขี่ย หรือขยับอยู่กับที่เพื่อแสดงอารมณ์หรือส่งสัญญาณ ไม่ใช่การก้าวเพื่อย้ายที่</i></p>
+<p>🗨 <i>กิ่งเดิมของหมวดนี้เป็นการเดิน วิ่ง เสียหลัก และยานพาหนะ ซึ่งล้วนเป็นการย้ายที่ ไม่มีกิ่งใดรับท่าเท้าที่ทำอยู่กับที่</i></p>
+<h3>หมวด 3 กริยา ท่าทาง และการเคลื่อนไหว › (1)</h3>
+<p><i>การแสดงออกด้วยคำพูดหรือการกระทำว่าเห็นอีกฝ่ายต่ำต้อยด้อยค่ากว่าตน</i></p>
+<p>🗨 <i>โครงเดิมมีกิ่งดูถูกเฉพาะทางสายตาและทางสีหน้าเท่านั้น ยังไม่มีกิ่งของตัวการกระทำที่ไม่ผูกกับอวัยวะใด</i></p>
+<h3>หมวด 3 กริยา ท่าทาง และการเคลื่อนไหว › (1)</h3>
+<p><i>การมองเห็นคลาดเคลื่อนไปจากความจริง หรือเห็นสิ่งที่ไม่มีอยู่จริง</i></p>
+<p>🗨 <i>ฝั่งหูมีกิ่งการได้ยินและการหลอนหูรองรับอยู่แล้ว แต่ฝั่งตายังไม่มีกิ่งไหนรับการมองเห็นที่ผิดไปจากความจริง</i></p>
+<h3>หมวด 1 บรรยากาศ แสง สี และสถานที่ › (1)</h3>
+<p><i>ชื่อเรียกต้นไม้และพรรณไม้แต่ละชนิดที่ปรากฏในฉาก</i></p>
+<p>🗨 <i>กิ่งพืชพรรณเดิมมีแต่ป่าหนาทึบ ไม้เลื้อยคลุมดิน และความเขียวของใบ ยังไม่มีที่ลงของชื่อพันธุ์ไม้รายชนิด</i></p>
+<h3>หมวด 6 คำปรุงแต่งและคำอเนกประสงค์ › (1)</h3>
+<p><i>คำที่ใช้เรียกสภาพหรือสถานการณ์โดยรวมในฐานะตัวมันเอง ไม่ได้ชี้ผลดีผลร้าย</i></p>
+<p>🗨 <i>กิ่งย่อยเดิมของสำนวนบอกสภาพฯ ล้วนชี้ทิศทาง (ผลลัพธ์ เคราะห์กรรม เบาะแส) แต่ยังไม่มีที่ลงของคำที่แค่เรียกสภาพเฉย ๆ อย่างสภาพการณ์</i></p>
+<h3>หมวด 6 คำปรุงแต่งและคำอเนกประสงค์ › (1)</h3>
+<p><i>คำบอกว่าสิ่งนั้นเด่นจนดึงความสนใจหรือสายตาของผู้พบเห็น</i></p>
+<p>🗨 <i>กิ่งย่อยเดิมของหมวดน้ำหนักและการเน้นย้ำ เน้นระดับความเข้ม ความแปลก หรือความมุ่งมั่น ยังไม่มีกิ่งไหนรับคำที่บอกความเด่นจนดึงสายตาโดยตรง</i></p>
+<h3>หมวด 1 บรรยากาศ แสง สี และสถานที่ › (1)</h3>
+<p><i>ห้องและพื้นที่ใช้สอยที่กั้นเป็นสัดส่วนอยู่ภายในตัวอาคาร</i></p>
+<p>🗨 <i>ส่วนประกอบของอาคารเดิมมีแค่ทางเดิน ช่องเปิด และผนังพื้น ไม่มีกิ่งที่รับคำเรียกตัวห้องเอง</i></p>
+<h3>หมวด 3 กริยา ท่าทาง และการเคลื่อนไหว › (1)</h3>
+<p><i>อาการกลืน กลืนน้ำลาย หรือความรู้สึกตึงติดขัดในลำคอที่เกิดขึ้นเองตามอารมณ์หรือสิ่งเร้า</i></p>
+<p>🗨 <i>กิ่งปฏิกิริยาตอบสนองทางกายมีแค่หัวใจ เหงื่อ สั่น หายใจ และการหลั่งของเหลว ยังไม่มีกิ่งใดรับอาการของลำคอซึ่งเป็นปฏิกิริยาอัตโนมัติที่พบบ่อยมากในงานเขียน</i></p>
+<h3>หมวด 3 กริยา ท่าทาง และการเคลื่อนไหว › (1)</h3>
+<p><i>การเที่ยวหา ค้น หรือเสาะแสวงหาคนหรือสิ่งของที่ยังไม่รู้ว่าอยู่ที่ใด</i></p>
+<p>🗨 <i>หมวดกริยามีกิ่งหยิบจับ ถือครอง เปิดปิด และส่งมอบ แต่ไม่มีกิ่งใดรับกริยาการค้นหาซึ่งเป็นการกระทำพื้นฐานมากในนิยายสืบสวน</i></p>
+<h3>หมวด 5 สภาวะภายใน › (1)</h3>
+<p><i>ความรู้สึกตื้นตันซาบซึ้งเมื่อใจถูกกระทบด้วยสิ่งที่งดงามหรือมีความหมาย</i></p>
+<p>🗨 <i>หมวด ๕ มีทั้งความสุข ความรัก และความทึ่ง แต่ไม่มีกิ่งไหนรับอารมณ์ซาบซึ้งตื้นตันโดยตรง คำอย่าง จับใจ กินใจ ตื้นตัน ปลาบปลื้ม จึงไม่มีที่ลง</i></p>
+<h3>หมวด 1 บรรยากาศ แสง สี และสถานที่ › (1)</h3>
+<p><i>ส่วนที่คลุมอยู่ด้านบนของอาคาร ทั้งตัวหลังคาและขอบที่ยื่นพ้นผนังออกมา</i></p>
+<p>🗨 <i>กิ่งส่วนประกอบของอาคารมีแค่ทางเดินและบันได ช่องเปิดและทางลอด กับผนัง พื้น และวัสดุกรุ ไม่มีกิ่งไหนรับหลังคาเลย ทั้งที่หลังคา ชายคา จั่ว กระเบื้องมุงหลังคา เป็นชิ้นส่วนอาคารที่พบบ่อยมากในงานบรรยาย</i></p>
+<h3>หมวด 1 บรรยากาศ แสง สี และสถานที่ › (1)</h3>
+<p><i>ต้นไม้ต้นเดี่ยวหรือหมู่ไม้ที่คนปลูกไว้ในสวนหรือรอบอาคาร ไม่ใช่ผืนป่าตามธรรมชาติ</i></p>
+<p>🗨 <i>กิ่งพืชพรรณเดิมมีลูกแค่ป่าหนาทึบ หญ้าเถาไม้เลื้อย และความเขียวชอุ่มของใบ ไม่มีกิ่งไหนรับต้นไม้ต้นเดี่ยวหรือต้นไม้ในสวนที่คนปลูก</i></p>
+<h2>๓ · คำที่สงสัยว่าสะกดผิด — รอเจ้าของเคาะ</h2>
+<blockquote><b>5 คำ</b> · ผู้ช่วยไม่ได้แก้ให้ คงข้อความไว้ตามเดิม แล้วเสนอคำที่คิดว่าใช่</blockquote>
+<div class="tw"><table><thead><tr><th>เลขรายการ</th><th>คำในคลัง</th><th>ผู้ช่วยว่าน่าจะเป็น</th></tr></thead><tbody><tr><td data-l="เลขรายการ">68</td><td data-l="คำในคลัง"><b>กระหืดหอบ</b></td><td data-l="ผู้ช่วยว่าน่าจะเป็น">⚠ ไม่แน่ใจว่ามีคำว่า กระหืดหอบ ในภาษาไทย · น่าจะเป็น กระหืดกระหอบ</td></tr><tr><td data-l="เลขรายการ">467</td><td data-l="คำในคลัง"><b>ฉาบฉาย</b></td><td data-l="ผู้ช่วยว่าน่าจะเป็น">⚠ ไม่แน่ใจว่ามีคำว่า ฉาบฉาย ในภาษาไทย · น่าจะเป็น ฉาบฉวย</td></tr><tr><td data-l="เลขรายการ">526</td><td data-l="คำในคลัง"><b>ชุบมือเปิด</b></td><td data-l="ผู้ช่วยว่าน่าจะเป็น">⚠ ไม่แน่ใจว่ามีคำว่า ชุบมือเปิด ในภาษาไทย · น่าจะเป็น ชุบมือเปิบ</td></tr><tr><td data-l="เลขรายการ">876</td><td data-l="คำในคลัง"><b>ท่านโยกโย้งอแงมาก</b></td><td data-l="ผู้ช่วยว่าน่าจะเป็น">⚠ ไม่แน่ใจว่ามีคำว่า โยกโย้ง ในภาษาไทย · น่าจะเป็น โยกโย้ (บิดพลิ้ว ไม่ตรงไปตรงมา)</td></tr><tr><td data-l="เลขรายการ">2198</td><td data-l="คำในคลัง"><b>เต็มเหนียว</b></td><td data-l="ผู้ช่วยว่าน่าจะเป็น">⚠ ไม่แน่ใจว่ามีคำว่า เต็มเหนียว ในภาษาไทย · น่าจะเป็น เต็มเหนี่ยว</td></tr></tbody></table></div>
+<p>🔴 <b>ห้ามแก้ตามทันที</b> — บทเรียน 31 ก.ค.: ทั้งผู้ช่วยและผู้ตรวจอีกเจ้าเสนอผิดได้ฝ่ายละคำ</p>
+<p>ทุกคำต้องค้นพจนานุกรมราชบัณฑิตยสถานยืนยันก่อนเสมอ · คำที่ยืนยันแล้วว่าถูกอยู่แล้วอยู่ใน <code>scripts/spellfix.py</code></p>
+<h2>๔ · รอบตรวจซ้ำ 400 รายการเทียบกิ่งใหม่ 12 กิ่ง</h2>
+<blockquote>400 รายการแรกถูกทบทวนไป <b>ก่อน</b> กิ่งใหม่ 12 กิ่งจะเข้าคลัง ผู้ช่วยรอบนั้นจึงเลือกไม่ได้</blockquote>
+<blockquote>รอบนี้เอากลับมาไล่ใหม่ว่ามีรายการไหนควรเข้ากิ่งใหม่บ้าง <b>เพิ่มได้อย่างเดียว ห้ามถอน</b></blockquote>
+<p><b>เติมกิ่งให้ 4 รายการ · รวม 4 เส้น</b></p>
+<div class="tw"><table><thead><tr><th>รหัสกิ่ง</th><th>หมวด</th><th>กิ่ง</th><th>คำที่เข้ามา</th></tr></thead><tbody><tr><td data-l="รหัสกิ่ง"><code>C05-22-000</code></td><td data-l="หมวด">หมวด 3 กริยา ท่าทาง และการเคลื่อนไหว</td><td data-l="กิ่ง">การดูถูกและเหยียดหยาม</td><td data-l="คำที่เข้ามา">3</td></tr><tr><td data-l="รหัสกิ่ง"><code>C01-04-000</code></td><td data-l="หมวด">หมวด 3 กริยา ท่าทาง และการเคลื่อนไหว</td><td data-l="กิ่ง">การเห็นผิดและภาพลวงตา</td><td data-l="คำที่เข้ามา">1</td></tr></tbody></table></div>
+<h2>๕ · ไฟล์ที่เปิดอ่านต่อได้</h2>
+<div class="tw"><table><thead><tr><th>ไฟล์</th><th>คืออะไร</th></tr></thead><tbody><tr><td data-l="ไฟล์"><code>docs/m2-sense/round2/0-all-2814.md</code> / <code>.html</code></td><td data-l="คืออะไร"><b>รายการทั้ง 2,814 รายการไฟล์เดียว</b> เรียงตามเลขรายการ</td></tr><tr><td data-l="ไฟล์"><code>docs/m2-sense/round2/result.json</code></td><td data-l="คืออะไร">ผลลัพธ์รูปแบบพร้อมขึ้นฐานข้อมูล</td></tr><tr><td data-l="ไฟล์"><code>docs/m2-sense/round2/1-summary.md</code></td><td data-l="คืออะไร">สรุปผลแยกรายคลัง</td></tr><tr><td data-l="ไฟล์"><code>docs/m2-sense/round2/2-added-branches.md</code></td><td data-l="คืออะไร">กิ่งที่เพิ่ม แยกตามหมวด → กิ่ง</td></tr><tr><td data-l="ไฟล์"><code>docs/m2-sense/round2/3-dropped-branches.md</code></td><td data-l="คืออะไร">กิ่งที่ผู้ช่วยขอถอน พร้อมเหตุผลรายเส้น</td></tr><tr><td data-l="ไฟล์"><code>docs/m2-sense/round2/4-meanings.md</code></td><td data-l="คืออะไร">ความหมายทุกรายการ</td></tr><tr><td data-l="ไฟล์"><code>docs/branches-clean.md</code></td><td data-l="คืออะไร">โครงกิ่งล้วน 798 กิ่ง ไม่มีคำ</td></tr><tr><td data-l="ไฟล์"><code>docs/branch-codes.json</code></td><td data-l="คืออะไร">ทะเบียนรหัสประจำกิ่งถาวร</td></tr></tbody></table></div></div></body></html>
