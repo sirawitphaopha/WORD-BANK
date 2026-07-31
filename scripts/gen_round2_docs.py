@@ -27,6 +27,8 @@ BD = json.load(open(P('docs/branches-data.json'), encoding='utf-8'))
 NO = {c['id']: c['no'] for c in BD['categories']}
 CATNAME = {c['id']: c['name_th'] for c in BD['categories']}
 VALID = {(b['category_id'], b['path']) for b in BD['branches']}
+# รหัสประจำกิ่ง (จากทะเบียนถาวร docs/branch-codes.json ผ่าน branches-data.json)
+BCODE = {(b['category_id'], b['path']): b.get('code') for b in BD['branches']}
 
 
 def lvpath(p):
@@ -263,7 +265,7 @@ def write_json(diff, before, sense):
                 'category_id': prim,
                 'subpath': next((p for c, p in new if c == prim), None),
                 'subpaths': [p for c, p in new if c == prim],
-                'all_paths': [{'category_id': c, 'path': p} for c, p in new],
+                'all_paths': [{'code': BCODE.get((c, p)), 'category_id': c, 'path': p} for c, p in new],
                 'meanings': mns,
                 'meaning': ' · '.join(mns) or None,
                 'senses': r.get('senses') or [],
@@ -273,9 +275,9 @@ def write_json(diff, before, sense):
                 'by_owner': bb.get('by_owner', False),
                 'loanword_en': bb.get('loanword_en'),
                 'suspect': r.get('suspect'),
-                'paths_added_this_round': [{'category_id': c, 'path': p}
+                'paths_added_this_round': [{'code': BCODE.get((c, p)), 'category_id': c, 'path': p}
                                            for c, p in sorted(add[(tag, w)])],
-                'paths_dropped_this_round': [{'category_id': c, 'path': p}
+                'paths_dropped_this_round': [{'code': BCODE.get((c, p)), 'category_id': c, 'path': p}
                                              for c, p in sorted(gone)],
             })
             stat[tag] += 1

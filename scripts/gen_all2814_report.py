@@ -32,6 +32,7 @@ def group_paths(all_paths):
     """ยุบท่อนต้นของกิ่งที่ซ้ำกันให้เหลือครั้งเดียว — กันคำที่ติดหลายกิ่งแล้วท่อนต้นเหมือนกัน
     ถูกพิมพ์เต็มเส้นทางซ้ำ ๆ จนอ่านแล้วดูเหมือนเขียนซ้ำ (พี่กันจับได้ 28 ก.ค.)
     ใส่เลขชั้นในวงเล็บทุกชั้น ตามตำแหน่งจริงในเส้นทางเต็ม (ไม่ใช่นับใหม่หลังยุบ)
+    นำหน้าด้วยรหัสประจำกิ่ง (พี่กันสั่ง 31 ก.ค. "1440 เอารหัสกิ่งไปใส่ด้วยนะ ใน md html json")
 
     all_paths: [{'category_id':.., 'path':'A / B / C'}, ...]
     จัดกลุ่มตามหมวดก่อนเสมอ (ห้ามยุบข้ามหมวด เพราะคำติดหลายกิ่งข้ามหมวดได้ปกติ ~58%
@@ -40,10 +41,19 @@ def group_paths(all_paths):
     และส่วนที่เหลือของแต่ละเส้นคั่นด้วย " · " — ถ้าไม่มีท่อนต้นร่วมกันเลย โชว์เต็มเส้นทางแยกกันตามเดิม
     """
     groups = collections.OrderedDict()
+    code = {}
     for p in all_paths:
         groups.setdefault(p['category_id'], []).append(p['path'])
+        if p.get('code'):
+            code[(p['category_id'], p['path'])] = p['code']
+
+    def cd(cid, path):
+        """รหัสประจำกิ่งนำหน้า — ถ้ายังไม่มีรหัส (กิ่งใหม่ที่ยังไม่ลงทะเบียน) ไม่ต้องขึ้นอะไร"""
+        c = code.get((cid, path))
+        return '`%s` ' % c if c else ''
+
     out = []
-    for _, paths in groups.items():
+    for cid, paths in groups.items():
         uniq = []
         for p in paths:
             if p not in uniq:
@@ -51,7 +61,7 @@ def group_paths(all_paths):
         segs = [p.split(' / ') for p in uniq]
         if len(uniq) == 1:
             s = segs[0]
-            out.append('/'.join(lv(x, i + 1) for i, x in enumerate(s)))
+            out.append(cd(cid, uniq[0]) + '/'.join(lv(x, i + 1) for i, x in enumerate(s)))
             continue
         minlen = min(len(s) for s in segs)
         common = []
@@ -64,16 +74,16 @@ def group_paths(all_paths):
             common_txt = '/'.join(lv(x, i + 1) for i, x in enumerate(common))
             base = len(common)
             tails, seen = [], set()
-            for s in segs:
+            for s, full in zip(segs, uniq):
                 tail = s[base:]
-                t = '/'.join(lv(x, base + 1 + j) for j, x in enumerate(tail))
+                t = cd(cid, full) + '/'.join(lv(x, base + 1 + j) for j, x in enumerate(tail))
                 if t not in seen:
                     seen.add(t)
                     tails.append(t)
             out.append('%s → %s' % (common_txt, ' · '.join(tails)))
         else:
-            for s in segs:
-                out.append('/'.join(lv(x, i + 1) for i, x in enumerate(s)))
+            for s, full in zip(segs, uniq):
+                out.append(cd(cid, full) + '/'.join(lv(x, i + 1) for i, x in enumerate(s)))
     return out
 
 
