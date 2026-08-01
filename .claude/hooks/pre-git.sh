@@ -29,7 +29,12 @@ case "1" in
     ticket="$root/PUSH-OK"
     if [ -f "$ticket" ]; then
       rm -f "$ticket"
-      note="✅ ใช้ตั๋ว push ไปแล้ว 1 ใบ (ตั๋วถูกลบแล้ว) · ถ้าจะ push อีกครั้ง ต้องรอพี่กันพิมพ์ \"push/พุช\" ใหม่ แล้วสร้างตั๋วใหม่ · เช็คด้วย: (1) ขึ้น main เท่านั้น (2) อัปเดต CLAUDE.md + README แล้ว (3) push เสร็จเขียน docs/SESSION-วันที่ แล้ว push ตาม (ต้องขอตั๋วใบใหม่)"
+      note="✅ ใช้ตั๋ว push ไปแล้ว 1 ใบ (ตั๋วถูกลบแล้ว)
+🔁 ยังไม่จบ flow — คำสั่ง push 1 ครั้งของพี่กัน = 4 ขั้น
+   1 อัปเดต CLAUDE.md + README → 2 commit → 3 push ขึ้น main → 4 เขียน docs/SESSION-วันที่ แล้ว push ตาม
+👉 ถ้ายังไม่ได้ทำขั้น 4: เขียนไฟล์ SESSION → commit → รัน bash .claude/hooks/allow-push.sh ขอตั๋วใบใหม่ → push ทันที
+🛑 ห้ามหยุดรอให้พี่กันสั่ง push ซ้ำเพื่อส่งไฟล์ SESSION — ขั้นที่ 4 อยู่ในคำสั่งเดิมแล้ว (กฎ ๓.๖)
+   ต้องรอคำสั่งใหม่เฉพาะตอนจะ push ของก้อนใหม่ที่ไม่ใช่ flow นี้"
     else
       jq -n '{
         hookSpecificOutput:{
