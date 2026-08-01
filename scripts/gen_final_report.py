@@ -151,8 +151,10 @@ def build():
     return '\n'.join(L), res
 
 
-def to_html(md):
-    """แปลง md เป็นหน้าอ่าน — รองรับหัวข้อ ตาราง รายการ และย่อหน้าอ้างอิง"""
+def to_html(md, title='คลังคำ — รายงานสรุปงานทบทวนทั้งคลัง'):
+    """แปลง md เป็นหน้าอ่าน — รองรับหัวข้อ ตาราง รายการ และย่อหน้าอ้างอิง
+
+    ใช้ซ้ำได้จากสคริปต์อื่น (เช่น gen_decisions_html.py) โดยส่งหัวเรื่องเข้ามาเอง"""
     out, tbl = [], []
 
     def flush():
@@ -195,14 +197,14 @@ def to_html(md):
     flush()
     return ('<!doctype html><html lang="th"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<title>คลังคำ — รายงานสรุปงานทบทวนทั้งคลัง</title><style>%s\n'
+            '<title>%s</title><style>%s\n'
             '.tw{overflow-x:auto;margin:14px 0}.li{margin:4px 0 4px 18px}'
             'blockquote{border-left:4px solid var(--accent,#9c3b2b);margin:12px 0;padding:8px 14px;background:#faf4e6}'
             '@media(max-width:700px){.tw table,.tw tbody,.tw tr,.tw td{display:block;width:auto}'
             '.tw thead{display:none}.tw tr{border:1px solid #e6d9bd;border-radius:10px;margin:8px 0;padding:6px}'
             '.tw td::before{content:attr(data-l) " ";font-weight:700;color:#8a7d6d}}'
             '</style></head><body><div class="wrap">%s</div></body></html>'
-            % (CSS, '\n'.join(out)))
+            % (html.escape(title), CSS, '\n'.join(out)))
 
 
 def main():
