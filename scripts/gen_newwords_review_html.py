@@ -187,7 +187,13 @@ let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on
 """
 
 
-def shell(title, key, lead, quote, stats, groups, cards, group_label):
+def shell(title, key, lead, quote, stats, groups, cards, group_label,
+          extra_css='', yes_label='✓ เอา', no_label='✕ ไม่เอา'):
+    """โครงหน้าเคาะกลาง — ใช้ซ้ำได้ทุกงานที่ต้องให้เจ้าของคลังกดเลือกทีละใบ
+
+    extra_css / yes_label / no_label เพิ่มทีหลัง (1 ส.ค. 2569) ให้หน้าอื่นยืมไปใช้ได้
+    โดยไม่ต้องแก้ของเดิม — ค่าเริ่มต้นตรงกับที่ 2 หน้าแรกใช้อยู่ ผลลัพธ์จึงไม่เปลี่ยน
+    """
     gsel = ''
     if groups:
         opts = ''.join(f'<option value="{e(g)}">{e(g)} ({n})</option>' for g, n in groups)
@@ -195,7 +201,7 @@ def shell(title, key, lead, quote, stats, groups, cards, group_label):
     return f"""<!doctype html><html lang="th"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)}</title>
-<style>{CSS}</style></head><body><div class="wrap">
+<style>{CSS}{extra_css}</style></head><body><div class="wrap">
 <h1>{e(title)}</h1>
 <p class="lead">{lead}</p>
 <div class="quote">{quote}</div>
@@ -207,8 +213,8 @@ def shell(title, key, lead, quote, stats, groups, cards, group_label):
   <div class="seg" id="fstate">
     <button data-f="all" aria-pressed="true">ทั้งหมด</button>
     <button data-f="todo" aria-pressed="false">ยังไม่เคาะ</button>
-    <button data-f="y" aria-pressed="false">✓ เอา</button>
-    <button data-f="n" aria-pressed="false">✕ ไม่เอา</button>
+    <button data-f="y" aria-pressed="false">{e(yes_label)}</button>
+    <button data-f="n" aria-pressed="false">{e(no_label)}</button>
   </div>
   <span class="savest" id="savest"></span>
 </div>
