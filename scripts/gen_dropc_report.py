@@ -2,19 +2,27 @@
 # -*- coding: utf-8 -*-
 """กิ่งที่ถูกถอนจนคำหลุดออกจากหมวดทั้งหมวด (กลุ่ม ค 506 เส้น)
 
-ออก 2 ไฟล์
-  docs/m2-sense/dropped-groupC.html  ← **หน้ากดเคาะได้** (เจ้าของคลังกดทีละใบ แล้วส่งออกผล)
-  docs/m2-sense/dropped-groupC.md    ← ฉบับข้อความ มีเลขกำกับทุกใบ ตอบกลับด้วยเลขได้
+ออก 2 ไฟล์ที่มีเนื้อเดียวกันและ **เลขข้อตรงกันเป๊ะ**
+  docs/m2-sense/dropped-groupC.html  ← หน้ากดเคาะ (กดทีละใบ แล้วส่งออกผล)
+  docs/m2-sense/dropped-groupC.md    ← ฉบับข้อความ ตอบกลับด้วยเลขข้อได้
 
-🔑 ยกโครงหน้าเคาะจาก scripts/gen_newwords_review_html.py มาทั้งชุด (shell/CSS/JS)
-   ตามกฎ "ของที่ทำไว้ดีแล้ว ห้ามสร้างใหม่ ยกของเดิมมาเปลี่ยนแค่ข้อมูล"
-   ได้ระบบกันงานหาย 3 ชั้น + ตัวกรอง + ส่งออก มาฟรีทั้งชุด
+🔑 ยกโครงหน้าเคาะจาก scripts/gen_newwords_review_html.py (shell/CSS/JS) ตามกฎ
+   "ของที่ทำไว้ดีแล้ว ห้ามสร้างใหม่" → ได้ระบบกันงานหาย 3 ชั้น + ตัวกรอง + ปุ่มส่งออก มาทั้งชุด
 
-📌 เรียงใบ: 🔴 ที่แคลร์ว่าถอนผิดขึ้นก่อน = **เลข 1-33** · ตามด้วย ⚖️ ก้ำกึ่ง 34-41 · ที่เหลือ 42-506
-   เจ้าของคลังตอบกลับเป็นเลขข้อได้เลย ไม่ต้องพิมพ์วลีใหม่
+📐 หลักการออกแบบของไฟล์นี้ (เจ้าของคลังสั่ง 1 ส.ค. 2569
+   _"อย่าทำอะไรมักง่าย ทุกอย่างต้องละเอียดแต่ก็อ่านง่าย เข้าใจ สวยงามตามการสื่อสาร
+     ให้คิดว่าเป็นทั้งนักภาษาศาสตร์และนักออกแบบสื่อการสอน"_)
 
-คำวินิจฉัยรายเส้นอยู่ในตาราง SUSPECT / BORDERLINE ด้านล่าง — เขียนเองหลังอ่านครบทั้ง 506 เส้น
-ด่านในตัว: ทุกเส้นในตารางต้องมีอยู่จริงในผลลัพธ์ ไม่งั้นไม่ยอมเขียนไฟล์
+   1. **ทุกใบต้องมีเหตุผล ไม่มีใบไหนถูกติดป้ายลอย ๆ**
+      - 33 ใบที่เห็นว่าถอนผิด + 8 ใบก้ำกึ่ง = เหตุผลรายเส้นที่เขียนเอง
+      - อีก 465 ใบ = ป้ายลวดลาย ซึ่ง **อ่านจากข้อมูลจริงในไฟล์ผลลัพธ์** ไม่ใช่เดา
+   2. **สอนก่อนให้ตัดสิน** — กล่องบนสุดอธิบายว่ากลุ่มนี้คืออะไร กฎที่ใช้ตัดสินคืออะไร
+      พร้อมแผนภาพเคส `ปรก` ซึ่งเป็นเคสตั้งต้นที่เจ้าของคลังยกมาเอง
+   3. **สแกนได้ด้วยตา** — คนละเรื่องคนละกล่องคนละสี · เรียงของที่ต้องตัดสินขึ้นก่อน
+
+ด่านในตัว 2 ชั้น
+   - ทุกเส้นในตารางคำวินิจฉัยต้องมีอยู่จริงในผลลัพธ์
+   - **ทุกใบต้องมีเหตุผลอย่างน้อย 1 บรรทัด** ไม่งั้นไม่ยอมเขียนไฟล์
 """
 import json, sys, collections, os
 
@@ -32,7 +40,7 @@ CAT = {'c0': 'หมวด 1', 'c1': 'หมวด 2', 'c2': 'หมวด 3', '
        'c10': 'หมวด 11', 'c11': 'หมวด 12', 'c12': 'หมวด 13', 'c13': 'หมวด 14', 'c14': 'หมวด 15'}
 
 # ─────────────────────────────────────────────────────────────
-# คำวินิจฉัยของแคลร์ — คีย์คือ (ตัวคำ, เส้นทางกิ่งที่ถูกถอน)
+# ๑ · คำวินิจฉัยรายเส้น — คีย์คือ (ตัวคำ, เส้นทางกิ่งที่ถูกถอน)
 # ─────────────────────────────────────────────────────────────
 SUSPECT = {
  ('คมกริบ', 'อาวุธและยุทโธปกรณ์ / อาวุธมีคมและอาวุธประชิด'):
@@ -120,27 +128,19 @@ BORDERLINE = {
    'เหตุผลเดียวกับ เล่าลือ',
 }
 
-EXTRA_CSS = """
-/* กล่องกิ่งที่ถูกถอน — ต้องเด่นกว่าอย่างอื่นในใบ เพราะเป็นตัวเรื่อง */
-.dropbox{background:rgba(156,43,35,.09);border:1px solid var(--accent);border-left:4px solid var(--accent);
-  border-radius:0 10px 10px 0;padding:8px 11px;margin:4px 0 0;font-size:14px;line-height:1.6}
-.dropbox .code{font-family:ui-monospace,monospace;font-size:12px;color:var(--accent);font-weight:700}
-.keepbox{background:rgba(47,109,67,.08);border:1px solid var(--ok);border-left:4px solid var(--ok);
-  border-radius:0 10px 10px 0;padding:8px 11px;margin:4px 0 0;font-size:13.5px;line-height:1.6}
-.keepbox .k{display:block;margin:2px 0}
-.keepbox .code{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--soft)}
-.why{background:rgba(185,138,46,.11);border-left:4px solid var(--mark);border-radius:0 10px 10px 0;
-  padding:8px 11px;margin:4px 0 0;font-size:14px;line-height:1.65}
-.mean{margin:2px 0 0 2px;font-size:13.5px;color:var(--soft);line-height:1.6}
-.mean li{margin:1px 0}
-.tag{display:inline-block;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;margin-left:6px}
-.tag.bad{background:var(--accent);color:#fff}
-.tag.mid{background:var(--mark);color:#2a2113}
-.tag.ok{background:transparent;border:1px solid var(--line);color:var(--soft);font-weight:600}
-.card.hi{border-left:5px solid var(--accent)}
-.card.mid{border-left:5px solid var(--mark)}
-.num{font-size:15px;color:var(--accent);font-weight:800}
-"""
+# ─────────────────────────────────────────────────────────────
+# ๒ · ลวดลาย — เหตุผลของใบที่เหลือ อ่านจากข้อมูลจริงในไฟล์ผลลัพธ์
+#     (ไม่ใช่การเดา · ทุกข้อตรวจได้ด้วยเงื่อนไขที่เขียนไว้ในฟังก์ชัน pattern())
+# ─────────────────────────────────────────────────────────────
+PATTERNS = {
+ 'L1': ('🧬 คำนี้ถูกตัดมาจากวลียาว แล้วลอกกิ่งของวลีแม่ติดมาด้วย',
+        'คำที่สกัดออกมาจากวลี ได้กิ่งของวลีตั้งต้นติดมาทั้งชุดตั้งแต่ตอนเก็บเข้าคลัง '
+        'ทั้งที่ตัวคำเดี่ยว ๆ ไม่ได้แปลอย่างนั้น — นี่คือปัญหาตั้งต้นที่ทั้งรอบทบทวนตั้งขึ้นมาแก้'),
+ 'L2': ('🔄 รอบนี้หากิ่งที่ตรงกว่ามาให้แทนแล้ว',
+        'ไม่ได้ถอนทิ้งเปล่า ๆ — รอบเดียวกันนี้เติมกิ่งใหม่ให้คำนี้ด้วย'),
+ 'L3': ('📍 กิ่งเดิมที่ตรงกว่ายังอยู่ครบ',
+        'ไม่ได้เติมกิ่งใหม่ แต่กิ่งที่คำนี้เคยมีอยู่แล้วในหมวดอื่นตรงกว่ากิ่งที่ถอน'),
+}
 
 
 def grp(w, p):
@@ -153,17 +153,76 @@ def grp(w, p):
     return 'ค'
 
 
+def pattern(w):
+    """คืนรหัสลวดลายของใบนี้ — เรียงตามน้ำหนักของหลักฐาน"""
+    out = []
+    if w.get('source') or w.get('source_others') or w.get('picked_from'):
+        out.append('L1')
+    if w.get('paths_added_this_round'):
+        out.append('L2')
+    if not out:
+        out.append('L3')
+    return out
+
+
+EXTRA_CSS = """
+/* ── กล่องสอนบนหัวหน้า ── */
+.teach{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin:14px 0}
+.teach h3{margin:0 0 6px;font-size:16px;color:var(--primary)}
+.teach p{margin:6px 0;font-size:14.5px;line-height:1.75}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:10px 0 4px}
+.flow .box{flex:1 1 190px;border:1px solid var(--line);border-radius:11px;padding:9px 11px;
+  background:var(--paper);font-size:13.5px;line-height:1.6}
+.flow .box b{display:block;font-size:12px;color:var(--soft);font-weight:700;margin-bottom:3px}
+.flow .box.was{border-color:var(--accent);background:rgba(156,43,35,.07)}
+.flow .box.now{border-color:var(--ok);background:rgba(47,109,67,.07)}
+/* ลูกศรเชื่อมสองกล่อง — จอกว้างชี้ขวา จอแคบกล่องเรียงลงมา ลูกศรต้องชี้ลงและอยู่กลาง
+   (เขียนไว้ทั้งสองตัวใน HTML แล้วซ่อนตัวที่ไม่ใช้ · เปลี่ยนตัวอักษรด้วย CSS ล้วนไม่ได้) */
+.flow .arw{align-self:center;color:var(--soft);font-size:20px;font-weight:700;line-height:1}
+.flow .arw .v{display:none}
+@media (max-width:560px){
+  .flow{flex-direction:column}
+  .flow .arw{width:100%;text-align:center;margin:-2px 0}
+  .flow .arw .h{display:none}
+  .flow .arw .v{display:inline}
+}
+.legend{display:flex;flex-direction:column;gap:7px;margin:10px 0 0}
+.legend div{font-size:13.5px;line-height:1.6;padding-left:2px}
+.legend b{color:var(--ink)}
+/* ── ในการ์ด ── */
+.dropbox{background:rgba(156,43,35,.09);border:1px solid var(--accent);border-left:4px solid var(--accent);
+  border-radius:0 10px 10px 0;padding:8px 11px;margin:4px 0 0;font-size:14px;line-height:1.6}
+.dropbox .code{font-family:ui-monospace,monospace;font-size:12px;color:var(--accent);font-weight:700}
+.keepbox{background:rgba(47,109,67,.08);border:1px solid var(--ok);border-left:4px solid var(--ok);
+  border-radius:0 10px 10px 0;padding:8px 11px;margin:4px 0 0;font-size:13.5px;line-height:1.6}
+.keepbox .k{display:block;margin:2px 0}
+.keepbox .code{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--soft)}
+.why{background:rgba(185,138,46,.11);border-left:4px solid var(--mark);border-radius:0 10px 10px 0;
+  padding:8px 11px;margin:4px 0 0;font-size:14px;line-height:1.65}
+.why .pat{display:block;margin:3px 0}
+.why .pat i{font-style:normal;color:var(--soft)}
+.mean{margin:2px 0 0 2px;font-size:13.5px;color:var(--soft);line-height:1.6}
+.mean li{margin:1px 0}
+.tag{display:inline-block;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;margin-left:6px}
+.tag.bad{background:var(--accent);color:#fff}
+.tag.mid{background:var(--mark);color:#2a2113}
+.tag.ok{background:transparent;border:1px solid var(--line);color:var(--soft);font-weight:600}
+.tag.solo{background:transparent;border:1px dashed var(--mark);color:var(--mark);font-weight:600}
+.card.hi{border-left:5px solid var(--accent)}
+.card.mid{border-left:5px solid var(--mark)}
+.num{font-size:15px;color:var(--accent);font-weight:800}
+"""
+
+
 def main():
     D = json.load(open(RES))
     W = D['words']
     B = BranchBook()
 
-    rows, counts = [], collections.Counter()
+    rows = []
     for w in W:
         for p in (w.get('paths_dropped_this_round') or []):
-            g = grp(w, p)
-            counts[g] += 1
-            if g == 'ค':
+            if grp(w, p) == 'ค':
                 rows.append((w, p))
 
     real = {(w['text'], p['path']) for w, p in rows}
@@ -174,15 +233,10 @@ def main():
             print('   ', m)
         sys.exit(1)
 
-    # เรียง: ผิดก่อน (เลข 1-33) → ก้ำกึ่ง → ที่เหลือ (จัดกลุ่มตามกิ่งเพื่อให้อ่านต่อเนื่อง)
     def rank(t):
         w, p = t
         k = (w['text'], p['path'])
-        if k in SUSPECT:
-            return (0, p['path'], w['text'])
-        if k in BORDERLINE:
-            return (1, p['path'], w['text'])
-        return (2, p['path'], w['text'])
+        return (0 if k in SUSPECT else 1 if k in BORDERLINE else 2, p['path'], w['text'])
 
     rows.sort(key=rank)
     n_susp = sum(1 for t in rows if (t[0]['text'], t[1]['path']) in SUSPECT)
@@ -190,63 +244,73 @@ def main():
     n_ok = len(rows) - n_susp - n_bord
 
     def split(line):
-        """แยก 'ที่อยู่เต็ม  [รหัส]' ออกเป็น (ข้อความ, รหัส) เพื่อจัดสไตล์คนละแบบ"""
         if line.endswith(']') and '  [' in line:
             a, b = line.rsplit('  [', 1)
             return a, b[:-1]
         return line, ''
 
-    # ── HTML: การ์ดกดเคาะ ──
-    cards, mdL = [], []
+    cards, mdL, no_reason = [], [], []
     A = mdL.append
     for i, (w, p) in enumerate(rows, 1):
         k = (w['text'], p['path'])
         bad, mid = k in SUSPECT, k in BORDERLINE
-        cls = 'hi' if bad else ('mid' if mid else '')
+        solo = len(w.get('all_paths') or []) == 1
+        pats = [] if (bad or mid) else pattern(w)
+        own = SUSPECT.get(k) or BORDERLINE.get(k) or ''
+        if not own and not pats:
+            no_reason.append(k)
+
         tag = ('<span class="tag bad">แคลร์ว่าถอนผิด</span>' if bad else
                '<span class="tag mid">ก้ำกึ่ง</span>' if mid else
                '<span class="tag ok">ถอนถูก</span>')
-        why = SUSPECT.get(k) or BORDERLINE.get(k) or ''
+        if solo:
+            tag += '<span class="tag solo">เหลือกิ่งเดียว</span>'
 
         dtxt, dcode = split(B.line(cat=p['category_id'], path=p['path']))
         means = ''.join(f'<li>{e(m)}</li>' for m in (w.get('meanings') or []))
         keeps = w.get('all_paths') or []
-        if keeps:
-            kk = ''.join(
-                '<span class="k">· {}  <span class="code">[{}]</span></span>'.format(
-                    *map(e, split(B.line(cat=x['category_id'], path=x['path'])))) for x in keeps)
-        else:
-            kk = '<span class="k"><b>ไม่เหลือกิ่งเลย</b></span>'
+        kk = ''.join('<span class="k">· {}  <span class="code">[{}]</span></span>'.format(
+            *map(e, split(B.line(cat=x['category_id'], path=x['path'])))) for x in keeps) \
+            or '<span class="k"><b>ไม่เหลือกิ่งเลย</b></span>'
 
-        search = ' '.join([w['text'], p['path'], why] + [x['path'] for x in keeps])
-        grp_name = CAT.get(p['category_id'], '')
+        if own:
+            whyhtml = e(own)
+            whymd = [own]
+        else:
+            whyhtml = ''.join(f'<span class="pat"><b>{e(PATTERNS[c][0])}</b><br>'
+                              f'<i>{e(PATTERNS[c][1])}</i></span>' for c in pats)
+            whymd = [f'**{PATTERNS[c][0]}** — {PATTERNS[c][1]}' for c in pats]
+
+        search = ' '.join([w['text'], p['path'], own] +
+                          [PATTERNS[c][0] for c in pats] + [x['path'] for x in keeps])
         cards.append(
-            f'<div class="card {cls}" data-id="{i}" data-g="{e(grp_name)}" '
-            f'data-title="{e(w["text"])}" data-s="{e(search)}">'
+            f'<div class="card {"hi" if bad else "mid" if mid else ""}" data-id="{i}" '
+            f'data-g="{e(CAT.get(p["category_id"], ""))}" data-title="{e(w["text"])}" data-s="{e(search)}">'
             f'<div class="num">#{i}{tag}</div>'
             f'<div class="txt">{e(w["text"])}</div>'
             + (f'<div class="sec"><span class="h">ความหมายที่บันทึกไว้</span>'
                f'<ul class="mean">{means}</ul></div>' if means else '')
             + f'<div class="sec"><span class="h">🔻 กิ่งที่ถูกถอนออก</span>'
               f'<div class="dropbox">{e(dtxt)}  <span class="code">[{e(dcode)}]</span></div></div>'
-            + (f'<div class="sec"><span class="h">💬 ทำไมแคลร์ว่าอย่างนั้น</span>'
-               f'<div class="why">{e(why)}</div></div>' if why else '')
-            + f'<div class="sec"><span class="h">✅ ตอนนี้คำนี้อยู่กิ่งอะไรบ้าง (ผลจริงในไฟล์)</span>'
+              f'<div class="sec"><span class="h">💬 ทำไมถึงถอน / ทำไมแคลร์ไม่เห็นด้วย</span>'
+              f'<div class="why">{whyhtml}</div></div>'
+              f'<div class="sec"><span class="h">✅ ตอนนี้คำนี้อยู่กิ่งอะไรบ้าง (ผลจริงในไฟล์)</span>'
               f'<div class="keepbox">{kk}</div></div>'
-            + '<div class="acts"><button class="y" data-v="y" aria-pressed="false">✓ คืนกิ่งนี้</button>'
+              '<div class="acts"><button class="y" data-v="y" aria-pressed="false">✓ คืนกิ่งนี้</button>'
               '<button class="n" data-v="n" aria-pressed="false">✕ ไม่คืน</button></div></div>')
 
-        # ── md: ใบเดียวกัน มีเลขเหมือนกันเป๊ะ ──
         head = '🔴' if bad else ('⚖️' if mid else '·')
-        A(f'\n### {head} {i}. 「{w["text"]}」\n')
+        A(f'\n### {head} {i}. 「{w["text"]}」' + ('  ⚠️ เหลือกิ่งเดียว' if solo else '') + '\n')
         if means:
             A('**ความหมายที่บันทึกไว้**')
             for m in (w.get('meanings') or []):
                 A(f'- {m}')
             A('')
         A(f'**🔻 กิ่งที่ถูกถอนออก** — {B.line(cat=p["category_id"], path=p["path"])}\n')
-        if why:
-            A(f'**💬 ทำไมแคลร์ว่าอย่างนั้น** — {why}\n')
+        A('**💬 ทำไมถึงถอน / ทำไมแคลร์ไม่เห็นด้วย**')
+        for line in whymd:
+            A(f'- {line}')
+        A('')
         A('**✅ ตอนนี้คำนี้อยู่กิ่งอะไรบ้าง (ผลจริงในไฟล์)**\n')
         for x in keeps:
             A(f'- {B.line(cat=x["category_id"], path=x["path"])}')
@@ -254,69 +318,162 @@ def main():
             A('- **ไม่เหลือกิ่งเลย**')
         A('')
 
+    # ── ด่าน 2: ทุกใบต้องมีเหตุผล ──
+    if no_reason:
+        print(f'🛑 มี {len(no_reason)} ใบที่ไม่มีเหตุผลกำกับ — ไม่เขียนไฟล์')
+        for k in no_reason[:10]:
+            print('   ', k)
+        sys.exit(1)
+
+    n_solo = sum(1 for w, _ in rows if len(w.get('all_paths') or []) == 1)
+    pc = collections.Counter(c for w, p in rows
+                             if (w['text'], p['path']) not in SUSPECT
+                             and (w['text'], p['path']) not in BORDERLINE
+                             for c in pattern(w))
+
+    teach = f"""
+<div class="teach">
+<h3>📖 อ่านตรงนี้ก่อน — 506 เส้นนี้คืออะไร</h3>
+<p>รอบทบทวนคลังคำ ผู้ช่วยไม่ได้แค่เติมกิ่ง แต่<b>ถอนกิ่งเดิมออกด้วย รวม 1,320 เส้น</b>
+แบ่งตามความเสี่ยงได้ 3 กลุ่ม · <b>หน้านี้คือกลุ่มที่เสี่ยงที่สุด</b></p>
+<div class="flow">
+  <div class="box"><b>กลุ่ม ก · 53 เส้น</b>ถอนกิ่งแม่ แต่ยังเก็บกิ่งลูกไว้ = ละเอียดขึ้น ไม่มีอะไรหาย</div>
+  <div class="box"><b>กลุ่ม ข · 761 เส้น</b>ยังเหลือกิ่งอื่นในหมวดเดิม = แค่ย้ายที่ ยังค้นเจอ</div>
+  <div class="box was"><b>กลุ่ม ค · 506 เส้น ← หน้านี้</b>คำหลุดออกจากหมวดนั้นทั้งหมวด ค้นในหมวดเดิมไม่เจออีก</div>
+</div>
+</div>
+
+<div class="teach">
+<h3>🧭 กฎที่ใช้ตัดสิน — "ดูที่ประธาน"</h3>
+<p>พี่กันตั้งกฎนี้เองตอนสั่งงานรอบนี้ · ชื่อกิ่งเป็น <b>ชื่อของสิ่ง</b> ให้ถามว่า
+“คำนี้เป็นชื่อของสิ่งนั้นไหม” — ถ้าไม่ใช่ ก็ไม่เข้ากิ่งนั้น</p>
+<p>เคสตั้งต้นที่พี่กันยกมาเองคือคำว่า <b>ปรก</b></p>
+<div class="flow">
+  <div class="box was"><b>ก่อนทบทวน</b>ตัดมาจากวลี <i>หนวดเคราปรกหน้ารุงรัง</i>
+  แล้วลอกกิ่งของวลีแม่มาทั้งชุด → ไปนั่งอยู่กิ่ง <i>หนวดและเครา · ทรงผม · ความเขียวชอุ่มของใบไม้</i></div>
+  <div class="arw"><span class="h">→</span><span class="v">↓</span></div>
+  <div class="box now"><b>หลังทบทวน</b>ถอนออกครบทั้ง 3 เส้น
+  ไปอยู่กิ่ง <i>การปกคลุมและบดบัง</i> ซึ่งตรงกับความหมายจริงของคำ</div>
+</div>
+<p><b>ปรก ไม่ได้แปลว่าหนวด ไม่ได้แปลว่าผม</b> — มันแปลว่าแผ่ห้อยลงมาปกคลุม การถอนจึงถูก</p>
+</div>
+
+<div class="teach">
+<h3>🏷 ป้ายในแต่ละใบแปลว่าอะไร</h3>
+<div class="legend">
+<div><span class="tag bad">แคลร์ว่าถอนผิด</span> <b>{n_susp} ใบ · ข้อ 1–{n_susp}</b>
+ — มีเหตุผลรายใบเขียนไว้ให้ทุกใบ</div>
+<div><span class="tag mid">ก้ำกึ่ง</span> <b>{n_bord} ใบ · ข้อ {n_susp+1}–{n_susp+n_bord}</b>
+ — เถียงได้ทั้งสองทาง</div>
+<div><span class="tag ok">ถอนถูก</span> <b>{n_ok} ใบ · ข้อ {n_susp+n_bord+1} เป็นต้นไป</b>
+ — ทุกใบมีป้ายลวดลายบอกว่าถูกเพราะอะไร <b>ไม่มีใบไหนติดป้ายลอย ๆ</b></div>
+<div><span class="tag solo">เหลือกิ่งเดียว</span> <b>{n_solo} ใบ</b>
+ — ป้ายเตือนเสริม ถอนแล้วคำนั้นเหลือที่อยู่แค่กิ่งเดียวในคลังทั้งหมด ควรดูให้ละเอียดกว่าใบอื่น</div>
+</div>
+</div>
+
+<div class="teach">
+<h3>🔍 ลวดลายของใบที่ถอนถูก — อ่านจากข้อมูลจริง ไม่ได้เดา</h3>
+<div class="legend">
+<div><b>{e(PATTERNS['L1'][0])}</b> · <b>{pc['L1']} ใบ</b><br>{e(PATTERNS['L1'][1])}</div>
+<div><b>{e(PATTERNS['L2'][0])}</b> · <b>{pc['L2']} ใบ</b><br>{e(PATTERNS['L2'][1])}</div>
+<div><b>{e(PATTERNS['L3'][0])}</b> · <b>{pc['L3']} ใบ</b><br>{e(PATTERNS['L3'][1])}</div>
+</div>
+<p class="dim">ใบเดียวติดได้หลายลวดลาย ตัวเลขจึงรวมกันเกิน {n_ok}</p>
+</div>
+"""
+
     groups = collections.Counter(CAT.get(p['category_id'], '') for _, p in rows)
     stats = ''.join(f'<div class="stat"><b>{v}</b> {e(t)}</div>' for t, v in [
-        ('เส้นทั้งหมด', len(rows)), ('แคลร์ว่าถอนผิด (ข้อ 1–%d)' % n_susp, n_susp),
-        ('ก้ำกึ่ง (ข้อ %d–%d)' % (n_susp + 1, n_susp + n_bord), n_bord),
-        ('ถอนถูก (ข้อ %d เป็นต้นไป)' % (n_susp + n_bord + 1), n_ok)])
+        ('เส้นทั้งหมด', len(rows)), (f'แคลร์ว่าถอนผิด · ข้อ 1–{n_susp}', n_susp),
+        (f'ก้ำกึ่ง · ข้อ {n_susp+1}–{n_susp+n_bord}', n_bord),
+        (f'ถอนถูก · ข้อ {n_susp+n_bord+1} เป็นต้นไป', n_ok),
+        ('เหลือกิ่งเดียว', n_solo)])
 
     html = shell(
         title='กิ่งที่ถูกถอนจนคำหลุดออกจากหมวด — 506 เส้น',
         key='wordbank:dropC:v1',
-        lead='รอบทบทวนคลังคำ 2,814 รายการ · เปิดอ่านของจริงครบทุกเส้นแล้ว ไม่ได้สุ่ม · '
-             'ยังไม่แตะคลังสักเส้น รอเคาะก่อน',
+        lead='รอบทบทวนคลังคำ 2,814 รายการ · เปิดอ่านของจริงครบทุกเส้นแล้ว ไม่ได้สุ่ม · ยังไม่แตะคลังสักเส้น',
         quote='<b>กดปุ่มท้ายใบได้เลย ไม่ต้องพิมพ์วลี</b> — <b>✓ คืนกิ่งนี้</b> = เอากิ่งที่ถูกถอนกลับเข้าคำ · '
               '<b>✕ ไม่คืน</b> = ปล่อยไว้อย่างที่เป็น<br>'
               'กดเสร็จกดปุ่ม <b>ส่งออกผลการเคาะ</b> ล่างจอ แล้วส่งข้อความที่ได้กลับมา · '
-              'หรือจะตอบเป็นเลขข้อเฉย ๆ ก็ได้ เช่น “1-33 คืนหมด”',
-        stats=stats,
+              'หรือตอบเป็นเลขข้อก็ได้ เช่น “1-33 คืนหมด”<br>'
+              'ช่องค้นหารับชื่อกิ่ง ตัวคำ และชื่อลวดลาย (เช่น พิมพ์ <i>ลอกกิ่ง</i>)',
+        stats=stats + teach,
         groups=sorted(groups.items()),
         cards=''.join(cards),
         group_label='เลือกหมวดที่ถูกถอนออก',
-        extra_css=EXTRA_CSS,
-        yes_label='✓ คืนกิ่ง', no_label='✕ ไม่คืน')
+        extra_css=EXTRA_CSS, yes_label='✓ คืนกิ่ง', no_label='✕ ไม่คืน')
 
-    # ── md: หัวเรื่อง + คำอธิบาย ──
     H = []
     P = H.append
     P('# กิ่งที่ถูกถอนจนคำหลุดออกจากหมวด — ครบทั้ง 506 เส้น\n')
     P('> เปิดอ่านของจริงครบทุกเส้นแล้ว ไม่ได้สุ่ม · 🛑 **ยังไม่แตะคลังสักเส้น**\n')
     P('> 👉 **ตอบกลับเป็นเลขข้อได้เลย** เช่น “1-33 คืนหมด” หรือ “คืนแค่ 1-7 กับ 21”\n')
     P('> หรือเปิดฉบับกดปุ่มที่ `docs/m2-sense/dropped-groupC.html` แล้วกดทีละใบ\n')
+    P('\n## สารบัญ\n')
+    P('| | |')
+    P('|---|---|')
+    P(f'| [506 เส้นนี้คืออะไร](#506-เส้นนี้คืออะไร) | ที่มาและการแบ่ง 3 กลุ่ม |')
+    P(f'| [กฎที่ใช้ตัดสิน](#กฎที่ใช้ตัดสิน--ดูที่ประธาน) | กฎดูที่ประธาน + เคส `ปรก` |')
+    P(f'| [38 กับ 506 เกี่ยวอะไรกัน](#38-กับ-506-เกี่ยวอะไรกัน) | สองเลขนี้คนละแกน |')
+    P(f'| [ลวดลายของใบที่ถอนถูก](#ลวดลายของใบที่ถอนถูก) | เหตุผลของ {n_ok} ใบที่เหลือ |')
+    P(f'| [รายการทั้ง 506 เส้น](#รายการทั้ง-506-เส้น) | ข้อ 1–506 |')
     P('\n---\n')
-    P('## 38 กับ 506 เกี่ยวอะไรกัน — ไม่ใช่เซตย่อย เป็นคนละแกน\n')
+    P('## 506 เส้นนี้คืออะไร\n')
+    P('รอบทบทวนคลังคำ ผู้ช่วยไม่ได้แค่เติมกิ่ง แต่**ถอนกิ่งเดิมออกด้วย รวม 1,320 เส้น** '
+      'แบ่งตามความเสี่ยงได้ 3 กลุ่ม\n')
+    P('| กลุ่ม | เส้น | คืออะไร | เสี่ยงแค่ไหน |')
+    P('|---|---|---|---|')
+    P('| ก | 53 | ถอนกิ่งแม่ แต่ยังเก็บกิ่งลูกไว้ | ไม่เสี่ยง — ละเอียดขึ้น ไม่มีอะไรหาย |')
+    P('| ข | 761 | ยังเหลือกิ่งอื่นในหมวดเดิม | กลาง — แค่ย้ายที่ ยังค้นเจอ |')
+    P('| **ค** | **506** | **คำหลุดออกจากหมวดนั้นทั้งหมวด** | **สูงสุด — ค้นในหมวดเดิมไม่เจออีก** |')
+    P('\n**หน้านี้คือกลุ่ม ค ทั้งหมด**\n')
+    P('\n---\n')
+    P('## กฎที่ใช้ตัดสิน — ดูที่ประธาน\n')
+    P('พี่กันตั้งกฎนี้เองตอนสั่งงานรอบนี้ — ชื่อกิ่งเป็น **ชื่อของสิ่ง** ให้ถามว่า '
+      '"คำนี้เป็นชื่อของสิ่งนั้นไหม" ถ้าไม่ใช่ ก็ไม่เข้ากิ่งนั้น\n')
+    P('เคสตั้งต้นที่พี่กันยกมาเองคือคำว่า **`ปรก`**\n')
+    P('| | ไปอยู่กิ่งไหน |')
+    P('|---|---|')
+    P('| **ก่อนทบทวน** | ตัดมาจากวลี *หนวดเคราปรกหน้ารุงรัง* แล้วลอกกิ่งของวลีแม่มาทั้งชุด '
+      '→ หนวดและเครา · ทรงผม · ความเขียวชอุ่มของใบไม้ |')
+    P('| **หลังทบทวน** | ถอนออกครบทั้ง 3 เส้น → กิ่ง **การปกคลุมและบดบัง** ซึ่งตรงกับความหมายจริง |')
+    P('\n`ปรก` ไม่ได้แปลว่าหนวด ไม่ได้แปลว่าผม — มันแปลว่าแผ่ห้อยลงมาปกคลุม **การถอนจึงถูก**\n')
+    P('\n---\n')
+    P('## 38 กับ 506 เกี่ยวอะไรกัน\n')
+    P('**ไม่ใช่เซตย่อยของกัน เป็นคนละแกน**\n')
     P('| | คืออะไร | นับได้ |')
     P('|---|---|---|')
     P('| **38 เส้น** | ชื่อกิ่งที่ถูกถอน **มีคำโผล่อยู่ในตัวคำเลย** '
       '(เช่น `ยิ้มแฝงเลศนัยฯ` ถูกถอนกิ่งชื่อ *มีเลศนัยและเจ้าเล่ห์*) | 38 |')
-    P('| **506 เส้น** | ถอนแล้ว **คำหลุดออกจากหมวดนั้นทั้งหมวด** ไม่เหลือกิ่งไหนในหมวดเดิมเลย | 506 |')
+    P('| **506 เส้น** | ถอนแล้ว **คำหลุดออกจากหมวดนั้นทั้งหมวด** | 506 |')
     P('')
     P('38 เส้นนั้นกระจายอยู่ทั้ง 3 กลุ่ม — กลุ่ม ก 2 เส้น · กลุ่ม ข 20 เส้น · **กลุ่ม ค แค่ 16 จาก 506**\n')
     P('และเกณฑ์ 38 เส้นนั้น**หยาบมาก** จับได้แค่ตอนคำกับชื่อกิ่งบังเอิญใช้คำเดียวกันตรงตัว '
       'ถ้าความหมายตรงกันแต่คนละคำ เช่น `บึ่ง` กับกิ่ง *ความเร็วและความถี่* มันมองไม่เห็นเลย\n')
     P('\n---\n')
-    P('## ผลการอ่านครบ 506 เส้น\n')
-    P('| | เส้น | เลขข้อ |')
+    P('## ลวดลายของใบที่ถอนถูก\n')
+    P(f'{n_ok} ใบที่แคลร์เห็นว่าถอนถูก **ทุกใบมีป้ายลวดลายกำกับ ไม่มีใบไหนติดป้ายลอย ๆ** '
+      'ลวดลายอ่านจากข้อมูลจริงในไฟล์ผลลัพธ์ ไม่ได้เดา\n')
+    P('| ลวดลาย | กี่ใบ | แปลว่าอะไร |')
     P('|---|---|---|')
-    P(f'| 🔴 แคลร์เห็นว่าถอนผิด | **{n_susp}** | 1–{n_susp} |')
-    P(f'| ⚖️ ก้ำกึ่ง เถียงได้ทั้งสองทาง | **{n_bord}** | {n_susp+1}–{n_susp+n_bord} |')
-    P(f'| · ถอนถูก | **{n_ok}** | {n_susp+n_bord+1}–506 |')
-    P('')
-    P('**ทำไมส่วนใหญ่ถึงถอนถูก** — เพราะ **กฎดูที่ประธาน** ที่พี่กันตั้งเองรอบนี้ '
-      'บอกว่าถ้าชื่อกิ่งเป็น *ชื่อของสิ่ง* ให้ถามว่า "คำนี้เป็นชื่อของสิ่งนั้นไหม" ถ้าไม่ใช่ก็ไม่เข้า\n')
-    P('เคส `ปรก` ที่พี่กันยกมาเองตอนสั่งงาน — เดิมไปกองอยู่ในกิ่งเส้นผมกับใบไม้เพราะวลีตั้งต้นคือ '
-      '`หนวดเคราปรกหน้ารุงรัง` — รอบนี้ถอนออกครบทั้ง 3 เส้น แล้วไปอยู่กิ่ง **การปกคลุมและบดบัง** ตรงตามที่ตั้งใจ\n')
+    for c in ('L1', 'L2', 'L3'):
+        P(f'| {PATTERNS[c][0]} | {pc[c]} | {PATTERNS[c][1]} |')
+    P(f'\nใบเดียวติดได้หลายลวดลาย ตัวเลขจึงรวมกันเกิน {n_ok}\n')
+    P(f'\n⚠️ **{n_solo} ใบติดป้าย "เหลือกิ่งเดียว"** = ถอนแล้วคำนั้นเหลือที่อยู่แค่กิ่งเดียวในคลังทั้งหมด '
+      'ควรดูให้ละเอียดกว่าใบอื่น\n')
     P('\n---\n')
     P('## รายการทั้ง 506 เส้น\n')
-    P('🔴 = แคลร์ว่าถอนผิด · ⚖️ = ก้ำกึ่ง · · = ถอนถูก\n')
+    P('🔴 = แคลร์ว่าถอนผิด (ข้อ 1–%d) · ⚖️ = ก้ำกึ่ง (ข้อ %d–%d) · · = ถอนถูก\n'
+      % (n_susp, n_susp + 1, n_susp + n_bord))
 
-    md = '\n'.join(H + mdL)
-    open(OUT_MD, 'w').write(md)
+    open(OUT_MD, 'w').write('\n'.join(H + mdL))
     open(OUT_HTML, 'w').write(html)
-    print(f'เขียนแล้ว  {OUT_MD}')
-    print(f'          {OUT_HTML}')
+    print(f'เขียนแล้ว  {OUT_MD}\n          {OUT_HTML}')
     print(f'506 เส้น = 🔴 {n_susp} (ข้อ 1-{n_susp}) · ⚖️ {n_bord} '
-          f'(ข้อ {n_susp+1}-{n_susp+n_bord}) · ถอนถูก {n_ok}')
+          f'(ข้อ {n_susp+1}-{n_susp+n_bord}) · ถอนถูก {n_ok} · เหลือกิ่งเดียว {n_solo}')
+    print('ลวดลาย:', dict(pc), '· ใบที่ไม่มีเหตุผล: 0')
 
 
 if __name__ == '__main__':
