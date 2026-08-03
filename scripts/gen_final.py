@@ -154,10 +154,11 @@ def main():
               ensure_ascii=False, indent=1)
 
     # ── ฉบับอ่าน: ต้นไม้ หมวด → กิ่ง → คำ ─────────────────────────────
+    # คีย์ด้วย (หมวด, เส้นทาง) — มีกิ่ง 2 เส้นที่ชื่อซ้ำกันข้ามหมวด
     inbr = collections.defaultdict(list)
     for r in rows:
         for l in r['branches']:
-            inbr[l['path']].append(r)
+            inbr[(l['category_id'], l['path'])].append(r)
     L = ['# คลังคำ · ฉบับรวมสองเล่ม', '',
          '> สร้างอัตโนมัติจาก `scripts/gen_final.py` — **อย่าแก้ไฟล์นี้ด้วยมือ**', '',
          '| | |', '|---|---|']
@@ -168,10 +169,10 @@ def main():
     L.append('')
     for c in src['categories']:
         bs = [b for b in src['branches'] if b['category_id'] == c['id']]
-        tot = len({r['text'] for b in bs for r in inbr.get(b['path'], [])})
+        tot = len({r['text'] for b in bs for r in inbr.get((c['id'], b['path']), [])})
         L += ['', '## หมวด %d · %s (%s) — %d คำ' % (c['no'], c['name_th'], c.get('name_en') or '', tot), '']
         for b in bs:
-            ws = inbr.get(b['path'], [])
+            ws = inbr.get((c['id'], b['path']), [])
             if not ws:
                 continue
             L.append('- **%s**  `[%s]` — _%s_' % (lv(b['path']), b['code'], b.get('definition') or ''))
@@ -187,7 +188,7 @@ def main():
         for b in src['branches']:
             if b['category_id'] != c['id']:
                 continue
-            n = len(inbr.get(b['path'], []))
+            n = len(inbr.get((b['category_id'], b['path']), []))
             L.append('- `[%s]` %s — _%s_%s'
                      % (b['code'], lv(b['path']), b.get('definition') or '',
                         '' if n else '  ⬜ ยังไม่มีคำ'))
