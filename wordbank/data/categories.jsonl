@@ -1,0 +1,15 @@
+{"id": "c0", "no": 1, "name_th": "บรรยากาศ แสง สี และสถานที่", "name_en": "Setting & Atmosphere", "color": "#5f7f92", "glyph": "๑", "position": 0, "proposed": false, "word_count": 595}
+{"id": "c1", "no": 2, "name_th": "รูปลักษณ์และลักษณะบุคคล", "name_en": "Character Appearance", "color": "#a86a79", "glyph": "๒", "position": 1, "proposed": false, "word_count": 492}
+{"id": "c2", "no": 3, "name_th": "กริยา ท่าทาง และการเคลื่อนไหว", "name_en": "Action & Body Language", "color": "#6f8a56", "glyph": "๓", "position": 2, "proposed": false, "word_count": 1248}
+{"id": "c3", "no": 4, "name_th": "เสียง", "name_en": "Sound Effects", "color": "#bd8a3c", "glyph": "๔", "position": 3, "proposed": false, "word_count": 352}
+{"id": "c4", "no": 5, "name_th": "สภาวะภายใน", "name_en": "Internal States", "color": "#b0563f", "glyph": "๕", "position": 4, "proposed": false, "word_count": 649}
+{"id": "c5", "no": 6, "name_th": "คำปรุงแต่งและคำอเนกประสงค์", "name_en": "Modifiers", "color": "#7c6a99", "glyph": "๖", "position": 5, "proposed": false, "word_count": 749}
+{"id": "c6", "no": 7, "name_th": "คำทับศัพท์ที่มักสะกดผิด", "name_en": "Loanwords & Spelling", "color": "#3f7d6c", "glyph": "๗", "position": 6, "proposed": false, "word_count": 28}
+{"id": "c7", "no": 8, "name_th": "นิสัยและบุคลิกภาพ", "name_en": "Intrinsic Character & Personality", "color": "#9a7636", "glyph": "๘", "position": 7, "proposed": false, "word_count": 330}
+{"id": "c8", "no": 9, "name_th": "อื่น ๆ", "name_en": "Misc", "color": "#8a8175", "glyph": "๙", "position": 8, "proposed": false, "word_count": 0, "note": "ยังไม่ได้เกลาโครงกิ่ง · ไม่มีคำในรอบนี้"}
+{"id": "c9", "no": 10, "name_th": "สิ่งของและข้าวของ", "name_en": "Objects & Belongings", "color": "#8b6f47", "glyph": "๑๐", "position": 9, "proposed": false, "word_count": 181}
+{"id": "c10", "no": 11, "name_th": "สถานะ บทบาท และชาติตระกูล", "name_en": "Status, Role & Social Identity", "color": "#a0894a", "glyph": "๑๑", "position": 10, "proposed": false, "word_count": 79}
+{"id": "c11", "no": 12, "name_th": "ความเชื่อ พิธีกรรม และสิ่งเหนือธรรมชาติ", "name_en": "Belief, Ritual & the Supernatural", "color": "#6b5b95", "glyph": "๑๒", "position": 11, "proposed": false, "word_count": 47}
+{"id": "c12", "no": 13, "name_th": "ภาษา ถ้อยคำ และการประพันธ์", "name_en": "Language, Speech Forms & Composition", "color": "#4a7a8c", "glyph": "๑๓", "position": 12, "proposed": false, "word_count": 51}
+{"id": "c13", "no": 14, "name_th": "กฎหมาย คดีความ และสิทธิ", "name_en": "Law, Justice & Legal Rights", "color": "#7d6b5d", "glyph": "๑๔", "position": 13, "proposed": false, "word_count": 29}
+{"id": "c14", "no": 15, "name_th": "บทบรรยายและภาพรวมฉาก", "name_en": "Narrative Passages & Scene Composites", "color": "#96745c", "glyph": "๑๕", "position": 14, "proposed": false, "word_count": 79}
