@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""สร้างม็อคอัพ "หน้าต่างคำ" → docs/word-web-mockup.html
+"""สร้างม็อคอัพ "หน้าต่างคำ" → docs/archive/misc/word-web-mockup.html
 
 พี่กันสั่ง 26 ก.ค. 2569 สามรอบ กว่าจะได้โจทย์ที่ตรง
   รอบ 1 "ทำมอคอัพมาก่อน" + "เอา" (ให้มีทางกลับ)
@@ -27,7 +27,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def p(*a): return os.path.join(ROOT, *a)
 
 NEW = json.load(open(p('docs/newwords-branches.json'), encoding='utf-8'))
-OLD = json.load(open(p('docs/library-export.json'), encoding='utf-8'))['words']
+OLD = json.load(open(p('docs/archive/misc/library-export.json'), encoding='utf-8'))['words']
 CAT = {c['id']: c for c in NEW['categories']}
 W = {w['text']: w for w in NEW['words']}
 OLDBY = collections.defaultdict(list)
@@ -831,7 +831,7 @@ body = BODY.replace('__FONTS__', FONTCSS).replace('__DATA__', DATA)
 full = ('<!doctype html>\n<html lang="th">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width,initial-scale=1">\n'
         f'<title>{TITLE}</title>\n</head>\n<body>\n{body}\n</body>\n</html>\n')
-open(p('docs/word-web-mockup.html'), 'w', encoding='utf-8').write(full)
+open(p('docs/archive/misc/word-web-mockup.html'), 'w', encoding='utf-8').write(full)
 open(sys.argv[1] if len(sys.argv) > 1 else '/tmp/word-web-mockup-page.html', 'w',
      encoding='utf-8').write(f'<title>{TITLE}</title>\n{body}\n')
-print(f"OK · docs/word-web-mockup.html · {len(NODES)} คำ · {len(full)/1024:.0f} KB")
+print(f"OK · docs/archive/misc/word-web-mockup.html · {len(NODES)} คำ · {len(full)/1024:.0f} KB")

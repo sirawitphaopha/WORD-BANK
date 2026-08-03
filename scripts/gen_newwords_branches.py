@@ -7,8 +7,8 @@
    - **ไม่เขียนทับไฟล์ของคลังเดิมสักไฟล์**
 
 ที่มาของข้อมูล
-   - docs/newwords-clean.txt   วลีดิบ 1,329 บรรทัด (คำต้นฉบับ ห้ามแก้ ห้ามยุบ)
-   - docs/newwords-picked.md   คำที่พี่กันคัดด้วยเครื่องมือลากนิ้ว 675 แถว
+   - docs/archive/newwords-round/newwords-clean.txt   วลีดิบ 1,329 บรรทัด (คำต้นฉบับ ห้ามแก้ ห้ามยุบ)
+   - docs/archive/newwords-round/newwords-picked.md   คำที่พี่กันคัดด้วยเครื่องมือลากนิ้ว 675 แถว
    - ผลการจัดกิ่ง (ไฟล์ jsonl ที่ตัวจัดคำเขียนไว้) + กิ่งใหม่ที่เสนอ
 
 วิธีใช้
@@ -29,7 +29,7 @@ NOVEL = 'คินดะอิจิยอดนักสืบ ตอน บท
 # ─────────────────────────────────────────────
 # คำที่ "เครื่องมือคัดคำตัดผิด" ไม่ใช่คำที่พี่กันตั้งใจเลือก
 # ─────────────────────────────────────────────
-# ที่มา: ตัวซอยคำไทยของเบราว์เซอร์ในเครื่องมือลากนิ้ว (docs/newwords-picker.html)
+# ที่มา: ตัวซอยคำไทยของเบราว์เซอร์ในเครื่องมือลากนิ้ว (docs/archive/newwords-round/newwords-picker.html)
 # ซอยคำผิด เช่น "ปล่อยก๊ากออกมา" ถูกตัดเป็น ปล่อย|ก๊า|กอ|อก|มา (ไม่มี "ก๊าก" ให้เลือกเลย)
 # พี่กันพูดเองตอนเห็นคำพวกนี้ (25 ก.ค. 2569):
 #   "4 ข้อนั้น คือระบบเธอกากอ่ะ คิดว่าเราตั้งใจเอาคำพวกนี้ที่ผิดๆมาเหรอ"
@@ -184,13 +184,13 @@ for (_cid, _old), _new_parent in RENAME.items():
 # ─────────────────────────────────────────────
 def load_sources():
     raw = []
-    for i, line in enumerate(open(p('docs/newwords-clean.txt'), encoding='utf-8'), 1):
+    for i, line in enumerate(open(p('docs/archive/newwords-round/newwords-clean.txt'), encoding='utf-8'), 1):
         t = line.strip()
         if t:
             raw.append({'text': t, 'line': i})
 
     picked = []
-    for line in open(p('docs/newwords-picked.md'), encoding='utf-8'):
+    for line in open(p('docs/archive/newwords-round/newwords-picked.md'), encoding='utf-8'):
         m = re.match(r'^\|\s*(\d+)\s*\|\s*\*\*(.+?)\*\*\s*\|\s*(.+?)\s*\|\s*(\d+)\s*\|'
                      r'\s*(ระบบเสนอ|สกัดเอง)\s*\|\s*(.*?)\s*\|$', line.strip())
         if m:
@@ -398,7 +398,7 @@ def main():
 
     out = {
         'meta': {
-            'source': ['docs/newwords-clean.txt', 'docs/newwords-picked.md'],
+            'source': ['docs/archive/newwords-round/newwords-clean.txt', 'docs/archive/newwords-round/newwords-picked.md'],
             'novel': NOVEL,
             'status': 'draft — ยังไม่อัป Supabase',
             'note': 'คลังคำชุดใหม่ (นิยายสืบสวน) แยกจาก docs/branches-data.json ของคลังเดิม 680 คำ '

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""สรุปผลรอบเกลาคลังเดิม → docs/oldwords-result.md + .html (ให้พี่กันอ่าน)
+"""สรุปผลรอบเกลาคลังเดิม → docs/archive/oldwords-round/oldwords-result.md + .html (ให้พี่กันอ่าน)
 
 ใช้: python3 scripts/gen_oldwords_result.py
 
@@ -167,13 +167,13 @@ td,th{{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}}
 
 
 def main():
-    open(P('docs/oldwords-result.md'), 'w', encoding='utf-8').write(md())
+    open(P('docs/archive/oldwords-round/oldwords-result.md'), 'w', encoding='utf-8').write(md())
     body = page()
-    open(P('docs/oldwords-result.html'), 'w', encoding='utf-8').write(
+    open(P('docs/archive/oldwords-round/oldwords-result.html'), 'w', encoding='utf-8').write(
         '<!doctype html><html lang=th><head><meta charset=utf-8>' + body + '</body></html>')
     if len(sys.argv) > 1 and not sys.argv[1].startswith('-'):
         open(sys.argv[1], 'w', encoding='utf-8').write(body)
-    print('เขียน docs/oldwords-result.md + .html')
+    print('เขียน docs/archive/oldwords-round/oldwords-result.md + .html')
     print('  คำใหม่ %d (ชิป %d) · กิ่งที่วลีเดิมติดเพิ่ม %d · เส้นเชื่อมย้อนหลัง %d · มาจากหลายวลี %d'
           % (len(newc), nnew, nadd, len(linkback), len(multisrc)))
 

@@ -3,8 +3,8 @@
 """สร้างฉบับ HTML อ่านง่ายของไฟล์ที่พี่กันต้องเคาะ (พี่กันขอ 26 ก.ค. 2569)
 
 ออก 2 ไฟล์
-  docs/newwords-review-narration.html  บทบรรยาย 80 บท · กดเลือก เอา/ไม่เอา ได้
-  docs/newwords-review-branches.html   กิ่งใหม่ 81 กิ่งในหมวดเดิม · กดเลือก เอา/ไม่เอา ได้
+  docs/archive/newwords-round/newwords-review-narration.html  บทบรรยาย 80 บท · กดเลือก เอา/ไม่เอา ได้
+  docs/archive/newwords-round/newwords-review-branches.html   กิ่งใหม่ 81 กิ่งในหมวดเดิม · กดเลือก เอา/ไม่เอา ได้
 
 🛟 บทเรียนที่ต้องยกมาด้วยทุกครั้ง (25 ก.ค. พี่กันเสียงานเป็นพันคำ):
    - เก็บลงที่เก็บทันทีทุกครั้งที่กด ห้ามรอปุ่มยืนยัน
@@ -299,7 +299,7 @@ def narration_html():
         f'<span class="stat">ต่ำกว่า 25 <b>{sum(1 for x in n if x < 25)}</b></span>',
         f'<span class="stat">มีคำย่อย <b>{sum(1 for x in passages if subs.get(x["text"]))}</b> บท</span>',
     ])
-    open(p('docs/newwords-review-narration.html'), 'w', encoding='utf-8').write(shell(
+    open(p('docs/archive/newwords-round/newwords-review-narration.html'), 'w', encoding='utf-8').write(shell(
         'บทบรรยายหมวด 15 — เคาะว่าอันไหนเอา',
         'wordbank:review-narration:v1',
         'เรียงจากบทยาวสุดไปสั้นสุด · แตะปุ่มใต้การ์ดเพื่อเคาะ · ที่เคาะไว้บันทึกทันทีทุกครั้ง',
@@ -354,7 +354,7 @@ def branches_html():
     stats = f'<span class="stat">กิ่งใหม่ <b>{len(new)}</b> กิ่ง</span>' + ''.join(
         f'<span class="stat">{e(k.split(" ")[0])} {e(k.split(" ")[1])} <b>{v}</b></span>'
         for k, v in sorted(gc.items(), key=lambda x: -x[1]))
-    open(p('docs/newwords-review-branches.html'), 'w', encoding='utf-8').write(shell(
+    open(p('docs/archive/newwords-round/newwords-review-branches.html'), 'w', encoding='utf-8').write(shell(
         'กิ่งใหม่ในหมวดเดิม — เคาะว่ากิ่งไหนเอา',
         'wordbank:review-branches:v1',
         'รวมกิ่งที่เสนอไว้รอบก่อนกับกิ่งที่โผล่ตอนจัดคำจริงไว้ด้วยกัน · แตะปุ่มใต้การ์ดเพื่อเคาะ',
@@ -367,5 +367,5 @@ def branches_html():
 
 
 if __name__ == '__main__':
-    print('บทบรรยาย', narration_html(), '→ docs/newwords-review-narration.html')
-    print('กิ่งใหม่', branches_html(), '→ docs/newwords-review-branches.html')
+    print('บทบรรยาย', narration_html(), '→ docs/archive/newwords-round/newwords-review-narration.html')
+    print('กิ่งใหม่', branches_html(), '→ docs/archive/newwords-round/newwords-review-branches.html')

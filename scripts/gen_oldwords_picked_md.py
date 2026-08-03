@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""ฉบับสำรองของงานที่พี่กันนั่งคัดเอง → docs/oldwords-picked.md
+"""ฉบับสำรองของงานที่พี่กันนั่งคัดเอง → docs/archive/oldwords-round/oldwords-picked.md
 
 ใช้: python3 scripts/gen_oldwords_picked_md.py
 
 🛟 **เหตุผลที่ต้องมีไฟล์นี้** — งานที่พี่กันนั่งลากนิ้วคัดเป็นชั่วโมงอยู่แค่ในเครื่องมือ HTML
    ถ้าเบราว์เซอร์ล้างข้อมูลทิ้ง งานหายหมด · เอาลงเรพแล้วไม่หายอีก
-   (ทำแบบเดียวกับ `docs/newwords-picked.md` ของคลังชุดใหม่ที่เคยกู้งาน 675 คำไว้)
+   (ทำแบบเดียวกับ `docs/archive/newwords-round/newwords-picked.md` ของคลังชุดใหม่ที่เคยกู้งาน 675 คำไว้)
 """
 import json, os, collections
 
@@ -30,7 +30,7 @@ multi = PK['multi_parent']
 
 def main():
     o = ['# คำที่พี่กันคัดเองจากคลังเดิม — %d รายการ' % len(rows), '',
-         '> 🛟 **ไฟล์นี้คือฉบับสำรองของงานที่พี่กันนั่งคัดด้วยเครื่องมือลากนิ้ว** (`docs/oldwords-extract.html`)',
+         '> 🛟 **ไฟล์นี้คือฉบับสำรองของงานที่พี่กันนั่งคัดด้วยเครื่องมือลากนิ้ว** (`docs/archive/oldwords-round/oldwords-extract.html`)',
          '> เก็บลงเรพแล้ว **ต่อจากนี้ไม่หายอีก แม้เครื่องมือจะล้างข้อมูลทิ้ง**',
          '> สร้างอัตโนมัติจาก `scripts/gen_oldwords_picked_md.py` · อย่าแก้มือ', '',
          '## สรุป', '',
@@ -72,8 +72,8 @@ def main():
         for w, ns in sorted(multi.items(), key=lambda x: -len(x[1])):
             o.append('| **%s** | %d | %s |' % (w, len(ns), ' · '.join(str(n) for n in ns)))
 
-    open(P('docs/oldwords-picked.md'), 'w', encoding='utf-8').write('\n'.join(o) + '\n')
-    print('เขียน docs/oldwords-picked.md')
+    open(P('docs/archive/oldwords-round/oldwords-picked.md'), 'w', encoding='utf-8').write('\n'.join(o) + '\n')
+    print('เขียน docs/archive/oldwords-round/oldwords-picked.md')
     print('  ทั้งหมด %d · พี่กันลากเอง %d · ระบบเสนอ %d · มีหมายเหตุ %d · มาจากหลายวลี %d'
           % (len(rows), len(own), len(sysv), len(noted), len(multi)))
 

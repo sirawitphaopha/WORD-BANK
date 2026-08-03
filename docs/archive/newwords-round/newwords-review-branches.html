@@ -1,0 +1,187 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>กิ่งใหม่ในหมวดเดิม — เคาะว่ากิ่งไหนเอา</title>
+<style>
+/* ธีมกระดาษวรรณกรรมของโปรเจกต์ (ครีม + หมึกน้ำตาล) — ใช้ตัวแปรสีล้วน
+   สลับธีมได้ 2 ทาง: ตามเครื่อง (prefers-color-scheme) และตามปุ่มสลับของหน้าเว็บ (data-theme)
+   ต้องเขียนทั้ง 3 ชุด ไม่งั้นปุ่มสลับธีมจะสู้ค่าของเครื่องไม่ได้ */
+:root,:root[data-theme=light]{--paper:#f6f1e4;--card:#fffdf6;--ink:#33291f;--soft:#7a6a52;
+      --line:#ddd0b4;--primary:#7b5e3b;--accent:#9c3b2b;--ok:#2f6d43;--mark:#b98a2e}
+@media (prefers-color-scheme:dark){:root{--paper:#221d17;--card:#2b251d;--ink:#efe6d5;
+      --soft:#b3a68c;--line:#463b2c;--primary:#c9a878;--accent:#e08b76;--ok:#7fc79a;--mark:#e0b878}}
+:root[data-theme=dark]{--paper:#221d17;--card:#2b251d;--ink:#efe6d5;--soft:#b3a68c;
+      --line:#463b2c;--primary:#c9a878;--accent:#e08b76;--ok:#7fc79a;--mark:#e0b878}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Sarabun","TH Sarabun New",system-ui,sans-serif;line-height:1.75;font-size:16px}
+.wrap{max-width:960px;margin:0 auto;padding:18px 16px 90px}
+h1{font-size:clamp(24px,5vw,34px);margin:.2em 0;color:var(--accent);line-height:1.35}
+.lead{color:var(--soft);font-size:14px;margin:0 0 14px}
+.quote{border-left:4px solid var(--line);padding:8px 12px;margin:12px 0;color:var(--soft);
+  background:var(--card);border-radius:0 10px 10px 0;font-size:14px}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13px}
+.stat b{color:var(--accent);font-size:17px}
+.bar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);
+  margin:0 -16px;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input[type=search],select{font:inherit;font-size:15px;padding:8px 11px;border:1px solid var(--line);
+  border-radius:10px;background:var(--card);color:var(--ink);min-width:0}
+input[type=search]{flex:1}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{font:inherit;font-size:13px;padding:6px 11px;border:1px solid var(--line);
+  border-radius:999px;background:var(--card);color:var(--soft);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--primary);color:#fff9ee;border-color:var(--primary)}
+.savest{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--soft);white-space:nowrap}
+.savest.ok{color:var(--ok);border-color:var(--ok)}
+.savest.bad{color:var(--accent);border-color:var(--accent);font-weight:700}
+.warn{margin:12px 0;padding:11px 13px;border-radius:12px;font-size:14px;line-height:1.7;
+  background:rgba(156,43,35,.1);border:1px solid var(--accent);color:var(--accent)}
+.warn[hidden]{display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin:13px 0}
+.card.no{opacity:.5}
+.card.yes{border-color:var(--ok);border-width:2px}
+.num{font-size:13px;color:var(--soft);font-weight:700}
+.txt{font-size:clamp(17px,3.6vw,20px);font-weight:600;margin:5px 0 8px;line-height:1.65}
+.meta{font-size:12.5px;color:var(--soft);margin-bottom:10px}
+.sec{margin:9px 0 0;font-size:14px}
+.sec .h{font-weight:700;font-size:13px;color:var(--primary);display:block;margin-bottom:3px}
+.path{display:inline-block;background:rgba(123,94,59,.1);border:1px solid var(--line);
+  border-radius:8px;padding:1px 8px;margin:2px 4px 2px 0;font-size:13px}
+.sub{margin:3px 0 3px 2px;font-size:14px}
+.sub b{color:var(--mark)}
+.dim{color:var(--soft);font-size:12.5px}
+.acts{display:flex;gap:8px;margin-top:12px}
+.acts button{flex:1;font:inherit;font-size:15px;padding:9px;border-radius:11px;cursor:pointer;
+  border:1px solid var(--line);background:var(--paper);color:var(--soft);font-weight:600}
+.acts button[aria-pressed=true].y{background:var(--ok);border-color:var(--ok);color:#fff}
+.acts button[aria-pressed=true].n{background:var(--accent);border-color:var(--accent);color:#fff}
+.out{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
+  padding:9px 16px;display:flex;gap:9px;align-items:center;font-size:13.5px}
+.out button{font:inherit;font-size:14px;padding:8px 14px;border-radius:10px;border:none;
+  background:var(--accent);color:#fff;font-weight:700;cursor:pointer}
+textarea{width:100%;min-height:150px;font:inherit;font-size:14px;padding:10px;border-radius:10px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink)}
+dialog{border:none;border-radius:14px;padding:16px;max-width:min(700px,94vw);background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--paper);
+  padding:9px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1}
+</style></head><body><div class="wrap">
+<h1>กิ่งใหม่ในหมวดเดิม — เคาะว่ากิ่งไหนเอา</h1>
+<p class="lead">รวมกิ่งที่เสนอไว้รอบก่อนกับกิ่งที่โผล่ตอนจัดคำจริงไว้ด้วยกัน · แตะปุ่มใต้การ์ดเพื่อเคาะ</p>
+<div class="quote">พี่กันสั่ง: <i>"48 กิ่งที่เสนอรอบก่อน กับ 16 กิ่งที่โผล่เพิ่ม เอามารวมกันที เราขออ่านซ้ำ และขอทั้งวลีนั้น กิ่ง หมวด และเหตุผล"</i><br>ทุกกิ่งมีคำจริงครบทุกคำ พร้อมกิ่งอื่นที่คำนั้นติดด้วย และเหตุผลที่ตัวจัดคำเขียนไว้<br>🚫 กิ่งของหมวดใหม่ 12/13/14/15 ไม่ได้อยู่ในนี้ อ่านได้ในไฟล์ร่างของแต่ละหมวด</div>
+<div class="warn" id="warn" hidden></div>
+<div class="stats"><span class="stat">กิ่งใหม่ <b>0</b> กิ่ง</span></div>
+<div class="bar">
+  <input type="search" id="q" placeholder="ค้นหาข้อความ คำ หรือชื่อกิ่ง" aria-label="ค้นหา">
+  
+  <div class="seg" id="fstate">
+    <button data-f="all" aria-pressed="true">ทั้งหมด</button>
+    <button data-f="todo" aria-pressed="false">ยังไม่เคาะ</button>
+    <button data-f="y" aria-pressed="false">✓ เอา</button>
+    <button data-f="n" aria-pressed="false">✕ ไม่เอา</button>
+  </div>
+  <span class="savest" id="savest"></span>
+</div>
+
+</div>
+<div class="out">
+  <span>แสดง <b id="shown">0</b> รายการ</span>
+  <button id="b-clr" style="background:var(--soft)">ล้าง</button>
+  <button id="b-out">ส่งออกผลการเคาะ</button>
+</div>
+<dialog id="dlg"><textarea id="outtext" readonly></textarea>
+  <div style="display:flex;gap:8px;margin-top:9px">
+    <button onclick="copyOut()" style="flex:1;font:inherit;font-size:15px;padding:9px;border-radius:10px;border:none;background:var(--primary);color:#fff;font-weight:700">คัดลอก</button>
+    <button onclick="document.getElementById('dlg').close()" style="flex:1;font:inherit;font-size:15px;padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink)">ปิด</button>
+  </div></dialog>
+<div class="toast" id="toast"></div>
+<script>const KEY='wordbank:review-branches:v1';const TITLE="กิ่งใหม่ในหมวดเดิม — เคาะว่ากิ่งไหนเอา";
+/* ---------- ที่เก็บ 3 ชั้น + อ่านกลับมาเทียบ + โชว์สถานะ ----------
+   บทเรียน 25 ก.ค. 2569: เก็บเงียบ ๆ แล้วพังโดยไม่มีใครรู้ = ผู้ใช้เสียงานเป็นชั่วโมง */
+const STORE=(()=>{
+  const probe=o=>{try{const k=KEY+':p';o.setItem(k,'1');const ok=o.getItem(k)==='1';o.removeItem(k);return ok}catch(e){return false}};
+  try{if(typeof localStorage!=='undefined'&&probe(localStorage))
+    return{durable:true,get:()=>localStorage.getItem(KEY),set:v=>localStorage.setItem(KEY,v)}}catch(e){}
+  try{if(typeof sessionStorage!=='undefined'&&probe(sessionStorage))
+    return{durable:false,get:()=>sessionStorage.getItem(KEY),set:v=>sessionStorage.setItem(KEY,v)}}catch(e){}
+  return{durable:false,
+    get:()=>{try{const m=/^__wbrev__(\{[\s\S]*\})$/.exec(window.name||'');return m?m[1]:null}catch(e){return null}},
+    set:v=>{window.name='__wbrev__'+v}};
+})();
+let pick={};
+try{const r=STORE.get();if(r)pick=JSON.parse(r)||{}}catch(e){}
+let saveOK=null,savedAt='';
+function save(){
+  try{const v=JSON.stringify(pick);STORE.set(v);let b=null;try{b=STORE.get()}catch(e){}saveOK=(b===v)}
+  catch(e){saveOK=false}
+  const d=new Date();savedAt=[d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>('0'+x).slice(-2)).join(':');
+  paint();
+}
+const $=s=>document.querySelector(s);
+function paint(){
+  const el=$('#savest');if(!el)return;
+  const n=Object.keys(pick).length;
+  if(saveOK===false){el.className='savest bad';el.textContent='⚠ บันทึกไม่ได้ กดส่งออกเก็บไว้'}
+  else if(saveOK===true){el.className='savest '+(STORE.durable?'ok':'bad');
+    el.textContent=(STORE.durable?'💾 บันทึกแล้ว ':'⚠ เก็บชั่วคราว ')+savedAt+' · เคาะแล้ว '+n}
+  else{el.className='savest';el.textContent='เคาะแล้ว '+n}
+}
+(function(){const w=$('#warn');if(!w)return;if(STORE.durable){w.hidden=true;return}
+  w.hidden=false;w.innerHTML='<b>⚠ เครื่องนี้เก็บข้อมูลถาวรไม่ได้</b><br>'+
+   'ที่เคาะไว้จะอยู่แค่ในแท็บนี้ รีเฟรชได้ แต่ปิดแท็บแล้วหาย<br>👉 <b>กดปุ่มส่งออกเก็บไว้เป็นระยะ</b>';})();
+
+/* ---------- ตัวกรอง ---------- */
+let q='',fState='all',fGroup='';
+function apply(){
+  let shown=0;
+  document.querySelectorAll('.card').forEach(c=>{
+    const id=c.dataset.id, st=pick[id]||'';
+    c.classList.toggle('yes',st==='y');c.classList.toggle('no',st==='n');
+    c.querySelectorAll('.acts button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st));
+    let ok=true;
+    if(q&&!c.dataset.s.includes(q))ok=false;
+    if(fGroup&&c.dataset.g!==fGroup)ok=false;
+    if(fState==='todo'&&st)ok=false;
+    if(fState==='y'&&st!=='y')ok=false;
+    if(fState==='n'&&st!=='n')ok=false;
+    c.hidden=!ok; if(ok)shown++;
+  });
+  $('#shown').textContent=shown;
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  $('#q').addEventListener('input',ev=>{q=ev.target.value.trim();apply()});
+  const g=$('#fgroup'); if(g) g.addEventListener('change',ev=>{fGroup=ev.target.value;apply()});
+  document.querySelectorAll('#fstate button').forEach(b=>b.addEventListener('click',()=>{
+    fState=b.dataset.f;document.querySelectorAll('#fstate button').forEach(x=>x.setAttribute('aria-pressed',x===b));apply()}));
+  document.querySelectorAll('.acts button').forEach(b=>b.addEventListener('click',()=>{
+    const c=b.closest('.card'),id=c.dataset.id;
+    if(pick[id]===b.dataset.v)delete pick[id];else pick[id]=b.dataset.v;
+    save();apply();
+  }));
+  $('#b-out').addEventListener('click',showOut);
+  $('#b-clr').addEventListener('click',()=>{if(confirm('ล้างที่เคาะไว้ทั้งหมด'))
+    {pick={};save();apply();toast('ล้างแล้ว')}});
+  save();apply();
+});
+function showOut(){
+  const yes=[],no=[];
+  document.querySelectorAll('.card').forEach(c=>{
+    const st=pick[c.dataset.id];const t=c.dataset.title;
+    if(st==='y')yes.push(c.dataset.id+'. '+t);
+    if(st==='n')no.push(c.dataset.id+'. '+t);
+  });
+  const L=['# ผลการเคาะ — '+TITLE,'',
+    '## ✕ ไม่เอา ('+no.length+')','',...(no.length?no:['(ไม่มี)']),'',
+    '## ✓ เอา ('+yes.length+')','',...(yes.length?yes:['(ไม่มี)'])];
+  $('#outtext').value=L.join('\n');
+  $('#dlg').showModal();
+}
+function copyOut(){const t=$('#outtext');t.select();
+  navigator.clipboard.writeText(t.value).then(()=>toast('คัดลอกแล้ว')).catch(()=>toast('กดค้างเพื่อคัดลอก'))}
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1800)}
+</script>
+</body></html>

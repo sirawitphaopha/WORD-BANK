@@ -5,14 +5,14 @@
 
 ใช้:  python3 scripts/gen_oldwords_picker.py 8
 
-🔑 ยกโต๊ะคัดคำเดิม (docs/newwords-picker.html) มาทั้งชุด — ห้ามคิดกลไกใหม่
+🔑 ยกโต๊ะคัดคำเดิม (docs/archive/newwords-round/newwords-picker.html) มาทั้งชุด — ห้ามคิดกลไกใหม่
    ตัวนั้นผ่านคำติของพี่กันมา 6 รอบจนลงตัว: ลากนิ้วทีละตัวอักษร · ป๊อปกระจกเงา ·
    หมายเหตุ 2 ระดับ · ระบบกันงานหาย 3 ชั้น
    รอบนี้เปลี่ยน 3 อย่าง: ข้อมูลที่ป้อนเข้า · แถบสถานะกิ่ง 4 สี (ของใหม่) · สร้างจากสคริปต์
 
 อ่าน  docs/oldwords/catN/{in.jsonl, out*.jsonl, newbr*.json}
       docs/branches-data.json · docs/newwords-branches.json
-เขียน docs/oldwords-picker-catN.html  (+ fragment สำหรับ Artifact ถ้าใส่ argv[2])
+เขียน docs/archive/oldwords-round/oldwords-picker-catN.html  (+ fragment สำหรับ Artifact ถ้าใส่ argv[2])
 """
 import json, sys, os, glob, re, html
 

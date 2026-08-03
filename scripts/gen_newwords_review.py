@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 """สร้าง 2 ไฟล์ที่พี่กันขออ่านเพื่อเคาะ (26 ก.ค. 2569)
 
-1. docs/newwords-review-narration.md
+1. docs/archive/newwords-round/newwords-review-narration.md
    บทบรรยายทั้งหมดในหมวด 15 · รูปแบบตามที่พี่กันสั่งเอง:
      "บทบรรยายนี้ มีคำย่อยแล้วติดหมวดไหนมั่ง และบททั้งบทติดหมวดหรือกิ่งไหนมั่ง"
    → หมวด 15 ไม่มีกิ่งย่อย · แต่ละบทโชว์ 2 ชั้นคือ ทั้งบทติดกิ่งไหน กับ คำย่อยข้างในติดกิ่งไหน
 
-2. docs/newwords-review-branches.md
+2. docs/archive/newwords-round/newwords-review-branches.md
    กิ่งใหม่ทั้งหมดที่เพิ่มเข้าหมวดเดิม (หมวด 1–11) พร้อม **คำจริง** และ **เหตุผล**
    พี่กันท้วงว่ารอบก่อนให้แต่ชื่อกิ่ง ไม่มีคำ เลยตัดสินใจไม่ได้
 
@@ -107,7 +107,7 @@ def narration():
             L.append(f'🗨 _{w["reason"]}_')
         L.append('')
 
-    open(p('docs/newwords-review-narration.md'), 'w', encoding='utf-8').write('\n'.join(L) + '\n')
+    open(p('docs/archive/newwords-round/newwords-review-narration.md'), 'w', encoding='utf-8').write('\n'.join(L) + '\n')
     return len(passages)
 
 
@@ -175,12 +175,12 @@ def branches():
             L.append('⚠️ **กิ่งนี้ยังไม่มีคำมาลง** (ตั้งเผื่อไว้)')
         L.append('')
 
-    open(p('docs/newwords-review-branches.md'), 'w', encoding='utf-8').write('\n'.join(L) + '\n')
+    open(p('docs/archive/newwords-round/newwords-review-branches.md'), 'w', encoding='utf-8').write('\n'.join(L) + '\n')
     return len(new)
 
 
 if __name__ == '__main__':
     a = narration()
     b = branches()
-    print(f'บทบรรยาย {a} บท → docs/newwords-review-narration.md')
-    print(f'กิ่งใหม่ในหมวดเดิม {b} กิ่ง → docs/newwords-review-branches.md')
+    print(f'บทบรรยาย {a} บท → docs/archive/newwords-round/newwords-review-narration.md')
+    print(f'กิ่งใหม่ในหมวดเดิม {b} กิ่ง → docs/archive/newwords-round/newwords-review-branches.md')

@@ -5,7 +5,7 @@
 
 ใช้:  python3 scripts/gen_oldwords_extract.py [ไฟล์ fragment สำหรับ Artifact]
 
-🔑 วิธีทำ: **ยกไฟล์ docs/newwords-picker.html มาทั้งไฟล์ แล้วเปลี่ยนแค่ 3 อย่าง**
+🔑 วิธีทำ: **ยกไฟล์ docs/archive/newwords-round/newwords-picker.html มาทั้งไฟล์ แล้วเปลี่ยนแค่ 3 อย่าง**
    ① ก้อนข้อมูล DATA  ② คีย์ที่เก็บ (กันทับงานของโต๊ะเดิม)  ③ หัวเรื่อง
    ไม่แตะ CSS ไม่แตะ JS สักบรรทัด — ตัวนั้นผ่านคำติของพี่กันมา 6 รอบจนลงตัวแล้ว
    (ลากทีละตัวอักษร · ป๊อปกระจกเงา · หมายเหตุ 2 ระดับ · ระบบกันงานหาย 3 ชั้น)
@@ -19,7 +19,7 @@ import json, os, re, sys, glob
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = lambda *a: os.path.join(ROOT, *a)
-BASE = P('docs/newwords-picker.html')
+BASE = P('docs/archive/newwords-round/newwords-picker.html')
 
 
 def build():
@@ -109,7 +109,7 @@ def main():
     src = re.sub(r'(data-f="prop"[^>]*?)aria-pressed="true"', r'\1aria-pressed="false"', src)
     src = re.sub(r'(data-f="all"[^>]*?)aria-pressed="false"', r'\1aria-pressed="true"', src)
 
-    out = P('docs/oldwords-extract.html')
+    out = P('docs/archive/oldwords-round/oldwords-extract.html')
     open(out, 'w', encoding='utf-8').write(src)
     if len(sys.argv) > 1:
         # fragment สำหรับ Artifact = ตัดเปลือก doctype/html/head ออก
