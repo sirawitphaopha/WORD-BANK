@@ -149,10 +149,17 @@ while i < len(lines):
     if s.startswith('> _') and not cur['def']:
         cur['def']=re.sub(r'^> _|_$','',s).strip('_'); i+=1; continue
     # กิ่งย่อย
-    mm=re.match(r'- 🌿 \*\*(.+?) \(([^)]+)\)\*\* — _(.+?)_(.*)$', s)
+    # 🔴 บั๊กเดิม (เจอ 3 ส.ค. 2569): regex เดิมเป็น r'- 🌿 ' เป๊ะ ๆ
+    #    บรรทัดที่เขียน "- 🆕 🌿 **...**" จึงไม่ถูกจับ แล้ว "หายเงียบ" จาก HTML ไปทั้งกิ่ง
+    #    ตอนเจอมีกิ่งโดนทิ้งอยู่ 9 กิ่ง (ขบขันฯ · ซาบซึ้งฯ · สงสารฯ · เสียสติฯ · ห้วงคิดฯ ·
+    #    ภวังค์ฯ · ความสนใจฯ · สัมผัสบนผิวฯ · การรับกลิ่นฯ) — ชนิดเดียวกับบั๊ก "### 🆕 🌲"
+    #    ของ gen_branches.py ที่เคยทำกิ่งหลักหายมาแล้ว
+    mm=re.match(r'- (🆕 )?🌿 \*\*(.+?) \(([^)]+)\)\*\* — _(.+?)_(.*)$', s)
     if mm:
-        rest,tagshtml=render_tags(mm.group(4))
-        cursub={'th':mm.group(1).strip(),'en':mm.group(2).strip(),'def':mm.group(3).strip(),'tags':tagshtml,'words':[],'hint':''}
+        rest,tagshtml=render_tags(mm.group(5))
+        if mm.group(1):
+            tagshtml='<span class="tag t-new">🆕 กิ่งใหม่</span>'+tagshtml
+        cursub={'th':mm.group(2).strip(),'en':mm.group(3).strip(),'def':mm.group(4).strip(),'tags':tagshtml,'words':[],'hint':''}
         cur['subs'].append(cursub); i+=1; continue
     # หมายเหตุ standalone (🗨) — ผูกกับกิ่งย่อยล่าสุด
     if s.startswith('🗨'):
