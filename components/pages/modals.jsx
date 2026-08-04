@@ -55,6 +55,24 @@ export function renderEditModal(app) {
             }}
             style={{ fontSize: '12px', padding: '6px 11px', borderRadius: '20px', border: '1px dashed #ddcba4', outline: 'none', minWidth: '210px', background: 'var(--surface,#fffdf6)', color: '#4a4034' }} />
         </div>
+        {/* รูปแบบคำ — คำนี้สร้างขึ้นยังไง (คนละแกนกับชนิดที่บอกว่ายาวแค่ไหน)
+            ว่าง = ยังไม่ได้ดู ไม่ใช่ผิด · เจ้าของคลังเคาะให้ใส่ค่าเดียว 3 ส.ค. 2569 */}
+        <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#5c5044', margin: '0 0 6px' }}>รูปแบบคำ (ไม่บังคับ)</label>
+        <select value={ed.wordForm || ''} onChange={app.onEditField('wordForm')}
+          style={{ width: '100%', padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', marginBottom: '14px' }}>
+          <option value="">ยังไม่ได้ระบุ</option>
+          <option value="คำซ้อน">คำซ้อน — คำความหมายใกล้กันซ้อนกัน (หนั่นแน่น)</option>
+          <option value="คำซ้ำ">คำซ้ำ — คำเดียวกันซ้ำด้วยไม้ยมก (เงียบ ๆ)</option>
+          <option value="คำประสม">คำประสม — คำคนละความหมายต่อกัน (ใจปลาซิว)</option>
+          <option value="คำทับศัพท์">คำทับศัพท์ — ยืมจากภาษาอื่น (เนกไท)</option>
+        </select>
+        {/* 🕸 ทางเข้าหน้ารายละเอียดคำ — บนมือถือการ์ดในคลังแตะแล้วมาที่นี่เลย จึงต้องมีปุ่มตรงนี้ด้วย */}
+        {ed.id && (
+          <button onClick={() => { app.cancelEdit(); app.openWordWeb(ed.id); }}
+            style={{ width: '100%', padding: '10px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#6f6252', fontFamily: 'inherit', fontSize: '14px', cursor: 'pointer', marginBottom: '12px' }}>
+            🕸 ดูรายละเอียด — คำนี้โยงกับอะไรบ้าง
+          </button>
+        )}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '6px' }}>
           <button onClick={app.deleteFromEdit} style={{ padding: '10px 15px', border: '1px solid #e6c3b7', borderRadius: '9px', background: '#faf1ee', color: 'var(--accent,#9c3b2b)', cursor: 'pointer' }}>ลบคำนี้</button>
           <div style={{ flex: 1 }} />

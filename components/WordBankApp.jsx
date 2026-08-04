@@ -7,6 +7,7 @@ import { SUBTREE } from '@/lib/subtree';
 import { renderShell } from '@/components/shell';
 import { installHandlers } from '@/components/handlers';
 import { VERSION, pathsOf, UI_KEY, REVIEW_KEY, DRAFT_KEY } from '@/components/helpers';
+import { drawWordWeb } from '@/components/pages/wordWeb';
 export { VERSION } from '@/components/helpers';
 
 
@@ -26,6 +27,8 @@ export default class WordBankApp extends React.Component {
     q: '', filterCat: 'all', filterNovels: [], novelMenuOpen: false, fontMenuOpen: false, filterKind: 'all', filterSlot: 'all', sort: 'recent', libView: 'cards',
     confirmId: null, toast: '',
     modal: null, ui: {}, exactFilter: '', dupOnly: false, editing: null,
+    filterForm: 'all',   // กรองคลังตามรูปแบบคำ · 'none' = ดูเฉพาะที่ยังไม่ได้ระบุ
+    wordWeb: null,       // 🕸 หน้ารายละเอียดคำ — เส้นเชื่อมของคำที่กำลังเปิดดู (null = ปิดอยู่)
     mergeFrom: '', mergeTo: '', newCatName: '',
     loading: true, loadError: '',
     collapsed: {}, // สถานะยุบกลุ่มในหน้าคลังคำ (key = anchor id)
@@ -52,6 +55,7 @@ export default class WordBankApp extends React.Component {
   _stickRef = React.createRef();
   _libStickRef = React.createRef();
   _bannerRef = React.createRef();
+  _wwRef = React.createRef();          // กรอบผังใยความคิดในหน้ารายละเอียดคำ
   constructor(props) { super(props); installHandlers(this); }
   render() { return renderShell(this); }
   // เฝ้าดูความสูงก้อนตรึง (เปลี่ยนเมื่อมี/ไม่มีแท็บช่อ หรือปุ่มล้นบรรทัดตอนจอแคบ)
@@ -88,7 +92,25 @@ export default class WordBankApp extends React.Component {
       this._ro3.disconnect(); this._ro3 = null;
     }
   }
-  componentDidUpdate() { this.watchStick(); if (this._onScrollBtn) this._onScrollBtn(); }
+  componentDidUpdate() {
+    this.watchStick();
+    if (this._onScrollBtn) this._onScrollBtn();
+    this.drawWeb();
+  }
+  // วาดเส้นโยงในผังใยความคิด — ต้องวาดหลัง React จัดหน้าเสร็จ จึงเรียกที่นี่
+  // เรียกซ้ำได้ ตัววาดมีตัวเทียบลายเซ็นเลย์เอาต์อยู่ในตัว ถ้าไม่มีอะไรขยับจะไม่วาดทับเส้นที่กำลังงอก
+  drawWeb() {
+    const map = this._wwRef.current;
+    if (!map) return;
+    const svg = map.querySelector('[data-el=svg]');
+    const key = (this.state.wordWeb && this.state.wordWeb.id) || '';
+    const go = () => drawWordWeb(map, svg, key);
+    go();
+    // ฟอนต์โหลดเสร็จแล้วเลย์เอาต์ขยับ ต้องวัดใหม่ — ทั้งสองจังหวะอยู่ก่อนเส้นเริ่มงอก (0.3 วินาที)
+    requestAnimationFrame(go);
+    clearTimeout(this._wwT);
+    this._wwT = setTimeout(go, 120);
+  }
   componentWillUnmount() {
     if (this._onUnload && typeof window !== 'undefined') window.removeEventListener('beforeunload', this._onUnload);
     if (this._onScrollBtn && typeof window !== 'undefined') { window.removeEventListener('scroll', this._onScrollBtn); window.removeEventListener('resize', this._onScrollBtn); }

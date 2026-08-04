@@ -12,6 +12,8 @@ export async function PATCH(req, { params }) {
     const patch = {};
     if (body.text != null) patch.text = String(body.text).trim();
     if (body.meaning != null) patch.meaning = String(body.meaning).trim() || null;
+    // รูปแบบคำ (คำซ้อน/คำซ้ำ/คำประสม/คำทับศัพท์) — ว่าง = ยังไม่ได้ดู เก็บเป็น null
+    if (body.word_form !== undefined) patch.word_form = String(body.word_form || '').trim() || null;
     if (body.category_id != null) patch.category_id = body.category_id;
     if (body.novel != null) patch.novel = String(body.novel).trim() || null;
     // แก้หมวดย่อยได้หลายกิ่ง (subpath เดี่ยว = กิ่งหลัก เก็บคู่กันไว้เสมอ)

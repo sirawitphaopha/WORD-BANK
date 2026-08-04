@@ -47,7 +47,11 @@ export function renderLibrary(app, getCat, monoMode, accent) {
     if (S.filterSlot === 'none') return ss.length === 0;
     return ss.includes(S.filterSlot);
   };
-  let filtered = ctxLib.filter((w) => (S.filterCat === 'all' || w.category === S.filterCat) && (S.filterKind === 'all' || w.kind === S.filterKind) && matchSlot(w));
+  // กรองตาม "รูปแบบคำ" (คำซ้อน/คำซ้ำ/คำประสม/คำทับศัพท์)
+  // 'none' = ดูเฉพาะคำที่ยังไม่ได้ระบุ ไว้ไล่เติมทีละคำ
+  const matchForm = (w) => !S.filterForm || S.filterForm === 'all'
+    || (S.filterForm === 'none' ? !w.wordForm : w.wordForm === S.filterForm);
+  let filtered = ctxLib.filter((w) => (S.filterCat === 'all' || w.category === S.filterCat) && (S.filterKind === 'all' || w.kind === S.filterKind) && matchForm(w) && matchSlot(w));
   // ตัวเลือกในดรอปดาวน์สร้างจากคำใบ้ที่มีอยู่จริงในคลัง (ไม่ hardcode) เรียงตามจำนวนที่พบ
   const slotCount = new Map();
   ctxLib.forEach((w) => slotsOf(w).forEach((s) => slotCount.set(s, (slotCount.get(s) || 0) + 1)));
@@ -185,6 +189,7 @@ export function renderLibrary(app, getCat, monoMode, accent) {
           </>
         ) : (
           <>
+            <button onClick={() => app.openWordWeb(w.id)} title="ดูว่าคำนี้โยงกับอะไรบ้าง" style={{ border: 'none', background: 'transparent', color: '#7b6a52', cursor: 'pointer', fontSize: '12px' }}>🕸 รายละเอียด</button>
             <button onClick={app.openEdit(w)} style={{ border: 'none', background: 'transparent', color: '#8a7d6d', cursor: 'pointer', fontSize: '12px' }}>แก้ไข</button>
             <button onClick={app.askDelete(w.id)} style={{ border: 'none', background: 'transparent', color: '#c1a98f', cursor: 'pointer', fontSize: '12px' }}>ลบ</button>
           </>
@@ -240,6 +245,7 @@ export function renderLibrary(app, getCat, monoMode, accent) {
           </>
         ) : (
           <>
+            <button onClick={() => app.openWordWeb(w.id)} title="ดูว่าคำนี้โยงกับอะไรบ้าง" style={{ border: 'none', background: 'transparent', color: '#7b6a52', cursor: 'pointer', fontSize: '13px' }}>🕸 รายละเอียด</button>
             <button onClick={app.openEdit(w)} style={{ border: 'none', background: 'transparent', color: '#8a7d6d', cursor: 'pointer', fontSize: '13px' }}>แก้ไข</button>
             <button onClick={app.askDelete(w.id)} style={{ border: 'none', background: 'transparent', color: '#c1a98f', cursor: 'pointer', fontSize: '13px' }}>ลบ</button>
           </>
@@ -369,6 +375,9 @@ export function renderLibrary(app, getCat, monoMode, accent) {
             <select value={S.filterKind} onChange={(e) => app.setState({ filterKind: e.target.value })} title="กรองตามชนิด" style={{ flex: 'none', padding: '10px 5px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', fontSize: '13px' }}>
               <option value="all">ชนิดวลี</option><option value="word">คำ</option><option value="phrase">วลี</option><option value="sentence">ประโยค</option>
             </select>
+            <select value={S.filterForm || 'all'} onChange={(e) => app.setState({ filterForm: e.target.value })} title="กรองตามรูปแบบคำ" style={{ flex: 'none', padding: '10px 5px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', fontSize: '13px' }}>
+              <option value="all">รูปแบบคำ</option><option value="คำซ้อน">คำซ้อน</option><option value="คำซ้ำ">คำซ้ำ</option><option value="คำประสม">คำประสม</option><option value="คำทับศัพท์">คำทับศัพท์</option><option value="none">ยังไม่ได้ระบุ</option>
+            </select>
             <select value={S.sort} onChange={app.onSort} title="เรียงลำดับ" style={{ flex: 'none', padding: '10px 5px', border: '1px solid #d8c7a2', borderRadius: '9px', background: 'var(--surface,#fffdf6)', color: '#3a2f28', fontSize: '13px' }}>
               <option value="recent">เรียง</option><option value="old">เก่าก่อน</option><option value="az">ก - ฮ</option>
             </select>
@@ -396,6 +405,9 @@ export function renderLibrary(app, getCat, monoMode, accent) {
           {novelPicker(false)}
           <select value={S.filterKind} onChange={(e) => app.setState({ filterKind: e.target.value })} title="กรองตามชนิด" style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>
             <option value="all">ชนิดวลี</option><option value="word">คำ</option><option value="phrase">วลี</option><option value="sentence">ประโยค</option>
+          </select>
+          <select value={S.filterForm || 'all'} onChange={(e) => app.setState({ filterForm: e.target.value })} title="กรองตามรูปแบบคำ" style={{ padding: '11px 13px', border: '1px solid #d8c7a2', borderRadius: '10px', background: 'var(--surface,#fffdf6)', color: '#3a2f28' }}>
+            <option value="all">รูปแบบคำ</option><option value="คำซ้อน">คำซ้อน</option><option value="คำซ้ำ">คำซ้ำ</option><option value="คำประสม">คำประสม</option><option value="คำทับศัพท์">คำทับศัพท์</option><option value="none">ยังไม่ได้ระบุ</option>
           </select>
           {/* กรองตามช่องเติมคำ — โผล่เฉพาะตอนในคลังมีคำที่มีช่องเติมจริง */}
           {withSlotCount > 0 && (

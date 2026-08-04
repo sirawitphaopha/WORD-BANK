@@ -19,3 +19,14 @@ a:hover{color:#7a2c1f;text-decoration:underline}
 @keyframes wbdrop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 /* ซ่อนคำคมตกแต่งบนแบนเนอร์จนกว่าจอจะกว้างพอให้เมนูอยู่แถวเดียวสวย ๆ — จอกว้าง (>1320px) คำคมโผล่เหมือนเดิม */
 @media (max-width:1320px){.wb-quote{display:none}}
+
+/* ── 🕸 หน้ารายละเอียดคำ (ผังใยความคิด) — components/pages/wordWeb.jsx ─────────
+   ยกแอนิเมชันมาจากม็อคอัปที่เจ้าของคลังเคาะแล้ว (docs/archive/misc/word-web-mockup.html)
+   🔴 ห้ามใส่จุดวิ่งไปตามเส้น — เจ้าของคลังปฏิเสธไปแล้ว "ไม่เอาแบบส่งสัญญาณประสาทแบบนี้" */
+@keyframes wwRise{from{opacity:0;transform:translateY(16px) scale(.975)}to{opacity:1;transform:none}}
+@keyframes wwPop{from{opacity:0;transform:translateY(12px) scale(.82)}to{opacity:1;transform:none}}
+@keyframes wwSlide{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+@keyframes wwBadge{from{opacity:0;transform:scale(.6)}60%{transform:scale(1.08)}to{opacity:1;transform:scale(1)}}
+@keyframes wwDot{from{transform:scale(0);opacity:0}to{transform:scale(1)}}
+@keyframes wwShine{from{transform:translateX(-130%) skewX(-18deg)}to{transform:translateX(230%) skewX(-18deg)}}
+.wwleaf{transition:transform .18s cubic-bezier(.2,.9,.3,1),box-shadow .18s}

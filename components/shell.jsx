@@ -11,6 +11,7 @@ import { renderResearch } from '@/components/pages/research';
 import { renderAbout } from '@/components/pages/about';
 import { renderWriting } from '@/components/pages/writing';
 import { renderEditModal, renderCatModal, renderSettings } from '@/components/pages/modals';
+import { renderWordWeb } from '@/components/pages/wordWeb';
 
 export function renderShell(app) {
   const S = app.state;
@@ -156,6 +157,7 @@ export function renderShell(app) {
       </footer>
 
       {S.processing && renderProcessing(app, accent)}
+      {S.wordWeb && renderWordWeb(app)}
       {S.modal === 'edit' && renderEditModal(app)}
       {S.modal === 'cats' && renderCatModal(app, monoMode)}
       {S.modal === 'settings' && renderSettings(app, monoMode, navStyle, spell, effLayout, accent, primary, paper)}

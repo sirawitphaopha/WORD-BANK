@@ -93,7 +93,7 @@ export function reviewActions(app) {
     const items = app.batchItems();
     if (!items.length) return;
     const b = app.batchList().find((x) => x.id === app.activeBatchId()) || { no: 1 };
-    app.askConfirm({ title: 'บันทึกช่อที่ ' + thNum(b.no) + ' เข้าคลัง', msg: 'บันทึกคำในช่อนี้ ' + items.length + ' คำ เข้าคลัง (คำที่ซ้ำกับคลังจะถูกข้ามให้อัตโนมัติ)\nช่ออื่นยังอยู่ครบ', okLabel: 'บันทึก', danger: false, onOk: app._save });
+    app.askConfirm({ title: 'บันทึกช่อที่ ' + thNum(b.no) + ' เข้าคลัง', msg: 'บันทึกคำในช่อนี้ ' + items.length + ' คำ เข้าคลัง\nคำที่มีในคลังอยู่แล้วจะไม่ถูกสร้างซ้ำ แต่จะเพิ่มกิ่ง ชื่อเรื่อง และความหมายที่ยังไม่มีให้แทน\nช่ออื่นยังอยู่ครบ', okLabel: 'บันทึก', danger: false, onOk: app._save });
   };
   app._save = async () => {
     const { categories } = app.state;
@@ -102,12 +102,26 @@ export function reviewActions(app) {
     if (!review.length) return;
     const reviewNovel = (review[0] && review[0].novel) || app.state.reviewNovel;
     const newCategories = categories.filter((c) => c.proposed).map((c) => ({ id: c.id, name_th: c.n, color: c.c, glyph: c.k }));
-    const allWords = review.map((r) => ({ text: r.text.trim(), original_text: r.original || null, meaning: (r.meaning || '').trim(), category_id: r.category, kind: r.kind || null, subpath: pathsOf(r)[0] || null, subpaths: pathsOf(r) })).filter((w) => w.text);
-    // ข้ามคำที่มีในคลังอยู่แล้ว (ข้อความตรงกันเป๊ะ) — ไม่เขียนทับ ไม่สร้างซ้ำ
-    const libSet = new Set(app.state.library.map((w) => (w.text || '').trim()));
-    const words = allWords.filter((w) => !libSet.has(w.text));
-    const skipped = allWords.length - words.length;
-    if (!words.length) { app.flash(skipped ? 'ทุกคำมีในคลังอยู่แล้ว ไม่มีคำใหม่ให้บันทึก' : 'ยังไม่มีคำให้บันทึก'); return; }
+    // 🕸 ส่งทุกคำไปหมด รวมคำที่มีในคลังอยู่แล้วด้วย
+    //    ฝั่งเซิร์ฟเวอร์จะไม่สร้างแถวซ้ำ แต่จะ "เพิ่มเส้นที่ยังไม่มี" ให้แทน
+    //    (กิ่ง · ชื่อเรื่อง · ความหมาย · วลีที่ตัดมา)
+    // 🔴 เดิมกรองคำซ้ำทิ้งตรงนี้ ทำให้คำเดียวกันที่เจอคนละเรื่อง หรืออยากใส่หมวดที่สอง
+    //    หายไปเงียบ ๆ — เจ้าของคลังจับได้เอง 31 ก.ค. 2569
+    //    _"มันซ้ำแค่วลี แต่ทั้งชื่อนิยายก็ไม่ซ้ำนะ และอาจจะไปหมวดใหม่ได้"_
+    const words = review.map((r) => ({
+      text: r.text.trim(),
+      original_text: r.original || null,
+      meaning: (r.meaning || '').trim(),
+      reason: (r.reason || '').trim(),
+      category_id: r.category,
+      kind: r.kind || null,
+      word_form: r.wordForm || null,
+      subpath: pathsOf(r)[0] || null,
+      subpaths: pathsOf(r),
+      // วลีตั้งต้นที่คำนี้ถูกตัดออกมา — เดิมมีเก็บไว้แต่ไม่เคยส่งไปที่ปลายทางเลย
+      source: r.source || null,
+    })).filter((w) => w.text);
+    if (!words.length) { app.flash('ยังไม่มีคำให้บันทึก'); return; }
     const novel = reviewNovel;
     try {
       const res = await fetch('/api/words', {
@@ -117,21 +131,31 @@ export function reviewActions(app) {
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       const saved = data.words || [];
+      const created = data.created == null ? saved.length : data.created;   // คำที่เพิ่งเข้าคลัง
+      const linked = data.linked || 0;                                      // คำที่มีอยู่แล้ว แล้วได้เส้นเพิ่ม
       const nv = (novel && novel !== 'ไม่ระบุเรื่อง' && !app.state.novels.includes(novel)) ? [novel, ...app.state.novels] : app.state.novels;
       // เอาเฉพาะคำในช่อนี้ออก — ช่ออื่นยังค้างอยู่ ถ้ายังเหลือช่อ อยู่หน้าตรวจทานต่อ
       const rest = app.state.review.filter((r) => (r.batch || 'b_legacy') !== bid);
+      // คำที่ถูกอัปเดต (มีอยู่แล้ว) ต้องแทนที่แถวเดิมในคลัง ไม่ใช่เพิ่มซ้อนเข้าไปอีกใบ
+      const back = new Set(saved.map((w) => w.id));
       app.setState({
-        library: [...saved, ...app.state.library],
+        library: [...saved, ...app.state.library.filter((w) => !back.has(w.id))],
         categories: app.state.categories.map((c) => c.proposed ? { ...c, proposed: false } : c),
         novels: nv, review: rest,
         activeBatch: app.activeBatchId(rest, ''),
         page: rest.length ? 'review' : 'library',
         // ลบเฉพาะแถวของช่อที่บันทึกออกจากคลาวด์ (remove by ids) แทน replace ทั้งก้อน — กันช่ออื่นเด้ง/ชนกัน
       }, () => { app.toTop(); app.pushReviewOp({ action: 'remove', ids: review.map((r) => r.id), deadBatches: [bid] }); });
-      app.flash('บันทึกเข้าคลังแล้ว ' + saved.length + ' คำ' + (skipped ? ' (ข้ามที่มีอยู่แล้ว ' + skipped + ' คำ)' : '') + (rest.length ? ' · ยังเหลืออีก ' + rest.length + ' คำในช่ออื่น' : ''));
-      // เติมจำนวนคำที่บันทึกจริง + ข้ามเพราะซ้ำ ลง log ของรอบ AI นี้
+      // 🔑 ข้อความต้องบอกว่า "เพิ่มเส้นให้" ไม่ใช่ "ข้ามไป" — คำที่มีอยู่แล้วไม่ได้ถูกทิ้งอีกต่อไป
+      const lk = data.links || {};
+      const detail = [lk.branches ? lk.branches + ' กิ่ง' : '', lk.novels ? lk.novels + ' เรื่อง' : '',
+        lk.meanings ? lk.meanings + ' ความหมาย' : ''].filter(Boolean).join(' · ');
+      app.flash('บันทึกเข้าคลังแล้ว ' + created + ' คำ'
+        + (linked ? ' · คำที่มีอยู่แล้ว ' + linked + ' คำ เพิ่มเส้นให้' + (detail ? ' (' + detail + ')' : '') : '')
+        + (rest.length ? ' · ยังเหลืออีก ' + rest.length + ' คำในช่ออื่น' : ''));
+      // เติมจำนวนคำที่บันทึกจริง + คำที่มีอยู่แล้วได้เส้นเพิ่ม ลง log ของรอบ AI นี้
       if (app.state.lastAiLogId) {
-        fetch('/api/logs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'saved', id: app.state.lastAiLogId, saved_count: saved.length, skipped_count: skipped }) }).catch(() => {});
+        fetch('/api/logs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'saved', id: app.state.lastAiLogId, saved_count: created, skipped_count: linked }) }).catch(() => {});
         app.setState({ lastAiLogId: null });
       }
     } catch (e) {

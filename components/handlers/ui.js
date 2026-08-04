@@ -64,16 +64,55 @@ export function uiActions(app) {
       } catch (e) { app.setState({ library: prev }); app.flash('ลบไม่สำเร็จ'); }
     };
   }
-  app.openEdit = (w) => { return () => app.setState({ modal: 'edit', editing: { ...w } }); }
+  app.openEdit = (w) => {
+    // รับได้ทั้งตัวคำเต็ม (จากการ์ดในคลัง) และรหัสคำ (จากหน้ารายละเอียด)
+    if (typeof w === 'string') {
+      const hit = (app.state.library || []).find((x) => x.id === w);
+      return hit ? app.setState({ modal: 'edit', editing: { ...hit } }) : null;
+    }
+    return () => app.setState({ modal: 'edit', editing: { ...w } });
+  };
+
+  // ── 🕸 หน้ารายละเอียดคำ (ผังใยความคิด) ──────────────────────────
+  // เปิดแล้วยิงไปดึงเส้นเชื่อมของคำนั้น — ไม่โหลดมาพร้อมคลังทั้งก้อนเพราะมีหลายพันเส้น
+  app.openWordWeb = (id) => {
+    if (!id) return;
+    const base = (app.state.library || []).find((x) => x.id === id);
+    // โชว์โครงจากข้อมูลที่มีในเครื่องก่อน แล้วค่อยเติมเส้นเชื่อมเมื่อโหลดเสร็จ — ไม่ต้องรอหน้าเปล่า
+    app.setState({
+      wordWeb: {
+        id, loading: true,
+        word: base ? { id, text: base.text, kind: base.kind, meaning: base.meaning, category_id: base.category, novel: base.novel } : { id, text: '' },
+        branches: base ? pathsOf(base).map((p) => ({ code: '', category_id: base.category, path: p, is_home: true, name_en: '' })) : [],
+        novels: base && base.novel ? [base.novel] : [],
+        meanings: base && base.meaning ? [base.meaning] : [],
+        parents: [], children: [],
+      },
+    });
+    fetch('/api/words/' + encodeURIComponent(id) + '/web')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.error) throw new Error(d.error);
+        // ถ้าผู้ใช้กดคำอื่นระหว่างรอ อย่าเอาผลเก่ามาทับ
+        if (!app.state.wordWeb || app.state.wordWeb.id !== id) return;
+        app.setState({ wordWeb: { ...d, id, loading: false } });
+      })
+      .catch(() => {
+        if (!app.state.wordWeb || app.state.wordWeb.id !== id) return;
+        app.setState({ wordWeb: { ...app.state.wordWeb, loading: false } });
+        app.flash('โหลดเส้นเชื่อมของคำนี้ไม่สำเร็จ');
+      });
+  };
+  app.closeWordWeb = () => app.setState({ wordWeb: null });
   app.onEditField = (f) => { return (e) => app.setState((s) => ({ editing: { ...s.editing, [f]: e.target.value } })); }
   app.saveEdit = async () => {
     const ed = app.state.editing; if (!ed) return;
     const paths = pathsOf(ed);
-    const patch = { text: ed.text.trim(), meaning: (ed.meaning || '').trim(), category: ed.category, novel: ed.novel, subpaths: paths, subpath: paths[0] || '' };
+    const patch = { text: ed.text.trim(), meaning: (ed.meaning || '').trim(), category: ed.category, novel: ed.novel, wordForm: ed.wordForm || '', subpaths: paths, subpath: paths[0] || '' };
     const prev = app.state.library;
     app.setState((s) => ({ library: s.library.map((w) => w.id === ed.id ? { ...w, ...patch } : w), modal: null, editing: null }));
     try {
-      const res = await fetch('/api/words/' + ed.id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: patch.text, meaning: patch.meaning, category_id: patch.category, novel: patch.novel, subpaths: paths }) });
+      const res = await fetch('/api/words/' + ed.id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: patch.text, meaning: patch.meaning, category_id: patch.category, novel: patch.novel, word_form: patch.wordForm || null, subpaths: paths }) });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       app.flash('บันทึกการแก้ไขแล้ว');

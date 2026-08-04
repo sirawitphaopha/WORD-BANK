@@ -73,7 +73,7 @@ export function renderReview(app, getCat, monoMode, spell, effLayout) {
     ? <span title="สกัดออกมาจากประโยค" style={{ flex: 'none', fontSize: '11px', fontWeight: 700, color: '#fff', background: '#c6892b', border: '1px solid #a56f18', padding: '2px 9px', borderRadius: '20px', whiteSpace: 'nowrap', boxShadow: '0 1px 4px rgba(198,137,43,.4)' }}>✂ แยกจากประโยค</span>
     : null;
   const dupBadge = (r) => libTexts.has((r.text || '').trim())
-    ? <span title="คำนี้มีในคลังแล้ว จะถูกข้ามตอนบันทึก" style={{ flex: 'none', fontSize: '11px', fontWeight: 700, color: '#fff', background: '#e01e1e', border: '1px solid #b81414', padding: '2px 9px', borderRadius: '20px', whiteSpace: 'nowrap', animation: 'wbalert 1.05s ease-in-out infinite' }}>⚠ มีในคลังแล้ว</span>
+    ? <span title="คำนี้มีในคลังแล้ว ตอนบันทึกจะไม่สร้างซ้ำ แต่จะเพิ่มกิ่ง ชื่อเรื่อง และความหมายที่ยังไม่มีให้แทน" style={{ flex: 'none', fontSize: '11px', fontWeight: 700, color: '#fff', background: '#e01e1e', border: '1px solid #b81414', padding: '2px 9px', borderRadius: '20px', whiteSpace: 'nowrap', animation: 'wbalert 1.05s ease-in-out infinite' }}>⚠ มีในคลังแล้ว</span>
     : null;
   // คอลัมน์สถานะในตาราง — ค่าจัดเรียง: ซ้ำ(0) < สกัดจากประโยค(1) < ปกติ(2)
   const statusVal = (r) => libTexts.has((r.text || '').trim()) ? 0 : ((r.notes || []).some((n) => /แยกจากประโยค/.test(n)) ? 1 : 2);
