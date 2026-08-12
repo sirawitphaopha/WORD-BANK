@@ -291,6 +291,11 @@ export function renderWordWeb(app) {
   const kids = (w.children || []).map((c) => c.text);
   const pt = paint(w.word && w.word.text, kids);
 
+  // เส้นไปวลีแม่มี 2 ชนิด — ต้องแยกแสดง ไม่งั้นข้อมูลโกหก
+  //   ตัดมาจริง (source · picked_from) กับ แค่โผล่อยู่ในวลีนั้น (contains · ระบบไล่ค้นเจอเอง)
+  const cutFrom  = (w.parents || []).filter((p) => p.kind !== 'contains');
+  const appearsIn = (w.parents || []).filter((p) => p.kind === 'contains');
+
   // จัดกิ่งตามหมวด — หมวดที่มีกิ่งเยอะอยู่บน
   const byCat = new Map();
   (w.branches || []).forEach((b) => {
@@ -319,11 +324,11 @@ export function renderWordWeb(app) {
             <svg data-el="svg" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'visible' }} />
 
             {/* ① วลีแม่ที่คำนี้ถูกตัดออกมา · ไม่มีเลย = เก็บมาเอง */}
-            {(w.parents || []).length > 0 && (
+            {cutFrom.length > 0 && (
               <div style={{ position: 'relative', zIndex: 1, marginBottom: '30px' }}>
                 <div style={secHead}>ตัดมาจากวลี</div>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  {w.parents.map((p, i) => (
+                  {cutFrom.map((p, i) => (
                     <button key={i} data-el="par" onClick={() => p.inLibrary && app.openWordWeb(p.id)}
                       title={p.inLibrary ? 'กดเพื่อดูวลีนี้' : 'วลีนี้ยังไม่อยู่ในคลัง'}
                       style={{ ...card, textAlign: 'left', padding: '9px 13px', maxWidth: '100%', fontFamily: 'inherit', fontSize: '14px', lineHeight: 1.6, color: '#5c5044', cursor: p.inLibrary ? 'pointer' : 'default', borderStyle: p.inLibrary ? 'solid' : 'dashed', animation: 'wwRise .45s cubic-bezier(.2,.8,.25,1) both' }}>
@@ -335,17 +340,34 @@ export function renderWordWeb(app) {
               </div>
             )}
 
+            {/* ①ข วลีที่มีคำนี้อยู่ข้างใน แต่ไม่ได้ตัดมาจากกัน — ระบบไล่ค้นเจอเอง (ชนิด contains) */}
+            {appearsIn.length > 0 && (
+              <div style={{ position: 'relative', zIndex: 1, marginBottom: '30px' }}>
+                <div style={secHead}>โผล่อยู่ในวลีเหล่านี้ด้วย</div>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  {appearsIn.map((p, i) => (
+                    <button key={i} data-el="par" onClick={() => p.inLibrary && app.openWordWeb(p.id)}
+                      title={p.inLibrary ? 'กดเพื่อดูวลีนี้' : 'วลีนี้ยังไม่อยู่ในคลัง'}
+                      style={{ ...card, textAlign: 'left', padding: '9px 13px', maxWidth: '100%', fontFamily: 'inherit', fontSize: '14px', lineHeight: 1.6, color: '#7a6c58', cursor: p.inLibrary ? 'pointer' : 'default', borderStyle: 'dashed', animation: 'wwRise .45s cubic-bezier(.2,.8,.25,1) both' }}>
+                      {esc(p.text)}
+                      <span style={{ fontSize: '10px', color: '#b0a184', marginLeft: '6px' }}>ไม่ได้ตัดมาจากกัน</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* ④ คำหลัก — ต้องเด่นชัด กรอบหนา เงา ตัวใหญ่ ป้ายแดงชาด */}
             <div data-el="hero" style={{ overflow: 'hidden', position: 'relative', zIndex: 1, background: 'var(--surface,#fffdf6)', border: '2px solid var(--primary,#6b4f2a)', borderRadius: '15px', padding: '16px 22px 15px', boxShadow: '0 14px 30px -18px rgba(40,28,14,.6)', textAlign: 'center', marginBottom: kids.length ? '74px' : '54px', animation: 'wwRise .5s cubic-bezier(.2,.8,.25,1) both' }}>
               <span style={{ display: 'inline-block', fontSize: '9.5px', letterSpacing: '.22em', textTransform: 'uppercase', color: '#fdf6e8', background: 'var(--accent,#9c3b2b)', borderRadius: '12px', padding: '2px 11px', marginBottom: '9px', lineHeight: 1.9, animation: 'wwBadge .42s cubic-bezier(.2,.9,.3,1) .28s both' }}>
-                {(w.parents || []).length ? 'คำที่กำลังดู' : 'วลีตั้งต้น'}
+                {cutFrom.length ? 'คำที่กำลังดู' : 'วลีตั้งต้น'}
               </span>
               <div style={{ fontSize: mob ? '21px' : 'clamp(22px,2.4vw,30px)', fontWeight: 700, lineHeight: 1.55, color: '#33291f', wordBreak: 'break-word' }}>{pt.nodes}</div>
               <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'linear-gradient(105deg,transparent 38%,rgba(255,255,255,.5) 50%,transparent 62%)', animation: 'wwShine 1s ease .45s 1 both' }} />
               <div style={{ fontSize: '12px', color: '#a99b83', marginTop: '8px' }}>
                 {['เกาะอยู่ ' + (w.branches || []).length + ' กิ่ง ใน ' + byCat.size + ' หมวด']
                   .concat((w.novels || []).length > 1 ? ['เจอใน ' + w.novels.length + ' เรื่อง'] : [])
-                  .concat((w.parents || []).length ? [] : ['เก็บมาเอง ไม่ได้ตัดจากวลีไหน']).join(' · ')}
+                  .concat(cutFrom.length ? [] : ['เก็บมาเอง ไม่ได้ตัดจากวลีไหน']).join(' · ')}
               </div>
               {(w.meanings || []).length > 0 && (
                 <div style={{ fontSize: '13.5px', color: '#5c5044', marginTop: '6px', paddingTop: '7px', borderTop: '1px solid #eadfc4', display: 'inline-block', textAlign: 'left' }}>
@@ -428,7 +450,7 @@ export function renderWordWeb(app) {
             <div>หมวด · {byCat.size}</div>
             <div>ความหมาย · {(w.meanings || []).length}</div>
             <div>เจอในเรื่อง · {(w.novels || []).length}</div>
-            <div>{(w.parents || []).length ? 'ตัดมาจาก · ' + w.parents.length + ' วลี' : 'เก็บมาเอง ไม่ได้ตัดจากวลีไหน'}</div>
+            <div>{cutFrom.length ? 'ตัดมาจาก · ' + cutFrom.length + ' วลี' : 'เก็บมาเอง ไม่ได้ตัดจากวลีไหน'}{appearsIn.length ? ' · โผล่ในอีก ' + appearsIn.length + ' วลี' : ''}</div>
             {(w.children || []).length > 0 && <div>แตกออกเป็น · {w.children.length} คำ</div>}
           </div>
         </div>

@@ -1,6 +1,7 @@
 // แก้ไข / ลบ คำเดี่ยว ในคลัง
 import { NextResponse } from 'next/server';
 import { getAdmin, mapWord, toPaths } from '@/lib/supabaseAdmin';
+import { relinkWord, sweepBrokenLinks } from '@/lib/wordlink';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +26,16 @@ export async function PATCH(req, { params }) {
     }
     const r = await db.from('wb_words').update(patch).eq('id', id).select('*').single();
     if (r.error) throw r.error;
-    return NextResponse.json({ word: mapWord(r.data) });
+
+    // 🕸 แก้ข้อความคำ = เส้นโยงเดิมไม่จริงอีกต่อไป → ล้างเส้นที่ระบบสร้างแล้วค้นใหม่
+    //    (เจ้าของคลังเตือนเอง 12 ส.ค. — คำสะกดผิดที่หลุดเข้ามาแล้วมาแก้ทีหลัง จะทิ้งเส้นผิดค้างไว้)
+    //    🚨 ล้มแล้วห้ามทำให้การแก้คำพัง แต่ต้องรายงานกลับ ห้ามเงียบ
+    let relink = null;
+    if (patch.text != null) {
+      try { relink = await relinkWord(db, id); }
+      catch (e) { relink = { error: e.message }; }
+    }
+    return NextResponse.json({ word: mapWord(r.data), relink });
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
@@ -37,7 +47,13 @@ export async function DELETE(req, { params }) {
     const { id } = await params;
     const r = await db.from('wb_words').delete().eq('id', id);
     if (r.error) throw r.error;
-    return NextResponse.json({ ok: true });
+
+    // 🧹 ลบคำแล้วเส้นที่ชี้มาหามันจะค้าง (เก็บข้อความวลีแม่ไว้ด้วย จึงไม่หายเองตาม cascade)
+    //    เคยเจอจริง 5 เส้นชี้ไปหาคำที่ถูกลบตั้งแต่ 3 ส.ค. แต่ไม่มีใครเก็บกวาด
+    let swept = null;
+    try { swept = await sweepBrokenLinks(db); }
+    catch (e) { swept = { error: e.message }; }
+    return NextResponse.json({ ok: true, swept });
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

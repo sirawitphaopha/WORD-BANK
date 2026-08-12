@@ -15,6 +15,7 @@ import { NextResponse } from 'next/server';
 import {
   getAdmin, mapWord, toPaths, registerBranches, normText, writeWordWeb,
 } from '@/lib/supabaseAdmin';
+import { autoLink, sweepBrokenLinks } from '@/lib/wordlink';
 
 export const dynamic = 'force-dynamic';
 
@@ -160,6 +161,22 @@ export async function POST(req) {
       source: 'review',
     })));
 
+    // 8) 🕸 โยงอัตโนมัติ — "คำนี้ไปโผล่อยู่ในวลีไหนบ้างในคลัง"
+    //    ขั้น 7 โยงได้เฉพาะวลีแม่ที่ AI บอกมาในรอบนี้ (ชนิด source)
+    //    ขั้นนี้ไล่ค้นย้อนหลังทั้งคลัง 2 ทาง — คำใหม่ไปอยู่ในวลีเก่าไหม · วลีใหม่มีคำเก่าอยู่ข้างในไหม
+    //    เขียนเป็นเส้นชนิด 'contains' คนละชนิดกับ 'source' เพราะไม่มีหลักฐานว่าตัดมาจริง
+    //    🚨 ล้มแล้วห้ามทำให้การบันทึกคำพัง แต่ต้องรายงานกลับ ห้ามเงียบ
+    let auto = { added: 0 }, swept = { removed: 0 };
+    try {
+      auto = await autoLink(db, [...created, ...touched].map((r) => ({
+        id: r.id, text: r.text, kind: r.kind,
+      })));
+      // เก็บกวาดเส้นที่เสียไปพร้อมกัน (ชี้ไปคำที่ถูกลบ · คำไม่อยู่ในวลีจริง)
+      swept = await sweepBrokenLinks(db);
+    } catch (e) {
+      auto = { added: auto.added || 0, error: e.message };
+    }
+
     // ลงทะเบียนกิ่งที่ใช้รอบนี้เข้าทะเบียนกิ่ง — fire-and-forget ล้มไม่กระทบการบันทึกคำ
     registerBranches(db, items.map((w) => ({
       category_id: w.category_id, subpath: w.paths[0], subpaths: w.paths,
@@ -170,6 +187,9 @@ export async function POST(req) {
       created: created.length,      // คำที่เพิ่งเข้าคลังรอบนี้
       linked: touched.length,       // คำที่มีอยู่แล้ว แล้วได้เส้นเพิ่ม
       links,                        // เส้นที่เขียนไปจริง แยกตามชนิด
+      autoLinked: auto.added,       // เส้น "พบร่วมกัน" ที่ระบบไล่ค้นเจอเองรอบนี้
+      sweptLinks: swept.removed,    // เส้นเสียที่เก็บกวาดออกไป
+      autoLinkError: auto.error || null,
     });
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 });
